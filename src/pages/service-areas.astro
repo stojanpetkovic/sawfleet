@@ -1,11 +1,11 @@
 ---
 import MainLayout from "../layouts/MainLayout.astro";
-import Header from "../components/layout/Header.astro";
+import ContractorHeader from "../components/layout/ContractorHeader.astro";
 import Footer from "../components/layout/Footer.astro";
 ---
 
 <MainLayout title="Service Areas | SawFleet">
-  <Header />
+  <ContractorHeader />
 
   <main class="pt-28 lg:pt-24 pb-20 bg-[#000000] min-h-screen">
     <div class="mx-auto max-w-[1320px] px-4 sm:px-8">
@@ -17,7 +17,7 @@ import Footer from "../components/layout/Footer.astro";
         <p class="mt-4 text-sm text-zinc-400 max-w-md">SawFleet dispatches localized requests across major South Florida counties with real-time contractor availability.</p>
       </div>
 
-      <!-- Grid -->
+      <!-- Grid: Lista (levo) + Mapa (desno) -->
       <div class="grid lg:grid-cols-[380px_1fr] gap-12 items-start">
         
         <!-- Lista okruga -->
@@ -36,8 +36,9 @@ import Footer from "../components/layout/Footer.astro";
           ))}
         </div>
 
-        <!-- Mapa -->
-        <div id="map" class="relative aspect-video lg:aspect-[16/10] rounded-3xl border border-zinc-900 bg-[#070a08] overflow-hidden shadow-2xl">
+        <!-- Mapa Kontejner -->
+        <!-- h-[450px] za mobilni, lg:aspect-[16/10] za desktop -->
+        <div id="map" class="relative h-[450px] lg:h-auto lg:aspect-[16/10] rounded-3xl border border-zinc-900 bg-[#070a08] overflow-hidden shadow-2xl">
           <div class="absolute bottom-6 left-6 z-[400] rounded-lg bg-black/60 backdrop-blur border border-zinc-800 p-4">
             <p class="text-[10px] font-mono uppercase text-white tracking-[0.15em]">Miami Metropolitan Area</p>
             <p class="text-[9px] text-zinc-500 mt-1">Real-time dispatch synchronization</p>
@@ -54,11 +55,12 @@ import Footer from "../components/layout/Footer.astro";
 <script is:inline>
   window.addEventListener('load', () => {
     if (typeof L !== 'undefined') {
-      const map = L.map('map', { zoomControl: false }).setView([26.1, -80.2], 9);
+      // Zoom 8 za odzumiran pogled, centrirano na Južnu Floridu
+      const map = L.map('map', { zoomControl: false }).setView([26.3, -80.4], 8);
 
       L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png').addTo(map);
 
-      // Definicija zona
+      // Definicija zona sa velikim radijusom
       const zones = [
         { name: "Miami-Dade Hub", lat: 25.76, lng: -80.19, radius: 45000, color: "#22c55e" }, 
         { name: "Broward Hub", lat: 26.12, lng: -80.14, radius: 45000, color: "#3b82f6" },
@@ -81,5 +83,6 @@ import Footer from "../components/layout/Footer.astro";
 </script>
 
 <style>
+  /* Fix za mapu */
   #map { filter: grayscale(0.2) contrast(1.1); }
 </style>
