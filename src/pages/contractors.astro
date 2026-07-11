@@ -6,6 +6,7 @@ import Footer from "../components/layout/Footer.astro";
 
 import Hero from "../components/contractors/Hero/Hero.astro";
 import HowItWorks from "../components/contractors/HowItWorks/HowItWorks.astro";
+import NetworkBenefits from "../components/contractors/NetworkBenefits.astro";
 ---
 
 <MainLayout title="Join the SawFleet Contractor Network">
@@ -17,6 +18,10 @@ import HowItWorks from "../components/contractors/HowItWorks/HowItWorks.astro";
     <!-- Uklonjen py-12, stavljamo pt-24 da kompenzujemo fiksni header -->
     <section>
        <Hero />
+    </section>
+
+    <section>
+       <NetworkBenefits />
     </section>
 
     <!-- How it Works: ostaje py-12 ili smanji na py-8 ako želiš veću kompaktnost -->

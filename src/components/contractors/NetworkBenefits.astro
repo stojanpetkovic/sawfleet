@@ -1,0 +1,29 @@
+<section class="py-12 bg-[#000000] border-t border-zinc-900">
+  <div class="mx-auto max-w-[1320px] px-4 sm:px-8">
+    
+    <!-- Naslov -->
+    <div class="mb-16">
+      <span class="text-[10px] font-mono font-bold uppercase tracking-[0.2em] text-green-500">// Growth Accelerators</span>
+      <h2 class="mt-4 text-3xl sm:text-4xl font-bold text-white tracking-tighter">Why join SawFleet?</h2>
+    </div>
+
+    <!-- Benefits Grid -->
+    <div class="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
+      {[
+        { title: "Direct Dispatch", desc: "Skip the lead marketplaces and cold calling. Get requests from high-intent homeowners ready to book." },
+        { title: "Micro-Market Control", desc: "Set your exact service radius by zip code or county. You decide where your fleet operates." },
+        { title: "Smart Matching", desc: "Our engine filters requests based on your current capacity and specific equipment capabilities." },
+        { title: "Transparent Billing", desc: "Clear, per-request pricing with no hidden monthly retainers or long-term commitments." }
+      ].map((item) => (
+        <div class="group rounded-2xl border border-zinc-900 bg-[#070a08] p-8 hover:border-green-500/30 transition-all">
+          <div class="h-10 w-10 rounded-lg bg-zinc-900 flex items-center justify-center mb-6 group-hover:bg-green-500/10 transition-colors">
+            <span class="text-green-500 text-lg">✦</span>
+          </div>
+          <h3 class="text-lg font-bold text-white">{item.title}</h3>
+          <p class="mt-3 text-sm text-zinc-500 leading-relaxed">{item.desc}</p>
+        </div>
+      ))}
+    </div>
+
+  </div>
+</section>
