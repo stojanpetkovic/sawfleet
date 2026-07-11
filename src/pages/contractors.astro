@@ -1,0 +1,30 @@
+---
+import MainLayout from "../layouts/MainLayout.astro";
+
+// Uvezi novi namenski header umesto starog
+import ContractorHeader from "../components/layout/ContractorHeader.astro";
+import MobileNav from "../components/layout/MobileNav.astro";
+import Footer from "../components/layout/Footer.astro"; // Uvezen Footer
+
+import Hero from "../components/contractors/Hero/Hero.astro";
+import ContractorForm from "../components/contractors/ContractorForm.astro";
+import HowItWorks from "../components/contractors/HowItWorks/HowItWorks.astro";
+---
+
+<MainLayout title="Join the SawFleet Contractor Network" description="...">
+
+  <!-- Novi B2B Header -->
+  <ContractorHeader />
+
+  <main>
+    <Hero />
+    <ContractorForm /> 
+    <HowItWorks />
+  </main>
+
+  <!-- Univerzalni Footer -->
+  <Footer />
+
+  <MobileNav />
+
+</MainLayout>

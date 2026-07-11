@@ -1,0 +1,100 @@
+---
+const currentYear = new Date().getFullYear();
+
+const links = {
+  product: [
+    { title: "Services", href: "/services" },
+    { title: "Service Areas", href: "/service-areas" },
+    { title: "Request Estimate", href: "/#quote" }
+  ],
+  contractors: [
+    { title: "Join Network", href: "/contractors#contractor-join" },
+    { title: "How It Works", href: "/contractors#how-it-works" },
+    { title: "Partner Portal", href: "/login" }
+  ],
+  legal: [
+    { title: "Privacy Policy", href: "/privacy" },
+    { title: "Terms of Service", href: "/terms" },
+    { title: "Compliance", href: "/compliance" }
+  ]
+};
+---
+
+<footer class="bg-[#050706] border-t border-zinc-900 font-sans pb-28 lg:pb-12 pt-16 selection:bg-green-500/30 selection:text-white">
+  <div class="mx-auto max-w-7xl px-6 lg:px-8">
+    <div class="xl:grid xl:grid-cols-3 xl:gap-8">
+      
+      <!-- Leva strana: Logo i tekst o aplikaciji -->
+      <div class="space-y-4">
+        <a href="/" class="flex items-center shrink-0">
+          <img
+            src="/logo/logo.svg"
+            alt="SawFleet"
+            class="h-10 w-auto"
+          />
+        </a>
+        <p class="text-sm text-zinc-400 max-w-sm leading-relaxed">
+          The premium tree service dispatch pipeline across South Florida. Connecting high-intent property owners with vetted, compliant contractors in Miami-Dade, Broward, and Palm Beach counties.
+        </p>
+      </div>
+
+      <!-- Desna strana: Organizovani linkovi -->
+      <div class="mt-12 grid grid-cols-2 gap-8 xl:col-span-2 xl:mt-0 sm:grid-cols-3">
+        
+        <!-- Kolona 1: Za klijente -->
+        <div>
+          <h3 class="text-xs font-mono uppercase tracking-widest text-zinc-500 font-bold">// Platform</h3>
+          <ul class="mt-4 space-y-2.5">
+            {links.product.map((link) => (
+              <li>
+                <a href={link.href} class="text-sm text-zinc-400 hover:text-white transition-colors duration-200">
+                  {link.title}
+                </a>
+              </li>
+            ))}
+          </ul>
+        </div>
+
+        <!-- Kolona 2: Za kontraktore -->
+        <div>
+          <h3 class="text-xs font-mono uppercase tracking-widest text-zinc-500 font-bold">// Contractors</h3>
+          <ul class="mt-4 space-y-2.5">
+            {links.contractors.map((link) => (
+              <li>
+                <a href={link.href} class="text-sm text-zinc-400 hover:text-white transition-colors duration-200">
+                  {link.title}
+                </a>
+              </li>
+            ))}
+          </ul>
+        </div>
+
+        <!-- Kolona 3: Pravne informacije -->
+        <div class="col-span-2 sm:col-span-1 mt-4 sm:mt-0">
+          <h3 class="text-xs font-mono uppercase tracking-widest text-zinc-500 font-bold">// Legal & Compliance</h3>
+          <ul class="mt-4 space-y-2.5">
+            {links.legal.map((link) => (
+              <li>
+                <a href={link.href} class="text-sm text-zinc-400 hover:text-white transition-colors duration-200">
+                  {link.title}
+                </a>
+              </li>
+            ))}
+          </ul>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- Bottom Bar: Prava i Autorska prava -->
+    <div class="mt-12 border-t border-zinc-900/60 pt-8 flex flex-col sm:flex-row items-center justify-between gap-4">
+      <p class="text-xs font-mono uppercase tracking-wider text-zinc-600">
+        &copy; {currentYear} SawFleet Inc. All rights reserved.
+      </p>
+      <div class="flex items-center gap-2 text-[10px] font-mono uppercase tracking-wider text-zinc-500">
+        <span class="h-1.5 w-1.5 rounded-full bg-green-500 animate-pulse"></span>
+        Tri-County Operator Network Active
+      </div>
+    </div>
+  </div>
+</footer>

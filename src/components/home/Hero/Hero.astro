@@ -1,0 +1,27 @@
+---
+import HeroVideo from "./HeroVideo.astro";
+import HeroContent from "./HeroContent.astro";
+import HeroForm from "./HeroForm.astro";
+---
+
+<section class="relative min-h-screen overflow-hidden bg-[#0B0F0C]">
+
+    <HeroVideo />
+
+    <div class="relative z-10 mx-auto max-w-[1320px] px-8">
+
+        <div class="grid min-h-screen items-center gap-20 pt-36 pb-24 lg:grid-cols-[7fr_5fr]">
+
+            <HeroContent />
+
+            <div class="flex justify-end">
+
+                <HeroForm />
+
+            </div>
+
+        </div>
+
+    </div>
+
+</section>
