@@ -1,30 +1,31 @@
 ---
 import MainLayout from "../layouts/MainLayout.astro";
-
-// Uvezi novi namenski header umesto starog
 import ContractorHeader from "../components/layout/ContractorHeader.astro";
 import ContractorBottomNav from "../components/layout/ContractorBottomNav.astro";
-import Footer from "../components/layout/Footer.astro"; // Uvezen Footer
+import Footer from "../components/layout/Footer.astro";
 
 import Hero from "../components/contractors/Hero/Hero.astro";
-import ContractorForm from "../components/contractors/ContractorForm.astro";
 import HowItWorks from "../components/contractors/HowItWorks/HowItWorks.astro";
 ---
 
-<MainLayout title="Join the SawFleet Contractor Network" description="...">
-
-  <!-- Novi B2B Header -->
+<MainLayout title="Join the SawFleet Contractor Network">
   <ContractorHeader />
 
-  <main>
-    <Hero />
-    <ContractorForm /> 
-    <HowItWorks />
+  <!-- Uklonjen pt-20, main sada počinje odmah ispod headera -->
+  <main> 
+
+    <!-- Uklonjen py-12, stavljamo pt-24 da kompenzujemo fiksni header -->
+    <section>
+       <Hero />
+    </section>
+
+    <!-- How it Works: ostaje py-12 ili smanji na py-8 ako želiš veću kompaktnost -->
+    <section>
+       <HowItWorks />
+    </section>
+
   </main>
-
-  <!-- Univerzalni Footer -->
+  
   <Footer />
-
   <ContractorBottomNav />
-
 </MainLayout>

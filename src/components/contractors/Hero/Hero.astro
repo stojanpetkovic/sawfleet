@@ -1,23 +1,28 @@
 ---
 import HeroContent from "./HeroContent.astro";
-import HeroDashboard from "./HeroDashboard.astro";
+import ContractorForm from "./ContractorForm.astro";
 ---
 
-<section class="relative overflow-hidden bg-[#0B0F0C]">
+<!-- pt-24 za mobilni (malo više prostora), pt-20 za desktop -->
+<section class="relative overflow-hidden bg-[#000000] border-b border-zinc-900 pt-24 lg:pt-20">
 
-    <div
-        class="absolute inset-0
-        bg-[radial-gradient(circle_at_20%_20%,rgba(22,163,74,.12),transparent_40%),
-             radial-gradient(circle_at_80%_60%,rgba(37,99,235,.10),transparent_45%)]">
+    <div class="absolute inset-0 
+        bg-[radial-gradient(circle_at_20%_20%,rgba(34,197,94,.05),transparent_40%),
+             radial-gradient(circle_at_80%_60%,rgba(59,130,246,.05),transparent_45%)]">
     </div>
 
-    <div class="relative z-10 mx-auto max-w-[1320px] px-8">
+    <div class="relative z-10 mx-auto max-w-[1320px] px-4 sm:px-8">
 
-        <div class="grid min-h-screen items-center gap-20 py-36 lg:grid-cols-[6fr_5fr]">
+        <!-- Grid sa py-8 za mobilni da sadržaj ne bude prenisko -->
+        <div class="grid items-center gap-10 py-8 lg:grid-cols-[1fr_auto] lg:gap-16 lg:py-24">
 
-            <HeroContent />
+            <div class="w-full">
+                <HeroContent />
+            </div>
 
-            <HeroDashboard />
+            <div class="flex w-full justify-center lg:justify-end">
+                <ContractorForm />
+            </div>
 
         </div>
 

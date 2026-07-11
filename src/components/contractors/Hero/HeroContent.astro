@@ -1,86 +1,53 @@
-<section class="max-w-[640px] font-sans selection:bg-green-500/30 selection:text-white">
+<section class="max-w-[640px] font-sans selection:bg-green-500/30 selection:text-white px-4 sm:px-0 -mt-4">
 
-  <!-- Premium Minimal Badge -->
-  <div class="inline-flex items-center gap-2.5 rounded-sm border border-zinc-800/80 bg-zinc-950/40 px-3 py-1.5 backdrop-blur-md">
+  <!-- Premium Minimal Badge: ostaje ovde -->
+  <div class="inline-flex items-center gap-2 rounded-md border border-zinc-800 bg-[#070a08] px-3 py-1">
     <span class="relative flex h-2 w-2">
-      <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
+      <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-500 opacity-75"></span>
       <span class="relative inline-flex rounded-full h-2 w-2 bg-green-500"></span>
     </span>
-    <span class="text-xs font-bold uppercase tracking-widest text-zinc-400">
+    <span class="text-[10px] font-bold uppercase tracking-[0.2em] text-zinc-400">
       Contractor Network
     </span>
   </div>
 
-  <!-- Editorial Heading -->
-  <h1 class="mt-8 text-5xl font-black leading-[1.05] tracking-tight text-white sm:text-6xl lg:text-7xl">
+  <!-- Editorial Heading: Smanjen mt-6 na mt-4 -->
+  <h1 class="mt-4 text-[2.75rem] sm:text-[3.5rem] font-bold leading-[1] tracking-tighter text-white">
     Grow Your 
-    <span class="block bg-gradient-to-r from-green-400 via-emerald-400 to-green-500 bg-clip-text text-transparent">
+    <span class="block mt-1 bg-gradient-to-r from-green-400 to-emerald-500 bg-clip-text text-transparent">
       Tree Service
     </span> 
     Business.
   </h1>
 
   <!-- High-Contrast Subtitle -->
-  <p class="mt-6 text-xl leading-9 text-zinc-300 font-medium tracking-wide">
+  <p class="mt-5 text-base sm:text-lg leading-7 text-zinc-300 font-medium">
     Receive qualified homeowner requests from the exact cities and counties you choose to serve.
   </p>
 
   <!-- Clean System Description -->
-  <p class="mt-4 text-base leading-8 text-zinc-400 border-l-2 border-zinc-800 pl-4">
-    SawFleet automatically routes localized requests based on your specific service criteria, capacity, and real-time availability. Eliminate market friction and focus entirely on execution.
+  <p class="mt-5 text-sm leading-7 text-zinc-400 border-l border-zinc-800 pl-4 py-1">
+    SawFleet automatically routes localized requests based on your specific service criteria, capacity, and real-time availability.
   </p>
 
-  <!-- Minimalist Benefits Grid (Tanke linije i precizna hijerarhija) -->
-  <div class="mt-12 space-y-6 border-t border-b border-zinc-900 py-8">
+  <!-- Benefits Grid: Kompaktni "App" layout -->
+  <div class="mt-8 space-y-4 border-t border-zinc-900 pt-6">
     
-    <!-- Benefit 01 -->
-    <div class="group flex items-start gap-4">
-      <div class="mt-1 flex h-5 w-5 shrink-0 items-center justify-center rounded-md border border-zinc-800 bg-zinc-950 text-[10px] font-mono text-green-400 group-hover:border-green-500/30 transition-colors duration-300">
-        01
+    {["Qualified Homeowner Requests", "Smart Request Matching", "No Cold Calling"].map((title, i) => (
+      <div class="flex items-start gap-4">
+        <div class="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded border border-zinc-800 bg-[#070a08] text-[9px] font-mono text-green-500">
+          0{i + 1}
+        </div>
+        <div>
+          <h3 class="text-xs font-bold text-white uppercase tracking-wider">{title}</h3>
+          <p class="mt-0.5 text-[11px] leading-relaxed text-zinc-500">
+            {i === 0 && "Direct integration with homeowners intent on booking."}
+            {i === 1 && "Projects filtered by your strict coverage radius."}
+            {i === 2 && "Build your pipeline on high-intent inbound dispatch."}
+          </p>
+        </div>
       </div>
-      <div>
-        <h3 class="text-base font-bold text-white tracking-tight">Qualified Homeowner Requests</h3>
-        <p class="mt-1 text-sm leading-relaxed text-zinc-400">Direct integration with homeowners actively intent on booking tree services.</p>
-      </div>
-    </div>
-
-    <!-- Benefit 02 -->
-    <div class="group flex items-start gap-4">
-      <div class="mt-1 flex h-5 w-5 shrink-0 items-center justify-center rounded-md border border-zinc-800 bg-zinc-950 text-[10px] font-mono text-green-400 group-hover:border-green-500/30 transition-colors duration-300">
-        02
-      </div>
-      <div>
-        <h3 class="text-base font-bold text-white tracking-tight">Smart Request Matching</h3>
-        <p class="mt-1 text-sm leading-relaxed text-zinc-400">Zero overlap. Projects are automatically filtered to match your strict coverage radius.</p>
-      </div>
-    </div>
-
-    <!-- Benefit 03 -->
-    <div class="group flex items-start gap-4">
-      <div class="mt-1 flex h-5 w-5 shrink-0 items-center justify-center rounded-md border border-zinc-800 bg-zinc-950 text-[10px] font-mono text-green-400 group-hover:border-green-500/30 transition-colors duration-300">
-        03
-      </div>
-      <div>
-        <h3 class="text-base font-bold text-white tracking-tight">No Cold Calling</h3>
-        <p class="mt-1 text-sm leading-relaxed text-zinc-400">Stop chasing cold leads. Build your pipeline entirely on high-intent inbound dispatch.</p>
-      </div>
-    </div>
-
-  </div>
-
-  <!-- Premium CTA Blocks -->
-  <div class="mt-10 flex flex-wrap items-center gap-4">
-    
-    <!-- Ulinkovan na ID forme sa scroll-mt-24 marginom -->
-    <a href="#contractor-join" class="group relative inline-flex h-12 items-center justify-center rounded-xl bg-green-500 px-6 text-sm font-semibold text-black transition-all duration-300 hover:bg-green-400 hover:shadow-[0_0_30px_rgba(34,197,94,0.3)]">
-      Join Contractor Network
-      <span class="ml-2 transition-transform duration-300 group-hover:translate-x-1">→</span>
-    </a>
-
-    <!-- Secondary Dark Button -->
-    <a href="#how-it-works" class="inline-flex h-12 items-center justify-center rounded-xl border border-zinc-800 bg-zinc-950/20 px-6 text-sm font-semibold text-zinc-300 backdrop-blur-sm transition-all duration-300 hover:border-zinc-700 hover:bg-zinc-950/60 hover:text-white">
-      How It Works
-    </a>
+    ))}
 
   </div>
 

@@ -1,148 +1,88 @@
-<section id="how-it-works" class="relative overflow-hidden bg-[#060807] py-12 font-sans selection:bg-green-500/30 selection:text-white">
+<section id="how-it-works" class="relative overflow-hidden bg-[#000000] py-20 font-sans selection:bg-green-500/30 selection:text-white">
   
-  <!-- Ambientalne premium magline u pozadini -->
-  <div class="absolute inset-0 pointer-events-none" aria-hidden="true">
-    <div class="absolute left-[-10%] top-10 h-[600px] w-[600px] rounded-full bg-gradient-to-br from-green-500/10 to-emerald-500/0 blur-[130px]"></div>
-    <div class="absolute right-[-5%] bottom-10 h-[600px] w-[600px] rounded-full bg-gradient-to-bl from-zinc-500/5 to-transparent blur-[130px]"></div>
-  </div>
-
-  <div class="relative z-10 mx-auto max-w-7xl px-6 lg:px-8">
+  <div class="relative z-10 mx-auto max-w-[1320px] px-4 sm:px-8">
     
-    <!-- Header sa asimetričnim detaljem -->
-    <div class="relative border-b border-zinc-800/60 pb-12">
-      <div class="grid gap-6 lg:grid-cols-2 lg:items-end">
-        <div>
-          <span class="inline-flex items-center rounded-sm bg-zinc-900 px-3 py-1 text-xs font-medium uppercase tracking-wider text-green-400 border border-zinc-800">
-            Workflow architecture
-          </span>
-          <h2 class="mt-4 text-4xl font-black tracking-tight text-white sm:text-5xl lg:text-6xl">
-            Engineered for <br class="hidden sm:inline" />Simplicity.
-          </h2>
-        </div>
-        <div>
-          <p class="text-lg leading-8 text-zinc-400 max-w-xl">
-            Every homeowner request moves through a strictly optimized, deterministic pipeline. No friction, no black boxes—just a seamless transition from intake to match.
-          </p>
-        </div>
-      </div>
+    <!-- Header -->
+    <div class="mb-16 max-w-2xl">
+      <span class="inline-flex items-center gap-2 text-[10px] font-bold uppercase tracking-[0.2em] text-green-500">
+        // Workflow architecture
+      </span>
+      <h2 class="mt-4 text-4xl sm:text-5xl font-bold tracking-tighter text-white">
+        Engineered for simplicity.
+      </h2>
+      <p class="mt-6 text-sm leading-7 text-zinc-400">
+        Every request moves through a strictly optimized, deterministic pipeline. No friction, no black boxes—just a seamless transition from intake to match.
+      </p>
     </div>
 
-    <!-- Statična Premium Mreža (3 velike celine / 5 koraka) -->
-    <div class="mt-20 grid gap-8 lg:grid-cols-3">
+    <!-- Mreža (Optimizovana za Pro App izgled) -->
+    <div class="grid gap-6 lg:grid-cols-3">
       
-      <!-- FAZA 1: INTAKE (Koraci 1 i 2) -->
-      <div class="flex flex-col justify-between space-y-8 rounded-3xl border border-zinc-800/80 bg-zinc-950/20 p-8 backdrop-blur-sm">
-        <div>
-          <div class="flex items-center justify-between border-b border-zinc-800/50 pb-4">
-            <span class="text-xs font-bold tracking-widest text-zinc-500 uppercase">Phase 01</span>
-            <span class="text-xs text-green-400 font-mono bg-green-500/5 px-2 py-0.5 rounded border border-green-500/10">Intake & Validation</span>
-          </div>
-          
-          <!-- Korak 1 -->
-          <div class="mt-8 group">
-            <div class="flex items-baseline gap-3">
-              <span class="font-mono text-xs font-bold text-zinc-600">01 //</span>
-              <h3 class="text-xl font-bold text-white tracking-tight group-hover:text-green-400 transition-colors duration-300">Homeowner Submits Request</h3>
-            </div>
-            <p class="mt-3 pl-8 text-sm leading-relaxed text-zinc-400">
-              The homeowner describes the project, selects the requested service, and enters the exact property location.
-            </p>
-          </div>
-
-          <!-- Divider izmedju pod-koraka -->
-          <div class="my-8 h-px bg-gradient-to-r from-zinc-800/50 to-transparent pl-8"></div>
-
-          <!-- Korak 2 -->
-          <div class="group">
-            <div class="flex items-baseline gap-3">
-              <span class="font-mono text-xs font-bold text-zinc-600">02 //</span>
-              <h3 class="text-xl font-bold text-white tracking-tight group-hover:text-green-400 transition-colors duration-300">SawFleet Reviews The Project</h3>
-            </div>
-            <p class="mt-3 pl-8 text-sm leading-relaxed text-zinc-400">
-              The platform validates the service type, checks regional bounds, and analyzes contractor coverage instantly.
-            </p>
-          </div>
+      <!-- FAZA 1 -->
+      <div class="rounded-2xl border border-zinc-900 bg-[#070a08] p-6">
+        <div class="flex items-center justify-between border-b border-zinc-900 pb-4 mb-6">
+          <span class="text-[9px] font-bold tracking-[0.2em] text-zinc-600 uppercase">Phase 01</span>
+          <span class="text-[9px] font-mono text-green-500">Intake</span>
         </div>
-
-        <div class="pt-6 border-t border-zinc-900 text-[2.5rem] grayscale opacity-30">🏡</div>
-      </div>
-
-      <!-- FAZA 2: THE CORE (Korak 3 - Istaknut i masivan središnji blok) -->
-      <div class="relative flex flex-col justify-between rounded-3xl border-2 border-green-500/20 bg-gradient-to-b from-zinc-950/80 to-zinc-950/30 p-8 shadow-[0_30px_60px_-15px_rgba(0,0,0,0.8)]">
-        <!-- Svetlosni efekat na vrhu središnje kartice -->
-        <div class="absolute top-0 left-1/2 -translate-x-1/2 w-1/2 h-px bg-gradient-to-r from-transparent via-green-400/40 to-transparent"></div>
-        
-        <div>
-          <div class="flex items-center justify-between border-b border-zinc-800/80 pb-4">
-            <span class="text-xs font-bold tracking-widest text-green-400 uppercase">Phase 02</span>
-            <span class="inline-flex items-center gap-1.5 rounded-full bg-green-500/10 px-2.5 py-0.5 text-xs font-medium text-green-300 border border-green-500/20">
-              <span class="h-1.5 w-1.5 rounded-full bg-green-400 animate-pulse"></span> Engine Active
-            </span>
-          </div>
-
-          <!-- Korak 3 -->
-          <div class="mt-8">
-            <div class="flex items-baseline gap-3">
-              <span class="font-mono text-xs font-bold text-green-500/60">03 //</span>
-              <h3 class="text-2xl font-black text-white tracking-tight">Smart Contractor Matching</h3>
+        <div class="space-y-6">
+          {[
+            { n: "01", t: "Homeowner Submits", d: "Project details and location are captured instantly." },
+            { n: "02", t: "System Validation", d: "Service type and regional bounds are verified." }
+          ].map(step => (
+            <div>
+              <div class="flex items-baseline gap-3">
+                <span class="font-mono text-[10px] font-bold text-zinc-700">{step.n} //</span>
+                <h3 class="text-sm font-bold text-white uppercase tracking-wider">{step.t}</h3>
+              </div>
+              <p class="mt-2 text-[11px] leading-relaxed text-zinc-500 pl-8">{step.d}</p>
             </div>
-            <p class="mt-4 pl-8 text-base leading-relaxed text-zinc-300">
-              Our proprietary routing algorithm cross-references availability, rating metrics, and proximity to match qualified contractors serving that precise micro-market.
-            </p>
-          </div>
-        </div>
-
-        <div class="pt-8 flex items-center justify-between">
-          <div class="text-[2.5rem]">⚙️</div>
-          <span class="text-xs font-mono text-zinc-600">Automated dispatching</span>
+          ))}
         </div>
       </div>
 
-      <!-- FAZA 3: ENGAGEMENT (Koraci 4 i 5) -->
-      <div class="flex flex-col justify-between space-y-8 rounded-3xl border border-zinc-800/80 bg-zinc-950/20 p-8 backdrop-blur-sm">
-        <div>
-          <div class="flex items-center justify-between border-b border-zinc-800/50 pb-4">
-            <span class="text-xs font-bold tracking-widest text-zinc-500 uppercase">Phase 03</span>
-            <span class="text-xs text-zinc-400 font-mono bg-zinc-800 px-2 py-0.5 rounded border border-zinc-700/50">Handshake</span>
-          </div>
-          
-          <!-- Korak 4 -->
-          <div class="mt-8 group">
-            <div class="flex items-baseline gap-3">
-              <span class="font-mono text-xs font-bold text-zinc-600">04 //</span>
-              <h3 class="text-xl font-bold text-white tracking-tight group-hover:text-green-400 transition-colors duration-300">Contractor Receives Opportunity</h3>
-            </div>
-            <p class="mt-3 pl-8 text-sm leading-relaxed text-zinc-400">
-              The matched contractor gets immediate access to telemetry data, project specifications, and secure metadata.
-            </p>
-          </div>
-
-          <!-- Divider -->
-          <div class="my-8 h-px bg-gradient-to-r from-zinc-800/50 to-transparent pl-8"></div>
-
-          <!-- Korak 5 -->
-          <div class="group">
-            <div class="flex items-baseline gap-3">
-              <span class="font-mono text-xs font-bold text-zinc-600">05 //</span>
-              <h3 class="text-xl font-bold text-white tracking-tight group-hover:text-green-400 transition-colors duration-300">Homeowner & Contractor Connect</h3>
-            </div>
-            <p class="mt-3 pl-8 text-sm leading-relaxed text-zinc-400">
-              Direct connection is established. The professional schedules the on-site evaluation and signs off on the final estimate.
-            </p>
-          </div>
+      <!-- FAZA 2: Istaknuta -->
+      <div class="rounded-2xl border border-green-500/20 bg-green-950/5 p-6 relative">
+        <div class="flex items-center justify-between border-b border-green-500/20 pb-4 mb-6">
+          <span class="text-[9px] font-bold tracking-[0.2em] text-green-500 uppercase">Phase 02</span>
+          <span class="animate-pulse h-1.5 w-1.5 rounded-full bg-green-500"></span>
         </div>
+        <div class="flex items-baseline gap-3">
+          <span class="font-mono text-[10px] font-bold text-green-500">03 //</span>
+          <h3 class="text-sm font-bold text-white uppercase tracking-wider">Smart Matching</h3>
+        </div>
+        <p class="mt-4 text-[11px] leading-relaxed text-zinc-400 pl-8">
+          Proprietary routing algorithm cross-references availability, rating metrics, and proximity to match qualified contractors in the micro-market.
+        </p>
+      </div>
 
-        <div class="pt-6 border-t border-zinc-900 text-[2.5rem] grayscale opacity-30">🤝</div>
+      <!-- FAZA 3 -->
+      <div class="rounded-2xl border border-zinc-900 bg-[#070a08] p-6">
+        <div class="flex items-center justify-between border-b border-zinc-900 pb-4 mb-6">
+          <span class="text-[9px] font-bold tracking-[0.2em] text-zinc-600 uppercase">Phase 03</span>
+          <span class="text-[9px] font-mono text-zinc-500">Handshake</span>
+        </div>
+        <div class="space-y-6">
+          {[
+            { n: "04", t: "Contractor Alert", d: "Instant access to project specifications and metadata." },
+            { n: "05", t: "Direct Connection", d: "Seamless scheduling and estimate finalization." }
+          ].map(step => (
+            <div>
+              <div class="flex items-baseline gap-3">
+                <span class="font-mono text-[10px] font-bold text-zinc-700">{step.n} //</span>
+                <h3 class="text-sm font-bold text-white uppercase tracking-wider">{step.t}</h3>
+              </div>
+              <p class="mt-2 text-[11px] leading-relaxed text-zinc-500 pl-8">{step.d}</p>
+            </div>
+          ))}
+        </div>
       </div>
 
     </div>
 
-    <!-- Minimalistički footer sekcije -->
-    <div class="mt-16 flex flex-wrap items-center justify-between gap-6 rounded-2xl border border-zinc-800/40 bg-zinc-950/10 px-6 py-4">
-      <div class="flex items-center gap-3 text-xs text-zinc-500">
-        <span class="h-2 w-2 rounded-full bg-zinc-700"></span> Avg. processing time: <span class="text-zinc-300 font-mono">&lt; 4.2 minutes</span>
-      </div>
-      <div class="text-xs text-zinc-600 font-mono">SECURE PIPELINE // END OF WORKFLOW</div>
+    <!-- Footer -->
+    <div class="mt-12 flex items-center gap-6 border-t border-zinc-900 pt-8 text-[9px] font-mono font-bold uppercase tracking-[0.2em] text-zinc-600">
+      <span>// Avg. Dispatch: 4.2 min</span>
+      <span>// Pipeline: Secure</span>
     </div>
 
   </div>
