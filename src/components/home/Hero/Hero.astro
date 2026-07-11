@@ -3,15 +3,17 @@ import HeroContent from "./HeroContent.astro";
 import HeroForm from "./HeroForm.astro";
 ---
 
-<section class="relative min-h-[auto] overflow-hidden bg-[#0B0F0C]">
+<!-- Dodat pt-20 (padding-top) da se sadržaj spusti ispod fiksnog headera -->
+<section class="relative overflow-hidden bg-[#000000] border-b border-zinc-900 pt-20">
 
-    <!-- px-4 na mobilnom sprečava lepljenje za ivice, px-8 na desktopu ostavlja prostor -->
     <div class="relative z-10 mx-auto max-w-[1320px] px-4 sm:px-8">
 
-        <!-- Grid koji se prilagođava sadržaju bez fiksne visine ekrana -->
-        <div class="grid min-h-[auto] items-center gap-12 py-24 lg:grid-cols-[7fr_5fr] lg:py-36">
+        <!-- Smanjen početni py-16 na py-12 da kompenzujemo gornji padding -->
+        <div class="grid items-center gap-10 py-12 lg:grid-cols-[1fr_auto] lg:gap-16 lg:py-24">
 
-            <HeroContent />
+            <div class="w-full">
+                <HeroContent />
+            </div>
 
             <div class="flex w-full justify-center lg:justify-end">
                 <HeroForm />

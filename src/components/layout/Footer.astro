@@ -20,80 +20,51 @@ const links = {
 };
 ---
 
-<footer class="bg-[#050706] border-t border-zinc-900 font-sans pb-28 lg:pb-12 pt-16 selection:bg-green-500/30 selection:text-white">
+<footer class="bg-[#000000] border-t border-zinc-900 font-sans pb-28 lg:pb-12 pt-16 selection:bg-green-500/30 selection:text-white">
   <div class="mx-auto max-w-7xl px-6 lg:px-8">
     <div class="xl:grid xl:grid-cols-3 xl:gap-8">
       
-      <!-- Leva strana: Logo i tekst o aplikaciji -->
+      <!-- Leva strana -->
       <div class="space-y-4">
         <a href="/" class="flex items-center shrink-0">
-          <img
-            src="/logo/logo.svg"
-            alt="SawFleet"
-            class="h-10 w-auto"
-          />
+          <img src="/logo/logo.svg" alt="SawFleet" class="h-8 w-auto" />
         </a>
-        <p class="text-sm text-zinc-400 max-w-sm leading-relaxed">
-          The premium tree service dispatch pipeline across South Florida. Connecting high-intent property owners with vetted, compliant contractors in Miami-Dade, Broward, and Palm Beach counties.
+        <p class="text-xs text-zinc-500 max-w-sm leading-relaxed">
+          The premium tree service dispatch pipeline across South Florida. Connecting high-intent property owners with vetted, compliant contractors.
         </p>
       </div>
 
-      <!-- Desna strana: Organizovani linkovi -->
+      <!-- Desna strana -->
       <div class="mt-12 grid grid-cols-2 gap-8 xl:col-span-2 xl:mt-0 sm:grid-cols-3">
         
-        <!-- Kolona 1: Za klijente -->
-        <div>
-          <h3 class="text-xs font-mono uppercase tracking-widest text-zinc-500 font-bold">// Platform</h3>
-          <ul class="mt-4 space-y-2.5">
-            {links.product.map((link) => (
-              <li>
-                <a href={link.href} class="text-sm text-zinc-400 hover:text-white transition-colors duration-200">
-                  {link.title}
-                </a>
-              </li>
-            ))}
-          </ul>
-        </div>
-
-        <!-- Kolona 2: Za kontraktore -->
-        <div>
-          <h3 class="text-xs font-mono uppercase tracking-widest text-zinc-500 font-bold">// Contractors</h3>
-          <ul class="mt-4 space-y-2.5">
-            {links.contractors.map((link) => (
-              <li>
-                <a href={link.href} class="text-sm text-zinc-400 hover:text-white transition-colors duration-200">
-                  {link.title}
-                </a>
-              </li>
-            ))}
-          </ul>
-        </div>
-
-        <!-- Kolona 3: Pravne informacije -->
-        <div class="col-span-2 sm:col-span-1 mt-4 sm:mt-0">
-          <h3 class="text-xs font-mono uppercase tracking-widest text-zinc-500 font-bold">// Legal & Compliance</h3>
-          <ul class="mt-4 space-y-2.5">
-            {links.legal.map((link) => (
-              <li>
-                <a href={link.href} class="text-sm text-zinc-400 hover:text-white transition-colors duration-200">
-                  {link.title}
-                </a>
-              </li>
-            ))}
-          </ul>
-        </div>
+        {Object.entries(links).map(([key, category]) => (
+          <div>
+            <h3 class="text-[10px] font-mono font-bold uppercase tracking-[0.2em] text-zinc-600">
+              // {key.charAt(0).toUpperCase() + key.slice(1)}
+            </h3>
+            <ul class="mt-4 space-y-2">
+              {category.map((link) => (
+                <li>
+                  <a href={link.href} class="text-xs text-zinc-400 hover:text-green-500 transition-colors">
+                    {link.title}
+                  </a>
+                </li>
+              ))}
+            </ul>
+          </div>
+        ))}
 
       </div>
     </div>
 
-    <!-- Bottom Bar: Prava i Autorska prava -->
-    <div class="mt-12 border-t border-zinc-900/60 pt-8 flex flex-col sm:flex-row items-center justify-between gap-4">
-      <p class="text-xs font-mono uppercase tracking-wider text-zinc-600">
+    <!-- Bottom Bar -->
+    <div class="mt-16 border-t border-zinc-900 pt-8 flex flex-col sm:flex-row items-center justify-between gap-4">
+      <p class="text-[10px] font-mono uppercase tracking-[0.1em] text-zinc-700">
         &copy; {currentYear} SawFleet Inc. All rights reserved.
       </p>
-      <div class="flex items-center gap-2 text-[10px] font-mono uppercase tracking-wider text-zinc-500">
+      <div class="flex items-center gap-2 text-[10px] font-mono uppercase tracking-[0.1em] text-zinc-600">
         <span class="h-1.5 w-1.5 rounded-full bg-green-500 animate-pulse"></span>
-        Tri-County Operator Network Active
+        Tri-County Network Active
       </div>
     </div>
   </div>

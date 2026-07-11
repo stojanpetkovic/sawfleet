@@ -1,61 +1,51 @@
----
----
-<section class="border-t border-b border-zinc-900 bg-gradient-to-b from-[#070a08] to-[#090d0b] py-24 font-sans selection:bg-green-500/30 selection:text-white">
-  <div class="mx-auto max-w-7xl px-6 lg:px-8">
+<section class="border-y border-zinc-900 bg-[#000000] py-10 px-4 sm:px-8 font-sans selection:bg-green-500/30 selection:text-white">
+  <div class="mx-auto max-w-7xl">
     
-    <div class="grid gap-16 lg:grid-cols-2">
+    <div class="grid gap-8 lg:grid-cols-2">
       
       <!-- LEVO: Obim Usluga -->
       <div>
-        <span class="text-xs font-mono uppercase tracking-wider text-green-400">// Capabilities</span>
-        <h3 class="mt-3 text-2xl font-black tracking-tight text-white sm:text-3xl">Professional Tree Services.</h3>
+        <span class="text-[10px] font-mono font-bold uppercase tracking-[0.2em] text-green-500">// Capabilities</span>
+        <h3 class="mt-2 text-2xl font-bold tracking-tight text-zinc-50 sm:text-3xl">Professional Tree Services.</h3>
         
-        <div class="mt-8 grid gap-4 sm:grid-cols-2">
-          <div class="rounded-xl border border-zinc-800/60 bg-[#0d120f] p-5 shadow-sm">
-            <div class="text-sm font-bold text-white">Tree Removal</div>
-            <p class="text-xs text-zinc-400 mt-2 leading-relaxed">Safe extraction of dead, dying, or structurally hazardous trees near foundations.</p>
-          </div>
-          <div class="rounded-xl border border-zinc-800/60 bg-[#0d120f] p-5 shadow-sm">
-            <div class="text-sm font-bold text-white">Trimming & Pruning</div>
-            <p class="text-xs text-zinc-400 mt-2 leading-relaxed">Precision cutting for canopy health, aesthetics, and storm mitigation prep.</p>
-          </div>
-          <div class="rounded-xl border border-zinc-800/60 bg-[#0d120f] p-5 shadow-sm">
-            <div class="text-sm font-bold text-white">Stump Grinding</div>
-            <p class="text-xs text-zinc-400 mt-2 leading-relaxed">Complete below-grade grinding to clear land for replanting or construction.</p>
-          </div>
-          <div class="rounded-xl border border-zinc-800/60 bg-[#0d120f] p-5 shadow-sm">
-            <div class="text-sm font-bold text-white">Lot Clearing</div>
-            <p class="text-xs text-zinc-400 mt-2 leading-relaxed">Full-scale vegetative removal and site preparation for residential projects.</p>
-          </div>
+        <div class="mt-6 grid gap-3 sm:grid-cols-2">
+          {["Tree Removal", "Trimming & Pruning", "Stump Grinding", "Lot Clearing"].map((title, i) => (
+            <div class="rounded-xl border border-zinc-800 bg-[#070a08] p-4 hover:border-zinc-700 transition-colors">
+              <div class="text-xs font-bold text-zinc-100">{title}</div>
+              <p class="text-[11px] text-zinc-400 mt-1.5 leading-relaxed">
+                {i === 0 && "Safe extraction of dead, dying, or hazardous trees near foundations."}
+                {i === 1 && "Precision cutting for canopy health, aesthetics, and storm mitigation prep."}
+                {i === 2 && "Complete below-grade grinding to clear land for replanting or construction."}
+                {i === 3 && "Full-scale vegetative removal and site preparation for residential projects."}
+              </p>
+            </div>
+          ))}
         </div>
       </div>
 
-      <!-- DESNO: Hiper-lokalna Pokrivenost -->
+      <!-- DESNO: Regional Bounds -->
       <div class="flex flex-col justify-between">
         <div>
-          <span class="text-xs font-mono uppercase tracking-wider text-green-400">// Regional Bounds</span>
-          <h3 class="mt-3 text-2xl font-black tracking-tight text-white sm:text-3xl">Active South Florida Dispatch.</h3>
-          <p class="mt-4 text-sm leading-relaxed text-zinc-400">
+          <span class="text-[10px] font-mono font-bold uppercase tracking-[0.2em] text-green-500">// Regional Bounds</span>
+          <h3 class="mt-2 text-2xl font-bold tracking-tight text-zinc-50 sm:text-3xl">Active South Florida Dispatch.</h3>
+          <p class="mt-3 text-sm leading-relaxed text-zinc-400">
             Our dispatch logistics span the entire tri-county area. Verified crews are stationed locally for rapid deployment.
           </p>
           
           <!-- Gradovi -->
-          <div class="mt-6 flex flex-wrap gap-2 text-xs font-mono text-zinc-400">
-            <span class="rounded bg-[#0d120f] px-2.5 py-1.5 border border-zinc-800">Miami</span>
-            <span class="rounded bg-[#0d120f] px-2.5 py-1.5 border border-zinc-800">Fort Lauderdale</span>
-            <span class="rounded bg-[#0d120f] px-2.5 py-1.5 border border-zinc-800">West Palm Beach</span>
-            <span class="rounded bg-[#0d120f] px-2.5 py-1.5 border border-zinc-800">Boca Raton</span>
-            <span class="rounded bg-[#0d120f] px-2.5 py-1.5 border border-zinc-800">Hollywood</span>
-            <span class="rounded bg-[#0d120f] px-2.5 py-1.5 border border-zinc-800">Coral Gables</span>
-            <span class="rounded bg-[#0d120f] px-2.5 py-1.5 border border-zinc-800">Boynton Beach</span>
-            <span class="rounded bg-[#0d120f] px-2.5 py-1.5 border border-zinc-800">Delray Beach</span>
+          <div class="mt-6 flex flex-wrap gap-2">
+            {['Miami', 'Fort Lauderdale', 'West Palm Beach', 'Boca Raton', 'Hollywood', 'Coral Gables'].map(city => (
+              <span class="rounded-md bg-[#070a08] border border-zinc-800 px-2.5 py-1 text-[10px] font-mono text-zinc-400 hover:border-zinc-600 transition-colors">
+                {city}
+              </span>
+            ))}
           </div>
         </div>
 
-        <!-- Protokol protiv spama -->
-        <div class="mt-8 rounded-xl border border-green-500/10 bg-green-500/[0.02] p-5 text-xs leading-relaxed text-zinc-400">
-          <strong class="text-green-400 block mb-1">🔒 Anti-Spam Guarantee:</strong>
-          Your data enters a secure routing queue. We match your project with a maximum of 3 highly qualified local specialists. No infinite calls, no sold leads.
+        <!-- Protokol -->
+        <div class="mt-8 rounded-xl border border-green-500/10 bg-green-950/20 p-4 text-[11px] leading-relaxed text-zinc-400">
+          <strong class="text-green-400 block mb-0.5">🔒 Anti-Spam Guarantee:</strong>
+          Secure routing queue. We match your project with a maximum of 3 highly qualified local specialists. No infinite calls, no sold leads.
         </div>
       </div>
 
