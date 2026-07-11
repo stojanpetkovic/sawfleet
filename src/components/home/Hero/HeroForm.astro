@@ -1,40 +1,38 @@
 <section
   id="quote"
-  class="w-[calc(100%+32px)] sm:w-full max-w-[520px] -mx-4 sm:mx-0 rounded-none sm:rounded-3xl border-y border-x-0 sm:border border-zinc-800 bg-zinc-900 p-4 sm:p-8 font-sans selection:bg-green-500/30 selection:text-white shadow-[0_25px_60px_-15px_rgba(0,0,0,0.8),inset_0_1px_1px_rgba(255,255,255,0.05)]">
+  class="w-full max-w-[520px] rounded-2xl sm:rounded-3xl border border-slate-700 bg-slate-900/90 backdrop-blur-md p-5 sm:p-8 font-sans selection:bg-green-500/30 selection:text-white shadow-[0_30px_60px_-15px_rgba(0,0,0,0.8),0_0_0_1px_rgba(255,255,255,0.05)]">
 
   <!-- Header -->
-  <div class="border-b border-zinc-800 pb-6">
-    <span class="text-xs font-mono uppercase tracking-wider text-green-400">
+  <div class="border-b border-slate-700/50 pb-5">
+    <span class="text-[10px] font-mono font-bold uppercase tracking-[0.2em] text-green-500">
       // Dispatch Pipeline
     </span>
-    <h2 class="mt-2 text-2xl font-black tracking-tight text-white sm:text-3xl">
+    <h2 class="mt-2 text-2xl font-bold tracking-tight text-slate-100 sm:text-3xl">
       Request a Free Estimate
     </h2>
-    <p class="mt-1 text-xs text-zinc-400 leading-relaxed">
+    <p class="mt-1.5 text-sm text-slate-400">
       Serving Miami-Dade, Broward & Palm Beach County.
     </p>
   </div>
 
   <!-- Form -->
   <form class="mt-6 space-y-5">
-
     <!-- County -->
     <div>
-      <label for="county" class="mb-2 block text-xs font-bold uppercase tracking-wider text-zinc-300">
+      <label for="county" class="mb-2 block text-[10px] font-bold uppercase tracking-[0.15em] text-slate-400">
         Where is your property?
       </label>
       <div class="relative">
         <select
           id="county"
           required
-          class="h-12 w-full appearance-none rounded-xl border border-zinc-800 bg-zinc-950 px-4 text-sm text-white outline-none transition-all duration-300 hover:border-zinc-700 focus:border-green-500 focus:ring-1 focus:ring-green-500">
-          <option selected disabled class="bg-zinc-950 text-zinc-500">Select County</option>
-          <option class="bg-zinc-950 text-white">Miami-Dade County</option>
-          <option class="bg-zinc-950 text-white">Broward County</option>
-          <option class="bg-zinc-950 text-white">Palm Beach County</option>
+          class="h-12 w-full appearance-none rounded-xl border border-slate-700 bg-slate-950 px-4 text-sm text-slate-200 outline-none transition-all duration-300 hover:border-slate-600 focus:border-green-500 focus:ring-2 focus:ring-green-500/20">
+          <option selected disabled class="bg-slate-950 text-slate-500">Select County</option>
+          <option class="bg-slate-950 text-slate-200">Miami-Dade County</option>
+          <option class="bg-slate-950 text-slate-200">Broward County</option>
+          <option class="bg-slate-950 text-slate-200">Palm Beach County</option>
         </select>
-        <!-- Custom Arrow -->
-        <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-4 text-zinc-400">
+        <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-4 text-slate-500">
           <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
           </svg>
@@ -45,7 +43,7 @@
     <!-- Phone + Email -->
     <div class="grid gap-4 sm:grid-cols-2">
       <div>
-        <label for="phone" class="mb-2 block text-xs font-bold uppercase tracking-wider text-zinc-300">
+        <label for="phone" class="mb-2 block text-[10px] font-bold uppercase tracking-[0.15em] text-slate-400">
           Phone Number
         </label>
         <input
@@ -53,24 +51,23 @@
           type="tel"
           required
           placeholder="(555) 123-4567"
-          class="h-12 w-full rounded-xl border border-zinc-800 bg-zinc-950 px-4 text-sm text-white outline-none transition-all duration-300 placeholder:text-zinc-600 hover:border-zinc-700 focus:border-green-500 focus:ring-1 focus:ring-green-500"/>
+          class="h-12 w-full rounded-xl border border-slate-700 bg-slate-950 px-4 text-sm text-slate-200 outline-none transition-all duration-300 placeholder:text-slate-700 hover:border-slate-600 focus:border-green-500 focus:ring-2 focus:ring-green-500/20"/>
       </div>
-
       <div>
-        <label for="email" class="mb-2 block text-xs font-bold uppercase tracking-wider text-zinc-300">
-          Email <span class="font-normal normal-case text-zinc-500">(Optional)</span>
+        <label for="email" class="mb-2 block text-[10px] font-bold uppercase tracking-[0.15em] text-slate-400">
+          Email <span class="font-normal normal-case text-slate-600">(Optional)</span>
         </label>
         <input
           id="email"
           type="email"
           placeholder="you@email.com"
-          class="h-12 w-full rounded-xl border border-zinc-800 bg-zinc-950 px-4 text-sm text-white outline-none transition-all duration-300 placeholder:text-zinc-600 hover:border-zinc-700 focus:border-green-500 focus:ring-1 focus:ring-green-500"/>
+          class="h-12 w-full rounded-xl border border-slate-700 bg-slate-950 px-4 text-sm text-slate-200 outline-none transition-all duration-300 placeholder:text-slate-700 hover:border-slate-600 focus:border-green-500 focus:ring-2 focus:ring-green-500/20"/>
       </div>
     </div>
 
     <!-- Description -->
     <div>
-      <label for="details" class="mb-2 block text-xs font-bold uppercase tracking-wider text-zinc-300">
+      <label for="details" class="mb-2 block text-[10px] font-bold uppercase tracking-[0.15em] text-slate-400">
         Project Details
       </label>
       <textarea
@@ -78,25 +75,23 @@
         rows="3"
         required
         placeholder="Describe the tree, location, accessibility, or any specifics..."
-        class="min-h-[100px] w-full resize-none rounded-xl border border-zinc-800 bg-zinc-950 px-4 py-3 text-sm text-white outline-none transition-all duration-300 placeholder:text-zinc-600 hover:border-zinc-700 focus:border-green-500 focus:ring-1 focus:ring-green-500"></textarea>
+        class="min-h-[100px] w-full resize-none rounded-xl border border-slate-700 bg-slate-950 px-4 py-3 text-sm text-slate-200 outline-none transition-all duration-300 placeholder:text-slate-700 hover:border-slate-600 focus:border-green-500 focus:ring-2 focus:ring-green-500/20"></textarea>
     </div>
 
     <!-- Submit Button -->
     <button
       type="submit"
-      class="group relative flex h-12 w-full items-center justify-center rounded-xl bg-green-500 text-sm font-bold text-black transition-all duration-300 hover:bg-green-400 hover:shadow-[0_0_30px_rgba(34,197,94,0.2)] border border-transparent active:scale-[0.99]">
+      class="group relative flex h-12 w-full items-center justify-center rounded-xl bg-green-500 text-sm font-bold text-slate-950 transition-all duration-300 hover:bg-green-400 hover:shadow-[0_0_20px_rgba(34,197,94,0.3)] active:scale-[0.98]">
       Request Free Estimate
-      <span class="ml-2 transition-transform duration-300 group-hover:translate-x-0.5">→</span>
+      <span class="ml-2 transition-transform duration-300 group-hover:translate-x-1">→</span>
     </button>
-
   </form>
 
   <!-- Footer -->
-  <div class="mt-6 flex items-center justify-center gap-2 border-t border-zinc-800 pt-5 text-xs font-mono uppercase tracking-wider text-zinc-400">
-    <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5 text-green-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+  <div class="mt-6 flex items-center justify-center gap-2 border-t border-slate-800 pt-5 text-[10px] font-mono font-bold uppercase tracking-[0.2em] text-slate-600">
+    <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3 text-green-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
       <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/>
     </svg>
-    <span>Secure Request Protocol</span>
+    <span>Secure Protocol Active</span>
   </div>
-
 </section>

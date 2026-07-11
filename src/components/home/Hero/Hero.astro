@@ -1,23 +1,20 @@
 ---
-import HeroVideo from "./HeroVideo.astro";
 import HeroContent from "./HeroContent.astro";
 import HeroForm from "./HeroForm.astro";
 ---
 
-<section class="relative min-h-screen overflow-hidden bg-[#0B0F0C]">
+<section class="relative min-h-[auto] overflow-hidden bg-[#0B0F0C]">
 
-    <HeroVideo />
+    <!-- px-4 na mobilnom sprečava lepljenje za ivice, px-8 na desktopu ostavlja prostor -->
+    <div class="relative z-10 mx-auto max-w-[1320px] px-4 sm:px-8">
 
-    <div class="relative z-10 mx-auto max-w-[1320px] px-8">
-
-        <div class="grid min-h-screen items-center gap-20 pt-36 pb-24 lg:grid-cols-[7fr_5fr]">
+        <!-- Grid koji se prilagođava sadržaju bez fiksne visine ekrana -->
+        <div class="grid min-h-[auto] items-center gap-12 py-24 lg:grid-cols-[7fr_5fr] lg:py-36">
 
             <HeroContent />
 
-            <div class="flex justify-end">
-
+            <div class="flex w-full justify-center lg:justify-end">
                 <HeroForm />
-
             </div>
 
         </div>
