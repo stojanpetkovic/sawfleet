@@ -1,0 +1,251 @@
+---
+import MainLayout from "../layouts/MainLayout.astro";
+import Header from "../components/layout/Header.astro";
+import Footer from "../components/layout/Footer.astro";
+import { supabase } from "../lib/supabase";
+
+const { data: territories } = await supabase
+  .from('service_territories')
+  .select('*')
+  .order('name', { ascending: true });
+---
+
+<MainLayout title="Register Fleet | SawFleet">
+  <Header />
+
+  <main class="min-h-screen bg-[#000000] pt-32 pb-12">
+    <div class="mx-auto max-w-[1320px] px-4 sm:px-8">
+      
+      <!-- Hero Sekcija sa Formom -->
+      <section class="pb-12">
+        <div class="grid lg:grid-cols-2 gap-12 items-start">
+          
+          <!-- Leva strana (Tekst) -->
+          <section class="max-w-[640px] font-sans lg:pt-8">
+            <!-- Badge -->
+            <div class="inline-flex items-center gap-2 rounded-md border border-slate-700 bg-slate-800 px-3 py-1.5 shadow-sm">
+              <span class="relative flex h-2 w-2">
+                <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-500 opacity-75"></span>
+                <span class="relative inline-flex rounded-full h-2 w-2 bg-green-500"></span>
+              </span>
+              <span class="text-[10px] font-bold uppercase tracking-[0.2em] text-slate-300">Dispatch Network</span>
+            </div>
+
+            <!-- Heading -->
+            <h1 class="mt-6 text-[2.5rem] sm:text-[3.5rem] font-bold leading-[1.1] tracking-tighter text-white">
+              Scale Your 
+              <span class="block mt-1 bg-gradient-to-r from-green-400 to-emerald-500 bg-clip-text text-transparent">Fleet Operations.</span> 
+            </h1>
+
+            <!-- Expanded Description -->
+            <div class="mt-6 space-y-4">
+              <p class="text-base text-slate-300 font-medium leading-relaxed">
+                Stop chasing fragmented leads. SawFleet transforms your idle assets into high-performance revenue drivers by connecting your grapple saw trucks directly with verified, high-intent project owners.
+              </p>
+              <p class="text-sm text-slate-400 leading-relaxed border-l-2 border-slate-700 pl-4">
+                Our platform eliminates the friction of traditional dispatching, providing you with real-time visibility into project demand within the exact counties and territories you serve.
+              </p>
+            </div>
+
+            <!-- Expanded Benefits Grid -->
+            <div class="mt-10 space-y-5 border-t border-slate-800 pt-8">
+              {[
+                { title: "Equipment Audit", desc: "Rigorous verification ensures your specific lift capacity and reach metrics match high-margin jobs." },
+                { title: "Zone Sync", desc: "Define your precise coverage radius. Our engine prioritizes your rig for dispatches in active service areas." },
+                { title: "Direct Dispatch", desc: "Remove the middleman. Access a steady pipeline of inbound requests ready for immediate scheduling." },
+                { title: "Smart Utilization", desc: "Data-driven routing maximizes your billable hours while minimizing transit and logistics overhead." }
+              ].map((item, i) => (
+                <div class="flex items-start gap-4 group">
+                  <div class="mt-0.5 flex h-6 w-6 shrink-0 items-center justify-center rounded border border-slate-700 bg-slate-800 text-[10px] font-mono text-green-500 group-hover:border-green-500/50 transition-colors">0{i + 1}</div>
+                  <div>
+                    <h3 class="text-xs font-bold text-white uppercase tracking-wider">{item.title}</h3>
+                    <p class="mt-1 text-[11px] leading-relaxed text-slate-400">{item.desc}</p>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </section>
+
+          <!-- Desna strana (Forma) - VRAĆENA UNIFICIRANA SLATE BOJA -->
+          <section class="w-full max-w-[520px] lg:ml-auto rounded-2xl sm:rounded-3xl border border-slate-700 bg-slate-900 p-6 sm:p-8 shadow-[0_20px_50px_-15px_rgba(0,0,0,0.5)] relative overflow-hidden">
+            <!-- Dekorativni sjaj u pozadini forme -->
+            <div class="absolute top-0 right-0 -mr-16 -mt-16 w-32 h-32 bg-green-500/10 blur-[50px] rounded-full pointer-events-none"></div>
+
+            <div class="border-b border-slate-700/50 pb-5 mb-6 relative">
+              <h2 class="text-2xl font-bold text-white tracking-tight">Register Asset</h2>
+              <p class="text-xs text-slate-400 mt-1">Join the network and start receiving dispatches.</p>
+            </div>
+            
+            <form id="truckForm" class="space-y-5 relative">
+              <!-- EQUIPMENT TYPE -->
+              <div>
+                <label for="type" class="mb-2 block text-[10px] font-bold uppercase tracking-[0.15em] text-slate-400">Equipment Type</label>
+                <input id="type" name="type" type="text" required placeholder="e.g. Knuckleboom, Grapple Saw..." class="h-12 w-full rounded-xl border border-slate-600 bg-slate-800 px-4 text-sm text-white outline-none transition-all focus:border-green-500 focus:ring-1 focus:ring-green-500 placeholder:text-slate-500"/>
+              </div>
+
+              <!-- CAPACITY & HEIGHT -->
+              <div class="grid gap-4 sm:grid-cols-2">
+                <div>
+                  <label for="capacity" class="mb-2 block text-[10px] font-bold uppercase tracking-[0.15em] text-slate-400">Lift Capacity <span class="text-slate-500">(tons)</span></label>
+                  <input id="capacity" name="capacity" type="number" required placeholder="e.g. 35" class="h-12 w-full rounded-xl border border-slate-600 bg-slate-800 px-4 text-sm text-white outline-none transition-all focus:border-green-500 focus:ring-1 focus:ring-green-500 placeholder:text-slate-500"/>
+                </div>
+                <div>
+                  <label for="height" class="mb-2 block text-[10px] font-bold uppercase tracking-[0.15em] text-slate-400">Working Height <span class="text-slate-500">(ft)</span></label>
+                  <input id="height" name="height" type="number" required placeholder="e.g. 110" class="h-12 w-full rounded-xl border border-slate-600 bg-slate-800 px-4 text-sm text-white outline-none transition-all focus:border-green-500 focus:ring-1 focus:ring-green-500 placeholder:text-slate-500"/>
+                </div>
+              </div>
+
+              <!-- ACCESS & LISTING -->
+              <div class="grid gap-4 sm:grid-cols-2">
+                <div>
+                  <label for="access" class="mb-2 block text-[10px] font-bold uppercase tracking-[0.15em] text-slate-400">Access Type</label>
+                  <div class="relative">
+                    <select id="access" name="access" class="h-12 w-full appearance-none rounded-xl border border-slate-600 bg-slate-800 px-4 text-sm text-white outline-none transition-all focus:border-green-500 focus:ring-1 focus:ring-green-500">
+                      <option value="Wheeled">Wheeled</option>
+                      <option value="Tracked">Tracked</option>
+                    </select>
+                    <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-4 text-slate-400"><svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" /></svg></div>
+                  </div>
+                </div>
+                <div>
+                  <label for="listing" class="mb-2 block text-[10px] font-bold uppercase tracking-[0.15em] text-slate-400">Listing Type</label>
+                  <div class="relative">
+                    <select id="listing" name="listing" class="h-12 w-full appearance-none rounded-xl border border-slate-600 bg-slate-800 px-4 text-sm text-white outline-none transition-all focus:border-green-500 focus:ring-1 focus:ring-green-500">
+                      <option value="Rent">Rent</option>
+                      <option value="Sale">Sale</option>
+                    </select>
+                    <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-4 text-slate-400"><svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" /></svg></div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- EMAIL & PHONE -->
+              <div class="grid gap-4 sm:grid-cols-2">
+                <div>
+                  <label for="email" class="mb-2 block text-[10px] font-bold uppercase tracking-[0.15em] text-slate-400">Owner Email</label>
+                  <input id="email" name="email" type="email" required placeholder="owner@email.com" class="h-12 w-full rounded-xl border border-slate-600 bg-slate-800 px-4 text-sm text-white outline-none transition-all focus:border-green-500 focus:ring-1 focus:ring-green-500 placeholder:text-slate-500"/>
+                </div>
+                <div>
+                  <label for="phone" class="mb-2 block text-[10px] font-bold uppercase tracking-[0.15em] text-slate-400">Owner Phone</label>
+                  <input id="phone" name="phone" type="tel" required placeholder="(555) 000-0000" class="h-12 w-full rounded-xl border border-slate-600 bg-slate-800 px-4 text-sm text-white outline-none transition-all focus:border-green-500 focus:ring-1 focus:ring-green-500 placeholder:text-slate-500"/>
+                </div>
+              </div>
+
+              <!-- LOCATION -->
+              <div>
+                <label for="location" class="mb-2 block text-[10px] font-bold uppercase tracking-[0.15em] text-slate-400">Location</label>
+                <div class="relative">
+                  <select id="location" name="location" required class="h-12 w-full appearance-none rounded-xl border border-slate-600 bg-slate-800 px-4 text-sm text-white outline-none transition-all focus:border-green-500 focus:ring-1 focus:ring-green-500">
+                    <option value="" selected disabled class="text-slate-400">Select Location</option>
+                    {territories?.map((t) => (
+                      <option value={t.name}>{t.name}</option>
+                    ))}
+                  </select>
+                  <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-4 text-slate-400"><svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" /></svg></div>
+                </div>
+              </div>
+
+              <!-- SUBMIT -->
+              <button type="submit" id="submitBtn" class="mt-6 flex h-14 w-full items-center justify-center rounded-xl bg-green-500 text-sm font-bold text-black transition-all hover:bg-green-400 active:scale-[0.98] shadow-[0_0_20px_rgba(34,197,94,0.2)]">
+                Register Asset →
+              </button>
+            </form>
+          </section>
+        </div>
+      </section>
+
+      <!-- Growth & Workflow -->
+      <section class="py-12 space-y-12 border-t border-slate-800">
+        <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-4">
+          {[
+            { n: "01", t: "Direct Dispatch", d: "High-intent requests ready to book." },
+            { n: "02", t: "Market Control", d: "Operate in your preferred zip/county." },
+            { n: "03", t: "Smart Matching", d: "Engine matches your specific gear." },
+            { n: "04", t: "Transparent Fees", d: "Per-request pricing. No retainers." }
+          ].map(item => (
+            <div class="rounded-2xl border border-slate-700/50 bg-slate-900 p-5 hover:border-slate-600 transition-colors">
+              <div class="text-[10px] font-mono font-bold text-green-500 mb-2">{item.n}</div>
+              <h3 class="text-xs font-bold text-white uppercase mb-1">{item.t}</h3>
+              <p class="text-[11px] text-slate-400">{item.d}</p>
+            </div>
+          ))}
+        </div>
+
+        <div class="grid lg:grid-cols-3 gap-6">
+          <div class="rounded-2xl border border-slate-700/50 bg-slate-900 p-6">
+            <h4 class="text-[10px] font-bold text-slate-400 uppercase mb-4 tracking-wider">Phase 01: Intake</h4>
+            <div class="space-y-4">
+              <p class="text-xs text-slate-300"><span class="text-green-500 font-mono mr-2">01 //</span> Homeowner submits details.</p>
+              <p class="text-xs text-slate-300"><span class="text-green-500 font-mono mr-2">02 //</span> System validates bounds.</p>
+            </div>
+          </div>
+          <div class="rounded-2xl border border-green-500/30 bg-green-900/20 p-6 relative overflow-hidden">
+            <div class="absolute top-0 right-0 w-32 h-32 bg-green-500/5 blur-[40px] rounded-full"></div>
+            <h4 class="text-[10px] font-bold text-green-500 uppercase mb-3 tracking-wider">Phase 02: Matching</h4>
+            <p class="text-xs text-green-50/70 leading-relaxed">Proprietary algorithm routes projects based on your proximity, capacity, and platform rating.</p>
+          </div>
+          <div class="rounded-2xl border border-slate-700/50 bg-slate-900 p-6">
+            <h4 class="text-[10px] font-bold text-slate-400 uppercase mb-4 tracking-wider">Phase 03: Handshake</h4>
+            <div class="space-y-4">
+              <p class="text-xs text-slate-300"><span class="text-green-500 font-mono mr-2">03 //</span> Instant contractor alert.</p>
+              <p class="text-xs text-slate-300"><span class="text-green-500 font-mono mr-2">04 //</span> Direct project connection.</p>
+            </div>
+          </div>
+        </div>
+      </section>
+    </div>
+  </main>
+  <Footer />
+</MainLayout>
+
+<script>
+  import { supabase } from "../lib/supabase";
+
+  // FUNKCIJA ZA HVATANJE IZVORA SAOBRAĆAJA
+  function getTrafficSource() {
+    const params = new URLSearchParams(window.location.search);
+    const utmSource = params.get('utm_source');
+    if (utmSource) return utmSource.toLowerCase();
+
+    const referrer = document.referrer.toLowerCase();
+    if (referrer.includes('google')) return 'google';
+    if (referrer.includes('facebook') || referrer.includes('fb.com') || referrer.includes('instagram')) return 'facebook';
+    if (referrer.includes('bing')) return 'bing';
+    
+    return 'organic';
+  }
+
+  const form = document.getElementById('truckForm') as HTMLFormElement;
+  const btn = document.getElementById('submitBtn') as HTMLButtonElement;
+
+  form?.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    btn.disabled = true;
+    btn.innerText = "Registering...";
+    
+    const fd = new FormData(form);
+    const trafficSource = getTrafficSource(); // Hvatamo izvor
+    
+    const { error } = await supabase.from('grapple_saw_trucks').insert([{
+      equipment_type: fd.get('type'),
+      lift_capacity_tons: fd.get('capacity'),
+      working_height_ft: fd.get('height'),
+      access_type: fd.get('access'),
+      listing_type: fd.get('listing'),
+      location: fd.get('location'),
+      owner_email: fd.get('email'),
+      owner_phone: fd.get('phone'),
+      approval_status: 'pending',
+      source: trafficSource // Upisujemo izvor u bazu
+    }]);
+
+    if (error) {
+      alert("Error: " + error.message);
+      btn.disabled = false;
+      btn.innerText = "Register Asset →";
+    } else {
+      // PREUSMERAVANJE NA THANK YOU STRANU GDE SE OKIDA PIXEL/ADS KONVERZIJA
+      window.location.href = '/thank-you';
+    }
+  });
+</script>

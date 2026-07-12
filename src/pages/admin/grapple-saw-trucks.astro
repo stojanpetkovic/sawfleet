@@ -1,0 +1,226 @@
+---
+export const prerender = false;
+import AdminLayout from "../../layouts/AdminLayout.astro";
+import { supabase } from "../../lib/supabase";
+
+// POVLAČIMO TERITORIJE IZ BAZE
+const { data: territories } = await supabase.from('service_territories').select('*').order('name');
+---
+
+<AdminLayout>
+  <!-- Floating Plus Dugme -->
+  <button id="openModal" class="fixed bottom-8 right-8 w-14 h-14 bg-green-500 hover:bg-green-400 text-black rounded-full shadow-lg flex items-center justify-center text-3xl font-bold transition-all z-[100]">
+    +
+  </button>
+
+  <!-- Modal za dodavanje -->
+  <div id="truckModal" class="hidden fixed inset-0 bg-black/80 z-[200] flex items-center justify-center p-4">
+    <div class="bg-[#050505] border border-zinc-800 p-6 md:p-8 rounded-xl max-w-lg w-full max-h-[90vh] overflow-y-auto">
+      <h2 class="text-white font-bold mb-6">Add Grapple Saw Truck</h2>
+      <form id="addTruckForm" class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        <input type="text" id="newType" placeholder="Equipment Type" class="col-span-1 sm:col-span-2 bg-zinc-900 border border-zinc-800 p-3 rounded text-white" required />
+        
+        <input type="email" id="newEmail" placeholder="Owner Email" class="bg-zinc-900 border border-zinc-800 p-3 rounded text-white" />
+        <input type="text" id="newPhone" placeholder="Owner Phone" class="bg-zinc-900 border border-zinc-800 p-3 rounded text-white" />
+        
+        <input type="number" id="newCapacity" placeholder="Lift Capacity (tons)" class="bg-zinc-900 border border-zinc-800 p-3 rounded text-white" />
+        <input type="number" id="newHeight" placeholder="Working Height (ft)" class="bg-zinc-900 border border-zinc-800 p-3 rounded text-white" />
+        <select id="newAccess" class="bg-zinc-900 border border-zinc-800 p-3 rounded text-white">
+          <option value="wheeled">Wheeled</option>
+          <option value="tracked">Tracked</option>
+        </select>
+        <select id="newListing" class="bg-zinc-900 border border-zinc-800 p-3 rounded text-white">
+          <option value="Rent">Rent</option>
+          <option value="Sale">Sale</option>
+        </select>
+
+        <!-- DINAMIČKI PADAKUĆI MENI ZA LOKACIJU -->
+        <select id="newLocation" class="col-span-1 sm:col-span-2 bg-zinc-900 border border-zinc-800 p-3 rounded text-white" required>
+          <option value="" disabled selected>Select Location</option>
+          {territories?.map(t => (
+            <option value={t.name}>{t.name}</option>
+          ))}
+        </select>
+
+        <div class="col-span-1 sm:col-span-2 flex gap-4 mt-4">
+          <button type="button" id="closeModal" class="flex-1 bg-zinc-800 p-3 rounded text-white">Cancel</button>
+          <button type="submit" class="flex-1 bg-green-500 p-3 rounded text-black font-bold">Save Truck</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <div class="flex flex-col xl:flex-row gap-8 w-full">
+    <div class="flex-1 space-y-8 min-w-0 w-full">
+      
+      <!-- Stats -->
+      <div class="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6">
+        {[ {id: 'total', label: 'Total'}, {id: 'pending', label: 'Pending'}, {id: 'approved', label: 'Approved'}, {id: 'rejected', label: 'Rejected'} ].map(stat => (
+          <div class="bg-[#050505] border border-zinc-900 p-4 md:p-6 rounded-xl">
+            <p class="text-[9px] font-bold uppercase tracking-[0.2em] text-zinc-600">{stat.label}</p>
+            <h2 id={`count-${stat.id}`} class="text-2xl font-mono font-bold text-white mt-2">0</h2>
+          </div>
+        ))}
+      </div>
+
+      <!-- Tabela (Responzivna) -->
+      <div class="border-transparent md:border-zinc-900 md:border rounded-xl bg-transparent md:bg-[#050505] overflow-x-hidden md:overflow-x-auto w-full">
+        <table class="w-full text-left border-collapse min-w-full md:min-w-[1000px]">
+          <thead class="hidden md:table-header-group">
+            <tr class="text-[10px] uppercase text-zinc-500 border-b border-zinc-900">
+              <th class="px-6 py-4">Equipment Type</th>
+              <th class="px-6 py-4">Capacity</th>
+              <th class="px-6 py-4">Location</th>
+              <th class="px-6 py-4">Approval</th>
+              <th class="px-6 py-4">Availability</th>
+            </tr>
+          </thead>
+          <tbody id="trucksTable" class="text-[11px] font-mono text-zinc-400 block md:table-row-group">
+            <tr><td colspan="5" class="px-6 py-4 text-center">Loading...</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Sidebar za logove -->
+    <div class="w-full xl:w-[400px] shrink-0">
+      <div class="bg-[#050505] border border-zinc-900 rounded-xl sticky top-8 w-full shadow-2xl">
+        <div class="p-6 border-b border-zinc-900">
+          <h3 class="text-[10px] font-bold uppercase tracking-[0.2em] text-white">Activity Timeline</h3>
+        </div>
+        
+        <div class="p-6">
+          <div id="truckLogsContainer" class="space-y-6">
+            <div class="text-[11px] font-mono text-zinc-500">Loading logs...</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</AdminLayout>
+
+<script>
+  import { supabase } from "../../lib/supabase";
+
+  function timeAgo(dateInput: string) {
+    const date = new Date(dateInput);
+    const now = new Date();
+    const diffInSeconds = Math.floor((now.getTime() - date.getTime()) / 1000);
+    
+    if (diffInSeconds < 60) return 'Just now';
+    if (diffInSeconds < 3600) return `${Math.floor(diffInSeconds / 60)}m ago`;
+    if (diffInSeconds < 86400) return `${Math.floor(diffInSeconds / 3600)}h ago`;
+    return `${Math.floor(diffInSeconds / 86400)}d ago`;
+  }
+
+  async function updateDashboard() {
+    const { data: trucks } = await supabase.from('grapple_saw_trucks').select('*').order('created_at', { ascending: false });
+    if (!trucks) return;
+
+    // Ažuriraj statistiku
+    document.getElementById('count-total')!.textContent = trucks.length.toString();
+    document.getElementById('count-pending')!.textContent = trucks.filter(t => t.approval_status === 'pending' || !t.approval_status).length.toString();
+    document.getElementById('count-approved')!.textContent = trucks.filter(t => t.approval_status === 'approved').length.toString();
+    document.getElementById('count-rejected')!.textContent = trucks.filter(t => t.approval_status === 'rejected').length.toString();
+
+    // Renderuj tabelu sa mobilnim modifikatorima
+    const tableBody = document.getElementById('trucksTable');
+    if (tableBody) {
+      tableBody.innerHTML = trucks.map(t => {
+        const appStatus = t.approval_status || 'pending';
+        const appBadge = appStatus === 'approved' ? 'text-green-400 border-green-500/20 bg-green-500/10' : 
+                         appStatus === 'rejected' ? 'text-red-400 border-red-500/20 bg-red-500/10' : 
+                         'text-zinc-400 border-zinc-700 bg-zinc-800/50';
+        
+        const availStatus = t.availability_status || 'Available';
+        const availBadge = availStatus === 'Available' ? 'text-green-400 border-green-500/20 bg-green-500/10' : 'text-yellow-400 border-yellow-500/20 bg-yellow-500/10';
+
+        return `
+        <tr class="block md:table-row bg-[#050505] border border-zinc-900 md:border-b md:border-zinc-900/50 md:border-x-0 md:border-t-0 rounded-xl md:rounded-none mb-4 md:mb-0 p-4 md:p-0 hover:bg-zinc-900/20 cursor-pointer transition-colors" onclick="window.location.href='/admin/grapple-saw-trucks/${t.id}'">
+          
+          <td class="block md:table-cell py-1.5 md:px-6 md:py-4">
+             <span class="md:hidden text-[9px] uppercase font-bold text-zinc-600 mr-2 w-20 inline-block">Type:</span>
+             <span class="text-white font-bold text-[12px] inline-block md:block">${t.equipment_type || 'N/A'}</span>
+          </td>
+          
+          <td class="block md:table-cell py-1.5 md:px-6 md:py-4">
+            <span class="md:hidden text-[9px] uppercase font-bold text-zinc-600 mr-2 w-20 inline-block">Capacity:</span>
+            <span class="text-zinc-300 font-mono">${t.lift_capacity_tons ? t.lift_capacity_tons + ' tons' : '-'}</span>
+          </td>
+          
+          <td class="block md:table-cell py-1.5 md:px-6 md:py-4">
+            <span class="md:hidden text-[9px] uppercase font-bold text-zinc-600 mr-2 w-20 inline-block">Location:</span>
+            <span class="text-zinc-300">${t.location || 'N/A'}</span>
+          </td>
+          
+          <td class="flex items-center md:table-cell py-1.5 md:px-6 md:py-4">
+            <span class="md:hidden text-[9px] uppercase font-bold text-zinc-600 mr-2 w-20 inline-block">Approval:</span>
+            <span class="px-2.5 py-1 rounded-md text-[9px] font-bold border uppercase tracking-wider ${appBadge}">
+              ${appStatus}
+            </span>
+          </td>
+          
+          <td class="flex items-center md:table-cell py-1.5 md:px-6 md:py-4">
+             <span class="md:hidden text-[9px] uppercase font-bold text-zinc-600 mr-2 w-20 inline-block">Status:</span>
+             ${appStatus === 'approved' ? 
+               `<span class="px-2.5 py-1 rounded-md text-[9px] font-bold border uppercase tracking-wider ${availBadge}">${availStatus}</span>` : 
+               `<span class="text-[9px] text-zinc-600 uppercase font-bold tracking-wider">-</span>`}
+          </td>
+          
+        </tr>
+      `}).join('');
+    }
+    loadLogs();
+  }
+
+  // Učitavanje logova
+  async function loadLogs() {
+    const { data: logs } = await supabase.from('truck_logs').select('*, grapple_saw_trucks(equipment_type)').order('created_at', { ascending: false }).limit(10);
+    const container = document.getElementById('truckLogsContainer');
+    if (container && logs) {
+      container.innerHTML = logs.length > 0 ? logs.map(log => `
+        <div class="relative pl-6 before:content-[''] before:absolute before:left-0 before:top-1.5 before:w-2 before:h-2 before:bg-zinc-800 before:border-2 before:border-[#050505] before:rounded-full after:content-[''] after:absolute after:left-[3px] after:top-4 after:bottom-[-24px] after:w-[2px] after:bg-zinc-900 last:after:hidden">
+          <p class="text-[10px] text-zinc-400 font-mono mb-1 truncate">${log.grapple_saw_trucks?.equipment_type || 'Unknown Truck'}</p>
+          <p class="text-[11px] text-white font-bold leading-tight">${log.action}</p>
+          <div class="flex items-center gap-2 mt-2">
+            <span class="text-[9px] text-zinc-500 font-mono">by <span class="text-zinc-300 font-bold tracking-wider uppercase">${log.changed_by || 'Stojan M.'}</span></span>
+            <span class="text-[7px] text-zinc-700">●</span>
+            <span class="text-[9px] text-zinc-600">${timeAgo(log.created_at)}</span>
+          </div>
+        </div>
+      `).join('') : '<div class="text-[10px] text-zinc-500 italic">No activity recorded yet.</div>';
+    }
+  }
+
+  // Forma za dodavanje
+  document.getElementById('addTruckForm')?.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const newTruck = {
+      equipment_type: (document.getElementById('newType') as HTMLInputElement).value,
+      owner_email: (document.getElementById('newEmail') as HTMLInputElement).value,
+      owner_phone: (document.getElementById('newPhone') as HTMLInputElement).value,
+      lift_capacity_tons: (document.getElementById('newCapacity') as HTMLInputElement).value || null,
+      working_height_ft: (document.getElementById('newHeight') as HTMLInputElement).value || null,
+      access_type: (document.getElementById('newAccess') as HTMLSelectElement).value,
+      listing_type: (document.getElementById('newListing') as HTMLSelectElement).value,
+      location: (document.getElementById('newLocation') as HTMLSelectElement).value,
+      availability_status: 'Available',
+      approval_status: 'pending' 
+    };
+    
+    const { data } = await supabase.from('grapple_saw_trucks').insert([newTruck]).select().single();
+    
+    if (data) {
+      await supabase.from('truck_logs').insert([{ truck_id: data.id, action: 'Added new truck listing', changed_by: 'Stojan M.' }]);
+    }
+
+    document.getElementById('truckModal')?.classList.add('hidden');
+    (e.target as HTMLFormElement).reset();
+    updateDashboard();
+  });
+
+  document.getElementById('openModal')?.addEventListener('click', () => document.getElementById('truckModal')?.classList.remove('hidden'));
+  document.getElementById('closeModal')?.addEventListener('click', () => document.getElementById('truckModal')?.classList.add('hidden'));
+
+  updateDashboard();
+</script>

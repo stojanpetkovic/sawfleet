@@ -1,48 +1,88 @@
 ---
 import MainLayout from "../layouts/MainLayout.astro";
-import ContractorHeader from "../components/layout/ContractorHeader.astro";
+import Header from "../components/layout/Header.astro";
 import Footer from "../components/layout/Footer.astro";
+import { supabase } from "../lib/supabase";
+
+// 1. Učitavamo dinamičke podatke iz baze
+const { data: territories } = await supabase
+  .from('service_territories')
+  .select('*')
+  .order('name', { ascending: true });
+
+// Helper mapa za koordinate
+const coordsMap: Record<string, [number, number]> = {
+  "Miami-Dade County": [25.7617, -80.1918],
+  "Broward County": [26.1224, -80.1373],
+  "Palm Beach County": [26.7153, -80.0534]
+};
 ---
 
 <MainLayout title="Service Areas | SawFleet">
-  <ContractorHeader />
+  <Header />
 
-  <main class="pt-28 lg:pt-24 pb-20 bg-[#000000] min-h-screen">
-    <div class="mx-auto max-w-[1320px] px-4 sm:px-8">
+  <!-- Učitavanje Leaflet CSS-a -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+
+  <main class="relative pt-32 pb-16 bg-[#000000] min-h-screen overflow-hidden">
+    
+    <!-- Glow u pozadini (Gornji deo) -->
+    <div class="absolute top-0 left-1/2 -translate-x-1/2 w-full max-w-3xl h-[400px] bg-green-500/5 blur-[120px] rounded-full pointer-events-none"></div>
+
+    <div class="relative z-10 mx-auto max-w-[1320px] px-4 sm:px-8">
       
-      <!-- Naslov -->
-      <div class="mb-16">
-        <span class="text-[10px] font-mono font-bold uppercase tracking-[0.2em] text-green-500">// Operational Territories</span>
-        <h1 class="mt-4 text-4xl sm:text-5xl font-bold text-white tracking-tighter">Service Coverage</h1>
-        <p class="mt-4 text-sm text-zinc-400 max-w-md">SawFleet dispatches localized requests across major South Florida counties with real-time contractor availability.</p>
-      </div>
-
-      <!-- Grid: Lista (levo) + Mapa (desno) -->
-      <div class="grid lg:grid-cols-[380px_1fr] gap-12 items-start">
+      <!-- Header sekcija -->
+      <div class="mb-12 max-w-2xl font-sans">
         
-        <!-- Lista okruga -->
-        <div class="space-y-3">
-          {[
-            { name: "Miami-Dade County", color: "#22c55e" },
-            { name: "Broward County", color: "#3b82f6" },
-            { name: "Palm Beach County", color: "#a855f7" }
-          ].map((county) => (
-            <div class="rounded-xl border border-zinc-900 bg-[#070a08] p-5">
-              <div class="flex justify-between items-center">
-                <h3 class="text-sm font-bold text-white">{county.name}</h3>
-                <span class="h-2 w-2 rounded-full shadow-[0_0_8px]" style={`background-color: ${county.color}; box-shadow: 0 0 8px ${county.color}`}></span>
-              </div>
-            </div>
-          ))}
+        <!-- Premium Minimal Badge -->
+        <div class="inline-flex items-center gap-2 rounded-md border border-slate-700 bg-slate-800 px-3 py-1.5 shadow-sm mb-6">
+          <span class="relative flex h-2 w-2">
+            <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-500 opacity-75"></span>
+            <span class="relative inline-flex rounded-full h-2 w-2 bg-green-500"></span>
+          </span>
+          <span class="text-[10px] font-bold uppercase tracking-[0.2em] text-slate-300">
+            Operational Territories
+          </span>
         </div>
 
-        <!-- Mapa Kontejner -->
-        <!-- h-[450px] za mobilni, lg:aspect-[16/10] za desktop -->
-        <div id="map" class="relative h-[450px] lg:h-auto lg:aspect-[16/10] rounded-3xl border border-zinc-900 bg-[#070a08] overflow-hidden shadow-2xl">
-          <div class="absolute bottom-6 left-6 z-[400] rounded-lg bg-black/60 backdrop-blur border border-zinc-800 p-4">
-            <p class="text-[10px] font-mono uppercase text-white tracking-[0.15em]">Miami Metropolitan Area</p>
-            <p class="text-[9px] text-zinc-500 mt-1">Real-time dispatch synchronization</p>
-          </div>
+        <h1 class="text-4xl sm:text-5xl lg:text-[4rem] font-bold text-white tracking-tighter leading-[1.05]">
+          Service Coverage.
+        </h1>
+        <p class="mt-6 text-sm sm:text-base leading-relaxed text-slate-400">
+          Currently active service territories managed in your settings. Our dispatch logistics span the verified coverage areas below.
+        </p>
+      </div>
+
+      <div class="grid lg:grid-cols-[380px_1fr] gap-8 lg:gap-12 items-start font-sans">
+        
+        <!-- Lista iz baze -->
+        <div class="space-y-4">
+          {territories?.map((t, index) => (
+            <div class="group rounded-2xl border border-slate-700 bg-slate-900 p-5 hover:border-slate-600 transition-colors flex items-center justify-between">
+              <div class="flex items-center gap-4">
+                <span class="text-[10px] font-mono font-bold text-slate-600 group-hover:text-green-500 transition-colors">
+                  0{index + 1}
+                </span>
+                <h3 class="text-sm font-bold text-white tracking-wide">{t.name}</h3>
+              </div>
+              <span class="h-2 w-2 rounded-full shadow-[0_0_8px_rgba(34,197,94,0.6)] bg-green-500"></span>
+            </div>
+          ))}
+          {(!territories || territories.length === 0) && (
+            <div class="rounded-2xl border border-slate-700 border-dashed p-8 text-center">
+              <p class="text-slate-500 text-xs uppercase tracking-widest font-bold">No territories defined</p>
+            </div>
+          )}
+        </div>
+
+        <!-- Mapa Wrapper sa Premium okvirom -->
+        <div class="relative rounded-2xl sm:rounded-3xl border border-slate-700 bg-slate-900 p-2 sm:p-3 shadow-[0_20px_50px_-15px_rgba(0,0,0,0.5)] overflow-hidden">
+          
+          <!-- Dekorativni sjaj u uglu mape -->
+          <div class="absolute top-0 right-0 -mr-16 -mt-16 w-40 h-40 bg-green-500/10 blur-[50px] rounded-full pointer-events-none z-0"></div>
+          
+          <!-- Mapa kontejner -->
+          <div id="map" class="relative z-10 w-full h-[450px] lg:h-auto lg:aspect-[16/10] rounded-xl border border-slate-800 bg-[#050505] overflow-hidden"></div>
         </div>
 
       </div>
@@ -52,37 +92,49 @@ import Footer from "../components/layout/Footer.astro";
   <Footer />
 </MainLayout>
 
-<script is:inline>
+<!-- Leaflet JS -->
+<script is:inline src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
+<script is:inline define:vars={{ territories, coordsMap }}>
   window.addEventListener('load', () => {
     if (typeof L !== 'undefined') {
-      // Zoom 8 za odzumiran pogled, centrirano na Južnu Floridu
-      const map = L.map('map', { zoomControl: false }).setView([26.3, -80.4], 8);
-
+      const map = L.map('map', { zoomControl: false }).setView([26.3, -80.4], 7.5);
+      
+      // Koristimo tamnu "Dark Matter" mapu koja se savršeno uklapa u naš dizajn
       L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png').addTo(map);
 
-      // Definicija zona sa velikim radijusom
-      const zones = [
-        { name: "Miami-Dade Hub", lat: 25.76, lng: -80.19, radius: 45000, color: "#22c55e" }, 
-        { name: "Broward Hub", lat: 26.12, lng: -80.14, radius: 45000, color: "#3b82f6" },
-        { name: "Palm Beach Hub", lat: 26.71, lng: -80.05, radius: 45000, color: "#a855f7" }
-      ];
-
-      zones.forEach(zone => {
-        L.circle([zone.lat, zone.lng], {
-          radius: zone.radius,
-          color: zone.color,
-          fillColor: zone.color,
-          fillOpacity: 0.15,
+      territories.forEach(t => {
+        const pos = coordsMap[t.name] || [26.3, -80.4];
+        
+        L.circle(pos, {
+          radius: 35000,
+          color: '#22c55e',       // Tailwind green-500
+          fillColor: '#22c55e',
+          fillOpacity: 0.15,      // Malo suptilnija prozirnost
           weight: 1
         })
          .addTo(map)
-         .bindPopup(zone.name + " Coverage Zone");
+         .bindPopup(`<strong style="font-family:sans-serif;font-size:12px;">${t.name} Coverage Zone</strong>`);
       });
     }
   });
 </script>
 
 <style>
-  /* Fix za mapu */
-  #map { filter: grayscale(0.2) contrast(1.1); }
+  /* Dodajemo jako blag kontrast kako mapa ne bi štrčala */
+  #map { 
+    filter: contrast(1.05) saturate(0.9); 
+  }
+  
+  /* Stilizacija popup-a Leaflet mape da bude u dark modu */
+  :global(.leaflet-popup-content-wrapper) {
+    background-color: #0f172a !important; /* slate-900 */
+    color: #fff !important;
+    border: 1px solid #334155 !important; /* slate-700 */
+    border-radius: 8px !important;
+  }
+  :global(.leaflet-popup-tip) {
+    background-color: #0f172a !important;
+    border: 1px solid #334155 !important;
+  }
 </style>

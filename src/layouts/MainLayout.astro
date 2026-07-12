@@ -1,15 +1,28 @@
 ---
 import "../styles/app.css";
+import { supabase } from "../lib/supabase";
 
 interface Props {
   title?: string;
   description?: string;
+  image?: string;
 }
 
 const {
-  title = "SawFleet",
-  description = "Modern Fleet Management Platform"
+  title = "SawFleet | Premium Tree Service Dispatch Network",
+  description = "Connect homeowners with trusted local tree service professionals and grapple saw truck operators across South Florida.",
+  image = "/og-image.jpg" // Putanja do slike koja će se prikazati kada neko podeli link na Viberu/WhatsAppu/FB-u
 } = Astro.props;
+
+// Generisanje kanoničnog URL-a za SEO (sprečava duplicate content penale)
+const canonicalURL = new URL(Astro.url.pathname, Astro.site || Astro.url.origin);
+
+// Povlačimo globalne skripte (Analytics, Pixel) koje si uneo kroz Settings panel
+const { data: tracking } = await supabase
+  .from('tracking_settings')
+  .select('global_scripts')
+  .eq('id', 1)
+  .single();
 ---
 
 <!doctype html>
@@ -17,16 +30,49 @@ const {
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>{title}</title>
-  <meta name="description" content={description} />
   
-  <!-- Favicon / Theme -->
-  <meta name="theme-color" content="#000000" />
+  <!-- ============================================== -->
+  <!-- PRIMARY SEO -->
+  <!-- ============================================== -->
+  <title>{title}</title>
+  <meta name="title" content={title} />
+  <meta name="description" content={description} />
+  <link rel="canonical" href={canonicalURL} />
+  
+  <!-- Robot instrukcije (dozvoljavamo indeksiranje) -->
+  <meta name="robots" content="index, follow" />
 
-  <!-- Leaflet Map CSS (Potrebno za mapu) -->
+  <!-- ============================================== -->
+  <!-- OPEN GRAPH / FACEBOOK (Za deljenje linkova) -->
+  <!-- ============================================== -->
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content={canonicalURL} />
+  <meta property="og:title" content={title} />
+  <meta property="og:description" content={description} />
+  <meta property="og:image" content={new URL(image, Astro.url)} />
+
+  <!-- ============================================== -->
+  <!-- TWITTER CARDS -->
+  <!-- ============================================== -->
+  <meta property="twitter:card" content="summary_large_image" />
+  <meta property="twitter:url" content={canonicalURL} />
+  <meta property="twitter:title" content={title} />
+  <meta property="twitter:description" content={description} />
+  <meta property="twitter:image" content={new URL(image, Astro.url)} />
+
+  <!-- ============================================== -->
+  <!-- THEME & ICONS -->
+  <!-- ============================================== -->
+  <meta name="theme-color" content="#000000" />
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+
+  <!-- ============================================== -->
+  <!-- ASSETS & FONTS -->
+  <!-- ============================================== -->
+  <!-- Leaflet Map CSS -->
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
 
-  <!-- Google Fonts: Prebacujemo na sans-serif (Inter ili default sistem) -->
+  <!-- Google Fonts: Inter -->
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
@@ -34,13 +80,22 @@ const {
   <style>
     body { font-family: 'Inter', sans-serif; }
   </style>
+
+  <!-- ============================================== -->
+  <!-- GLOBAL TRACKING SCRIPTS (Google Analytics, Meta Pixel) -->
+  <!-- ============================================== -->
+  {tracking?.global_scripts && (
+    <Fragment set:html={tracking.global_scripts} />
+  )}
+
 </head>
 
-<body class="min-h-screen bg-[#000000] text-white antialiased selection:bg-green-500/30">
+<body class="min-h-screen flex flex-col bg-[#000000] text-white antialiased selection:bg-green-500/30 selection:text-white">
 
+  <!-- GLAVNI SADRŽAJ STRANICE -->
   <slot />
 
-  <!-- Leaflet Map JS (Potrebno za mapu) -->
+  <!-- Leaflet Map JS -->
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" is:inline></script>
 </body>
 </html>

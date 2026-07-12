@@ -1,73 +1,86 @@
 ---
+// Možeš dodati props ako želiš da menjaš linkove po stranici
 const navigation = [
-  { title: "Services", href: "/services" },
-  { title: "Service Areas", href: "/service-areas" },
-  { title: "For Contractors", href: "/contractors" }
+  { title: "Home", href: "/" },
+  { title: "For Contractors", href: "/contractors" },
+  { title: "Fleet Ops", href: "/truck-registration" },
+  { title: "Service Areas", href: "/service-areas" }
 ];
 ---
 
 <header class="fixed inset-x-0 top-0 z-50 bg-[#000000]/80 backdrop-blur-md border-b border-zinc-900 font-sans">
   <div class="mx-auto flex h-20 max-w-7xl items-center justify-between px-4 sm:px-8">
 
+    <!-- Logo -->
     <a href="/" class="flex items-center shrink-0">
       <img src="/logo/logo.svg" alt="SawFleet" class="h-9 w-auto" />
     </a>
 
+  <!-- Desktop Nav -->
     <nav class="hidden items-center gap-8 lg:flex">
       {navigation.map((item) => (
         <a href={item.href} class="text-[11px] font-mono font-bold uppercase tracking-[0.2em] text-zinc-400 hover:text-white transition-colors">
           {item.title}
         </a>
       ))}
-    </nav>
-
-    <div class="hidden items-center gap-4 lg:flex">
-      <a href="#quote" class="h-10 px-5 flex items-center justify-center rounded-lg border border-green-500/20 bg-green-500/5 text-[10px] font-bold uppercase tracking-[0.2em] text-green-500 hover:bg-green-500/10 transition-all">
-        Get Estimate
+      <!-- Istaknuto Portal dugme (Sada sa zelenim akcentom) -->
+      <a href="/login" class="h-9 px-4 flex items-center justify-center rounded-lg border border-green-500/20 bg-green-500/5 text-[11px] font-mono font-bold uppercase tracking-[0.2em] text-green-500 hover:bg-green-500/10 transition-all">
+        Portal
       </a>
-    </div>
+    </nav>
 
     <!-- Mobilni Okidač -->
     <button id="menu-toggle" class="flex h-10 w-10 items-center justify-center rounded-lg border border-zinc-800 bg-zinc-900/50 text-zinc-400 lg:hidden">
-      <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"/></svg>
+      <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"/>
+      </svg>
     </button>
   </div>
 </header>
 
 <!-- Mobile Menu Panel -->
 <div id="mobile-menu" class="fixed inset-0 z-[60] transform translate-x-full transition-transform duration-300 ease-in-out lg:hidden">
-  <!-- Backdrop -->
   <div id="menu-backdrop" class="absolute inset-0 bg-black/80 backdrop-blur-sm"></div>
   
-  <!-- Panel -->
   <div class="absolute top-0 right-0 h-full w-[280px] bg-[#000000] border-l border-zinc-900 p-8">
-    <button id="close-menu" class="absolute top-6 right-6 text-zinc-400">
-      <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+    <button id="close-menu" class="absolute top-6 right-6 text-zinc-400 hover:text-white transition-colors">
+      <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+      </svg>
     </button>
     
     <nav class="mt-16 flex flex-col gap-6">
       {navigation.map((item) => (
-        <a href={item.href} class="text-sm font-bold uppercase tracking-[0.2em] text-white">
+        <a href={item.href} class="text-sm font-bold uppercase tracking-[0.2em] text-white hover:text-green-500 transition-colors">
           {item.title}
         </a>
       ))}
-      <a href="#quote" class="mt-4 flex h-12 items-center justify-center rounded-xl bg-green-500 text-xs font-bold text-black">
-        Get Estimate
-      </a>
+      <a href="/login" class="text-sm font-bold uppercase tracking-[0.2em] text-zinc-400 hover:text-green-500 transition-colors">Portal</a>
     </nav>
   </div>
 </div>
 
 <script>
-  const toggle = document.getElementById('menu-toggle');
-  const menu = document.getElementById('mobile-menu');
-  const close = document.getElementById('close-menu');
-  const backdrop = document.getElementById('menu-backdrop');
+  function setupMobileMenu() {
+    const toggle = document.getElementById('menu-toggle');
+    const menu = document.getElementById('mobile-menu');
+    const close = document.getElementById('close-menu');
+    const backdrop = document.getElementById('menu-backdrop');
 
-  const openMenu = () => menu.classList.remove('translate-x-full');
-  const closeMenu = () => menu.classList.add('translate-x-full');
+    // Prekidamo izvršavanje ako neki od elemenata ne postoji
+    if (!toggle || !menu || !close || !backdrop) return;
 
-  toggle.addEventListener('click', openMenu);
-  close.addEventListener('click', closeMenu);
-  backdrop.addEventListener('click', closeMenu);
+    const openMenu = () => menu.classList.remove('translate-x-full');
+    const closeMenu = () => menu.classList.add('translate-x-full');
+
+    toggle.addEventListener('click', openMenu);
+    close.addEventListener('click', closeMenu);
+    backdrop.addEventListener('click', closeMenu);
+  }
+
+  // Pokrećemo funkciju kada se DOM učita
+  document.addEventListener('DOMContentLoaded', setupMobileMenu);
+
+  // Opciono: Ako koristiš Astro View Transitions, ovo osigurava da meni radi i prilikom navigacije
+  document.addEventListener('astro:page-load', setupMobileMenu);
 </script>

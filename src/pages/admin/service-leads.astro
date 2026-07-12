@@ -1,0 +1,260 @@
+---
+export const prerender = false;
+import AdminLayout from "../../layouts/AdminLayout.astro";
+import { supabase } from "../../lib/supabase";
+
+// POVLAČIMO TERITORIJE IZ BAZE
+const { data: territories } = await supabase.from('service_territories').select('*').order('name');
+---
+
+<AdminLayout>
+  <!-- Floating Plus Dugme -->
+  <button id="openModal" class="fixed bottom-8 right-8 w-14 h-14 bg-green-500 hover:bg-green-400 text-black rounded-full shadow-lg flex items-center justify-center text-3xl font-bold transition-all z-[100]">
+    +
+  </button>
+
+  <!-- Modal za dodavanje -->
+  <div id="leadModal" class="hidden fixed inset-0 bg-black/80 z-[200] flex items-center justify-center p-4">
+    <div class="bg-[#050505] border border-zinc-800 p-6 md:p-8 rounded-xl max-w-md w-full max-h-[90vh] overflow-y-auto">
+      <h2 class="text-white font-bold mb-6">Add New Lead</h2>
+      <form id="addLeadForm" class="space-y-4">
+        <input type="email" id="newEmail" placeholder="Email" class="w-full bg-zinc-900 border border-zinc-800 p-3 rounded text-white" required />
+        <input type="text" id="newPhone" placeholder="Phone" class="w-full bg-zinc-900 border border-zinc-800 p-3 rounded text-white" />
+        
+        <!-- DINAMIČKI PADAKUĆI MENI ZA DODAVANJE -->
+        <select id="newCounty" class="w-full bg-zinc-900 border border-zinc-800 p-3 rounded text-white" required>
+          <option value="" disabled selected>Select County</option>
+          {territories?.map(t => (
+            <option value={t.name}>{t.name}</option>
+          ))}
+        </select>
+
+        <textarea id="newDetails" placeholder="Details" class="w-full bg-zinc-900 border border-zinc-800 p-3 rounded text-white"></textarea>
+        <div class="flex gap-4 mt-6">
+          <button type="button" id="closeModal" class="flex-1 bg-zinc-800 p-3 rounded text-white">Cancel</button>
+          <button type="submit" class="flex-1 bg-green-500 p-3 rounded text-black font-bold">Save Lead</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <div class="flex flex-col xl:flex-row gap-8 w-full">
+    <div class="flex-1 space-y-8 min-w-0 w-full">
+      
+      <!-- Statistika -->
+      <div class="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6">
+        {[ {id: 'total', label: 'Total'}, {id: 'new', label: 'New'}, {id: 'approved', label: 'Approved'}, {id: 'rejected', label: 'Rejected'} ].map(stat => (
+          <div class="bg-[#050505] border border-zinc-900 p-4 md:p-6 rounded-xl">
+            <p class="text-[9px] font-bold uppercase tracking-[0.2em] text-zinc-600">{stat.label}</p>
+            <h2 id={`count-${stat.id}`} class="text-2xl font-mono font-bold text-white mt-2">0</h2>
+          </div>
+        ))}
+      </div>
+
+      <!-- Filteri -->
+      <div class="flex flex-wrap gap-4 items-center">
+        <select id="timeFilter" class="w-full md:w-auto bg-zinc-900 border border-zinc-800 text-[10px] p-3 rounded-lg text-zinc-300 uppercase font-bold">
+          <option value="all">All Time</option>
+          <option value="7">Last 7 Days</option>
+          <option value="30">Last 30 Days</option>
+          <option value="custom">Custom Range</option>
+        </select>
+
+        <div id="customDateRange" class="hidden w-full md:w-auto flex justify-between md:justify-start gap-2 items-center bg-zinc-900 border border-zinc-800 p-[9px] rounded-lg">
+          <input type="date" id="dateFrom" class="bg-transparent text-[10px] text-zinc-300 outline-none h-[22px] w-[110px]" />
+          <span class="text-zinc-600 font-bold text-[10px]">TO</span>
+          <input type="date" id="dateTo" class="bg-transparent text-[10px] text-zinc-300 outline-none h-[22px] w-[110px]" />
+          <button id="applyDateBtn" class="bg-green-500 text-black px-3 py-1.5 rounded text-[9px] font-bold uppercase hover:bg-green-400">Apply</button>
+        </div>
+
+        <select id="statusFilter" class="w-full md:w-auto bg-zinc-900 border border-zinc-800 text-[10px] p-3 rounded-lg text-zinc-300 uppercase font-bold">
+          <option value="all">All Statuses</option>
+          <option value="new">New</option>
+          <option value="approved">Approved</option>
+          <option value="rejected">Rejected</option>
+        </select>
+        
+        <!-- DINAMIČKI PADAKUĆI MENI ZA FILTER -->
+        <select id="countyFilter" class="w-full md:w-auto bg-zinc-900 border border-zinc-800 text-[10px] p-3 rounded-lg text-zinc-300 uppercase font-bold">
+          <option value="all">All Counties</option>
+          {territories?.map(t => (
+            <option value={t.name}>{t.name}</option>
+          ))}
+        </select>
+
+        <select id="perPage" class="w-full md:w-auto bg-zinc-900 border border-zinc-800 text-[10px] p-3 rounded-lg text-zinc-300 uppercase font-bold">
+          <option value="10">10 per page</option>
+          <option value="50">50 per page</option>
+        </select>
+
+        <div class="flex gap-2 items-center w-full md:w-auto md:ml-auto justify-between md:justify-start mt-4 md:mt-0">
+          <button id="prevPage" class="px-4 py-2 bg-zinc-900 rounded text-[10px] text-white">← Prev</button>
+          <span id="pageInfo" class="text-[10px] text-zinc-500 font-mono">Page 1</span>
+          <button id="nextPage" class="px-4 py-2 bg-zinc-900 rounded text-[10px] text-white">Next →</button>
+        </div>
+      </div>
+
+      <!-- Tabela (Responzivna) -->
+      <div class="border-transparent md:border-zinc-900 md:border rounded-xl bg-transparent md:bg-[#050505] overflow-x-hidden md:overflow-x-auto w-full">
+        <table class="w-full text-left border-collapse min-w-full md:min-w-[800px]">
+          <thead class="hidden md:table-header-group">
+            <tr class="text-[10px] uppercase text-zinc-500 border-b border-zinc-900">
+              <th class="px-6 py-4">Email</th>
+              <th class="px-6 py-4">Phone</th>
+              <th class="px-6 py-4">County</th>
+              <th class="px-6 py-4">Status</th>
+              <th class="px-6 py-4">Date</th>
+            </tr>
+          </thead>
+          <tbody id="allLeadsTable" class="text-[11px] font-mono text-zinc-400 block md:table-row-group">
+            <tr><td colspan="5" class="px-6 py-4 text-center">Loading...</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Sidebar Logovi -->
+    <div class="w-full xl:w-[400px] shrink-0">
+      <div class="bg-[#050505] border border-zinc-900 rounded-xl sticky top-8 w-full shadow-2xl">
+        <div class="p-6 border-b border-zinc-900">
+          <h3 class="text-[10px] font-bold uppercase tracking-[0.2em] text-white">Activity Timeline</h3>
+        </div>
+        <div class="p-6">
+          <div id="leadLogsContainer" class="space-y-6">
+            <div class="text-[11px] font-mono text-zinc-500">Loading logs...</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</AdminLayout>
+
+<script>
+  import { supabase } from "../../lib/supabase";
+  let currentPage = 0;
+
+  function timeAgo(dateInput: string) {
+    const date = new Date(dateInput);
+    const now = new Date();
+    const diffInSeconds = Math.floor((now.getTime() - date.getTime()) / 1000);
+    
+    if (diffInSeconds < 60) return 'Just now';
+    if (diffInSeconds < 3600) return `${Math.floor(diffInSeconds / 60)}m ago`;
+    if (diffInSeconds < 86400) return `${Math.floor(diffInSeconds / 3600)}h ago`;
+    return `${Math.floor(diffInSeconds / 86400)}d ago`;
+  }
+
+  async function loadLogs() {
+    const { data: leadLogs } = await supabase.from('lead_logs').select('*, leads(email)').order('created_at', { ascending: false }).limit(10);
+    const llContainer = document.getElementById('leadLogsContainer');
+    if (llContainer && leadLogs) {
+      llContainer.innerHTML = leadLogs.length > 0 ? leadLogs.map(log => `
+        <div class="relative pl-6 before:content-[''] before:absolute before:left-0 before:top-1.5 before:w-2 before:h-2 before:bg-zinc-800 before:border-2 before:border-[#050505] before:rounded-full after:content-[''] after:absolute after:left-[3px] after:top-4 after:bottom-[-24px] after:w-[2px] after:bg-zinc-900 last:after:hidden">
+          <p class="text-[10px] text-zinc-400 font-mono mb-1 truncate">${log.leads?.email || 'Unknown Lead'}</p>
+          <p class="text-[11px] text-white font-bold leading-tight">${log.action || log.status || 'Updated'}</p>
+          <div class="flex items-center gap-2 mt-2">
+            <span class="text-[9px] text-zinc-500 font-mono">by <span class="text-zinc-300 font-bold tracking-wider uppercase">${log.user_email || log.changed_by || 'Stojan M.'}</span></span>
+            <span class="text-[7px] text-zinc-700">●</span>
+            <span class="text-[9px] text-zinc-600">${timeAgo(log.created_at)}</span>
+          </div>
+        </div>
+      `).join('') : '<div class="text-[10px] text-zinc-500 italic">No activity recorded yet.</div>';
+    }
+  }
+
+  async function updateDashboard() {
+    const timeFilter = (document.getElementById('timeFilter') as HTMLSelectElement).value;
+    const statusFilter = (document.getElementById('statusFilter') as HTMLSelectElement).value;
+    const countyFilter = (document.getElementById('countyFilter') as HTMLSelectElement).value;
+    const dateFrom = (document.getElementById('dateFrom') as HTMLInputElement).value;
+    const dateTo = (document.getElementById('dateTo') as HTMLInputElement).value;
+    const itemsPerPage = parseInt((document.getElementById('perPage') as HTMLSelectElement).value);
+    
+    const customUI = document.getElementById('customDateRange');
+    timeFilter === 'custom' ? customUI?.classList.remove('hidden') : customUI?.classList.add('hidden');
+
+    const { data: allData } = await supabase.from('leads').select('status');
+    if (allData) {
+      document.getElementById('count-total')!.textContent = allData.length.toString();
+      document.getElementById('count-new')!.textContent = allData.filter(l => !l.status || l.status === 'new').length.toString();
+      document.getElementById('count-approved')!.textContent = allData.filter(l => l.status === 'approved').length.toString();
+      document.getElementById('count-rejected')!.textContent = allData.filter(l => l.status === 'rejected').length.toString();
+    }
+
+    let query = supabase.from('leads').select('*');
+    if (statusFilter !== 'all') query = query.eq('status', statusFilter);
+    if (countyFilter !== 'all') query = query.eq('county', countyFilter);
+    
+    if (timeFilter === '7') query = query.gte('created_at', new Date(Date.now() - 7*86400000).toISOString());
+    if (timeFilter === '30') query = query.gte('created_at', new Date(Date.now() - 30*86400000).toISOString());
+    if (timeFilter === 'custom') {
+        if (dateFrom) query = query.gte('created_at', dateFrom);
+        if (dateTo) {
+            const d = new Date(dateTo);
+            d.setDate(d.getDate() + 1);
+            query = query.lte('created_at', d.toISOString());
+        }
+    }
+    
+    const { data: leads } = await query.order('created_at', { ascending: false }).range(currentPage * itemsPerPage, (currentPage + 1) * itemsPerPage - 1);
+
+    const tableBody = document.getElementById('allLeadsTable');
+    if (tableBody && leads) {
+      tableBody.innerHTML = leads.length > 0 ? leads.map(lead => `
+        <tr class="block md:table-row bg-[#050505] border border-zinc-900 md:border-b md:border-zinc-900/50 md:border-x-0 md:border-t-0 rounded-xl md:rounded-none mb-4 md:mb-0 p-4 md:p-0 hover:bg-zinc-900/20 cursor-pointer transition-colors" onclick="window.location.href='/admin/leads/${lead.id}'">
+          <td class="block md:table-cell py-1.5 md:px-6 md:py-4">
+            <span class="md:hidden text-[9px] uppercase font-bold text-zinc-600 mr-2 w-20 inline-block">Email:</span>
+            <span class="text-white">${lead.email || 'N/A'}</span>
+          </td>
+          <td class="block md:table-cell py-1.5 md:px-6 md:py-4">
+            <span class="md:hidden text-[9px] uppercase font-bold text-zinc-600 mr-2 w-20 inline-block">Phone:</span>
+            <span class="text-zinc-300">${lead.phone || 'N/A'}</span>
+          </td>
+          <td class="block md:table-cell py-1.5 md:px-6 md:py-4">
+            <span class="md:hidden text-[9px] uppercase font-bold text-zinc-600 mr-2 w-20 inline-block">County:</span>
+            <span class="text-zinc-300">${lead.county || 'N/A'}</span>
+          </td>
+          <td class="flex items-center md:table-cell py-1.5 md:px-6 md:py-4">
+            <span class="md:hidden text-[9px] uppercase font-bold text-zinc-600 mr-2 w-20 inline-block">Status:</span>
+            <span class="px-2 py-1 rounded text-[9px] font-bold uppercase border ${lead.status === 'approved' ? 'bg-green-900/20 text-green-500 border-green-900/50' : lead.status === 'rejected' ? 'bg-red-900/20 text-red-500 border-red-900/50' : 'bg-zinc-900 text-zinc-300 border-zinc-800'}">${lead.status || 'New'}</span>
+          </td>
+          <td class="block md:table-cell py-1.5 md:px-6 md:py-4">
+            <span class="md:hidden text-[9px] uppercase font-bold text-zinc-600 mr-2 w-20 inline-block">Date:</span>
+            <span class="text-zinc-500">${lead.created_at ? new Date(lead.created_at).toLocaleDateString() : 'N/A'}</span>
+          </td>
+        </tr>
+      `).join('') : '<tr><td colspan="5" class="px-6 py-4 text-center">No results.</td></tr>';
+    }
+    document.getElementById('pageInfo')!.textContent = `Page ${currentPage + 1}`;
+  }
+
+  document.addEventListener('DOMContentLoaded', () => {
+    const modal = document.getElementById('leadModal');
+    document.getElementById('openModal')?.addEventListener('click', () => modal?.classList.remove('hidden'));
+    document.getElementById('closeModal')?.addEventListener('click', () => modal?.classList.add('hidden'));
+
+    document.getElementById('addLeadForm')?.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      await supabase.from('leads').insert([{ 
+        email: (document.getElementById('newEmail') as HTMLInputElement).value,
+        phone: (document.getElementById('newPhone') as HTMLInputElement).value,
+        county: (document.getElementById('newCounty') as HTMLSelectElement).value,
+        details: (document.getElementById('newDetails') as HTMLTextAreaElement).value,
+        status: 'new',
+        created_at: new Date().toISOString()
+      }]);
+      modal?.classList.add('hidden');
+      (e.target as HTMLFormElement).reset();
+      updateDashboard();
+      loadLogs();
+    });
+
+    document.getElementById('applyDateBtn')?.addEventListener('click', () => { currentPage = 0; updateDashboard(); });
+    document.querySelectorAll('select').forEach(sel => sel.addEventListener('change', () => { currentPage = 0; updateDashboard(); }));
+    document.getElementById('nextPage')?.addEventListener('click', () => { currentPage++; updateDashboard(); });
+    document.getElementById('prevPage')?.addEventListener('click', () => { if(currentPage > 0) currentPage--; updateDashboard(); });
+    
+    updateDashboard();
+    loadLogs();
+  });
+</script>

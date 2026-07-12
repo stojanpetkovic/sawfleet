@@ -1,0 +1,104 @@
+---
+import AdminLayout from "../../layouts/AdminLayout.astro";
+import { supabase } from "../../lib/supabase";
+
+// 1. Provera sesije
+const { data: { session } } = await supabase.auth.getSession();
+if (!session) return Astro.redirect('/login');
+
+// 2. Dohvatamo 5 najnovijih slobodnih lidova
+const { data: newLeads } = await supabase
+  .from('leads')
+  .select('*')
+  .eq('status', 'new')
+  .order('created_at', { ascending: false })
+  .limit(5);
+
+// 3. Dohvatamo SAMO ono što je OVAJ kontraktor claim-ovao
+const { data: myClaimedLeads } = await supabase
+  .from('leads')
+  .select('*')
+  .eq('status', 'claimed')
+  .eq('contractor_id', session.user.id)
+  .order('created_at', { ascending: false })
+  .limit(10);
+---
+
+<AdminLayout>
+  <div class="max-w-4xl mx-auto space-y-12">
+    
+    <!-- SEKCIJA: DOSTUPNI LIDOVI -->
+    <section>
+      <div class="mb-6">
+        <h2 class="text-sm font-bold text-white uppercase tracking-widest">// Quick Claim Pipeline</h2>
+        <p class="text-xs text-slate-500 mt-1">Available dispatch requests - First come, first served.</p>
+      </div>
+
+      <div class="space-y-4">
+        {newLeads?.map((lead) => (
+          <div id={`lead-${lead.id}`} class="p-6 bg-slate-900 border border-slate-800 rounded-2xl flex items-center justify-between group hover:border-green-500/50 transition-all">
+            <div>
+              <span class="text-[9px] font-mono text-green-500 uppercase tracking-widest">{lead.county}</span>
+              <p class="text-slate-300 text-sm mt-2">{lead.details}</p>
+            </div>
+            <button 
+              onclick={`claimLead('${lead.id}')`}
+              class="px-6 py-3 bg-green-500 text-slate-950 text-[10px] font-bold uppercase tracking-widest rounded-xl hover:bg-green-400 transition-all active:scale-95"
+            >
+              Claim Now →
+            </button>
+          </div>
+        ))}
+        {(!newLeads || newLeads.length === 0) && (
+          <div class="p-8 border border-slate-900 border-dashed rounded-2xl text-center">
+            <p class="text-slate-600 text-sm">No new requests in the queue.</p>
+          </div>
+        )}
+      </div>
+    </section>
+
+    <!-- SEKCIJA: MOJA ISTORIJA (CLAIMED) -->
+    <section>
+      <div class="mb-6">
+        <h2 class="text-sm font-bold text-slate-600 uppercase tracking-widest">// My Claimed Leads</h2>
+      </div>
+
+      <div class="space-y-3">
+        {myClaimedLeads?.map((lead) => (
+          <div class="p-4 bg-slate-950 border border-slate-900 rounded-xl flex items-center justify-between">
+            <span class="text-[9px] font-mono text-slate-400 uppercase tracking-widest">{lead.county}</span>
+            <span class="text-[9px] text-green-600 font-bold uppercase italic">Successfully Claimed</span>
+          </div>
+        ))}
+        {(!myClaimedLeads || myClaimedLeads.length === 0) && (
+           <p class="text-slate-800 text-xs italic">No leads claimed yet.</p>
+        )}
+      </div>
+    </section>
+  </div>
+</AdminLayout>
+
+<script is:inline define:vars={{ contractorId: session?.user?.id }}>
+  async function claimLead(leadId) {
+    const btn = event.target;
+    btn.disabled = true;
+    btn.innerText = "Claiming...";
+
+    // Ažuriramo status I postavljamo contractor_id
+    const { data, error } = await supabase
+      .from('leads')
+      .update({ 
+        status: 'claimed', 
+        contractor_id: contractorId 
+      })
+      .eq('id', leadId)
+      .eq('status', 'new'); 
+
+    if (error || !data) {
+      alert("Too slow! Someone else grabbed this lead.");
+      window.location.reload();
+    } else {
+      window.location.href = '/thank-you';
+    }
+  }
+</script>

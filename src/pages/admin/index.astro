@@ -1,0 +1,356 @@
+---
+export const prerender = false;
+import AdminLayout from "../../layouts/AdminLayout.astro";
+---
+
+<AdminLayout>
+  <!-- GLAVNI WRAPPER -->
+  <div class="w-full flex flex-col xl:flex-row gap-8">
+    
+    <!-- LEVA STRANA: Glavni sadržaj -->
+    <div class="flex-1 space-y-8 min-w-0 w-full">
+      
+      <!-- STATISTIKA: KONSOLIDOVANA -->
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-6 w-full">
+        
+        <!-- Karta 1: Leads Summary -->
+        <div class="bg-[#050505] border border-zinc-900 rounded-xl p-6 flex flex-col justify-between w-full shadow-xl">
+          <div class="flex justify-between items-start mb-6">
+            <div>
+              <p class="text-[9px] font-bold uppercase tracking-[0.2em] text-zinc-500">Total Leads</p>
+              <h2 id="count-total" class="text-4xl font-mono font-bold text-white mt-2">-</h2>
+            </div>
+            <a href="/admin/service-leads" class="text-[9px] uppercase tracking-[0.2em] text-zinc-600 hover:text-white border border-zinc-800 px-3 py-1.5 rounded-lg transition-colors whitespace-nowrap">Manage →</a>
+          </div>
+          
+          <div class="grid grid-cols-3 gap-4 pt-4 border-t border-zinc-900/50">
+            <div>
+              <p class="text-[9px] text-zinc-600 uppercase font-bold tracking-[0.1em]">New</p>
+              <p id="count-new" class="text-sm font-mono text-zinc-300 mt-1">-</p>
+            </div>
+            <div>
+              <p class="text-[9px] text-zinc-600 uppercase font-bold tracking-[0.1em]">Approved</p>
+              <p id="count-approved" class="text-sm font-mono text-green-500 mt-1">-</p>
+            </div>
+            <div>
+              <p class="text-[9px] text-zinc-600 uppercase font-bold tracking-[0.1em]">Rejected</p>
+              <p id="count-rejected" class="text-sm font-mono text-red-500 mt-1">-</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Karta 2: Contractors Summary -->
+        <div class="bg-[#050505] border border-zinc-900 rounded-xl p-6 flex flex-col justify-between w-full shadow-xl">
+          <div class="flex justify-between items-start mb-6">
+            <div>
+              <p class="text-[9px] font-bold uppercase tracking-[0.2em] text-zinc-500">Contractors</p>
+              <h2 id="count-c-total" class="text-4xl font-mono font-bold text-white mt-2">-</h2>
+            </div>
+            <a href="/admin/contractors" class="text-[9px] uppercase tracking-[0.2em] text-zinc-600 hover:text-white border border-zinc-800 px-3 py-1.5 rounded-lg transition-colors whitespace-nowrap">Manage →</a>
+          </div>
+          
+          <div class="grid grid-cols-3 gap-4 pt-4 border-t border-zinc-900/50">
+            <div>
+              <p class="text-[9px] text-zinc-600 uppercase font-bold tracking-[0.1em]">Pending</p>
+              <p id="count-c-pending" class="text-sm font-mono text-zinc-300 mt-1">-</p>
+            </div>
+            <div>
+              <p class="text-[9px] text-zinc-600 uppercase font-bold tracking-[0.1em]">Active</p>
+              <p id="count-c-active" class="text-sm font-mono text-green-500 mt-1">-</p>
+            </div>
+            <div>
+              <p class="text-[9px] text-zinc-600 uppercase font-bold tracking-[0.1em]">Rejected</p>
+              <p id="count-c-rejected" class="text-sm font-mono text-red-500 mt-1">-</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Karta 3: Trucks Summary -->
+        <div class="bg-[#050505] border border-zinc-900 rounded-xl p-6 flex flex-col justify-between w-full shadow-xl">
+          <div class="flex justify-between items-start mb-6">
+            <div>
+              <p class="text-[9px] font-bold uppercase tracking-[0.2em] text-zinc-500">Trucks</p>
+              <h2 id="count-t-total" class="text-4xl font-mono font-bold text-white mt-2">-</h2>
+            </div>
+            <a href="/admin/grapple-saw-trucks" class="text-[9px] uppercase tracking-[0.2em] text-zinc-600 hover:text-white border border-zinc-800 px-3 py-1.5 rounded-lg transition-colors whitespace-nowrap">Manage →</a>
+          </div>
+          
+          <div class="grid grid-cols-3 gap-4 pt-4 border-t border-zinc-900/50">
+            <div>
+              <p class="text-[9px] text-zinc-600 uppercase font-bold tracking-[0.1em]">Pending</p>
+              <p id="count-t-pending" class="text-sm font-mono text-zinc-300 mt-1">-</p>
+            </div>
+            <div>
+              <p class="text-[9px] text-zinc-600 uppercase font-bold tracking-[0.1em]">Approved</p>
+              <p id="count-t-approved" class="text-sm font-mono text-green-500 mt-1">-</p>
+            </div>
+            <div>
+              <p class="text-[9px] text-zinc-600 uppercase font-bold tracking-[0.1em]">Rejected</p>
+              <p id="count-t-rejected" class="text-sm font-mono text-red-500 mt-1">-</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- SEKCIJA: LEADS TABELA -->
+      <div class="border-transparent md:border-zinc-900 md:border rounded-xl bg-transparent md:bg-[#050505] overflow-x-hidden md:overflow-x-auto w-full md:shadow-xl">
+        <div class="p-6 border-b border-zinc-900 bg-[#050505] rounded-t-xl md:bg-transparent">
+          <h3 class="text-[10px] font-bold uppercase tracking-[0.2em] text-white">Recent Service Leads</h3>
+        </div>
+        <table class="w-full text-left border-collapse min-w-full md:min-w-[600px]">
+          <thead class="hidden md:table-header-group">
+            <tr class="text-[9px] font-bold uppercase tracking-[0.2em] text-zinc-600 border-b border-zinc-900">
+              <th class="px-6 py-4 w-1/5">Email</th><th class="px-6 py-4 w-1/5">Phone</th><th class="px-6 py-4 w-1/5">County</th><th class="px-6 py-4 w-1/5">Status</th><th class="px-6 py-4 w-1/5">Date</th>
+            </tr>
+          </thead>
+          <tbody id="leadsTable" class="text-[11px] font-mono text-zinc-400 block md:table-row-group">
+            <tr><td colspan="5" class="px-6 py-4 text-center">Loading...</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- SEKCIJA: CONTRACTORS TABELA -->
+      <div class="border-transparent md:border-zinc-900 md:border rounded-xl bg-transparent md:bg-[#050505] overflow-x-hidden md:overflow-x-auto w-full md:shadow-xl mt-8">
+        <div class="p-6 border-b border-zinc-900 bg-[#050505] rounded-t-xl md:bg-transparent">
+          <h3 class="text-[10px] font-bold uppercase tracking-[0.2em] text-white">Recent Contractors</h3>
+        </div>
+        <table class="w-full text-left border-collapse min-w-full md:min-w-[600px]">
+          <thead class="hidden md:table-header-group">
+            <tr class="text-[9px] font-bold uppercase tracking-[0.2em] text-zinc-600 border-b border-zinc-900">
+              <th class="px-6 py-4 w-1/5">Company</th><th class="px-6 py-4 w-1/5">Contact</th><th class="px-6 py-4 w-1/5">County</th><th class="px-6 py-4 w-1/5">Status</th><th class="px-6 py-4 w-1/5">Date</th>
+            </tr>
+          </thead>
+          <tbody id="contractorsTable" class="text-[11px] font-mono text-zinc-400 block md:table-row-group">
+            <tr><td colspan="5" class="px-6 py-4 text-center">Loading...</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- SEKCIJA TRUCKS TABELA -->
+      <div class="border-transparent md:border-zinc-900 md:border rounded-xl bg-transparent md:bg-[#050505] overflow-x-hidden md:overflow-x-auto w-full md:shadow-xl mt-8">
+        <div class="p-6 border-b border-zinc-900 bg-[#050505] rounded-t-xl md:bg-transparent">
+          <h3 class="text-[10px] font-bold uppercase tracking-[0.2em] text-white">Recent Trucks</h3>
+        </div>
+        <table class="w-full text-left border-collapse min-w-full md:min-w-[600px]">
+          <thead class="hidden md:table-header-group">
+            <tr class="text-[9px] font-bold uppercase tracking-[0.2em] text-zinc-600 border-b border-zinc-900">
+              <th class="px-6 py-4 w-1/5">Equipment</th><th class="px-6 py-4 w-1/5">Capacity</th><th class="px-6 py-4 w-1/5">Approval</th><th class="px-6 py-4 w-1/5">Availability</th><th class="px-6 py-4 w-1/5">Date</th>
+            </tr>
+          </thead>
+          <tbody id="trucksTable" class="text-[11px] font-mono text-zinc-400 block md:table-row-group">
+            <tr><td colspan="5" class="px-6 py-4 text-center">Loading...</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+    </div>
+
+    <!-- DESNA STRANA: Activity Sidebar -->
+    <div class="w-full xl:w-[400px] shrink-0 mt-8 xl:mt-0">
+      <div class="bg-[#050505] border border-zinc-900 rounded-xl sticky top-8 w-full shadow-2xl">
+        <div class="p-6 border-b border-zinc-900">
+          <h3 class="text-[10px] font-bold uppercase tracking-[0.2em] text-white">Activity Timeline</h3>
+        </div>
+        
+        <div class="p-6 space-y-10">
+          <!-- Leads Activity -->
+          <div class="w-full">
+            <h4 class="text-[9px] uppercase tracking-[0.2em] text-zinc-600 mb-6 border-b border-zinc-900/50 pb-2">Leads Log</h4>
+            <div id="leadLogsContainer" class="space-y-6">
+              <div class="text-[11px] font-mono text-zinc-500">Loading logs...</div>
+            </div>
+          </div>
+
+          <!-- Contractors Activity -->
+          <div class="w-full">
+            <h4 class="text-[9px] uppercase tracking-[0.2em] text-zinc-600 mb-6 border-b border-zinc-900/50 pb-2">Contractors Log</h4>
+            <div id="contractorLogsContainer" class="space-y-6">
+              <div class="text-[11px] font-mono text-zinc-500">Loading logs...</div>
+            </div>
+          </div>
+
+          <!-- Trucks Activity -->
+          <div class="w-full">
+            <h4 class="text-[9px] uppercase tracking-[0.2em] text-zinc-600 mb-6 border-b border-zinc-900/50 pb-2">Trucks Log</h4>
+            <div id="truckLogsContainer" class="space-y-6">
+              <div class="text-[11px] font-mono text-zinc-500">Loading logs...</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</AdminLayout>
+
+<script>
+  import { supabase } from "../../lib/supabase";
+
+  function timeAgo(dateInput: string) {
+    const date = new Date(dateInput);
+    const now = new Date();
+    const diffInSeconds = Math.floor((now.getTime() - date.getTime()) / 1000);
+    
+    if (diffInSeconds < 60) return 'Just now';
+    if (diffInSeconds < 3600) return `${Math.floor(diffInSeconds / 60)}m ago`;
+    if (diffInSeconds < 86400) return `${Math.floor(diffInSeconds / 3600)}h ago`;
+    return `${Math.floor(diffInSeconds / 86400)}d ago`;
+  }
+
+  function generateProLogHtml(entityName: string, actionText: string, changedBy: string, dateStr: string) {
+    return `
+      <div class="relative pl-6 before:content-[''] before:absolute before:left-0 before:top-1.5 before:w-2 before:h-2 before:bg-zinc-800 before:border-2 before:border-[#050505] before:rounded-full after:content-[''] after:absolute after:left-[3px] after:top-4 after:bottom-[-24px] after:w-[2px] after:bg-zinc-900 last:after:hidden">
+        <p class="text-[10px] text-zinc-400 font-mono mb-1 truncate">${entityName}</p>
+        <p class="text-[11px] text-white font-bold leading-tight">${actionText}</p>
+        <div class="flex items-center gap-2 mt-2">
+          <span class="text-[9px] text-zinc-500 font-mono">by <span class="text-zinc-300 font-bold tracking-wider uppercase">${changedBy}</span></span>
+          <span class="text-[7px] text-zinc-700">●</span>
+          <span class="text-[9px] text-zinc-600">${timeAgo(dateStr)}</span>
+        </div>
+      </div>
+    `;
+  }
+
+  async function loadData() {
+    // === 1. LIDOVI ===
+    const { data: leads } = await supabase.from('leads').select('*').order('created_at', { ascending: false });
+    if (leads) {
+      document.getElementById('count-total')!.textContent = leads.length.toString();
+      document.getElementById('count-new')!.textContent = leads.filter(l => !l.status || l.status === 'new').length.toString();
+      document.getElementById('count-approved')!.textContent = leads.filter(l => l.status === 'approved').length.toString();
+      document.getElementById('count-rejected')!.textContent = leads.filter(l => l.status === 'rejected').length.toString();
+      
+      document.getElementById('leadsTable')!.innerHTML = leads.slice(0, 3).map(l => {
+        const statusBadge = l.status === 'approved' ? 'bg-green-500/10 border-green-500/20 text-green-400' : 
+                            l.status === 'rejected' ? 'bg-red-500/10 border-red-500/20 text-red-400' : 
+                            'bg-zinc-800/50 border-zinc-700 text-zinc-400';
+        return `
+        <tr class="block md:table-row bg-[#050505] border border-zinc-900 md:border-b md:border-zinc-900/50 md:border-x-0 md:border-t-0 rounded-b-xl md:rounded-none mb-4 md:mb-0 p-4 md:p-0 hover:bg-zinc-900/20 cursor-pointer transition-colors" onclick="window.location.href='/admin/leads/${l.id}'">
+          <td class="block md:table-cell py-1.5 md:px-6 md:py-4">
+            <span class="md:hidden text-[9px] uppercase font-bold text-zinc-600 mr-2 w-20 inline-block">Email:</span>
+            <span class="text-white">${l.email || 'N/A'}</span>
+          </td>
+          <td class="block md:table-cell py-1.5 md:px-6 md:py-4">
+            <span class="md:hidden text-[9px] uppercase font-bold text-zinc-600 mr-2 w-20 inline-block">Phone:</span>
+            <span class="text-zinc-300">${l.phone || 'N/A'}</span>
+          </td>
+          <td class="block md:table-cell py-1.5 md:px-6 md:py-4">
+            <span class="md:hidden text-[9px] uppercase font-bold text-zinc-600 mr-2 w-20 inline-block">County:</span>
+            <span class="text-zinc-300">${l.county || 'N/A'}</span>
+          </td>
+          <td class="flex items-center md:table-cell py-1.5 md:px-6 md:py-4">
+            <span class="md:hidden text-[9px] uppercase font-bold text-zinc-600 mr-2 w-20 inline-block">Status:</span>
+            <span class="px-2.5 py-1 rounded-md text-[9px] font-bold uppercase border tracking-wider ${statusBadge}">${l.status || 'New'}</span>
+          </td>
+          <td class="block md:table-cell py-1.5 md:px-6 md:py-4">
+            <span class="md:hidden text-[9px] uppercase font-bold text-zinc-600 mr-2 w-20 inline-block">Date:</span>
+            <span class="text-zinc-500">${new Date(l.created_at).toLocaleDateString()}</span>
+          </td>
+        </tr>
+      `}).join('');
+    }
+
+    // === 2. KONTRAKTORI ===
+    const { data: contractors } = await supabase.from('contractors').select('*').order('created_at', { ascending: false });
+    if (contractors) {
+      document.getElementById('count-c-total')!.textContent = contractors.length.toString();
+      document.getElementById('count-c-active')!.textContent = contractors.filter(c => c.status === 'active').length.toString();
+      document.getElementById('count-c-pending')!.textContent = contractors.filter(c => c.status === 'pending').length.toString();
+      document.getElementById('count-c-rejected')!.textContent = contractors.filter(c => c.status === 'rejected').length.toString();
+      
+      document.getElementById('contractorsTable')!.innerHTML = contractors.slice(0, 3).map(c => {
+        const statusBadge = c.status === 'active' ? 'bg-green-500/10 border-green-500/20 text-green-400' : 
+                            c.status === 'rejected' ? 'bg-red-500/10 border-red-500/20 text-red-400' : 
+                            'bg-zinc-800/50 border-zinc-700 text-zinc-400';
+        return `
+        <tr class="block md:table-row bg-[#050505] border border-zinc-900 md:border-b md:border-zinc-900/50 md:border-x-0 md:border-t-0 rounded-b-xl md:rounded-none mb-4 md:mb-0 p-4 md:p-0 hover:bg-zinc-900/20 cursor-pointer transition-colors" onclick="window.location.href='/admin/contractors/${c.id}'">
+          <td class="block md:table-cell py-1.5 md:px-6 md:py-4">
+            <span class="md:hidden text-[9px] uppercase font-bold text-zinc-600 mr-2 w-20 inline-block">Company:</span>
+            <span class="text-white font-bold">${c.company_name || 'N/A'}</span>
+          </td>
+          <td class="block md:table-cell py-1.5 md:px-6 md:py-4">
+            <span class="md:hidden text-[9px] uppercase font-bold text-zinc-600 mr-2 w-20 inline-block">Contact:</span>
+            <span class="text-zinc-300">${c.contact_name || 'N/A'}</span>
+          </td>
+          <td class="block md:table-cell py-1.5 md:px-6 md:py-4">
+            <span class="md:hidden text-[9px] uppercase font-bold text-zinc-600 mr-2 w-20 inline-block">County:</span>
+            <span class="text-zinc-300">${c.territory || 'N/A'}</span>
+          </td>
+          <td class="flex items-center md:table-cell py-1.5 md:px-6 md:py-4">
+            <span class="md:hidden text-[9px] uppercase font-bold text-zinc-600 mr-2 w-20 inline-block">Status:</span>
+            <span class="px-2.5 py-1 rounded-md text-[9px] font-bold uppercase border tracking-wider ${statusBadge}">${c.status || 'pending'}</span>
+          </td>
+          <td class="block md:table-cell py-1.5 md:px-6 md:py-4">
+            <span class="md:hidden text-[9px] uppercase font-bold text-zinc-600 mr-2 w-20 inline-block">Date:</span>
+            <span class="text-zinc-500">${new Date(c.created_at).toLocaleDateString()}</span>
+          </td>
+        </tr>
+      `}).join('');
+    }
+
+    // === 3. KAMIONI ===
+    const { data: trucks } = await supabase.from('grapple_saw_trucks').select('*').order('created_at', { ascending: false });
+    if (trucks) {
+      document.getElementById('count-t-total')!.textContent = trucks.length.toString();
+      document.getElementById('count-t-approved')!.textContent = trucks.filter(t => t.approval_status === 'approved').length.toString();
+      document.getElementById('count-t-pending')!.textContent = trucks.filter(t => t.approval_status === 'pending' || !t.approval_status).length.toString();
+      document.getElementById('count-t-rejected')!.textContent = trucks.filter(t => t.approval_status === 'rejected').length.toString();
+      
+      document.getElementById('trucksTable')!.innerHTML = trucks.slice(0, 3).map(t => {
+        const appStatus = t.approval_status || 'pending';
+        const appBadge = appStatus === 'approved' ? 'text-green-400 border-green-500/20 bg-green-500/10' : 
+                         appStatus === 'rejected' ? 'text-red-400 border-red-500/20 bg-red-500/10' : 
+                         'text-zinc-400 border-zinc-700 bg-zinc-800/50';
+        const availStatus = t.availability_status || 'Available';
+        const availBadge = availStatus === 'Available' ? 'text-green-400 border-green-500/20 bg-green-500/10' : 'text-yellow-400 border-yellow-500/20 bg-yellow-500/10';
+
+        return `
+        <tr class="block md:table-row bg-[#050505] border border-zinc-900 md:border-b md:border-zinc-900/50 md:border-x-0 md:border-t-0 rounded-b-xl md:rounded-none mb-4 md:mb-0 p-4 md:p-0 hover:bg-zinc-900/20 cursor-pointer transition-colors" onclick="window.location.href='/admin/grapple-saw-trucks/${t.id}'">
+          <td class="block md:table-cell py-1.5 md:px-6 md:py-4">
+            <span class="md:hidden text-[9px] uppercase font-bold text-zinc-600 mr-2 w-20 inline-block">Equipment:</span>
+            <span class="text-white font-bold">${t.equipment_type || 'N/A'}</span>
+          </td>
+          <td class="block md:table-cell py-1.5 md:px-6 md:py-4">
+            <span class="md:hidden text-[9px] uppercase font-bold text-zinc-600 mr-2 w-20 inline-block">Capacity:</span>
+            <span class="text-zinc-300 font-mono">${t.lift_capacity_tons ? t.lift_capacity_tons + ' tons' : '-'}</span>
+          </td>
+          <td class="flex items-center md:table-cell py-1.5 md:px-6 md:py-4">
+            <span class="md:hidden text-[9px] uppercase font-bold text-zinc-600 mr-2 w-20 inline-block">Approval:</span>
+            <span class="px-2.5 py-1 rounded-md text-[9px] font-bold border uppercase tracking-wider ${appBadge}">${appStatus}</span>
+          </td>
+          <td class="flex items-center md:table-cell py-1.5 md:px-6 md:py-4">
+            <span class="md:hidden text-[9px] uppercase font-bold text-zinc-600 mr-2 w-20 inline-block">Availability:</span>
+            ${appStatus === 'approved' ? `<span class="px-2.5 py-1 rounded-md text-[9px] font-bold border uppercase tracking-wider ${availBadge}">${availStatus}</span>` : `<span class="text-[9px] text-zinc-600 uppercase tracking-wider">-</span>`}
+          </td>
+          <td class="block md:table-cell py-1.5 md:px-6 md:py-4">
+            <span class="md:hidden text-[9px] uppercase font-bold text-zinc-600 mr-2 w-20 inline-block">Date:</span>
+            <span class="text-zinc-500">${new Date(t.created_at).toLocaleDateString()}</span>
+          </td>
+        </tr>
+      `}).join('');
+    }
+
+    // === LOGOVI ===
+    const limitLogs = 4;
+
+    const { data: leadLogs } = await supabase.from('lead_logs').select('*, leads(email)').order('created_at', { ascending: false }).limit(limitLogs);
+    const llContainer = document.getElementById('leadLogsContainer');
+    if (llContainer && leadLogs) {
+      llContainer.innerHTML = leadLogs.length > 0 ? leadLogs.map(log => generateProLogHtml(log.leads?.email || 'Unknown Lead', log.action || log.status || 'Updated', log.user_email || log.changed_by || 'Stojan M.', log.created_at)).join('') : '<div class="text-[10px] text-zinc-500 italic">No recent activity.</div>';
+    }
+
+    const { data: contractorLogs } = await supabase.from('contractor_logs').select('*, contractors(company_name)').order('created_at', { ascending: false }).limit(limitLogs);
+    const clContainer = document.getElementById('contractorLogsContainer');
+    if (clContainer && contractorLogs) {
+      clContainer.innerHTML = contractorLogs.length > 0 ? contractorLogs.map(log => generateProLogHtml(log.contractors?.company_name || 'Unknown Contractor', log.action || log.status || 'Updated', log.user_email || log.changed_by || 'Stojan M.', log.created_at)).join('') : '<div class="text-[10px] text-zinc-500 italic">No recent activity.</div>';
+    }
+
+    const { data: truckLogs } = await supabase.from('truck_logs').select('*, grapple_saw_trucks(equipment_type)').order('created_at', { ascending: false }).limit(limitLogs);
+    const tlContainer = document.getElementById('truckLogsContainer');
+    if (tlContainer && truckLogs) {
+      tlContainer.innerHTML = truckLogs.length > 0 ? truckLogs.map(log => generateProLogHtml(log.grapple_saw_trucks?.equipment_type || 'Unknown Truck', log.action || 'Updated', log.user_email || log.changed_by || 'Stojan M.', log.created_at)).join('') : '<div class="text-[10px] text-zinc-500 italic">No recent activity.</div>';
+    }
+  }
+
+  window.addEventListener('DOMContentLoaded', loadData);
+</script>
