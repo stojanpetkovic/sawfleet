@@ -36,6 +36,10 @@ if (!contractor) return Astro.redirect('/admin/contractors');
           <input type="text" id="editPhone" value={contractor.phone} class="mt-1 w-full bg-zinc-900 border border-zinc-800 p-3 rounded text-white" />
         </div>
         <div>
+          <label class="text-[9px] uppercase tracking-[0.2em] text-zinc-500 ml-1">Login Email</label>
+          <input type="email" id="editEmail" value={contractor.email} class="mt-1 w-full bg-zinc-900 border border-zinc-800 p-3 rounded text-white" required />
+        </div>
+        <div>
           <label class="text-[9px] uppercase tracking-[0.2em] text-zinc-500 ml-1">Territory</label>
           
           <!-- DINAMIČKI PADAKUĆI MENI ZA EDIT -->
@@ -83,7 +87,9 @@ if (!contractor) return Astro.redirect('/admin/contractors');
           <div><p class="text-[9px] uppercase tracking-[0.2em] text-zinc-600">Company</p><p class="text-white font-mono mt-1 font-bold text-lg">{contractor.company_name}</p></div>
           <div><p class="text-[9px] uppercase tracking-[0.2em] text-zinc-600">Contact</p><p class="text-white font-mono mt-1 text-lg">{contractor.contact_name}</p></div>
           <div><p class="text-[9px] uppercase tracking-[0.2em] text-zinc-600">Phone</p><p class="text-white font-mono mt-1 text-lg">{contractor.phone || 'N/A'}</p></div>
+          <div><p class="text-[9px] uppercase tracking-[0.2em] text-zinc-600">Login Email</p><p class="text-white font-mono mt-1 text-lg">{contractor.email || 'N/A'}</p></div>
           <div><p class="text-[9px] uppercase tracking-[0.2em] text-zinc-600">Territory</p><p class="text-white font-mono mt-1 text-lg">{contractor.territory || 'N/A'}</p></div>
+          <div><p class="text-[9px] uppercase tracking-[0.2em] text-zinc-600">Account Linked</p><p class="text-white font-mono mt-1 text-lg">{contractor.user_id ? '✅ Yes' : '⏳ Not yet — waiting for first login'}</p></div>
         </div>
 
         <div class="pt-6 border-t border-zinc-900 mt-8">
@@ -146,6 +152,7 @@ if (!contractor) return Astro.redirect('/admin/contractors');
       company_name: (document.getElementById('editName') as HTMLInputElement).value,
       contact_name: (document.getElementById('editContact') as HTMLInputElement).value,
       phone: (document.getElementById('editPhone') as HTMLInputElement).value,
+      email: (document.getElementById('editEmail') as HTMLInputElement).value,
       territory: (document.getElementById('editTerritory') as HTMLSelectElement).value,
     };
 

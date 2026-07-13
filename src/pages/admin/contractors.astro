@@ -19,6 +19,7 @@ const { data: territories } = await supabase.from('service_territories').select(
         <input type="text" id="newName" placeholder="Company Name" class="w-full bg-zinc-900 border border-zinc-800 p-3 rounded text-white" required />
         <input type="text" id="newContact" placeholder="Contact Name" class="w-full bg-zinc-900 border border-zinc-800 p-3 rounded text-white" required />
         <input type="text" id="newPhone" placeholder="Phone" class="w-full bg-zinc-900 border border-zinc-800 p-3 rounded text-white" />
+        <input type="email" id="newEmail" placeholder="Login Email (used to link their account)" class="w-full bg-zinc-900 border border-zinc-800 p-3 rounded text-white" required />
         
         <!-- DINAMIČKI PADAKUĆI MENI -->
         <select id="newTerritory" class="w-full bg-zinc-900 border border-zinc-800 p-3 rounded text-white" required>
@@ -247,6 +248,7 @@ const { data: territories } = await supabase.from('service_territories').select(
         company_name: (document.getElementById('newName') as HTMLInputElement).value,
         contact_name: (document.getElementById('newContact') as HTMLInputElement).value,
         phone: (document.getElementById('newPhone') as HTMLInputElement).value,
+        email: (document.getElementById('newEmail') as HTMLInputElement).value,
         territory: (document.getElementById('newTerritory') as HTMLSelectElement).value,
         status: 'pending',
         created_at: new Date().toISOString()

@@ -67,7 +67,26 @@ import MainLayout from "../layouts/MainLayout.astro";
       btn.disabled = false;
       btn.classList.remove('opacity-70');
     } else {
-      window.location.assign('/admin'); 
+      // 1) Da li je ovo pravi admin nalog (upisan u admins tabeli)?
+      const { data: isAdmin } = await supabase.rpc('is_admin');
+      if (isAdmin) {
+        window.location.assign('/admin');
+        return;
+      }
+
+      // 2) Inače, da li je ovo nalog kontraktora? Poveži ga sa profilom.
+      const { data: contractor } = await supabase.rpc('link_contractor_account');
+      if (contractor) {
+        window.location.assign('/dashboard');
+        return;
+      }
+
+      // 3) Ni admin ni kontraktor — nema pristup nijednom delu sajta.
+      alert("Ovaj nalog nije povezan ni sa admin panelom ni sa profilom kontraktora. Kontaktiraj administratora.");
+      await supabase.auth.signOut();
+      btn.innerText = "Sign In →";
+      btn.disabled = false;
+      btn.classList.remove('opacity-70');
     }
   });
 </script>

@@ -108,6 +108,26 @@ const menuItems = [
 
     <script>
       import { supabase } from "../lib/supabase";
+
+      // Zaštita: samo pravi admin nalozi (upisani u admins tabeli)
+      // smeju da vide /admin. Svi ostali (kontraktori, neulogovani,
+      // nepoznati) se izbacuju.
+      async function guardSession() {
+        const { data: { session } } = await supabase.auth.getSession();
+        if (!session) {
+          window.location.replace('/login');
+          return;
+        }
+        const { data: isAdmin } = await supabase.rpc('is_admin');
+        if (!isAdmin) {
+          window.location.replace('/login');
+        }
+      }
+      guardSession();
+      supabase.auth.onAuthStateChange((event) => {
+        if (event === 'SIGNED_OUT') window.location.replace('/login');
+      });
+
       const sidebar = document.getElementById('sidebar');
       const mobileOverlay = document.getElementById('mobileOverlay');
       const toggle = () => { sidebar?.classList.toggle('-translate-x-full'); mobileOverlay?.classList.toggle('hidden'); };
