@@ -3,9 +3,11 @@ import '../styles/global.css';
 
 interface Props {
   companyName?: string;
+  homeHref?: string;
+  loginHref?: string;
 }
 
-const { companyName = 'Contractor' } = Astro.props;
+const { companyName = 'Contractor', homeHref = '/dashboard', loginHref = '/login' } = Astro.props;
 ---
 <!DOCTYPE html>
 <html lang="en">
@@ -14,29 +16,30 @@ const { companyName = 'Contractor' } = Astro.props;
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>SawFleet | Contractor Dashboard</title>
   </head>
-  <body class="bg-[#000000] text-zinc-100 antialiased font-sans min-h-screen pb-24 lg:pb-0">
+  <body class="bg-[#000000] text-zinc-100 antialiased font-sans min-h-screen">
 
-    <header class="w-full h-20 border-b border-zinc-900 flex items-center justify-between px-4 lg:px-8 bg-[#000000]/80 backdrop-blur-md sticky top-0 z-30">
-      <a href="/dashboard" class="flex items-center gap-2">
-        <img src="/logo/logo.svg" alt="SawFleet" class="h-10 w-auto" />
+    <header class="w-full h-16 lg:h-20 border-b border-zinc-900 flex items-center justify-between px-4 lg:px-8 bg-[#000000]/80 backdrop-blur-md sticky top-0 z-30">
+      <a href={homeHref} class="flex items-center gap-2">
+        <img src="/logo/logo.svg" alt="SawFleet" class="h-8 lg:h-10 w-auto" />
       </a>
-      <div class="flex items-center gap-4">
-        <span id="companyNameLabel" class="text-[10px] font-mono font-bold uppercase tracking-[0.2em] text-zinc-400 hidden sm:block">{companyName}</span>
-        <button id="logoutBtn" class="h-10 px-4 flex items-center justify-center rounded-lg border border-red-900/30 bg-red-950/10 text-[10px] font-bold uppercase tracking-[0.2em] text-red-500 hover:bg-red-950/30 hover:border-red-900/50 transition-all">
+      <div class="flex items-center gap-3">
+        <span id="companyNameLabel" class="text-[9px] sm:text-[10px] font-mono font-bold uppercase tracking-[0.15em] sm:tracking-[0.2em] text-zinc-400 max-w-[120px] sm:max-w-none truncate">{companyName}</span>
+        <button id="logoutBtn" data-login-href={loginHref} class="h-9 lg:h-10 px-3 lg:px-4 flex items-center justify-center rounded-lg border border-red-900/30 bg-red-950/10 text-[9px] lg:text-[10px] font-bold uppercase tracking-[0.15em] lg:tracking-[0.2em] text-red-500 hover:bg-red-950/30 hover:border-red-900/50 transition-all shrink-0">
           Sign out
         </button>
       </div>
     </header>
 
-    <main class="max-w-4xl mx-auto w-full px-4 py-8 lg:py-12">
+    <main class="max-w-4xl mx-auto w-full px-4 py-6 lg:py-12 pb-[calc(env(safe-area-inset-bottom)+2rem)]">
       <slot />
     </main>
 
     <script>
       import { supabase } from "../lib/supabase";
-      document.getElementById('logoutBtn')?.addEventListener('click', async () => {
+      const logoutBtn = document.getElementById('logoutBtn') as HTMLButtonElement | null;
+      logoutBtn?.addEventListener('click', async () => {
         await supabase.auth.signOut();
-        window.location.href = '/login';
+        window.location.href = logoutBtn.dataset.loginHref || '/login';
       });
     </script>
   </body>

@@ -213,7 +213,7 @@ const { data: territories } = await supabase.from('service_territories').select(
           
           <td class="block md:table-cell py-1.5 md:px-6 md:py-4">
             <span class="md:hidden text-[9px] uppercase font-bold text-zinc-600 mr-2 w-20 inline-block">Phone:</span>
-            <span class="text-zinc-300">${item.phone || 'N/A'}</span>
+            <span class="text-zinc-300">${item.phone ? `<a href="tel:${item.phone}" onclick="event.stopPropagation()" class="hover:text-green-400 underline decoration-dotted underline-offset-2">${item.phone}</a>` : 'N/A'}</span>
           </td>
           
           <td class="block md:table-cell py-1.5 md:px-6 md:py-4">

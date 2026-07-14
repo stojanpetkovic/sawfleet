@@ -9,6 +9,22 @@ import AdminLayout from "../../layouts/AdminLayout.astro";
     
     <!-- LEVA STRANA: Glavni sadržaj -->
     <div class="flex-1 space-y-8 min-w-0 w-full">
+
+      <!-- NEEDS ATTENTION — uvek vidljivo, ne zavisi od hover-a (bitno za mobilne) -->
+      <div id="attentionBar" class="hidden grid-cols-3 gap-3">
+        <a href="/admin/service-leads?status=new" class="flex flex-col items-center justify-center gap-1 p-4 rounded-xl border border-green-900/40 bg-green-950/10 hover:bg-green-950/20 transition-colors">
+          <span id="attn-leads" class="text-2xl font-mono font-bold text-green-400">0</span>
+          <span class="text-[9px] font-bold uppercase tracking-[0.15em] text-green-500/70 text-center">New Leads</span>
+        </a>
+        <a href="/admin/contractors" class="flex flex-col items-center justify-center gap-1 p-4 rounded-xl border border-blue-900/40 bg-blue-950/10 hover:bg-blue-950/20 transition-colors">
+          <span id="attn-contractors" class="text-2xl font-mono font-bold text-blue-400">0</span>
+          <span class="text-[9px] font-bold uppercase tracking-[0.15em] text-blue-500/70 text-center">Pending Contractors</span>
+        </a>
+        <a href="/admin/grapple-saw-trucks" class="flex flex-col items-center justify-center gap-1 p-4 rounded-xl border border-purple-900/40 bg-purple-950/10 hover:bg-purple-950/20 transition-colors">
+          <span id="attn-trucks" class="text-2xl font-mono font-bold text-purple-400">0</span>
+          <span class="text-[9px] font-bold uppercase tracking-[0.15em] text-purple-500/70 text-center">Pending Assets</span>
+        </a>
+      </div>
       
       <!-- STATISTIKA: KONSOLIDOVANA -->
       <div class="grid grid-cols-1 md:grid-cols-3 gap-6 w-full">
@@ -23,17 +39,21 @@ import AdminLayout from "../../layouts/AdminLayout.astro";
             <a href="/admin/service-leads" class="text-[9px] uppercase tracking-[0.2em] text-zinc-600 hover:text-white border border-zinc-800 px-3 py-1.5 rounded-lg transition-colors whitespace-nowrap">Manage →</a>
           </div>
           
-          <div class="grid grid-cols-3 gap-4 pt-4 border-t border-zinc-900/50">
+          <div class="grid grid-cols-4 gap-4 pt-4 border-t border-zinc-900/50">
             <div>
               <p class="text-[9px] text-zinc-600 uppercase font-bold tracking-[0.1em]">New</p>
               <p id="count-new" class="text-sm font-mono text-zinc-300 mt-1">-</p>
             </div>
             <div>
-              <p class="text-[9px] text-zinc-600 uppercase font-bold tracking-[0.1em]">Approved</p>
+              <p class="text-[9px] text-zinc-600 uppercase font-bold tracking-[0.1em]">Apprv.</p>
               <p id="count-approved" class="text-sm font-mono text-green-500 mt-1">-</p>
             </div>
             <div>
-              <p class="text-[9px] text-zinc-600 uppercase font-bold tracking-[0.1em]">Rejected</p>
+              <p class="text-[9px] text-zinc-600 uppercase font-bold tracking-[0.1em]">Claimed</p>
+              <p id="count-claimed" class="text-sm font-mono text-blue-500 mt-1">-</p>
+            </div>
+            <div>
+              <p class="text-[9px] text-zinc-600 uppercase font-bold tracking-[0.1em]">Rejct.</p>
               <p id="count-rejected" class="text-sm font-mono text-red-500 mt-1">-</p>
             </div>
           </div>
@@ -215,24 +235,28 @@ import AdminLayout from "../../layouts/AdminLayout.astro";
     // === 1. LIDOVI ===
     const { data: leads } = await supabase.from('leads').select('*').order('created_at', { ascending: false });
     if (leads) {
+      const newCount = leads.filter(l => !l.status || l.status === 'new').length;
       document.getElementById('count-total')!.textContent = leads.length.toString();
-      document.getElementById('count-new')!.textContent = leads.filter(l => !l.status || l.status === 'new').length.toString();
+      document.getElementById('count-new')!.textContent = newCount.toString();
       document.getElementById('count-approved')!.textContent = leads.filter(l => l.status === 'approved').length.toString();
+      document.getElementById('count-claimed')!.textContent = leads.filter(l => l.status === 'claimed').length.toString();
       document.getElementById('count-rejected')!.textContent = leads.filter(l => l.status === 'rejected').length.toString();
+      document.getElementById('attn-leads')!.textContent = newCount.toString();
       
       document.getElementById('leadsTable')!.innerHTML = leads.slice(0, 3).map(l => {
         const statusBadge = l.status === 'approved' ? 'bg-green-500/10 border-green-500/20 text-green-400' : 
+                            l.status === 'claimed' ? 'bg-blue-500/10 border-blue-500/20 text-blue-400' : 
                             l.status === 'rejected' ? 'bg-red-500/10 border-red-500/20 text-red-400' : 
                             'bg-zinc-800/50 border-zinc-700 text-zinc-400';
         return `
         <tr class="block md:table-row bg-[#050505] border border-zinc-900 md:border-b md:border-zinc-900/50 md:border-x-0 md:border-t-0 rounded-b-xl md:rounded-none mb-4 md:mb-0 p-4 md:p-0 hover:bg-zinc-900/20 cursor-pointer transition-colors" onclick="window.location.href='/admin/leads/${l.id}'">
           <td class="block md:table-cell py-1.5 md:px-6 md:py-4">
             <span class="md:hidden text-[9px] uppercase font-bold text-zinc-600 mr-2 w-20 inline-block">Email:</span>
-            <span class="text-white">${l.email || 'N/A'}</span>
+            <span class="text-white">${l.email ? `<a href="mailto:${l.email}" onclick="event.stopPropagation()" class="hover:text-green-400 underline decoration-dotted underline-offset-2">${l.email}</a>` : 'N/A'}</span>
           </td>
           <td class="block md:table-cell py-1.5 md:px-6 md:py-4">
             <span class="md:hidden text-[9px] uppercase font-bold text-zinc-600 mr-2 w-20 inline-block">Phone:</span>
-            <span class="text-zinc-300">${l.phone || 'N/A'}</span>
+            <span class="text-zinc-300">${l.phone ? `<a href="tel:${l.phone}" onclick="event.stopPropagation()" class="hover:text-green-400 underline decoration-dotted underline-offset-2">${l.phone}</a>` : 'N/A'}</span>
           </td>
           <td class="block md:table-cell py-1.5 md:px-6 md:py-4">
             <span class="md:hidden text-[9px] uppercase font-bold text-zinc-600 mr-2 w-20 inline-block">County:</span>
@@ -257,6 +281,7 @@ import AdminLayout from "../../layouts/AdminLayout.astro";
       document.getElementById('count-c-active')!.textContent = contractors.filter(c => c.status === 'active').length.toString();
       document.getElementById('count-c-pending')!.textContent = contractors.filter(c => c.status === 'pending').length.toString();
       document.getElementById('count-c-rejected')!.textContent = contractors.filter(c => c.status === 'rejected').length.toString();
+      document.getElementById('attn-contractors')!.textContent = contractors.filter(c => c.status === 'pending').length.toString();
       
       document.getElementById('contractorsTable')!.innerHTML = contractors.slice(0, 3).map(c => {
         const statusBadge = c.status === 'active' ? 'bg-green-500/10 border-green-500/20 text-green-400' : 
@@ -295,6 +320,7 @@ import AdminLayout from "../../layouts/AdminLayout.astro";
       document.getElementById('count-t-approved')!.textContent = trucks.filter(t => t.approval_status === 'approved').length.toString();
       document.getElementById('count-t-pending')!.textContent = trucks.filter(t => t.approval_status === 'pending' || !t.approval_status).length.toString();
       document.getElementById('count-t-rejected')!.textContent = trucks.filter(t => t.approval_status === 'rejected').length.toString();
+      document.getElementById('attn-trucks')!.textContent = trucks.filter(t => t.approval_status === 'pending' || !t.approval_status).length.toString();
       
       document.getElementById('trucksTable')!.innerHTML = trucks.slice(0, 3).map(t => {
         const appStatus = t.approval_status || 'pending';
@@ -329,6 +355,14 @@ import AdminLayout from "../../layouts/AdminLayout.astro";
         </tr>
       `}).join('');
     }
+
+    // === PRIKAŽI "NEEDS ATTENTION" SAMO AKO IMA NEČEG DA SE ODOBRI ===
+    const attnTotal = (leads?.filter(l => !l.status || l.status === 'new').length || 0)
+      + (contractors?.filter(c => c.status === 'pending').length || 0)
+      + (trucks?.filter(t => t.approval_status === 'pending' || !t.approval_status).length || 0);
+    const attentionBar = document.getElementById('attentionBar')!;
+    attentionBar.classList.toggle('hidden', attnTotal === 0);
+    attentionBar.classList.toggle('grid', attnTotal > 0);
 
     // === LOGOVI ===
     const limitLogs = 4;

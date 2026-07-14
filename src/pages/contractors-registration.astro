@@ -1,0 +1,388 @@
+---
+import MainLayout from "../layouts/MainLayout.astro";
+import Header from "../components/layout/Header.astro";
+import ContractorBottomNav from "../components/layout/ContractorBottomNav.astro";
+import Footer from "../components/layout/Footer.astro";
+import { supabase } from "../lib/supabase";
+
+// 1. Učitavamo teritorije iz baze za formu
+const { data: territories } = await supabase
+  .from('service_territories')
+  .select('*')
+  .order('name', { ascending: true });
+---
+
+<MainLayout title="Register as a Contractor | SawFleet">
+  <Header />
+
+  <!-- GLAVNA POZADINA JE ČISTO CRNA -->
+  <main class="bg-[#000000]"> 
+
+    <!-- ============================================== -->
+    <!-- 1. HERO SEKCIJA SA FORMOM -->
+    <!-- ============================================== -->
+    <section class="relative pt-32 pb-16 px-4 sm:px-8">
+      <!-- Glow u pozadini -->
+      <div class="absolute top-0 left-1/2 -translate-x-1/2 w-full max-w-3xl h-[400px] bg-green-500/5 blur-[120px] rounded-full pointer-events-none"></div>
+
+      <div class="mx-auto max-w-[1320px] grid lg:grid-cols-2 gap-12 items-center relative z-10">
+        
+        <!-- LEVO: Tekstualni deo -->
+        <div class="max-w-[640px] font-sans selection:bg-green-500/30 selection:text-white lg:pt-4">
+          
+          <!-- Premium Minimal Badge (Slate) -->
+          <div class="inline-flex items-center gap-2 rounded-md border border-slate-700 bg-slate-800 px-3 py-1.5 shadow-sm">
+            <span class="relative flex h-2 w-2">
+              <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-500 opacity-75"></span>
+              <span class="relative inline-flex rounded-full h-2 w-2 bg-green-500"></span>
+            </span>
+            <span class="text-[10px] font-bold uppercase tracking-[0.2em] text-slate-300">
+              Contractor Network
+            </span>
+          </div>
+
+          <!-- Editorial Heading -->
+          <h1 class="mt-6 text-[2.75rem] sm:text-[3.5rem] lg:text-[4rem] font-bold leading-[1.05] tracking-tighter text-white">
+            Grow Your 
+            <span class="block mt-1 bg-gradient-to-r from-green-400 to-emerald-500 bg-clip-text text-transparent">
+              Tree Service
+            </span> 
+            Business.
+          </h1>
+
+          <!-- High-Contrast Subtitle -->
+          <p class="mt-6 text-base sm:text-lg leading-relaxed text-slate-300 font-medium">
+            Receive qualified homeowner requests from the exact cities and counties you choose to serve.
+          </p>
+
+          <!-- Clean System Description -->
+          <p class="mt-6 text-sm leading-relaxed text-slate-400 border-l-2 border-slate-700 pl-4 py-1">
+            SawFleet automatically routes localized requests based on your specific service criteria, capacity, and real-time availability.
+          </p>
+
+          <!-- Benefits Grid: Kompaktni "App" layout (Slate stil) -->
+          <div class="mt-10 space-y-5 border-t border-slate-800 pt-8">
+            {[
+              "Qualified Homeowner Requests", 
+              "Smart Request Matching", 
+              "No Cold Calling"
+            ].map((title, i) => (
+              <div class="flex items-start gap-4 group">
+                <div class="mt-0.5 flex h-6 w-6 shrink-0 items-center justify-center rounded border border-slate-700 bg-slate-800 text-[10px] font-mono text-green-500 group-hover:border-green-500/50 transition-colors">
+                  0{i + 1}
+                </div>
+                <div>
+                  <h3 class="text-xs font-bold text-white uppercase tracking-wider">{title}</h3>
+                  <p class="mt-1 text-[11px] leading-relaxed text-slate-400">
+                    {i === 0 && "Direct integration with homeowners intent on booking."}
+                    {i === 1 && "Projects filtered by your strict coverage radius."}
+                    {i === 2 && "Build your pipeline on high-intent inbound dispatch."}
+                  </p>
+                </div>
+              </div>
+            ))}
+          </div>
+
+        </div>
+
+        <!-- DESNO: Forma (Partner Intake) u SLATE boji -->
+        <div class="w-full max-w-[520px] lg:ml-auto">
+        <div id="formCard" class="rounded-2xl sm:rounded-3xl border border-slate-700 bg-slate-900 p-6 sm:p-8 shadow-[0_20px_50px_-15px_rgba(0,0,0,0.5)] relative overflow-hidden">
+          
+          <!-- Dekorativni sjaj u uglu forme -->
+          <div class="absolute top-0 right-0 -mr-16 -mt-16 w-32 h-32 bg-green-500/10 blur-[50px] rounded-full pointer-events-none"></div>
+
+          <div class="border-b border-slate-700/50 pb-5 relative">
+            <span class="text-[10px] font-mono font-bold uppercase tracking-[0.2em] text-green-400">// Partner Intake</span>
+            <h2 class="mt-2 text-2xl font-bold tracking-tight text-white">Join Contractor Network</h2>
+            <p class="mt-1 text-xs text-slate-400">Build your pipeline with high-intent inbound dispatch.</p>
+          </div>
+
+          <form id="contractorForm" class="mt-6 space-y-5 relative">
+            <div>
+              <label for="company" class="mb-2 block text-[10px] font-bold uppercase tracking-[0.15em] text-slate-400">Company Name</label>
+              <input id="company" name="company" type="text" required placeholder="e.g. South Florida Tree Care LLC" class="h-12 w-full rounded-xl border border-slate-600 bg-slate-800 px-4 text-sm text-white outline-none focus:border-green-500 focus:ring-1 focus:ring-green-500 placeholder:text-slate-500"/>
+            </div>
+
+            <div class="grid gap-4 sm:grid-cols-2">
+              <div>
+                <label for="name" class="mb-2 block text-[10px] font-bold uppercase tracking-[0.15em] text-slate-400">Contact Name</label>
+                <input id="name" name="name" type="text" required placeholder="John Doe" class="h-12 w-full rounded-xl border border-slate-600 bg-slate-800 px-4 text-sm text-white outline-none focus:border-green-500 focus:ring-1 focus:ring-green-500 placeholder:text-slate-500"/>
+              </div>
+              <div>
+                <label for="phone" class="mb-2 block text-[10px] font-bold uppercase tracking-[0.15em] text-slate-400">Direct Phone</label>
+                <input id="phone" name="phone" type="tel" required placeholder="(555) 000-0000" class="h-12 w-full rounded-xl border border-slate-600 bg-slate-800 px-4 text-sm text-white outline-none focus:border-green-500 focus:ring-1 focus:ring-green-500 placeholder:text-slate-500"/>
+              </div>
+            </div>
+
+            <div>
+              <label for="county" class="mb-2 block text-[10px] font-bold uppercase tracking-[0.15em] text-slate-400">Service Territory</label>
+              <div class="relative">
+                <select id="county" name="county" required class="h-12 w-full appearance-none rounded-xl border border-slate-600 bg-slate-800 px-4 text-sm text-white outline-none focus:border-green-500 focus:ring-1 focus:ring-green-500">
+                  <option value="" selected disabled class="text-slate-500">Select Main Territory</option>
+                  <!-- DINAMIČKI PRIKAZ IZ BAZE -->
+                  {territories?.map((t) => (
+                    <option value={t.name}>{t.name}</option>
+                  ))}
+                </select>
+                <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-4 text-slate-400">
+                  <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" /></svg>
+                </div>
+              </div>
+            </div>
+
+            <div class="pt-2 border-t border-slate-700/50">
+              <label for="email" class="mb-2 block text-[10px] font-bold uppercase tracking-[0.15em] text-slate-400">Email <span class="text-slate-500">(used for login)</span></label>
+              <input id="email" name="email" type="email" required placeholder="company@example.com" class="h-12 w-full rounded-xl border border-slate-600 bg-slate-800 px-4 text-sm text-white outline-none focus:border-green-500 focus:ring-1 focus:ring-green-500 placeholder:text-slate-500"/>
+            </div>
+            <div>
+              <label for="password" class="mb-2 block text-[10px] font-bold uppercase tracking-[0.15em] text-slate-400">Password</label>
+              <input id="password" name="password" type="password" required minlength="6" placeholder="min. 6 characters" class="h-12 w-full rounded-xl border border-slate-600 bg-slate-800 px-4 text-sm text-white outline-none focus:border-green-500 focus:ring-1 focus:ring-green-500 placeholder:text-slate-500"/>
+            </div>
+
+            <button type="submit" id="submitBtn" class="mt-6 flex h-14 w-full items-center justify-center rounded-xl bg-green-500 text-sm font-bold text-slate-950 transition-all hover:bg-green-400 active:scale-[0.98] shadow-[0_0_20px_rgba(34,197,94,0.2)]">
+              Apply For Network Access →
+            </button>
+            <p id="errorMsg" class="hidden text-center text-xs text-red-500"></p>
+          </form>
+
+          <div class="mt-6 flex items-center justify-center gap-2 border-t border-slate-700/50 pt-5 text-[9px] font-mono font-bold uppercase tracking-[0.2em] text-slate-500">
+            <span>🔒 Vetted Operator Screening</span>
+          </div>
+        </div>
+
+        <!-- STANJE POSLE USPEŠNE PRIJAVE -->
+        <div id="successCard" class="hidden rounded-2xl sm:rounded-3xl border border-green-800/40 bg-green-950/10 backdrop-blur-sm p-8 text-center shadow-[0_20px_50px_-15px_rgba(0,0,0,0.5)]">
+          <span class="text-[10px] font-mono font-bold uppercase tracking-[0.2em] text-green-500">// Application Received</span>
+          <h2 class="mt-4 text-xl font-bold text-white">Application submitted!</h2>
+          <p class="mt-3 text-sm text-slate-400" id="successDetail">
+            An administrator will review your application. Once approved, you'll get an email and can sign in to start claiming leads.
+          </p>
+          <a href="/login" class="mt-6 inline-flex h-11 px-6 items-center justify-center rounded-xl border border-slate-700 text-sm font-bold text-slate-300 hover:border-slate-500 transition-all">Go to login →</a>
+        </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- ============================================== -->
+    <!-- 2. GROWTH ACCELERATORS (BENEFITS) -->
+    <!-- ============================================== -->
+    <section id="benefits" class="py-16 lg:py-24 bg-[#000000] border-t border-slate-800">
+      <div class="mx-auto max-w-[1320px] px-4 sm:px-8">
+        
+        <!-- Naslov -->
+        <div class="mb-12">
+          <span class="text-[10px] font-mono font-bold uppercase tracking-[0.2em] text-green-500">// Growth Accelerators</span>
+          <h2 class="mt-3 text-2xl sm:text-4xl font-bold text-white tracking-tighter">Why join SawFleet?</h2>
+        </div>
+
+        <!-- Benefits Grid u Slate Bojama -->
+        <div class="grid gap-6 grid-cols-1 sm:grid-cols-2 lg:grid-cols-4">
+          {[
+            { title: "Direct Dispatch", desc: "Skip lead marketplaces. Get high-intent requests ready to book." },
+            { title: "Market Control", desc: "Set your service radius by zip or county. You operate where you want." },
+            { title: "Smart Matching", desc: "Engine matches requests based on your current capacity and gear." },
+            { title: "Transparent Fees", desc: "Per-request pricing. No monthly retainers or long-term lock-ins." }
+          ].map((item, index) => (
+            <div class="group rounded-2xl border border-slate-700 bg-slate-900 p-6 hover:border-slate-600 transition-colors">
+              <div class="flex items-center gap-3 mb-4">
+                <span class="text-[10px] font-mono font-bold text-green-500">0{index + 1}</span>
+                <h3 class="text-sm font-bold text-white uppercase tracking-wide">{item.title}</h3>
+              </div>
+              <p class="text-[12px] text-slate-400 leading-relaxed">{item.desc}</p>
+            </div>
+          ))}
+        </div>
+
+      </div>
+    </section>
+
+    <!-- ============================================== -->
+    <!-- 3. WORKFLOW ARCHITECTURE (HOW IT WORKS) -->
+    <!-- ============================================== -->
+    <section id="how-it-works" class="relative overflow-hidden bg-[#000000] py-16 lg:py-24 border-t border-slate-800 font-sans selection:bg-green-500/30 selection:text-white">
+      
+      <div class="relative z-10 mx-auto max-w-[1320px] px-4 sm:px-8">
+        
+        <!-- Header -->
+        <div class="mb-16 max-w-2xl">
+          <span class="inline-flex items-center gap-2 text-[10px] font-bold uppercase tracking-[0.2em] text-green-500">
+            // Workflow architecture
+          </span>
+          <h2 class="mt-4 text-3xl sm:text-5xl font-bold tracking-tighter text-white">
+            Engineered for simplicity.
+          </h2>
+          <p class="mt-6 text-sm sm:text-base leading-relaxed text-slate-400">
+            Every request moves through a strictly optimized, deterministic pipeline. No friction, no black boxes—just a seamless transition from intake to match.
+          </p>
+        </div>
+
+        <!-- Mreža faza (Optimizovana za Pro Slate izgled) -->
+        <div class="grid gap-6 lg:grid-cols-3">
+          
+          <!-- FAZA 1 -->
+          <div class="rounded-2xl border border-slate-700 bg-slate-900 p-6 sm:p-8">
+            <div class="flex items-center justify-between border-b border-slate-800 pb-4 mb-6">
+              <span class="text-[9px] font-bold tracking-[0.2em] text-slate-500 uppercase">Phase 01</span>
+              <span class="text-[9px] font-mono text-green-500">Intake</span>
+            </div>
+            <div class="space-y-6">
+              {[
+                { n: "01", t: "Homeowner Submits", d: "Project details and location are captured instantly." },
+                { n: "02", t: "System Validation", d: "Service type and regional bounds are verified." }
+              ].map(step => (
+                <div>
+                  <div class="flex items-baseline gap-3">
+                    <span class="font-mono text-[10px] font-bold text-slate-600">{step.n} //</span>
+                    <h3 class="text-sm font-bold text-white uppercase tracking-wider">{step.t}</h3>
+                  </div>
+                  <p class="mt-2 text-[11px] leading-relaxed text-slate-400 pl-8">{step.d}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          <!-- FAZA 2: Istaknuta -->
+          <div class="rounded-2xl border border-green-500/30 bg-green-900/10 p-6 sm:p-8 relative overflow-hidden">
+            <div class="absolute top-0 right-0 w-40 h-40 bg-green-500/5 blur-[50px] rounded-full"></div>
+            <div class="flex items-center justify-between border-b border-green-500/20 pb-4 mb-6 relative">
+              <span class="text-[9px] font-bold tracking-[0.2em] text-green-500 uppercase">Phase 02</span>
+              <span class="animate-pulse h-1.5 w-1.5 rounded-full bg-green-500"></span>
+            </div>
+            <div class="flex items-baseline gap-3 relative">
+              <span class="font-mono text-[10px] font-bold text-green-500">03 //</span>
+              <h3 class="text-sm font-bold text-white uppercase tracking-wider">Smart Matching</h3>
+            </div>
+            <p class="mt-4 text-[12px] leading-relaxed text-slate-300 pl-8 relative">
+              Proprietary routing algorithm cross-references availability, rating metrics, and proximity to match qualified contractors in the micro-market.
+            </p>
+          </div>
+
+          <!-- FAZA 3 -->
+          <div class="rounded-2xl border border-slate-700 bg-slate-900 p-6 sm:p-8">
+            <div class="flex items-center justify-between border-b border-slate-800 pb-4 mb-6">
+              <span class="text-[9px] font-bold tracking-[0.2em] text-slate-500 uppercase">Phase 03</span>
+              <span class="text-[9px] font-mono text-slate-400">Handshake</span>
+            </div>
+            <div class="space-y-6">
+              {[
+                { n: "04", t: "Contractor Alert", d: "Instant access to project specifications and metadata." },
+                { n: "05", t: "Direct Connection", d: "Seamless scheduling and estimate finalization." }
+              ].map(step => (
+                <div>
+                  <div class="flex items-baseline gap-3">
+                    <span class="font-mono text-[10px] font-bold text-slate-600">{step.n} //</span>
+                    <h3 class="text-sm font-bold text-white uppercase tracking-wider">{step.t}</h3>
+                  </div>
+                  <p class="mt-2 text-[11px] leading-relaxed text-slate-400 pl-8">{step.d}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+  </main>
+  
+  <Footer />
+  <ContractorBottomNav />
+</MainLayout>
+
+<!-- SCRIPT ZA FORMU I ANALITIKU -->
+<script>
+  import { supabase } from "../lib/supabase";
+
+  // FUNKCIJA ZA HVATANJE IZVORA SAOBRAĆAJA
+  function getTrafficSource() {
+    const params = new URLSearchParams(window.location.search);
+    const utmSource = params.get('utm_source');
+    if (utmSource) return utmSource.toLowerCase();
+
+    const referrer = document.referrer.toLowerCase();
+    if (referrer.includes('google')) return 'google';
+    if (referrer.includes('facebook') || referrer.includes('fb.com') || referrer.includes('instagram')) return 'facebook';
+    if (referrer.includes('bing')) return 'bing';
+
+    return 'organic';
+  }
+
+  const form = document.getElementById('contractorForm') as HTMLFormElement;
+  const btn = document.getElementById('submitBtn') as HTMLButtonElement;
+  const errorMsg = document.getElementById('errorMsg')!;
+  const formCard = document.getElementById('formCard')!;
+  const successCard = document.getElementById('successCard')!;
+  const successDetail = document.getElementById('successDetail')!;
+
+  form?.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    errorMsg.classList.add('hidden');
+    btn.disabled = true;
+    btn.innerText = "Processing...";
+
+    const formData = new FormData(form);
+    const trafficSource = getTrafficSource();
+
+    const company_name = formData.get('company') as string;
+    const contact_name = formData.get('name') as string;
+    const phone = formData.get('phone') as string;
+    const territory = formData.get('county') as string;
+    const email = (formData.get('email') as string).trim().toLowerCase();
+    const password = formData.get('password') as string;
+
+    // 1) Create the login account
+    const { data: signUpData, error: signUpError } = await supabase.auth.signUp({
+      email,
+      password,
+      options: { emailRedirectTo: `${window.location.origin}/login` },
+    });
+
+    if (signUpError) {
+      errorMsg.textContent = signUpError.message.includes('already registered')
+        ? 'This email is already registered. Try signing in instead.'
+        : 'Error: ' + signUpError.message;
+      errorMsg.classList.remove('hidden');
+      btn.disabled = false;
+      btn.innerText = "Apply For Network Access →";
+      return;
+    }
+
+    const userId = signUpData.user?.id;
+
+    // 2) Create the company profile, already linked to the account
+    const { error: insertError } = await supabase.from('contractors').insert([{
+      company_name,
+      contact_name,
+      phone,
+      email,
+      territory,
+      status: 'pending',
+      user_id: userId,
+      source: trafficSource,
+      created_at: new Date().toISOString(),
+    }]);
+
+    if (insertError) {
+      errorMsg.textContent = 'Your account was created, but the company profile could not be saved (' + insertError.message + '). Please contact the administrator.';
+      errorMsg.classList.remove('hidden');
+      btn.disabled = false;
+      btn.innerText = "Apply For Network Access →";
+      return;
+    }
+
+    if (!signUpData.session) {
+      successDetail.textContent = 'First confirm your email (we sent you a link), then wait for an administrator to approve your application.';
+    }
+
+    formCard.classList.add('hidden');
+    successCard.classList.remove('hidden');
+
+    fetch('/api/notify-new-contractor', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ companyName: company_name, territory }),
+    }).catch(() => {});
+  });
+</script>

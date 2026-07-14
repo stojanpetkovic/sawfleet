@@ -2,7 +2,7 @@
 // Možeš dodati props ako želiš da menjaš linkove po stranici
 const navigation = [
   { title: "Home", href: "/" },
-  { title: "For Contractors", href: "/contractors" },
+  { title: "For Contractors", href: "/contractors-registration" },
   { title: "Fleet Ops", href: "/truck-registration" },
   { title: "Service Areas", href: "/service-areas" }
 ];
@@ -24,7 +24,7 @@ const navigation = [
         </a>
       ))}
       <!-- Istaknuto Portal dugme (Sada sa zelenim akcentom) -->
-      <a href="/login" class="h-9 px-4 flex items-center justify-center rounded-lg border border-green-500/20 bg-green-500/5 text-[11px] font-mono font-bold uppercase tracking-[0.2em] text-green-500 hover:bg-green-500/10 transition-all">
+      <a href="/portal" class="h-9 px-4 flex items-center justify-center rounded-lg border border-green-500/20 bg-green-500/5 text-[11px] font-mono font-bold uppercase tracking-[0.2em] text-green-500 hover:bg-green-500/10 transition-all">
         Portal
       </a>
     </nav>
@@ -55,7 +55,7 @@ const navigation = [
           {item.title}
         </a>
       ))}
-      <a href="/login" class="text-sm font-bold uppercase tracking-[0.2em] text-zinc-400 hover:text-green-500 transition-colors">Portal</a>
+      <a href="/portal" class="text-sm font-bold uppercase tracking-[0.2em] text-zinc-400 hover:text-green-500 transition-colors">Portal</a>
     </nav>
   </div>
 </div>

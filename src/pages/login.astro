@@ -4,13 +4,13 @@ import MainLayout from "../layouts/MainLayout.astro";
 
 <MainLayout title="Login | SawFleet Access">
   <div class="relative min-h-screen flex items-center justify-center bg-[#000000] p-4 overflow-hidden">
-    <!-- Dekorativni gradient pozadine -->
+    <!-- Background gradient -->
     <div class="absolute inset-0 z-0">
       <div class="absolute top-[-20%] left-[-10%] w-[500px] h-[500px] bg-green-500/5 blur-[120px] rounded-full"></div>
       <div class="absolute bottom-[-10%] right-[-10%] w-[400px] h-[400px] bg-blue-500/5 blur-[100px] rounded-full"></div>
     </div>
 
-    <!-- Login kontejner -->
+    <!-- Login container -->
     <div class="relative z-10 w-full max-w-[400px]">
       <div class="mb-8 text-center">
         <span class="text-[10px] font-mono font-bold uppercase tracking-[0.3em] text-green-500">// System Access</span>
@@ -31,9 +31,22 @@ import MainLayout from "../layouts/MainLayout.astro";
           <button type="submit" id="submitBtn" class="flex h-12 w-full items-center justify-center rounded-xl bg-green-500 text-sm font-bold text-slate-950 transition-all hover:bg-green-400 active:scale-[0.98]">
             Sign In →
           </button>
+          <button type="button" id="forgotBtn" class="w-full text-center text-[11px] text-zinc-500 hover:text-zinc-300 transition-colors pt-1">
+            Forgot password?
+          </button>
         </form>
       </div>
-      
+
+      <p class="mt-6 text-center text-xs text-zinc-500">
+        Don't have a contractor account? <a href="/contractors-registration" class="text-green-500 hover:text-green-400 font-bold">Register here</a>
+      </p>
+
+      <div class="mt-4 flex items-center justify-center gap-4 text-[10px] font-mono uppercase tracking-widest text-zinc-600">
+        <a href="/truck-login" class="hover:text-zinc-300">Fleet owner login</a>
+        <span>·</span>
+        <a href="/admin/login" class="hover:text-zinc-300">Staff login</a>
+      </div>
+
       <p class="mt-8 text-center text-[10px] text-zinc-600 font-mono tracking-widest uppercase">
         &copy; {new Date().getFullYear()} SawFleet Operations
       </p>
@@ -49,12 +62,12 @@ import MainLayout from "../layouts/MainLayout.astro";
 
   form.addEventListener('submit', async (e) => {
     e.preventDefault();
-    
-    // Vizuelni feedback
+
+    // Visual feedback
     btn.innerText = "Authenticating...";
     btn.disabled = true;
     btn.classList.add('opacity-70');
-    
+
     const formData = new FormData(form);
     const email = formData.get('email') as string;
     const password = formData.get('password') as string;
@@ -67,26 +80,35 @@ import MainLayout from "../layouts/MainLayout.astro";
       btn.disabled = false;
       btn.classList.remove('opacity-70');
     } else {
-      // 1) Da li je ovo pravi admin nalog (upisan u admins tabeli)?
-      const { data: isAdmin } = await supabase.rpc('is_admin');
-      if (isAdmin) {
-        window.location.assign('/admin');
-        return;
-      }
-
-      // 2) Inače, da li je ovo nalog kontraktora? Poveži ga sa profilom.
+      // This is the contractor portal — link the account to their profile.
       const { data: contractor } = await supabase.rpc('link_contractor_account');
       if (contractor) {
         window.location.assign('/dashboard');
         return;
       }
 
-      // 3) Ni admin ni kontraktor — nema pristup nijednom delu sajta.
-      alert("Ovaj nalog nije povezan ni sa admin panelom ni sa profilom kontraktora. Kontaktiraj administratora.");
+      // Not a contractor account — point them to the right portal.
+      alert("This account isn't registered as a contractor. If you're staff, use /admin/login. If you're a fleet owner, use /truck-login.");
       await supabase.auth.signOut();
       btn.innerText = "Sign In →";
       btn.disabled = false;
       btn.classList.remove('opacity-70');
+    }
+  });
+
+  document.getElementById('forgotBtn')?.addEventListener('click', async () => {
+    const email = (form.elements.namedItem('email') as HTMLInputElement)?.value;
+    if (!email) {
+      alert('Enter your email in the field above first, then click again.');
+      return;
+    }
+    const { error } = await supabase.auth.resetPasswordForEmail(email, {
+      redirectTo: `${window.location.origin}/reset-password`,
+    });
+    if (error) {
+      alert('Error: ' + error.message);
+    } else {
+      alert('We sent you an email with a password reset link (check your spam folder too).');
     }
   });
 </script>

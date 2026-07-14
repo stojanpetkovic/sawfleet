@@ -4,63 +4,84 @@ import AdminLayout from "../../layouts/AdminLayout.astro";
 ---
 
 <AdminLayout>
-  <div class="w-full max-w-7xl mx-auto space-y-6 md:space-y-8 font-sans">
+  <div class="w-full flex flex-col gap-8 min-w-0">
     
     <!-- HEADER -->
-    <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 border-b border-slate-800 pb-6">
+    <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 border-b border-zinc-900 pb-6">
       <div>
-        <h1 class="text-xl md:text-2xl font-bold text-white tracking-wide">Traffic & Lead Analytics</h1>
-        <p class="text-[9px] md:text-[10px] uppercase tracking-[0.2em] text-slate-500 mt-1 md:mt-2">Performance and acquisition sources</p>
+        <span class="text-[10px] font-mono font-bold uppercase tracking-[0.2em] text-green-500">// Traffic & Conversions</span>
+        <h1 class="mt-2 text-2xl font-bold tracking-tight text-white sm:text-3xl">Analytics & Performance</h1>
       </div>
       
-      <select id="analyticsFilter" class="w-full sm:w-auto bg-slate-900 border border-slate-700 text-[10px] font-bold uppercase tracking-[0.2em] p-3 rounded-lg text-slate-300 outline-none focus:border-green-500/50 transition-colors cursor-pointer">
+      <select id="analyticsFilter" class="w-full sm:w-auto bg-[#050505] border border-zinc-800 text-[10px] font-bold uppercase tracking-[0.2em] p-3 rounded-lg text-zinc-300 outline-none focus:border-green-500/50 transition-colors cursor-pointer">
         <option value="7">Last 7 Days</option>
         <option value="30">Last 30 Days</option>
         <option value="90">Last 90 Days</option>
       </select>
     </div>
 
-    <!-- KARTICE SA STATISTIKOM PO IZVORIMA -->
-    <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6">
+    <!-- KARTICE SA STATISTIKOM -->
+    <div class="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-6 gap-4 md:gap-6 w-full">
+      
       <!-- Total Leads -->
-      <div class="bg-slate-900 border border-slate-800 p-4 md:p-6 rounded-2xl shadow-sm hover:border-slate-700 transition-colors">
-        <p class="text-[9px] font-bold uppercase tracking-[0.2em] text-slate-500">Total Leads</p>
-        <h2 id="stat-total" class="text-3xl font-bold text-white mt-2 tracking-tighter">0</h2>
+      <div class="bg-[#050505] border border-zinc-900 p-5 rounded-xl shadow-xl hover:border-zinc-800 transition-colors flex flex-col justify-between">
+        <p class="text-[9px] font-bold uppercase tracking-[0.2em] text-zinc-500">Total Leads</p>
+        <h2 id="stat-total" class="text-2xl font-mono font-bold text-white mt-4">-</h2>
       </div>
+
+      <!-- Claimed Leads -->
+      <div class="bg-[#050505] border border-zinc-900 p-5 rounded-xl border-t-2 border-t-green-500 shadow-xl hover:border-zinc-800 transition-colors relative overflow-hidden flex flex-col justify-between">
+        <div class="absolute top-0 right-0 w-24 h-24 bg-green-500/5 blur-[30px] rounded-full pointer-events-none"></div>
+        <p class="text-[9px] font-bold uppercase tracking-[0.2em] text-green-500 relative z-10">Claimed</p>
+        <h2 id="stat-claimed" class="text-2xl font-mono font-bold text-white mt-4 relative z-10">-</h2>
+      </div>
+
+      <!-- Conversion Rate -->
+      <div class="bg-[#050505] border border-zinc-900 p-5 rounded-xl border-t-2 border-t-blue-500 shadow-xl hover:border-zinc-800 transition-colors relative overflow-hidden flex flex-col justify-between">
+        <div class="absolute top-0 right-0 w-24 h-24 bg-blue-500/5 blur-[30px] rounded-full pointer-events-none"></div>
+        <p class="text-[9px] font-bold uppercase tracking-[0.2em] text-blue-400 relative z-10">Conversion</p>
+        <h2 id="stat-conversion" class="text-2xl font-mono font-bold text-white mt-4 relative z-10">-</h2>
+      </div>
+      
       <!-- Google Ads -->
-      <div class="bg-slate-900 border border-slate-800 p-4 md:p-6 rounded-2xl border-t-4 border-t-blue-500 shadow-sm hover:border-slate-700 transition-colors relative overflow-hidden">
-        <div class="absolute top-0 right-0 w-24 h-24 bg-blue-500/10 blur-[30px] rounded-full pointer-events-none"></div>
-        <p class="text-[9px] font-bold uppercase tracking-[0.2em] text-blue-400 relative z-10">Google Ads</p>
-        <h2 id="stat-google" class="text-3xl font-bold text-white mt-2 tracking-tighter relative z-10">0</h2>
+      <div class="bg-[#050505] border border-zinc-900 p-5 rounded-xl shadow-xl hover:border-zinc-800 transition-colors flex flex-col justify-between">
+        <p class="text-[9px] font-bold uppercase tracking-[0.2em] text-zinc-500">Google Ads</p>
+        <h2 id="stat-google" class="text-2xl font-mono font-bold text-white mt-4">-</h2>
       </div>
+
       <!-- Meta / FB -->
-      <div class="bg-slate-900 border border-slate-800 p-4 md:p-6 rounded-2xl border-t-4 border-t-purple-500 shadow-sm hover:border-slate-700 transition-colors relative overflow-hidden">
-        <div class="absolute top-0 right-0 w-24 h-24 bg-purple-500/10 blur-[30px] rounded-full pointer-events-none"></div>
-        <p class="text-[9px] font-bold uppercase tracking-[0.2em] text-purple-400 relative z-10">Meta / FB</p>
-        <h2 id="stat-meta" class="text-3xl font-bold text-white mt-2 tracking-tighter relative z-10">0</h2>
+      <div class="bg-[#050505] border border-zinc-900 p-5 rounded-xl shadow-xl hover:border-zinc-800 transition-colors flex flex-col justify-between">
+        <p class="text-[9px] font-bold uppercase tracking-[0.2em] text-zinc-500">Meta / FB</p>
+        <h2 id="stat-meta" class="text-2xl font-mono font-bold text-white mt-4">-</h2>
       </div>
+
       <!-- Organic -->
-      <div class="bg-slate-900 border border-slate-800 p-4 md:p-6 rounded-2xl border-t-4 border-t-green-500 shadow-sm hover:border-slate-700 transition-colors relative overflow-hidden">
-        <div class="absolute top-0 right-0 w-24 h-24 bg-green-500/10 blur-[30px] rounded-full pointer-events-none"></div>
-        <p class="text-[9px] font-bold uppercase tracking-[0.2em] text-green-400 relative z-10">Organic</p>
-        <h2 id="stat-organic" class="text-3xl font-bold text-white mt-2 tracking-tighter relative z-10">0</h2>
+      <div class="bg-[#050505] border border-zinc-900 p-5 rounded-xl shadow-xl hover:border-zinc-800 transition-colors flex flex-col justify-between">
+        <p class="text-[9px] font-bold uppercase tracking-[0.2em] text-zinc-500">Organic</p>
+        <h2 id="stat-organic" class="text-2xl font-mono font-bold text-white mt-4">-</h2>
       </div>
     </div>
 
     <!-- GRAFIKONI -->
-    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 md:gap-8">
+    <div class="grid grid-cols-1 xl:grid-cols-3 gap-6 w-full">
       
       <!-- GLAVNI GRAFIKON (Trendovi) -->
-      <div class="lg:col-span-2 bg-slate-900 border border-slate-800 p-6 md:p-8 rounded-2xl shadow-[0_10px_40px_-10px_rgba(0,0,0,0.5)]">
-        <h3 class="text-[10px] font-bold uppercase tracking-[0.2em] text-slate-400 mb-6">Lead Volume Trend</h3>
-        <div class="relative w-full h-[250px] md:h-[350px]">
+      <div class="xl:col-span-2 bg-[#050505] border border-zinc-900 p-6 md:p-8 rounded-xl shadow-xl flex flex-col">
+        <div class="flex justify-between items-center mb-6">
+          <h3 class="text-[10px] font-bold uppercase tracking-[0.2em] text-zinc-500">Lead Volume vs Conversion Trend</h3>
+          <div class="flex gap-4">
+            <div class="flex items-center gap-2"><span class="w-2 h-2 rounded-full bg-blue-500"></span><span class="text-[9px] text-zinc-400 font-mono">Total</span></div>
+            <div class="flex items-center gap-2"><span class="w-2 h-2 rounded-full bg-green-500"></span><span class="text-[9px] text-zinc-400 font-mono">Claimed</span></div>
+          </div>
+        </div>
+        <div class="relative w-full flex-1 min-h-[250px] md:min-h-[350px]">
           <canvas id="lineChart"></canvas>
         </div>
       </div>
 
       <!-- DOUGHNUT GRAFIKON (Izvori) -->
-      <div class="lg:col-span-1 bg-slate-900 border border-slate-800 p-6 md:p-8 rounded-2xl shadow-[0_10px_40px_-10px_rgba(0,0,0,0.5)] flex flex-col">
-        <h3 class="text-[10px] font-bold uppercase tracking-[0.2em] text-slate-400 mb-6">Acquisition Source</h3>
+      <div class="xl:col-span-1 bg-[#050505] border border-zinc-900 p-6 md:p-8 rounded-xl shadow-xl flex flex-col">
+        <h3 class="text-[10px] font-bold uppercase tracking-[0.2em] text-zinc-500 mb-6">Acquisition Source</h3>
         <div class="relative w-full flex-1 min-h-[250px] flex items-center justify-center">
           <canvas id="donutChart"></canvas>
         </div>
@@ -82,7 +103,6 @@ import AdminLayout from "../../layouts/AdminLayout.astro";
     const date = new Date();
     date.setDate(date.getDate() - parseInt(days));
     
-    // Povlačimo i kolonu "source" iz tabele leads
     const { data: leads } = await supabase
       .from('leads')
       .select('created_at, status, source')
@@ -90,37 +110,50 @@ import AdminLayout from "../../layouts/AdminLayout.astro";
 
     if (!leads) return;
 
-    // 1. OBRADA PODATAKA ZA IZVORE
+    // 1. OBRADA PODATAKA ZA IZVORE I KONVERZIJE
     let google = 0, meta = 0, organic = 0, other = 0;
+    let claimedCount = 0;
 
     leads.forEach(lead => {
+      // Izbroj izvore
       const src = lead.source ? lead.source.toLowerCase() : 'organic'; 
       if (src.includes('google') || src.includes('gads')) google++;
       else if (src.includes('fb') || src.includes('facebook') || src.includes('meta') || src.includes('ig') || src.includes('instagram')) meta++;
       else if (src.includes('organic') || src.includes('direct') || src.includes('seo')) organic++;
       else other++;
+
+      // Izbroj konverzije (preuzete lidove)
+      if (lead.status === 'claimed') claimedCount++;
     });
 
+    const totalCount = leads.length;
+    const conversionRate = totalCount > 0 ? ((claimedCount / totalCount) * 100).toFixed(1) : '0.0';
+
     // Ažuriranje brojčanih kartica
-    document.getElementById('stat-total')!.textContent = leads.length.toString();
+    document.getElementById('stat-total')!.textContent = totalCount.toString();
+    document.getElementById('stat-claimed')!.textContent = claimedCount.toString();
+    document.getElementById('stat-conversion')!.textContent = `${conversionRate}%`;
     document.getElementById('stat-google')!.textContent = google.toString();
     document.getElementById('stat-meta')!.textContent = meta.toString();
     document.getElementById('stat-organic')!.textContent = organic.toString();
 
     // 2. OBRADA PODATAKA ZA VREMENSKI TREND (Line Chart)
     const labels: string[] = [];
-    const counts: number[] = [];
+    const totalCountsArray: number[] = [];
+    const claimedCountsArray: number[] = [];
     
     for (let i = parseInt(days) - 1; i >= 0; i--) {
       const d = new Date();
       d.setDate(d.getDate() - i);
-      // Koristimo kratki format datuma za lepši prikaz
       const dateStr = d.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
       labels.push(dateStr);
-      counts.push(leads.filter(l => new Date(l.created_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric' }) === dateStr).length);
+      
+      const dayLeads = leads.filter(l => new Date(l.created_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric' }) === dateStr);
+      totalCountsArray.push(dayLeads.length);
+      claimedCountsArray.push(dayLeads.filter(l => l.status === 'claimed').length);
     }
 
-    // 3. CRTANJE LINE GRAFIKONA
+    // 3. CRTANJE LINE GRAFIKONA SA DVE LINIJE
     const lineCtx = document.getElementById('lineChart') as HTMLCanvasElement;
     if (lineChart) lineChart.destroy();
     
@@ -128,28 +161,69 @@ import AdminLayout from "../../layouts/AdminLayout.astro";
       type: 'line',
       data: {
         labels: labels,
-        datasets: [{
-          label: 'Leads',
-          data: counts,
-          borderColor: '#22c55e',
-          backgroundColor: 'rgba(34, 197, 94, 0.05)',
-          borderWidth: 2,
-          pointBackgroundColor: '#0f172a', // slate-900 (boja pozadine)
-          pointBorderColor: '#22c55e',
-          pointBorderWidth: 2,
-          pointRadius: 4,
-          pointHoverRadius: 6,
-          fill: true,
-          tension: 0.4
-        }]
+        datasets: [
+          {
+            label: 'Claimed Leads',
+            data: claimedCountsArray,
+            borderColor: '#22c55e', // Zelena
+            backgroundColor: 'rgba(34, 197, 94, 0.1)',
+            borderWidth: 2,
+            pointBackgroundColor: '#050505',
+            pointBorderColor: '#22c55e',
+            pointBorderWidth: 2,
+            pointRadius: 3,
+            pointHoverRadius: 6,
+            fill: true,
+            tension: 0.4,
+            yAxisID: 'y'
+          },
+          {
+            label: 'Total Leads',
+            data: totalCountsArray,
+            borderColor: '#3b82f6', // Plava
+            backgroundColor: 'transparent',
+            borderWidth: 2,
+            borderDash: [5, 5], // Isprekidana linija za total da ne guši grafikon
+            pointBackgroundColor: '#050505',
+            pointBorderColor: '#3b82f6',
+            pointBorderWidth: 2,
+            pointRadius: 3,
+            pointHoverRadius: 6,
+            fill: false,
+            tension: 0.4,
+            yAxisID: 'y'
+          }
+        ]
       },
       options: {
         responsive: true,
         maintainAspectRatio: false,
-        plugins: { legend: { display: false }, tooltip: { mode: 'index', intersect: false } },
+        plugins: { 
+          legend: { display: false }, 
+          tooltip: { 
+            mode: 'index', 
+            intersect: false,
+            backgroundColor: 'rgba(5, 5, 5, 0.9)',
+            titleColor: '#a1a1aa',
+            bodyColor: '#fff',
+            borderColor: '#27272a',
+            borderWidth: 1,
+            titleFont: { family: 'monospace', size: 10 },
+            bodyFont: { family: 'monospace', size: 12 }
+          } 
+        },
         scales: { 
-          y: { beginAtZero: true, ticks: { color: '#64748b', stepSize: 1 }, grid: { color: '#1e293b' } }, 
-          x: { ticks: { color: '#64748b' }, grid: { color: '#1e293b' } } 
+          y: { 
+            beginAtZero: true, 
+            ticks: { color: '#71717a', stepSize: 1, font: { family: 'monospace', size: 10 } }, 
+            grid: { color: '#18181b' },
+            border: { display: false }
+          }, 
+          x: { 
+            ticks: { color: '#71717a', font: { family: 'monospace', size: 10 } }, 
+            grid: { color: '#18181b' },
+            border: { display: false }
+          } 
         },
         interaction: { mode: 'nearest', axis: 'x', intersect: false }
       }
@@ -166,25 +240,32 @@ import AdminLayout from "../../layouts/AdminLayout.astro";
         datasets: [{
           data: [google, meta, organic, other],
           backgroundColor: [
-            '#3b82f6', // Plava (Google)
-            '#a855f7', // Ljubičasta (Meta)
-            '#22c55e', // Zelena (Organic)
-            '#334155'  // Slate (Other)
+            '#3b82f6', // Blue
+            '#a855f7', // Purple
+            '#22c55e', // Green
+            '#27272a'  // Zinc-800
           ],
-          borderWidth: 0,
-          hoverOffset: 6
+          borderColor: '#050505',
+          borderWidth: 2,
+          hoverOffset: 4
         }]
       },
       options: {
         responsive: true,
         maintainAspectRatio: false,
-        cutout: '75%', // Debljina krofne
+        cutout: '75%', 
         plugins: {
           legend: {
             position: 'bottom',
-            labels: { color: '#94a3b8', font: { family: 'monospace', size: 10 }, padding: 20 }
+            labels: { color: '#a1a1aa', font: { family: 'monospace', size: 10 }, padding: 20, usePointStyle: true, pointStyle: 'circle' }
           },
           tooltip: {
+            backgroundColor: 'rgba(5, 5, 5, 0.9)',
+            titleColor: '#a1a1aa',
+            bodyColor: '#fff',
+            borderColor: '#27272a',
+            borderWidth: 1,
+            bodyFont: { family: 'monospace', size: 12 },
             callbacks: {
               label: function(context) {
                 let label = context.label || '';
@@ -204,5 +285,5 @@ import AdminLayout from "../../layouts/AdminLayout.astro";
   });
 
   // Pokrećemo početno iscrtavanje
-  updateAnalytics('7');
+  document.addEventListener('DOMContentLoaded', () => updateAnalytics('7'));
 </script>

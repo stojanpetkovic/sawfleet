@@ -41,10 +41,10 @@ const { data: territories } = await supabase.from('service_territories').select(
   <div class="flex flex-col xl:flex-row gap-8 w-full">
     <div class="flex-1 space-y-8 min-w-0 w-full">
       
-      <!-- Statistika -->
-      <div class="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6">
-        {[ {id: 'total', label: 'Total'}, {id: 'new', label: 'New'}, {id: 'approved', label: 'Approved'}, {id: 'rejected', label: 'Rejected'} ].map(stat => (
-          <div class="bg-[#050505] border border-zinc-900 p-4 md:p-6 rounded-xl">
+      <!-- Statistika (Dodat Claimed) -->
+      <div class="grid grid-cols-2 md:grid-cols-5 gap-4 md:gap-4">
+        {[ {id: 'total', label: 'Total'}, {id: 'new', label: 'New'}, {id: 'approved', label: 'Approved'}, {id: 'claimed', label: 'Claimed'}, {id: 'rejected', label: 'Rejected'} ].map(stat => (
+          <div class="bg-[#050505] border border-zinc-900 p-4 md:p-5 rounded-xl">
             <p class="text-[9px] font-bold uppercase tracking-[0.2em] text-zinc-600">{stat.label}</p>
             <h2 id={`count-${stat.id}`} class="text-2xl font-mono font-bold text-white mt-2">0</h2>
           </div>
@@ -71,6 +71,7 @@ const { data: territories } = await supabase.from('service_territories').select(
           <option value="all">All Statuses</option>
           <option value="new">New</option>
           <option value="approved">Approved</option>
+          <option value="claimed">Claimed</option>
           <option value="rejected">Rejected</option>
         </select>
         
@@ -178,6 +179,7 @@ const { data: territories } = await supabase.from('service_territories').select(
       document.getElementById('count-total')!.textContent = allData.length.toString();
       document.getElementById('count-new')!.textContent = allData.filter(l => !l.status || l.status === 'new').length.toString();
       document.getElementById('count-approved')!.textContent = allData.filter(l => l.status === 'approved').length.toString();
+      document.getElementById('count-claimed')!.textContent = allData.filter(l => l.status === 'claimed').length.toString();
       document.getElementById('count-rejected')!.textContent = allData.filter(l => l.status === 'rejected').length.toString();
     }
 
@@ -204,11 +206,11 @@ const { data: territories } = await supabase.from('service_territories').select(
         <tr class="block md:table-row bg-[#050505] border border-zinc-900 md:border-b md:border-zinc-900/50 md:border-x-0 md:border-t-0 rounded-xl md:rounded-none mb-4 md:mb-0 p-4 md:p-0 hover:bg-zinc-900/20 cursor-pointer transition-colors" onclick="window.location.href='/admin/leads/${lead.id}'">
           <td class="block md:table-cell py-1.5 md:px-6 md:py-4">
             <span class="md:hidden text-[9px] uppercase font-bold text-zinc-600 mr-2 w-20 inline-block">Email:</span>
-            <span class="text-white">${lead.email || 'N/A'}</span>
+            <span class="text-white">${lead.email ? `<a href="mailto:${lead.email}" onclick="event.stopPropagation()" class="hover:text-green-400 underline decoration-dotted underline-offset-2">${lead.email}</a>` : 'N/A'}</span>
           </td>
           <td class="block md:table-cell py-1.5 md:px-6 md:py-4">
             <span class="md:hidden text-[9px] uppercase font-bold text-zinc-600 mr-2 w-20 inline-block">Phone:</span>
-            <span class="text-zinc-300">${lead.phone || 'N/A'}</span>
+            <span class="text-zinc-300">${lead.phone ? `<a href="tel:${lead.phone}" onclick="event.stopPropagation()" class="hover:text-green-400 underline decoration-dotted underline-offset-2">${lead.phone}</a>` : 'N/A'}</span>
           </td>
           <td class="block md:table-cell py-1.5 md:px-6 md:py-4">
             <span class="md:hidden text-[9px] uppercase font-bold text-zinc-600 mr-2 w-20 inline-block">County:</span>
@@ -216,7 +218,13 @@ const { data: territories } = await supabase.from('service_territories').select(
           </td>
           <td class="flex items-center md:table-cell py-1.5 md:px-6 md:py-4">
             <span class="md:hidden text-[9px] uppercase font-bold text-zinc-600 mr-2 w-20 inline-block">Status:</span>
-            <span class="px-2 py-1 rounded text-[9px] font-bold uppercase border ${lead.status === 'approved' ? 'bg-green-900/20 text-green-500 border-green-900/50' : lead.status === 'rejected' ? 'bg-red-900/20 text-red-500 border-red-900/50' : 'bg-zinc-900 text-zinc-300 border-zinc-800'}">${lead.status || 'New'}</span>
+            <span class="px-2 py-1 rounded text-[9px] font-bold uppercase border 
+              ${lead.status === 'approved' ? 'bg-green-900/20 text-green-500 border-green-900/50' : 
+                lead.status === 'claimed' ? 'bg-blue-900/20 text-blue-500 border-blue-900/50' : 
+                lead.status === 'rejected' ? 'bg-red-900/20 text-red-500 border-red-900/50' : 
+                'bg-zinc-900 text-zinc-300 border-zinc-800'}">
+              ${lead.status || 'New'}
+            </span>
           </td>
           <td class="block md:table-cell py-1.5 md:px-6 md:py-4">
             <span class="md:hidden text-[9px] uppercase font-bold text-zinc-600 mr-2 w-20 inline-block">Date:</span>

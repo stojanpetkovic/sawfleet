@@ -3,77 +3,105 @@ import ContractorLayout from "../layouts/ContractorLayout.astro";
 ---
 
 <ContractorLayout>
-  <!-- STANJE: UČITAVANJE -->
+  <!-- STATE: LOADING -->
   <div id="stateLoading" class="flex flex-col items-center justify-center py-32 text-center">
     <div class="w-8 h-8 border-2 border-zinc-800 border-t-green-500 rounded-full animate-spin"></div>
     <p class="mt-4 text-xs text-zinc-500 font-mono uppercase tracking-widest">Loading dashboard...</p>
   </div>
 
-  <!-- STANJE: NIJE ULOGOVAN / NIJE KONTRAKTOR -->
-  <div id="stateNoAccess" class="hidden flex-col items-center justify-center py-32 text-center max-w-md mx-auto">
+  <!-- STATE: NOT LOGGED IN / NOT A CONTRACTOR -->
+  <div id="stateNoAccess" class="hidden flex-col items-center justify-center py-32 text-center max-w-md mx-auto px-4">
     <span class="text-[10px] font-mono font-bold uppercase tracking-[0.2em] text-red-500">// Access Denied</span>
-    <h1 class="mt-4 text-2xl font-bold text-white">Ovaj nalog nije registrovan kao izvođač</h1>
-    <p class="mt-3 text-sm text-slate-400">Ako misliš da je ovo greška, kontaktiraj administratora da poveže tvoj email sa profilom izvođača.</p>
-    <a href="/login" class="mt-8 inline-flex h-12 px-8 items-center justify-center rounded-xl bg-green-500 text-sm font-bold text-slate-950 hover:bg-green-400 transition-all">Nazad na login</a>
+    <h1 class="mt-4 text-2xl font-bold text-white">Account not registered</h1>
+    <p class="mt-3 text-sm text-slate-400">If you believe this is an error, please contact the administrator.</p>
+    <a href="/login" class="mt-8 inline-flex h-12 px-8 items-center justify-center rounded-xl bg-green-500 text-sm font-bold text-slate-950 hover:bg-green-400 transition-all w-full sm:w-auto">Back to login</a>
   </div>
 
-  <!-- STANJE: NALOG ČEKA ODOBRENJE -->
-  <div id="statePending" class="hidden flex-col items-center justify-center py-32 text-center max-w-md mx-auto">
+  <!-- STATE: PENDING APPROVAL -->
+  <div id="statePending" class="hidden flex-col items-center justify-center py-32 text-center max-w-md mx-auto px-4">
     <span class="text-[10px] font-mono font-bold uppercase tracking-[0.2em] text-amber-500">// Pending Approval</span>
-    <h1 class="mt-4 text-2xl font-bold text-white">Tvoj profil čeka odobrenje</h1>
-    <p class="mt-3 text-sm text-slate-400">Administrator još nije aktivirao tvoj nalog. Čim bude aktivan, ovde ćeš videti dostupne lidove.</p>
+    <h1 class="mt-4 text-2xl font-bold text-white">Awaiting approval</h1>
+    <p class="mt-3 text-sm text-slate-400">The administrator has not yet activated your account.</p>
   </div>
 
-  <!-- STANJE: NALOG ODBIJEN -->
-  <div id="stateRejected" class="hidden flex-col items-center justify-center py-32 text-center max-w-md mx-auto">
-    <span class="text-[10px] font-mono font-bold uppercase tracking-[0.2em] text-red-500">// Account Rejected</span>
-    <h1 class="mt-4 text-2xl font-bold text-white">Tvoj profil nije odobren</h1>
-    <p class="mt-3 text-sm text-slate-400">Kontaktiraj administratora za više informacija.</p>
-  </div>
-
-  <!-- STANJE: AKTIVAN DASHBOARD -->
-  <div id="stateActive" class="hidden flex-col space-y-12">
+  <!-- STATE: ACTIVE DASHBOARD -->
+  <div id="stateActive" class="hidden flex-col space-y-6 w-full">
 
     <div>
       <span class="text-[10px] font-mono font-bold uppercase tracking-[0.2em] text-green-500">// Quick Claim Pipeline</span>
-      <h1 class="mt-2 text-2xl font-bold tracking-tight text-white sm:text-3xl">Dostupni lidovi</h1>
-      <p class="mt-2 text-sm text-slate-400">Prvi izvođač koji preuzme lid jedini vidi kontakt podatke. Ostali dobijaju info da je preuzet.</p>
+      <h1 class="mt-2 text-2xl font-bold tracking-tight text-white sm:text-3xl">Leads</h1>
+      <p class="mt-2 text-sm text-slate-400">The first contractor to claim a lead gains exclusive access. Others will see it as taken.</p>
     </div>
 
-    <section>
+    <!-- SEGMENTED TAB SWITCHER -->
+    <div class="flex items-center gap-1 p-1 bg-slate-900 border border-slate-800 rounded-xl sticky top-16 lg:top-20 z-20 backdrop-blur-md">
+      <button id="tabAvailableBtn" class="tab-btn flex-1 h-10 rounded-lg text-[11px] font-bold uppercase tracking-wider transition-all">
+        Available <span id="countAvailable" class="ml-1 opacity-60">0</span>
+      </button>
+      <button id="tabClaimedBtn" class="tab-btn flex-1 h-10 rounded-lg text-[11px] font-bold uppercase tracking-wider transition-all">
+        Claimed <span id="countClaimed" class="ml-1 opacity-60">0</span>
+      </button>
+    </div>
+
+    <section id="panelAvailable">
       <div id="availableLeadsContainer" class="space-y-4"></div>
       <div id="noAvailableLeads" class="hidden p-8 border border-slate-800 border-dashed rounded-2xl text-center">
-        <p class="text-slate-600 text-sm">Trenutno nema novih zahteva u tvojoj teritoriji.</p>
+        <p class="text-slate-600 text-sm">No requests in your territory at the moment.</p>
       </div>
     </section>
 
-    <section>
-      <div class="mb-6">
-        <span class="text-[10px] font-mono font-bold uppercase tracking-[0.2em] text-zinc-500">// My Claimed Leads</span>
-        <h2 class="mt-2 text-xl font-bold text-white">Moji preuzeti lidovi</h2>
-      </div>
+    <section id="panelClaimed" class="hidden">
       <div id="claimedLeadsContainer" class="space-y-4"></div>
-      <p id="noClaimedLeads" class="hidden text-slate-700 text-xs italic">Još uvek nisi preuzeo nijedan lid.</p>
+      <p id="noClaimedLeads" class="hidden text-slate-700 text-xs italic p-8 text-center border border-slate-800 border-dashed rounded-2xl">You haven't claimed any leads yet.</p>
     </section>
 
   </div>
 
-  <!-- TOAST -->
-  <div id="toast" class="hidden fixed bottom-6 left-1/2 -translate-x-1/2 z-[999] px-5 py-3 rounded-xl border text-xs font-bold uppercase tracking-wider shadow-2xl"></div>
+  <!-- TOAST NOTIFIKACIJE -->
+  <div id="toast" class="hidden fixed bottom-6 left-1/2 -translate-x-1/2 z-[999] px-5 py-3 rounded-xl border text-xs font-bold uppercase tracking-wider shadow-2xl transition-all"></div>
 </ContractorLayout>
 
 <script>
   import { supabase } from "../lib/supabase";
 
-  type AvailableLead = { id: string; county: string; details: string; created_at: string };
+  type AvailableLead = { id: string; county: string; details: string; created_at: string; status: string; contractor_id: string | null };
   type ClaimedLead = { id: string; county: string; phone: string; email: string | null; details: string; claimed_at: string | null; created_at: string };
 
   let contractorId: string | null = null;
   let pollTimer: ReturnType<typeof setInterval> | null = null;
   let knownAvailableIds = new Set<string>();
 
+  function setActiveTab(tab: 'available' | 'claimed') {
+    const availBtn = document.getElementById('tabAvailableBtn')!;
+    const claimBtn = document.getElementById('tabClaimedBtn')!;
+    const availPanel = document.getElementById('panelAvailable')!;
+    const claimPanel = document.getElementById('panelClaimed')!;
+
+    const activeCls = ['bg-green-500', 'text-slate-950'];
+    const inactiveCls = ['text-slate-400', 'hover:text-white'];
+
+    if (tab === 'available') {
+      availBtn.classList.add(...activeCls);
+      availBtn.classList.remove(...inactiveCls);
+      claimBtn.classList.remove(...activeCls);
+      claimBtn.classList.add(...inactiveCls);
+      availPanel.classList.remove('hidden');
+      claimPanel.classList.add('hidden');
+    } else {
+      claimBtn.classList.add(...activeCls);
+      claimBtn.classList.remove(...inactiveCls);
+      availBtn.classList.remove(...activeCls);
+      availBtn.classList.add(...inactiveCls);
+      claimPanel.classList.remove('hidden');
+      availPanel.classList.add('hidden');
+    }
+  }
+
+  document.getElementById('tabAvailableBtn')?.addEventListener('click', () => setActiveTab('available'));
+  document.getElementById('tabClaimedBtn')?.addEventListener('click', () => setActiveTab('claimed'));
+
   function show(id: string) {
-    ['stateLoading', 'stateNoAccess', 'statePending', 'stateRejected', 'stateActive'].forEach((s) => {
+    ['stateLoading', 'stateNoAccess', 'statePending', 'stateActive'].forEach((s) => {
       document.getElementById(s)?.classList.add('hidden');
     });
     const el = document.getElementById(id);
@@ -85,11 +113,11 @@ import ContractorLayout from "../layouts/ContractorLayout.astro";
     const el = document.getElementById('toast');
     if (!el) return;
     const colors = {
-      success: 'bg-green-950/80 border-green-800 text-green-400',
-      error: 'bg-red-950/80 border-red-800 text-red-400',
-      info: 'bg-zinc-900 border-zinc-700 text-zinc-300',
+      success: 'bg-green-950/90 border-green-800 text-green-400',
+      error: 'bg-red-950/90 border-red-800 text-red-400',
+      info: 'bg-zinc-900/90 border-zinc-700 text-zinc-300',
     };
-    el.className = `fixed bottom-6 left-1/2 -translate-x-1/2 z-[999] px-5 py-3 rounded-xl border text-xs font-bold uppercase tracking-wider shadow-2xl ${colors[kind]}`;
+    el.className = `fixed bottom-6 left-1/2 -translate-x-1/2 w-[90%] md:w-auto text-center z-[999] px-5 py-3 rounded-xl border text-[10px] md:text-xs font-bold uppercase tracking-wider shadow-2xl ${colors[kind]}`;
     el.textContent = message;
     el.classList.remove('hidden');
     setTimeout(() => el.classList.add('hidden'), 3500);
@@ -97,54 +125,74 @@ import ContractorLayout from "../layouts/ContractorLayout.astro";
 
   function timeAgo(dateInput: string) {
     const diff = Math.floor((Date.now() - new Date(dateInput).getTime()) / 1000);
-    if (diff < 60) return 'Upravo sada';
-    if (diff < 3600) return `Pre ${Math.floor(diff / 60)} min`;
-    if (diff < 86400) return `Pre ${Math.floor(diff / 3600)}h`;
-    return `Pre ${Math.floor(diff / 86400)}d`;
+    if (diff < 60) return 'Just now';
+    if (diff < 3600) return `${Math.floor(diff / 60)}m ago`;
+    if (diff < 86400) return `${Math.floor(diff / 3600)}h ago`;
+    return `${Math.floor(diff / 86400)}d ago`;
   }
 
   function renderAvailableLead(lead: AvailableLead) {
+    const isClaimed = lead.status === 'claimed';
     const wrapper = document.createElement('div');
     wrapper.id = `avail-${lead.id}`;
-    wrapper.className = 'relative p-6 bg-slate-900 border border-slate-800 rounded-2xl overflow-hidden group hover:border-green-500/50 transition-all';
+    wrapper.className = `relative p-4 md:p-6 bg-slate-900 border ${isClaimed ? 'border-zinc-800/50' : 'border-slate-800'} rounded-2xl overflow-hidden group ${!isClaimed ? 'hover:border-green-500/50' : ''} transition-all`;
+    
+    // Prilagođeno za mobilne (flex-col na malim ekranima, flex-row na velikim)
     wrapper.innerHTML = `
-      <div class="flex items-center justify-between gap-4">
+      <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div class="min-w-0 flex-1">
-          <div class="flex items-center gap-2">
-            <span class="text-[9px] font-mono text-green-500 uppercase tracking-widest">${lead.county}</span>
+          <div class="flex flex-wrap items-center gap-2">
+            <span class="text-[9px] font-mono ${isClaimed ? 'text-zinc-500' : 'text-green-500'} uppercase tracking-widest">${lead.county}</span>
             <span class="text-[9px] font-mono text-zinc-600">// ${timeAgo(lead.created_at)}</span>
+            ${isClaimed ? '<span class="px-1.5 py-0.5 bg-zinc-900 text-zinc-500 text-[8px] font-bold uppercase rounded border border-zinc-800">Taken</span>' : ''}
           </div>
-          <p class="mt-3 text-sm text-slate-300 select-none blur-[6px] group-hover:blur-[5px] transition-all max-w-md">
-            ${lead.details || 'Opis projekta dostupan nakon preuzimanja.'}
+          <p class="mt-3 text-sm text-slate-300 select-none blur-[6px] ${!isClaimed ? 'group-hover:blur-[5px]' : ''} transition-all max-w-md">
+            ${isClaimed ? 'Another contractor has already claimed this project.' : (lead.details || 'Project description available after claiming.')}
           </p>
           <p class="mt-2 flex items-center gap-1.5 text-[10px] font-mono text-slate-500">
-            🔒 Kontakt podaci se otključavaju nakon preuzimanja
+            🔒 Contact details locked
           </p>
         </div>
-        <button
-          data-lead-id="${lead.id}"
-          class="claim-btn shrink-0 px-6 py-3 bg-green-500 text-slate-950 text-[10px] font-bold uppercase tracking-widest rounded-xl hover:bg-green-400 transition-all active:scale-95 whitespace-nowrap"
-        >
-          Preuzmi →
-        </button>
+        ${!isClaimed ? `
+          <button
+            data-lead-id="${lead.id}"
+            class="claim-btn w-full md:w-auto shrink-0 px-6 py-3 md:py-4 bg-green-500 text-slate-950 text-[10px] font-bold uppercase tracking-widest rounded-xl hover:bg-green-400 transition-all active:scale-95 whitespace-nowrap"
+          >
+            Claim Now →
+          </button>
+        ` : `
+          <button disabled class="w-full md:w-auto shrink-0 px-6 py-3 md:py-4 bg-zinc-900 text-zinc-600 border border-zinc-800 text-[10px] font-bold uppercase tracking-widest rounded-xl cursor-not-allowed whitespace-nowrap">
+            Claimed
+          </button>
+        `}
       </div>
     `;
-    wrapper.querySelector('.claim-btn')?.addEventListener('click', (e) => claimLead(lead.id, e.currentTarget as HTMLButtonElement));
+
+    if (!isClaimed) {
+      wrapper.querySelector('.claim-btn')?.addEventListener('click', (e) => claimLead(lead.id, e.currentTarget as HTMLButtonElement));
+    }
     return wrapper;
   }
 
   function renderClaimedLead(lead: ClaimedLead) {
     const wrapper = document.createElement('div');
-    wrapper.className = 'p-6 bg-slate-950 border border-green-900/30 rounded-2xl';
+    wrapper.className = 'p-4 md:p-6 bg-[#050505] border border-green-900/30 rounded-2xl';
     wrapper.innerHTML = `
-      <div class="flex items-center justify-between">
+      <div class="flex flex-col md:flex-row md:items-center justify-between gap-2">
         <span class="text-[9px] font-mono text-green-500 uppercase tracking-widest">${lead.county}</span>
-        <span class="text-[9px] text-green-600 font-bold uppercase italic">Preuzeto ${lead.claimed_at ? timeAgo(lead.claimed_at) : ''}</span>
+        <span class="text-[9px] text-green-600 font-bold uppercase italic">Claimed ${lead.claimed_at ? timeAgo(lead.claimed_at) : ''}</span>
       </div>
       <p class="mt-3 text-sm text-slate-300">${lead.details || ''}</p>
-      <div class="mt-4 flex flex-wrap gap-4 pt-4 border-t border-slate-800 text-[11px] font-mono">
-        <span class="text-slate-400">📞 <span class="text-white">${lead.phone || 'N/A'}</span></span>
-        ${lead.email ? `<span class="text-slate-400">✉️ <span class="text-white">${lead.email}</span></span>` : ''}
+      <div class="mt-4 flex flex-wrap gap-3 md:gap-6 pt-4 border-t border-slate-800/50 text-[11px] font-mono">
+        <a href="tel:${lead.phone}" class="text-slate-400 hover:text-green-400 flex items-center gap-2 transition-colors">
+          <svg class="w-3 h-3 text-green-500" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"/></svg>
+          <span class="text-white underline decoration-dotted underline-offset-2">${lead.phone || 'N/A'}</span>
+        </a>
+        ${lead.email ? `
+        <a href="mailto:${lead.email}" class="text-slate-400 hover:text-green-400 flex items-center gap-2 transition-colors">
+          <svg class="w-3 h-3 text-green-500" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
+          <span class="text-white underline decoration-dotted underline-offset-2">${lead.email}</span>
+        </a>` : ''}
       </div>
     `;
     return wrapper;
@@ -154,110 +202,87 @@ import ContractorLayout from "../layouts/ContractorLayout.astro";
     const { data, error } = await supabase.rpc('get_available_leads');
     const container = document.getElementById('availableLeadsContainer')!;
     const empty = document.getElementById('noAvailableLeads')!;
-    if (error) {
-      console.error(error);
-      return;
-    }
-    const leads: AvailableLead[] = data || [];
+    if (error) return;
+    
+    // Filtriramo lidove: ne prikazujemo u gornjoj listi one koje je OVAJ korisnik preuzeo
+    // (jer oni idu u donju listu "My claimed leads")
+    const leads: AvailableLead[] = (data || []).filter((l: AvailableLead) => l.contractor_id !== contractorId);
     const freshIds = new Set(leads.map((l) => l.id));
 
-    // Ukloni kartice koje su u međuvremenu preuzeli drugi
+    // Uklanjanje starih
     knownAvailableIds.forEach((id) => {
       if (!freshIds.has(id)) {
         const el = document.getElementById(`avail-${id}`);
         if (el) {
-          el.style.transition = 'opacity 0.3s';
           el.style.opacity = '0';
           setTimeout(() => el.remove(), 300);
-          toast('Jedan lid je upravo preuzeo drugi izvođač', 'info');
         }
       }
     });
 
-    // Dodaj nove
+    // Dodavanje/Ažuriranje novih
     leads.forEach((lead) => {
-      if (!knownAvailableIds.has(lead.id)) {
+      const existing = document.getElementById(`avail-${lead.id}`);
+      if (!existing) {
         container.appendChild(renderAvailableLead(lead));
+      } else if (existing && lead.status === 'claimed' && existing.innerHTML.includes('Claim Now')) {
+        // Ako je lid na ekranu bio dostupan, a sad je preuzet od strane drugog - osveži karticu
+        container.replaceChild(renderAvailableLead(lead), existing);
       }
     });
 
     knownAvailableIds = freshIds;
     empty.classList.toggle('hidden', leads.length > 0);
+    document.getElementById('countAvailable')!.textContent = leads.length.toString();
   }
 
   async function loadClaimedLeads() {
     const { data, error } = await supabase.rpc('get_my_claimed_leads');
-    if (error) {
-      console.error(error);
-      return;
-    }
+    if (error) return;
+    
     const leads: ClaimedLead[] = (data || []).filter((l: any) => l.status === 'claimed' || l.status === 'completed');
     const container = document.getElementById('claimedLeadsContainer')!;
     const empty = document.getElementById('noClaimedLeads')!;
+    
     container.innerHTML = '';
     leads.forEach((lead) => container.appendChild(renderClaimedLead(lead)));
     empty.classList.toggle('hidden', leads.length > 0);
+    document.getElementById('countClaimed')!.textContent = leads.length.toString();
   }
 
   async function claimLead(leadId: string, btn: HTMLButtonElement) {
     btn.disabled = true;
-    const original = btn.textContent;
-    btn.textContent = 'Preuzimam...';
+    const originalText = btn.textContent;
+    btn.textContent = 'CLAIMING...';
 
-    const { data, error } = await supabase.rpc('claim_lead', { p_lead_id: leadId });
+    const { data: success, error } = await supabase.rpc('claim_lead', { p_lead_id: leadId });
 
-    if (error || !data) {
-      toast('Prekasno! Neko drugi je već preuzeo ovaj lid.', 'error');
-      document.getElementById(`avail-${leadId}`)?.remove();
-      knownAvailableIds.delete(leadId);
+    if (error || !success) {
+      toast('Too slow! Someone else already claimed this lead.', 'error');
+      await loadAvailableLeads(); // Osveži da prebaci u status "Claimed"
     } else {
-      toast('Lid uspešno preuzet — kontakt podaci su ispod.', 'success');
-      document.getElementById(`avail-${leadId}`)?.remove();
-      knownAvailableIds.delete(leadId);
-      await loadClaimedLeads();
+      toast('Lead successfully claimed — contact details unlocked below.', 'success');
+      await Promise.all([loadAvailableLeads(), loadClaimedLeads()]); // Briše iz gornje, dodaje u donju
     }
-
-    btn.disabled = false;
-    btn.textContent = original;
   }
 
   async function init() {
     const { data: { session } } = await supabase.auth.getSession();
-    if (!session) {
-      window.location.href = '/login';
-      return;
-    }
+    if (!session) { window.location.href = '/login'; return; }
 
     const { data: contractor, error } = await supabase.rpc('link_contractor_account');
-
-    if (error || !contractor) {
-      show('stateNoAccess');
-      return;
-    }
+    if (error || !contractor) { show('stateNoAccess'); return; }
 
     contractorId = session.user.id;
 
-    const label = document.getElementById('companyNameLabel');
-    if (label && contractor.company_name) label.textContent = contractor.company_name;
-
-    if (contractor.status === 'pending') {
-      show('statePending');
-      return;
-    }
-    if (contractor.status === 'rejected') {
-      show('stateRejected');
-      return;
-    }
-    if (contractor.status !== 'active') {
-      show('statePending');
-      return;
-    }
+    if (contractor.status === 'pending') { show('statePending'); return; }
+    if (contractor.status !== 'active') { show('statePending'); return; }
 
     show('stateActive');
+    setActiveTab('available');
     await Promise.all([loadAvailableLeads(), loadClaimedLeads()]);
 
-    // Osveži dostupne lidove periodično da bi se videlo kad ih neko preuzme
-    pollTimer = setInterval(loadAvailableLeads, 12000);
+    pollTimer = setInterval(loadAvailableLeads, 8000); // Proverava svakih 8 sekundi
   }
 
   document.addEventListener('DOMContentLoaded', init);

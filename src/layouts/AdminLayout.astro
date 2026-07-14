@@ -1,15 +1,25 @@
 ---
-import '../styles/global.css'; 
+import '../styles/global.css';
+import {
+  LayoutDashboard,
+  Inbox,
+  Users,
+  Truck,
+  Menu as MenuIcon,
+} from "lucide-astro";
 
 const currentPath = Astro.url.pathname;
 
 const menuItems = [
-  { name: 'Dashboard', path: '/admin' },
-  { name: 'Service Leads', path: '/admin/service-leads' },
-  { name: 'Contractors', path: '/admin/contractors' },
-  { name: 'Grapple Saw Trucks', path: '/admin/grapple-saw-trucks' },
+  { name: 'Dashboard', path: '/admin', icon: LayoutDashboard },
+  { name: 'Service Leads', path: '/admin/service-leads', icon: Inbox },
+  { name: 'Contractors', path: '/admin/contractors', icon: Users },
+  { name: 'Grapple Saw Trucks', path: '/admin/grapple-saw-trucks', icon: Truck },
   { name: 'Analytics', path: '/admin/analytics' }
 ];
+
+// The four sections shown in the mobile bottom tab bar (app-style nav)
+const tabItems = menuItems.slice(0, 4);
 ---
 <!DOCTYPE html>
 <html lang="en">
@@ -45,8 +55,10 @@ const menuItems = [
             <p class="text-[9px] font-bold uppercase tracking-[0.2em] text-zinc-600 mb-4 px-3">Menu</p>
             {menuItems.map((item) => {
               const isActive = currentPath === item.path || currentPath === item.path + '/';
+              const Icon = item.icon;
               return (
-                <a href={item.path} class={`block px-3 py-3 rounded-lg text-[10px] font-mono font-bold uppercase tracking-[0.2em] transition-all duration-200 ${isActive ? 'bg-zinc-900 text-white border border-zinc-800' : 'text-zinc-500 hover:text-zinc-300 hover:bg-zinc-900/50 border border-transparent'}`}>
+                <a href={item.path} class={`flex items-center gap-3 px-3 py-3 rounded-lg text-[10px] font-mono font-bold uppercase tracking-[0.2em] transition-all duration-200 ${isActive ? 'bg-zinc-900 text-white border border-zinc-800' : 'text-zinc-500 hover:text-zinc-300 hover:bg-zinc-900/50 border border-transparent'}`}>
+                  {Icon && <Icon size={15} strokeWidth={1.75} />}
                   {item.name}
                 </a>
               )
@@ -65,26 +77,25 @@ const menuItems = [
       </aside>
 
       <!-- MAIN CONTENT AREA - SKROLUJE SE -->
-      <div class="flex-1 flex flex-col min-w-0 h-screen overflow-y-auto">
+      <div class="flex-1 flex flex-col min-w-0 h-screen overflow-y-auto pb-20 lg:pb-0">
         <!-- HEADER - STICKY -->
-        <header class="w-full h-20 border-b border-zinc-900 flex items-center justify-between px-4 lg:px-8 bg-[#000000]/80 backdrop-blur-md sticky top-0 z-30 shrink-0">
+        <header class="w-full h-16 lg:h-20 border-b border-zinc-900 flex items-center justify-between px-4 lg:px-8 bg-[#000000]/80 backdrop-blur-md sticky top-0 z-30 shrink-0">
           
           <div class="flex items-center gap-4">
             <button id="openMenuBtn" class="lg:hidden text-zinc-500 hover:text-white focus:outline-none">
-              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-6 h-6">
-                <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" />
-              </svg>
+              <MenuIcon size={22} strokeWidth={1.75} />
             </button>
-            <span class="text-[10px] font-mono font-bold uppercase tracking-[0.2em] text-zinc-500">Platform Overview</span>
+            <span class="text-[10px] font-mono font-bold uppercase tracking-[0.2em] text-zinc-500 hidden sm:inline">Platform Overview</span>
+            <span class="text-sm font-bold text-white sm:hidden">SawFleet</span>
           </div>
           
-          <div class="flex items-center gap-6">
-            <div class="relative group cursor-pointer">
-              <button class="text-zinc-500 hover:text-white transition-colors relative mt-1">
+          <div class="flex items-center gap-4 lg:gap-6">
+            <div class="relative">
+              <button id="notifBtn" class="text-zinc-500 hover:text-white transition-colors relative mt-1">
                 <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path d="M14.857 17.082a23.848 23.848 0 005.454-1.31A8.967 8.967 0 0118 9.75v-.7V9A6 6 0 006 9v.75a8.967 8.967 0 01-2.312 6.022c1.733.64 3.56 1.085 5.455 1.31m5.714 0a24.255 24.255 0 01-5.714 0m5.714 0a3 3 0 11-5.714 0"/></svg>
                 <span id="notificationBadge" class="hidden absolute -top-1 -right-1 h-4 min-w-[16px] px-1 rounded-full bg-red-500 text-[9px] font-bold text-white flex items-center justify-center">0</span>
               </button>
-              <div class="absolute right-0 mt-2 w-64 bg-zinc-950 border border-zinc-800 rounded-xl shadow-2xl opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50">
+              <div id="notifDropdown" class="hidden absolute right-0 mt-2 w-64 bg-zinc-950 border border-zinc-800 rounded-xl shadow-2xl z-50">
                 <div class="px-4 py-3 border-b border-zinc-900 bg-black"><h3 class="text-[10px] font-bold uppercase tracking-[0.2em] text-zinc-400">Action Required</h3></div>
                 <div class="p-2 space-y-1">
                   <a href="/admin/service-leads" class="flex items-center justify-between px-3 py-2 rounded-lg hover:bg-zinc-900 transition-colors"><span class="text-xs text-zinc-300">New Leads</span><span id="badge-leads" class="text-[10px] font-mono text-green-500 bg-green-500/10 px-2 py-0.5 rounded">0</span></a>
@@ -93,18 +104,38 @@ const menuItems = [
                 </div>
               </div>
             </div>
-            <div class="flex items-center gap-3 border-l border-zinc-900 pl-6">
+            <div class="hidden sm:flex items-center gap-3 border-l border-zinc-900 pl-6">
               <span class="text-[10px] font-mono font-bold uppercase text-zinc-300">Stojan M.</span>
               <div class="w-7 h-7 rounded-lg bg-zinc-900 border border-zinc-800 flex items-center justify-center text-[10px]">SM</div>
             </div>
           </div>
         </header>
 
-        <main class="p-8 w-full flex-grow">
+        <main class="p-4 sm:p-6 lg:p-8 w-full flex-grow">
           <slot />
         </main>
       </div>
     </div>
+
+    <!-- MOBILE BOTTOM TAB BAR (app-style navigation) -->
+    <nav class="lg:hidden fixed bottom-0 left-0 right-0 z-40 border-t border-zinc-900 bg-[#060807]/95 backdrop-blur-md pb-[env(safe-area-inset-bottom)]">
+      <div class="flex items-center justify-around h-16">
+        {tabItems.map((item) => {
+          const isActive = currentPath === item.path || currentPath === item.path + '/';
+          const Icon = item.icon;
+          return (
+            <a href={item.path} class={`flex flex-col items-center justify-center gap-1 w-16 h-full transition-colors ${isActive ? 'text-green-500' : 'text-zinc-500 hover:text-zinc-300'}`}>
+              {Icon && <Icon size={20} strokeWidth={isActive ? 2 : 1.75} />}
+              <span class="text-[9px] font-mono font-bold uppercase tracking-wide">{item.name.split(' ')[0]}</span>
+            </a>
+          )
+        })}
+        <button id="openMenuBtnTab" class="flex flex-col items-center justify-center gap-1 w-16 h-full text-zinc-500 hover:text-zinc-300 transition-colors">
+          <MenuIcon size={20} strokeWidth={1.75} />
+          <span class="text-[9px] font-mono font-bold uppercase tracking-wide">More</span>
+        </button>
+      </div>
+    </nav>
 
     <script>
       import { supabase } from "../lib/supabase";
@@ -115,26 +146,40 @@ const menuItems = [
       async function guardSession() {
         const { data: { session } } = await supabase.auth.getSession();
         if (!session) {
-          window.location.replace('/login');
+          window.location.replace('/admin/login');
           return;
         }
         const { data: isAdmin } = await supabase.rpc('is_admin');
         if (!isAdmin) {
-          window.location.replace('/login');
+          window.location.replace('/admin/login');
         }
       }
       guardSession();
       supabase.auth.onAuthStateChange((event) => {
-        if (event === 'SIGNED_OUT') window.location.replace('/login');
+        if (event === 'SIGNED_OUT') window.location.replace('/admin/login');
       });
 
       const sidebar = document.getElementById('sidebar');
       const mobileOverlay = document.getElementById('mobileOverlay');
       const toggle = () => { sidebar?.classList.toggle('-translate-x-full'); mobileOverlay?.classList.toggle('hidden'); };
       document.getElementById('openMenuBtn')?.addEventListener('click', toggle);
+      document.getElementById('openMenuBtnTab')?.addEventListener('click', toggle);
       document.getElementById('closeMenuBtn')?.addEventListener('click', toggle);
       mobileOverlay?.addEventListener('click', toggle);
-      document.getElementById('logoutBtn')?.addEventListener('click', async () => { await supabase.auth.signOut(); window.location.href = '/login'; });
+      document.getElementById('logoutBtn')?.addEventListener('click', async () => { await supabase.auth.signOut(); window.location.href = '/admin/login'; });
+
+      // Notification dropdown — click-to-toggle so it works on touch devices too
+      const notifBtn = document.getElementById('notifBtn');
+      const notifDropdown = document.getElementById('notifDropdown');
+      notifBtn?.addEventListener('click', (e) => {
+        e.stopPropagation();
+        notifDropdown?.classList.toggle('hidden');
+      });
+      document.addEventListener('click', (e) => {
+        if (notifDropdown && !notifDropdown.classList.contains('hidden') && !notifDropdown.contains(e.target as Node) && e.target !== notifBtn) {
+          notifDropdown.classList.add('hidden');
+        }
+      });
 
       async function fetchNotifications() {
         const { count: leads } = await supabase.from('leads').select('*', { count: 'exact', head: true }).eq('status', 'new');
