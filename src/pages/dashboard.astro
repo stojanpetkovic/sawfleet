@@ -1,8 +1,21 @@
 ---
 import ContractorLayout from "../layouts/ContractorLayout.astro";
+import { supabase } from "../lib/supabase";
+import { Inbox, CheckCircle2, UserCircle } from "lucide-astro";
+
+const { data: territories } = await supabase
+  .from('service_territories')
+  .select('*')
+  .order('name', { ascending: true });
+
+const navItems = [
+  { label: 'Available', tab: 'available', icon: Inbox },
+  { label: 'Claimed', tab: 'claimed', icon: CheckCircle2 },
+  { label: 'Profile', tab: 'profile', icon: UserCircle },
+];
 ---
 
-<ContractorLayout>
+<ContractorLayout navItems={navItems} activeTab="available">
   <!-- STATE: LOADING -->
   <div id="stateLoading" class="flex flex-col items-center justify-center py-32 text-center">
     <div class="w-8 h-8 border-2 border-zinc-800 border-t-green-500 rounded-full animate-spin"></div>
@@ -33,16 +46,6 @@ import ContractorLayout from "../layouts/ContractorLayout.astro";
       <p class="mt-2 text-sm text-slate-400">The first contractor to claim a lead gains exclusive access. Others will see it as taken.</p>
     </div>
 
-    <!-- SEGMENTED TAB SWITCHER -->
-    <div class="flex items-center gap-1 p-1 bg-slate-900 border border-slate-800 rounded-xl sticky top-16 lg:top-20 z-20 backdrop-blur-md">
-      <button id="tabAvailableBtn" class="tab-btn flex-1 h-10 rounded-lg text-[11px] font-bold uppercase tracking-wider transition-all">
-        Available <span id="countAvailable" class="ml-1 opacity-60">0</span>
-      </button>
-      <button id="tabClaimedBtn" class="tab-btn flex-1 h-10 rounded-lg text-[11px] font-bold uppercase tracking-wider transition-all">
-        Claimed <span id="countClaimed" class="ml-1 opacity-60">0</span>
-      </button>
-    </div>
-
     <section id="panelAvailable">
       <div id="availableLeadsContainer" class="space-y-4"></div>
       <div id="noAvailableLeads" class="hidden p-8 border border-slate-800 border-dashed rounded-2xl text-center">
@@ -53,6 +56,36 @@ import ContractorLayout from "../layouts/ContractorLayout.astro";
     <section id="panelClaimed" class="hidden">
       <div id="claimedLeadsContainer" class="space-y-4"></div>
       <p id="noClaimedLeads" class="hidden text-slate-700 text-xs italic p-8 text-center border border-slate-800 border-dashed rounded-2xl">You haven't claimed any leads yet.</p>
+    </section>
+
+    <section id="panelProfile" class="hidden">
+      <div class="p-6 bg-slate-900 border border-slate-800 rounded-2xl space-y-4 max-w-lg">
+        <div>
+          <label class="mb-2 block text-[10px] font-bold uppercase tracking-[0.15em] text-slate-400">Company Name</label>
+          <input id="profileCompany" type="text" class="h-11 w-full rounded-xl border border-slate-700 bg-slate-950 px-4 text-sm text-white outline-none focus:border-green-500 transition-all"/>
+        </div>
+        <div>
+          <label class="mb-2 block text-[10px] font-bold uppercase tracking-[0.15em] text-slate-400">Contact Name</label>
+          <input id="profileContact" type="text" class="h-11 w-full rounded-xl border border-slate-700 bg-slate-950 px-4 text-sm text-white outline-none focus:border-green-500 transition-all"/>
+        </div>
+        <div>
+          <label class="mb-2 block text-[10px] font-bold uppercase tracking-[0.15em] text-slate-400">Phone</label>
+          <input id="profilePhone" type="tel" class="h-11 w-full rounded-xl border border-slate-700 bg-slate-950 px-4 text-sm text-white outline-none focus:border-green-500 transition-all"/>
+        </div>
+        <div>
+          <label class="mb-2 block text-[10px] font-bold uppercase tracking-[0.15em] text-slate-400">Territory</label>
+          <select id="profileTerritory" class="h-11 w-full rounded-xl border border-slate-700 bg-slate-950 px-4 text-sm text-white outline-none focus:border-green-500 transition-all">
+            {territories?.map((t) => <option value={t.name}>{t.name}</option>)}
+          </select>
+        </div>
+        <div>
+          <label class="mb-2 block text-[10px] font-bold uppercase tracking-[0.15em] text-slate-400">Login Email</label>
+          <input id="profileEmail" type="email" disabled class="h-11 w-full rounded-xl border border-slate-800 bg-slate-900 px-4 text-sm text-slate-500 outline-none cursor-not-allowed"/>
+          <p class="mt-1.5 text-[10px] text-slate-600">Contact the administrator to change your login email.</p>
+        </div>
+        <button id="saveProfileBtn" class="h-11 w-full rounded-xl bg-green-500 text-sm font-bold text-slate-950 hover:bg-green-400 transition-all active:scale-[0.98]">Save Changes</button>
+        <p id="profileMsg" class="text-[11px]"></p>
+      </div>
     </section>
 
   </div>
@@ -71,34 +104,33 @@ import ContractorLayout from "../layouts/ContractorLayout.astro";
   let pollTimer: ReturnType<typeof setInterval> | null = null;
   let knownAvailableIds = new Set<string>();
 
-  function setActiveTab(tab: 'available' | 'claimed') {
-    const availBtn = document.getElementById('tabAvailableBtn')!;
-    const claimBtn = document.getElementById('tabClaimedBtn')!;
-    const availPanel = document.getElementById('panelAvailable')!;
-    const claimPanel = document.getElementById('panelClaimed')!;
+  function setActiveTab(tab: 'available' | 'claimed' | 'profile') {
+    const panels: Record<string, HTMLElement> = {
+      available: document.getElementById('panelAvailable')!,
+      claimed: document.getElementById('panelClaimed')!,
+      profile: document.getElementById('panelProfile')!,
+    };
 
-    const activeCls = ['bg-green-500', 'text-slate-950'];
-    const inactiveCls = ['text-slate-400', 'hover:text-white'];
+    Object.entries(panels).forEach(([key, panel]) => {
+      panel.classList.toggle('hidden', key !== tab);
+    });
 
-    if (tab === 'available') {
-      availBtn.classList.add(...activeCls);
-      availBtn.classList.remove(...inactiveCls);
-      claimBtn.classList.remove(...activeCls);
-      claimBtn.classList.add(...inactiveCls);
-      availPanel.classList.remove('hidden');
-      claimPanel.classList.add('hidden');
-    } else {
-      claimBtn.classList.add(...activeCls);
-      claimBtn.classList.remove(...inactiveCls);
-      availBtn.classList.remove(...activeCls);
-      availBtn.classList.add(...inactiveCls);
-      claimPanel.classList.remove('hidden');
-      availPanel.classList.add('hidden');
-    }
+    // Aktivan izgled na SVIM instancama dugmeta (sidebar na desktopu +
+    // bottom bar na mobilnom), oba dobijaju iz layout-a data-tab atribut.
+    document.querySelectorAll('.nav-tab-btn').forEach((el) => {
+      const isActive = (el as HTMLElement).dataset.tab === tab;
+      el.classList.toggle('bg-zinc-900', isActive);
+      el.classList.toggle('text-white', isActive);
+      el.classList.toggle('border-zinc-800', isActive);
+      el.classList.toggle('text-green-500', isActive);
+      el.classList.toggle('text-zinc-500', !isActive);
+    });
   }
 
-  document.getElementById('tabAvailableBtn')?.addEventListener('click', () => setActiveTab('available'));
-  document.getElementById('tabClaimedBtn')?.addEventListener('click', () => setActiveTab('claimed'));
+  document.addEventListener('layout:tab-change', (e) => {
+    const tab = (e as CustomEvent).detail?.tab;
+    if (tab) setActiveTab(tab);
+  });
 
   function show(id: string) {
     ['stateLoading', 'stateNoAccess', 'statePending', 'stateActive'].forEach((s) => {
@@ -121,6 +153,31 @@ import ContractorLayout from "../layouts/ContractorLayout.astro";
     el.textContent = message;
     el.classList.remove('hidden');
     setTimeout(() => el.classList.add('hidden'), 3500);
+  }
+
+  function updateNotificationBell(availableCount: number) {
+    const badge = document.getElementById('notificationBadge');
+    const content = document.getElementById('notifContent');
+    if (badge) {
+      if (availableCount > 0) {
+        badge.textContent = availableCount.toString();
+        badge.classList.remove('hidden');
+      } else {
+        badge.classList.add('hidden');
+      }
+    }
+    if (content) {
+      content.innerHTML = availableCount > 0
+        ? `<button id="notifGoToAvailable" class="w-full text-left px-3 py-2.5 rounded-lg hover:bg-zinc-900 transition-colors">
+             <p class="text-xs text-white font-bold">${availableCount} lead${availableCount === 1 ? '' : 's'} available</p>
+             <p class="text-[10px] text-zinc-500 mt-0.5">In your territory, waiting to be claimed.</p>
+           </button>`
+        : `<p class="px-3 py-4 text-[11px] text-zinc-600 text-center">No new leads right now.</p>`;
+      document.getElementById('notifGoToAvailable')?.addEventListener('click', () => {
+        setActiveTab('available');
+        document.getElementById('notifDropdown')?.classList.add('hidden');
+      });
+    }
   }
 
   function timeAgo(dateInput: string) {
@@ -233,7 +290,7 @@ import ContractorLayout from "../layouts/ContractorLayout.astro";
 
     knownAvailableIds = freshIds;
     empty.classList.toggle('hidden', leads.length > 0);
-    document.getElementById('countAvailable')!.textContent = leads.length.toString();
+    updateNotificationBell(leads.length);
   }
 
   async function loadClaimedLeads() {
@@ -247,7 +304,7 @@ import ContractorLayout from "../layouts/ContractorLayout.astro";
     container.innerHTML = '';
     leads.forEach((lead) => container.appendChild(renderClaimedLead(lead)));
     empty.classList.toggle('hidden', leads.length > 0);
-    document.getElementById('countClaimed')!.textContent = leads.length.toString();
+    // (broj preuzetih se više ne prikazuje kao poseban brojač — vidljiv je kroz samu listu)
   }
 
   async function claimLead(leadId: string, btn: HTMLButtonElement) {
@@ -275,8 +332,42 @@ import ContractorLayout from "../layouts/ContractorLayout.astro";
 
     contractorId = session.user.id;
 
+    const nameLabel = document.getElementById('companyNameLabel');
+    if (nameLabel && contractor.company_name) nameLabel.textContent = contractor.company_name;
+
     if (contractor.status === 'pending') { show('statePending'); return; }
     if (contractor.status !== 'active') { show('statePending'); return; }
+
+    // Popuni formu za profil
+    (document.getElementById('profileCompany') as HTMLInputElement).value = contractor.company_name || '';
+    (document.getElementById('profileContact') as HTMLInputElement).value = contractor.contact_name || '';
+    (document.getElementById('profilePhone') as HTMLInputElement).value = contractor.phone || '';
+    (document.getElementById('profileTerritory') as HTMLSelectElement).value = contractor.territory || '';
+    (document.getElementById('profileEmail') as HTMLInputElement).value = contractor.email || '';
+
+    document.getElementById('saveProfileBtn')?.addEventListener('click', async () => {
+      const msg = document.getElementById('profileMsg')!;
+      const btn = document.getElementById('saveProfileBtn') as HTMLButtonElement;
+      btn.disabled = true;
+      msg.textContent = 'Saving...';
+      msg.className = 'text-[11px] text-slate-400';
+
+      const { error: updateError } = await supabase.from('contractors').update({
+        company_name: (document.getElementById('profileCompany') as HTMLInputElement).value,
+        contact_name: (document.getElementById('profileContact') as HTMLInputElement).value,
+        phone: (document.getElementById('profilePhone') as HTMLInputElement).value,
+        territory: (document.getElementById('profileTerritory') as HTMLSelectElement).value,
+      }).eq('id', contractor.id);
+
+      if (updateError) {
+        msg.textContent = '❌ ' + updateError.message;
+        msg.className = 'text-[11px] text-red-400';
+      } else {
+        msg.textContent = '✅ Profile updated.';
+        msg.className = 'text-[11px] text-green-400';
+      }
+      btn.disabled = false;
+    });
 
     show('stateActive');
     setActiveTab('available');

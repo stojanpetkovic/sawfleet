@@ -179,16 +179,23 @@ const leadStatus = lead.status || 'new';
 
     // Kad se lid odobri, tek ONDA postaje vidljiv kontraktorima —
     // pa im tek sad šaljemo email da imaju novi posao za preuzimanje.
+    // VAŽNO: čekamo (await) ovaj fetch PRE reload-a, jer bi ga
+    // window.location.reload() inače prekinuo pre nego što stigne do servera.
     if (newStatus === 'approved') {
       const meta = document.getElementById('leadMeta');
-      fetch('/api/notify-new-lead', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          county: meta?.dataset.county,
-          details: meta?.dataset.details,
-        }),
-      }).catch(() => {});
+      try {
+        await fetch('/api/notify-new-lead', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          keepalive: true,
+          body: JSON.stringify({
+            county: meta?.dataset.county,
+            details: meta?.dataset.details,
+          }),
+        });
+      } catch (e) {
+        console.error('notify-new-lead failed:', e);
+      }
     }
 
     window.location.reload();

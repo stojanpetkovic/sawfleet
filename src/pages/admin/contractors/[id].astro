@@ -14,6 +14,11 @@ const { data: logs } = await supabase.from('contractor_logs').select('*').eq('co
 // POVLAČIMO TERITORIJE IZ BAZE
 const { data: territories } = await supabase.from('service_territories').select('*').order('name');
 
+// Lidovi koje je OVAJ kontraktor preuzeo (contractor_id je auth user_id, ne contractors.id)
+const { data: claimedLeads } = contractor?.user_id
+  ? await supabase.from('leads').select('*').eq('contractor_id', contractor.user_id).order('claimed_at', { ascending: false, nullsFirst: false })
+  : { data: [] };
+
 if (!contractor) return Astro.redirect('/admin/contractors');
 ---
 
@@ -105,6 +110,62 @@ if (!contractor) return Astro.redirect('/admin/contractors');
             <button id="rejectBtn" class="flex-1 h-12 rounded-lg bg-red-950/20 border border-red-900/30 text-red-500 font-bold uppercase tracking-[0.2em] text-[10px] hover:bg-red-900/40 transition-all">Reject Contractor</button>
           </div>
         </div>
+
+        {contractor.user_id && (
+          <div class="pt-6 border-t border-zinc-900">
+            <p class="text-[10px] font-bold uppercase tracking-[0.2em] text-zinc-500 mb-4 flex items-center gap-2"><span class="w-1 h-1 bg-zinc-500 rounded-full"></span> Account Access</p>
+            <button id="resetPasswordBtn" data-contractor-user-id={contractor.user_id} class="w-full sm:w-auto h-12 px-6 rounded-lg bg-blue-500/10 border border-blue-500/30 text-blue-400 font-bold uppercase tracking-[0.2em] text-[10px] hover:bg-blue-500 hover:text-black transition-all">
+              🔑 Set New Password
+            </button>
+
+            <div id="resetPasswordForm" class="hidden mt-4 p-5 bg-zinc-900/50 border border-zinc-800 rounded-xl space-y-3">
+              <p class="text-[11px] text-zinc-400">Set a new password for this contractor's account. Share it with them directly — this does not send an email.</p>
+              <div class="flex flex-col sm:flex-row gap-3">
+                <input id="newPasswordInput" type="text" placeholder="New password (min. 6 characters)" class="flex-1 bg-zinc-950 border border-zinc-800 p-3 rounded-lg text-white text-sm" />
+                <button id="generatePasswordBtn" type="button" class="shrink-0 px-4 py-3 rounded-lg bg-zinc-800 text-zinc-300 text-[10px] font-bold uppercase hover:bg-zinc-700 transition-colors">Generate</button>
+              </div>
+              <div class="flex gap-3">
+                <button id="cancelResetBtn" type="button" class="flex-1 h-11 rounded-lg bg-zinc-800 text-white text-[10px] font-bold uppercase tracking-wider hover:bg-zinc-700 transition-colors">Cancel</button>
+                <button id="confirmResetBtn" type="button" class="flex-1 h-11 rounded-lg bg-blue-500 text-black text-[10px] font-bold uppercase tracking-wider hover:bg-blue-400 transition-colors">Save Password</button>
+              </div>
+              <p id="resetPasswordMsg" class="text-[11px]"></p>
+            </div>
+          </div>
+        )}
+      </div>
+
+      <!-- LIDOVI KOJE JE OVAJ KONTRAKTOR PREUZEO -->
+      <div class="bg-[#050505] border border-zinc-900 rounded-2xl overflow-hidden">
+        <div class="p-5 border-b border-zinc-900">
+          <h3 class="text-[10px] font-bold uppercase tracking-[0.2em] text-white">Claimed Leads ({claimedLeads?.length || 0})</h3>
+        </div>
+        <div id="claimedLeadsList" class="p-3 space-y-2">
+          {claimedLeads && claimedLeads.length > 0 ? claimedLeads.map((lead: any, i: number) => (
+            <div class="claimed-lead-row flex items-center gap-3 p-3 rounded-xl hover:bg-zinc-900/40 transition-colors cursor-pointer" data-index={i} onclick={`window.location.href='/admin/leads/${lead.id}'`}>
+              <div class="w-9 h-9 rounded-full bg-zinc-900 border border-zinc-800 flex items-center justify-center shrink-0 text-[10px] font-bold text-zinc-400">
+                {(lead.email || '?').charAt(0).toUpperCase()}
+              </div>
+              <div class="min-w-0 flex-1">
+                <p class="text-[13px] font-bold text-white truncate">{lead.email || 'No email'}</p>
+                <p class="text-[10px] text-zinc-500 font-mono truncate">{lead.county || 'N/A'} · Claimed {lead.claimed_at ? new Date(lead.claimed_at).toLocaleDateString() : 'N/A'}</p>
+              </div>
+              <div class="flex items-center gap-1.5 shrink-0">
+                {lead.phone && <a href={`tel:${lead.phone}`} onclick="event.stopPropagation()" class="w-8 h-8 rounded-full flex items-center justify-center text-zinc-500 hover:text-green-400 hover:bg-green-500/10 transition-colors" title={lead.phone}>📞</a>}
+                <span class="px-2.5 py-1 rounded-full text-[9px] font-bold uppercase border tracking-wide bg-blue-500/10 text-blue-400 border-blue-500/20">{lead.status}</span>
+              </div>
+            </div>
+          )) : (
+            <div class="p-8 text-center text-zinc-600 text-sm">This contractor hasn't claimed any leads yet.</div>
+          )}
+        </div>
+
+        {claimedLeads && claimedLeads.length > 5 && (
+          <div class="flex items-center justify-between px-5 py-4 border-t border-zinc-900">
+            <button id="claimedPrevBtn" class="h-9 px-4 rounded-full bg-zinc-900 border border-zinc-800 text-[10px] font-bold text-zinc-300 hover:text-white hover:border-zinc-700 transition-colors disabled:opacity-30 disabled:cursor-not-allowed">← Prev</button>
+            <span id="claimedPageInfo" class="text-[10px] text-zinc-500 font-mono">Page 1</span>
+            <button id="claimedNextBtn" class="h-9 px-4 rounded-full bg-zinc-900 border border-zinc-800 text-[10px] font-bold text-zinc-300 hover:text-white hover:border-zinc-700 transition-colors disabled:opacity-30 disabled:cursor-not-allowed">Next →</button>
+          </div>
+        )}
       </div>
     </div>
 
@@ -141,11 +202,16 @@ if (!contractor) return Astro.redirect('/admin/contractors');
     await supabase.from('contractors').update({ status: newStatus }).eq('id', id);
     await supabase.from('contractor_logs').insert([{ contractor_id: id, action: `Status changed to ${newStatus}`, changed_by: currentUser }]);
 
-    fetch('/api/notify-contractor-status', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ contractorId: id, status: newStatus }),
-    }).catch(() => {});
+    try {
+      await fetch('/api/notify-contractor-status', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        keepalive: true,
+        body: JSON.stringify({ contractorId: id, status: newStatus }),
+      });
+    } catch (e) {
+      console.error('notify-contractor-status failed:', e);
+    }
 
     window.location.reload();
   }
@@ -183,4 +249,85 @@ if (!contractor) return Astro.redirect('/admin/contractors');
       window.location.href = '/admin/contractors';
     }
   });
+
+  // --- RESET PASSWORD ---
+  const resetForm = document.getElementById('resetPasswordForm');
+  const resetMsg = document.getElementById('resetPasswordMsg')!;
+  const resetBtn = document.getElementById('resetPasswordBtn') as HTMLButtonElement | null;
+  const contractorUserId = resetBtn?.dataset.contractorUserId || '';
+
+  document.getElementById('resetPasswordBtn')?.addEventListener('click', () => {
+    resetForm?.classList.remove('hidden');
+  });
+  document.getElementById('cancelResetBtn')?.addEventListener('click', () => {
+    resetForm?.classList.add('hidden');
+    resetMsg.textContent = '';
+    (document.getElementById('newPasswordInput') as HTMLInputElement).value = '';
+  });
+
+  document.getElementById('generatePasswordBtn')?.addEventListener('click', () => {
+    const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnpqrstuvwxyz23456789';
+    let pwd = '';
+    for (let i = 0; i < 10; i++) pwd += chars[Math.floor(Math.random() * chars.length)];
+    (document.getElementById('newPasswordInput') as HTMLInputElement).value = pwd;
+  });
+
+  document.getElementById('confirmResetBtn')?.addEventListener('click', async () => {
+    const newPassword = (document.getElementById('newPasswordInput') as HTMLInputElement).value;
+    if (!newPassword || newPassword.length < 6) {
+      resetMsg.textContent = 'Password must be at least 6 characters.';
+      resetMsg.className = 'text-[11px] text-red-400';
+      return;
+    }
+
+    resetMsg.textContent = 'Saving...';
+    resetMsg.className = 'text-[11px] text-zinc-400';
+
+    const { data: { session } } = await supabase.auth.getSession();
+    const res = await fetch('/api/admin-reset-password', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${session?.access_token}`,
+      },
+      body: JSON.stringify({ contractorUserId, newPassword }),
+    });
+    const result = await res.json();
+
+    if (res.ok && result.ok) {
+      resetMsg.textContent = `✅ Password updated. Share it with the contractor: "${newPassword}"`;
+      resetMsg.className = 'text-[11px] text-green-400 break-all';
+    } else {
+      resetMsg.textContent = '❌ ' + (result.message || result.error || 'Failed to update password.');
+      resetMsg.className = 'text-[11px] text-red-400';
+    }
+  });
+  // --- CLAIMED LEADS PAGINATION (5 per page) ---
+  const claimedRows = Array.from(document.querySelectorAll('.claimed-lead-row')) as HTMLElement[];
+  const CLAIMED_PAGE_SIZE = 5;
+  let claimedPage = 0;
+
+  function renderClaimedPage() {
+    const totalPages = Math.max(1, Math.ceil(claimedRows.length / CLAIMED_PAGE_SIZE));
+    claimedRows.forEach((row, i) => {
+      const inRange = i >= claimedPage * CLAIMED_PAGE_SIZE && i < (claimedPage + 1) * CLAIMED_PAGE_SIZE;
+      row.classList.toggle('hidden', !inRange);
+    });
+    const pageInfo = document.getElementById('claimedPageInfo');
+    if (pageInfo) pageInfo.textContent = `Page ${claimedPage + 1} of ${totalPages}`;
+    const prevBtn = document.getElementById('claimedPrevBtn') as HTMLButtonElement | null;
+    const nextBtn = document.getElementById('claimedNextBtn') as HTMLButtonElement | null;
+    if (prevBtn) prevBtn.disabled = claimedPage === 0;
+    if (nextBtn) nextBtn.disabled = claimedPage >= totalPages - 1;
+  }
+
+  document.getElementById('claimedPrevBtn')?.addEventListener('click', () => {
+    if (claimedPage > 0) { claimedPage--; renderClaimedPage(); }
+  });
+  document.getElementById('claimedNextBtn')?.addEventListener('click', () => {
+    const totalPages = Math.max(1, Math.ceil(claimedRows.length / CLAIMED_PAGE_SIZE));
+    if (claimedPage < totalPages - 1) { claimedPage++; renderClaimedPage(); }
+  });
+
+  if (claimedRows.length > 0) renderClaimedPage();
 </script>

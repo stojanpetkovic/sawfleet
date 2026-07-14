@@ -382,6 +382,7 @@ const { data: territories } = await supabase
     fetch('/api/notify-new-contractor', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
+      keepalive: true,
       body: JSON.stringify({ companyName: company_name, territory }),
     }).catch(() => {});
   });

@@ -1,8 +1,82 @@
 ---
 import ContractorLayout from "../layouts/ContractorLayout.astro";
+import { supabase } from "../lib/supabase";
+import { Truck as TruckIcon, PlusCircle } from "lucide-astro";
+
+const { data: territories } = await supabase
+  .from('service_territories')
+  .select('*')
+  .order('name', { ascending: true });
+
+const navItems = [
+  { label: 'Equipment', tab: 'equipment', icon: TruckIcon },
+  { label: 'Add New', href: '/truck-registration', icon: PlusCircle },
+];
 ---
 
-<ContractorLayout companyName="Fleet Owner" homeHref="/truck-dashboard" loginHref="/truck-login">
+<ContractorLayout companyName="Fleet Owner" homeHref="/truck-dashboard" loginHref="/truck-login" navItems={navItems} activeTab="equipment">
+  <!-- EDIT MODAL -->
+  <div id="editTruckModal" class="hidden fixed inset-0 bg-black/80 z-[200] flex items-center justify-center p-4">
+    <div class="bg-slate-900 border border-slate-800 p-6 sm:p-8 rounded-2xl max-w-lg w-full max-h-[90vh] overflow-y-auto">
+      <h2 class="text-white font-bold mb-6">Edit Equipment</h2>
+      <form id="editTruckForm" class="space-y-4">
+        <input type="hidden" id="editTruckId" />
+        <div>
+          <label class="mb-2 block text-[10px] font-bold uppercase tracking-[0.15em] text-slate-400">Equipment Type</label>
+          <input id="editEquipmentType" type="text" required class="h-11 w-full rounded-xl border border-slate-700 bg-slate-950 px-4 text-sm text-white outline-none focus:border-green-500"/>
+        </div>
+        <div class="grid grid-cols-2 gap-4">
+          <div>
+            <label class="mb-2 block text-[10px] font-bold uppercase tracking-[0.15em] text-slate-400">Lift Capacity (tons)</label>
+            <input id="editCapacity" type="number" class="h-11 w-full rounded-xl border border-slate-700 bg-slate-950 px-4 text-sm text-white outline-none focus:border-green-500"/>
+          </div>
+          <div>
+            <label class="mb-2 block text-[10px] font-bold uppercase tracking-[0.15em] text-slate-400">Working Height (ft)</label>
+            <input id="editHeight" type="number" class="h-11 w-full rounded-xl border border-slate-700 bg-slate-950 px-4 text-sm text-white outline-none focus:border-green-500"/>
+          </div>
+        </div>
+        <div class="grid grid-cols-2 gap-4">
+          <div>
+            <label class="mb-2 block text-[10px] font-bold uppercase tracking-[0.15em] text-slate-400">Access Type</label>
+            <select id="editAccess" class="h-11 w-full rounded-xl border border-slate-700 bg-slate-950 px-4 text-sm text-white outline-none focus:border-green-500">
+              <option value="Wheeled">Wheeled</option>
+              <option value="Tracked">Tracked</option>
+            </select>
+          </div>
+          <div>
+            <label class="mb-2 block text-[10px] font-bold uppercase tracking-[0.15em] text-slate-400">Listing Type</label>
+            <select id="editListing" class="h-11 w-full rounded-xl border border-slate-700 bg-slate-950 px-4 text-sm text-white outline-none focus:border-green-500">
+              <option value="Rent">Rent</option>
+              <option value="Sale">Sale</option>
+            </select>
+          </div>
+        </div>
+        <div>
+          <label class="mb-2 block text-[10px] font-bold uppercase tracking-[0.15em] text-slate-400">Location</label>
+          <select id="editLocation" class="h-11 w-full rounded-xl border border-slate-700 bg-slate-950 px-4 text-sm text-white outline-none focus:border-green-500">
+            {territories?.map((t) => <option value={t.name}>{t.name}</option>)}
+          </select>
+        </div>
+        <div>
+          <label class="mb-2 block text-[10px] font-bold uppercase tracking-[0.15em] text-slate-400">Owner Phone</label>
+          <input id="editOwnerPhone" type="tel" class="h-11 w-full rounded-xl border border-slate-700 bg-slate-950 px-4 text-sm text-white outline-none focus:border-green-500"/>
+        </div>
+        <div id="editAvailabilityWrap">
+          <label class="mb-2 block text-[10px] font-bold uppercase tracking-[0.15em] text-slate-400">Availability</label>
+          <select id="editAvailability" class="h-11 w-full rounded-xl border border-slate-700 bg-slate-950 px-4 text-sm text-white outline-none focus:border-green-500">
+            <option value="Available">Available</option>
+            <option value="Unavailable">Unavailable</option>
+          </select>
+        </div>
+        <div class="flex gap-3 pt-2">
+          <button type="button" id="closeEditTruckModal" class="flex-1 h-11 rounded-xl bg-slate-800 text-white text-[10px] font-bold uppercase tracking-wider hover:bg-slate-700 transition-colors">Cancel</button>
+          <button type="submit" class="flex-1 h-11 rounded-xl bg-green-500 text-slate-950 text-[10px] font-bold uppercase tracking-wider hover:bg-green-400 transition-colors">Save Changes</button>
+        </div>
+        <p id="editTruckMsg" class="text-[11px]"></p>
+      </form>
+    </div>
+  </div>
+
   <div id="stateLoading" class="flex flex-col items-center justify-center py-32 text-center">
     <div class="w-8 h-8 border-2 border-zinc-800 border-t-green-500 rounded-full animate-spin"></div>
     <p class="mt-4 text-xs text-zinc-500 font-mono uppercase tracking-widest">Loading your listings...</p>
@@ -48,6 +122,7 @@ import ContractorLayout from "../layouts/ContractorLayout.astro";
   type Truck = {
     id: string; equipment_type: string; lift_capacity_tons: number; working_height_ft: number;
     location: string; approval_status: string; availability_status: string; created_at: string;
+    access_type?: string; listing_type?: string; owner_phone?: string;
   };
 
   function show(id: string) {
@@ -70,13 +145,35 @@ import ContractorLayout from "../layouts/ContractorLayout.astro";
           <p class="text-white font-bold truncate">${t.equipment_type || 'Equipment'}</p>
           <p class="mt-1 text-[11px] font-mono text-slate-500">${[t.location, t.lift_capacity_tons ? t.lift_capacity_tons + ' tons' : '', t.working_height_ft ? t.working_height_ft + ' ft' : ''].filter(Boolean).join(' · ')}</p>
         </div>
-        <span class="self-start sm:self-auto shrink-0 px-2.5 py-1 rounded-md text-[9px] font-bold uppercase border tracking-wider ${badge}">${status}</span>
+        <div class="flex items-center gap-2 shrink-0">
+          <span class="px-2.5 py-1 rounded-md text-[9px] font-bold uppercase border tracking-wider ${badge}">${status}</span>
+          <button class="edit-truck-btn w-8 h-8 rounded-full flex items-center justify-center text-zinc-500 hover:text-white hover:bg-zinc-800 transition-colors" title="Edit">✏️</button>
+        </div>
       </div>
       ${status === 'approved' ? `<p class="mt-3 pt-3 border-t border-slate-800/50 text-[11px] text-slate-400">Availability: <span class="text-white font-bold">${t.availability_status || 'Available'}</span></p>` : ''}
       ${status === 'pending' ? `<p class="mt-3 pt-3 border-t border-slate-800/50 text-[11px] text-slate-500">Waiting for administrator review.</p>` : ''}
       ${status === 'rejected' ? `<p class="mt-3 pt-3 border-t border-slate-800/50 text-[11px] text-slate-500">This listing wasn't approved. Contact the administrator for details.</p>` : ''}
     `;
+    wrapper.querySelector('.edit-truck-btn')?.addEventListener('click', () => openEditModal(t));
     return wrapper;
+  }
+
+  function openEditModal(t: Truck & { access_type?: string; listing_type?: string; owner_phone?: string }) {
+    (document.getElementById('editTruckId') as HTMLInputElement).value = t.id;
+    (document.getElementById('editEquipmentType') as HTMLInputElement).value = t.equipment_type || '';
+    (document.getElementById('editCapacity') as HTMLInputElement).value = (t.lift_capacity_tons ?? '') as string;
+    (document.getElementById('editHeight') as HTMLInputElement).value = (t.working_height_ft ?? '') as string;
+    (document.getElementById('editAccess') as HTMLSelectElement).value = t.access_type || 'Wheeled';
+    (document.getElementById('editListing') as HTMLSelectElement).value = t.listing_type || 'Rent';
+    (document.getElementById('editLocation') as HTMLSelectElement).value = t.location || '';
+    (document.getElementById('editOwnerPhone') as HTMLInputElement).value = t.owner_phone || '';
+    (document.getElementById('editAvailability') as HTMLSelectElement).value = t.availability_status || 'Available';
+
+    const availWrap = document.getElementById('editAvailabilityWrap')!;
+    availWrap.classList.toggle('hidden', t.approval_status !== 'approved');
+
+    document.getElementById('editTruckMsg')!.textContent = '';
+    document.getElementById('editTruckModal')?.classList.remove('hidden');
   }
 
   async function init() {
@@ -90,14 +187,65 @@ import ContractorLayout from "../layouts/ContractorLayout.astro";
       return;
     }
 
+    const pendingCount = trucks.filter((t: Truck) => t.approval_status !== 'approved' && t.approval_status !== 'rejected').length;
     document.getElementById('statTotal')!.textContent = trucks.length.toString();
     document.getElementById('statApproved')!.textContent = trucks.filter((t: Truck) => t.approval_status === 'approved').length.toString();
-    document.getElementById('statPending')!.textContent = trucks.filter((t: Truck) => t.approval_status !== 'approved' && t.approval_status !== 'rejected').length.toString();
+    document.getElementById('statPending')!.textContent = pendingCount.toString();
+
+    const badge = document.getElementById('notificationBadge');
+    const notifContent = document.getElementById('notifContent');
+    if (badge) {
+      badge.classList.toggle('hidden', pendingCount === 0);
+      badge.textContent = pendingCount.toString();
+    }
+    if (notifContent) {
+      notifContent.innerHTML = pendingCount > 0
+        ? `<div class="px-3 py-2.5"><p class="text-xs text-white font-bold">${pendingCount} listing${pendingCount === 1 ? '' : 's'} pending review</p><p class="text-[10px] text-zinc-500 mt-0.5">Waiting for administrator approval.</p></div>`
+        : `<p class="px-3 py-4 text-[11px] text-zinc-600 text-center">All caught up.</p>`;
+    }
 
     const container = document.getElementById('trucksContainer')!;
+    container.innerHTML = '';
     trucks.forEach((t: Truck) => container.appendChild(renderTruck(t)));
     show('stateActive');
   }
+
+  document.getElementById('closeEditTruckModal')?.addEventListener('click', () => {
+    document.getElementById('editTruckModal')?.classList.add('hidden');
+  });
+
+  document.getElementById('editTruckForm')?.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const msg = document.getElementById('editTruckMsg')!;
+    const truckId = (document.getElementById('editTruckId') as HTMLInputElement).value;
+    msg.textContent = 'Saving...';
+    msg.className = 'text-[11px] text-slate-400';
+
+    const availWrap = document.getElementById('editAvailabilityWrap')!;
+    const updates: Record<string, unknown> = {
+      equipment_type: (document.getElementById('editEquipmentType') as HTMLInputElement).value,
+      lift_capacity_tons: (document.getElementById('editCapacity') as HTMLInputElement).value || null,
+      working_height_ft: (document.getElementById('editHeight') as HTMLInputElement).value || null,
+      access_type: (document.getElementById('editAccess') as HTMLSelectElement).value,
+      listing_type: (document.getElementById('editListing') as HTMLSelectElement).value,
+      location: (document.getElementById('editLocation') as HTMLSelectElement).value,
+      owner_phone: (document.getElementById('editOwnerPhone') as HTMLInputElement).value,
+    };
+    if (!availWrap.classList.contains('hidden')) {
+      updates.availability_status = (document.getElementById('editAvailability') as HTMLSelectElement).value;
+    }
+
+    const { error } = await supabase.from('grapple_saw_trucks').update(updates).eq('id', truckId);
+
+    if (error) {
+      msg.textContent = '❌ ' + error.message;
+      msg.className = 'text-[11px] text-red-400';
+      return;
+    }
+
+    document.getElementById('editTruckModal')?.classList.add('hidden');
+    await init();
+  });
 
   document.addEventListener('DOMContentLoaded', init);
 </script>
