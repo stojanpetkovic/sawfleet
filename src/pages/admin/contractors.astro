@@ -8,7 +8,7 @@ const { data: territories } = await supabase.from('service_territories').select(
 ---
 
 <AdminLayout>
-  <button id="openModal" class="fixed bottom-8 right-8 w-14 h-14 bg-green-500 hover:bg-green-400 text-black rounded-full shadow-lg flex items-center justify-center text-3xl font-bold transition-all z-[100]">
+  <button id="openModal" class="fixed bottom-24 lg:bottom-8 right-5 lg:right-8 w-14 h-14 bg-green-500 hover:bg-green-400 text-black rounded-full shadow-lg flex items-center justify-center text-3xl font-bold transition-all z-[100]">
     +
   </button>
 
@@ -37,82 +37,77 @@ const { data: territories } = await supabase.from('service_territories').select(
     </div>
   </div>
 
-  <div class="flex flex-col xl:flex-row gap-8 w-full">
-    <div class="flex-1 space-y-8 min-w-0 w-full">
-      <div class="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6">
-        {[ {id: 'total', label: 'Total'}, {id: 'active', label: 'Active'}, {id: 'pending', label: 'Pending'}, {id: 'rejected', label: 'Rejected'} ].map(stat => (
-          <div class="bg-[#050505] border border-zinc-900 p-4 md:p-6 rounded-xl">
-            <p class="text-[9px] font-bold uppercase tracking-[0.2em] text-zinc-600">{stat.label}</p>
-            <h2 id={`count-${stat.id}`} class="text-2xl font-mono font-bold text-white mt-2">0</h2>
+  <div class="flex flex-col xl:flex-row gap-6 lg:gap-8 w-full">
+    <div class="flex-1 space-y-5 min-w-0 w-full">
+
+      <div>
+        <h1 class="text-xl sm:text-2xl font-bold text-white tracking-tight">Contractors</h1>
+        <p class="text-[11px] text-zinc-500 mt-0.5">Everyone registered in your contractor network.</p>
+      </div>
+
+      <div class="flex sm:grid sm:grid-cols-4 gap-3 overflow-x-auto no-scrollbar -mx-4 px-4 sm:mx-0 sm:px-0 pb-1">
+        {[
+          { id: 'total', label: 'Total', color: 'text-white' },
+          { id: 'active', label: 'Active', color: 'text-green-400' },
+          { id: 'pending', label: 'Pending', color: 'text-amber-400' },
+          { id: 'rejected', label: 'Rejected', color: 'text-red-400' },
+        ].map(stat => (
+          <div class="shrink-0 w-[110px] sm:w-auto bg-[#050505] border border-zinc-900 p-4 rounded-2xl">
+            <p class="text-[9px] font-bold uppercase tracking-[0.15em] text-zinc-600">{stat.label}</p>
+            <h2 id={`count-${stat.id}`} class={`text-2xl font-mono font-bold mt-1.5 ${stat.color}`}>0</h2>
           </div>
         ))}
       </div>
 
-      <div class="flex flex-wrap gap-4 items-center">
-        <select id="timeFilter" class="w-full md:w-auto bg-zinc-900 border border-zinc-800 text-[10px] p-3 rounded-lg text-zinc-300 uppercase font-bold">
-          <option value="all">All Time</option>
-          <option value="7">Last 7 Days</option>
-          <option value="30">Last 30 Days</option>
-          <option value="custom">Custom Range</option>
-        </select>
-
-        <div id="customDateRange" class="hidden w-full md:w-auto flex justify-between md:justify-start gap-2 items-center bg-zinc-900 border border-zinc-800 p-[9px] rounded-lg">
-          <input type="date" id="dateFrom" class="bg-transparent text-[10px] text-zinc-300 outline-none h-[22px] w-[110px]" />
-          <span class="text-zinc-600 font-bold text-[10px]">TO</span>
-          <input type="date" id="dateTo" class="bg-transparent text-[10px] text-zinc-300 outline-none h-[22px] w-[110px]" />
-          <button id="applyDateBtn" class="bg-green-500 text-black px-3 py-1.5 rounded text-[9px] font-bold uppercase hover:bg-green-400">Apply</button>
-        </div>
-
-        <select id="statusFilter" class="w-full md:w-auto bg-zinc-900 border border-zinc-800 text-[10px] p-3 rounded-lg text-zinc-300 uppercase font-bold">
+      <div class="flex items-center gap-2 overflow-x-auto no-scrollbar -mx-4 px-4 sm:mx-0 sm:px-0 pb-1">
+        <select id="statusFilter" class="shrink-0 h-10 pl-4 pr-8 rounded-full bg-zinc-900 border border-zinc-800 text-[11px] font-bold uppercase tracking-wider text-zinc-300 outline-none focus:border-green-500/50 appearance-none bg-[url('data:image/svg+xml;utf8,<svg xmlns=%22http://www.w3.org/2000/svg%22 fill=%22none%22 viewBox=%220 0 24 24%22 stroke=%22%2371717a%22><path stroke-linecap=%22round%22 stroke-linejoin=%22round%22 stroke-width=%222%22 d=%22M19 9l-7 7-7-7%22/></svg>')] bg-no-repeat bg-[right_0.6rem_center] bg-[length:12px]">
           <option value="all">All Statuses</option>
           <option value="active">Active</option>
           <option value="pending">Pending</option>
           <option value="rejected">Rejected</option>
         </select>
 
-        <!-- DINAMIČKI FILTER PADAKUĆI MENI -->
-        <select id="countyFilter" class="w-full md:w-auto bg-zinc-900 border border-zinc-800 text-[10px] p-3 rounded-lg text-zinc-300 uppercase font-bold">
-          <option value="all">All Counties</option>
+        <select id="countyFilter" class="shrink-0 h-10 pl-4 pr-8 rounded-full bg-zinc-900 border border-zinc-800 text-[11px] font-bold uppercase tracking-wider text-zinc-300 outline-none focus:border-green-500/50 appearance-none bg-[url('data:image/svg+xml;utf8,<svg xmlns=%22http://www.w3.org/2000/svg%22 fill=%22none%22 viewBox=%220 0 24 24%22 stroke=%22%2371717a%22><path stroke-linecap=%22round%22 stroke-linejoin=%22round%22 stroke-width=%222%22 d=%22M19 9l-7 7-7-7%22/></svg>')] bg-no-repeat bg-[right_0.6rem_center] bg-[length:12px]">
+          <option value="all">All Territories</option>
           {territories?.map(t => (
             <option value={t.name}>{t.name}</option>
           ))}
         </select>
 
-        <select id="perPage" class="w-full md:w-auto bg-zinc-900 border border-zinc-800 text-[10px] p-3 rounded-lg text-zinc-300 uppercase font-bold">
-          <option value="10">10 per page</option>
-          <option value="50">50 per page</option>
+        <select id="timeFilter" class="shrink-0 h-10 pl-4 pr-8 rounded-full bg-zinc-900 border border-zinc-800 text-[11px] font-bold uppercase tracking-wider text-zinc-300 outline-none focus:border-green-500/50 appearance-none bg-[url('data:image/svg+xml;utf8,<svg xmlns=%22http://www.w3.org/2000/svg%22 fill=%22none%22 viewBox=%220 0 24 24%22 stroke=%22%2371717a%22><path stroke-linecap=%22round%22 stroke-linejoin=%22round%22 stroke-width=%222%22 d=%22M19 9l-7 7-7-7%22/></svg>')] bg-no-repeat bg-[right_0.6rem_center] bg-[length:12px]">
+          <option value="all">All Time</option>
+          <option value="7">Last 7 Days</option>
+          <option value="30">Last 30 Days</option>
+          <option value="custom">Custom Range</option>
         </select>
 
-        <div class="flex gap-2 items-center w-full md:w-auto md:ml-auto justify-between md:justify-start mt-4 md:mt-0">
-          <button id="prevPage" class="px-4 py-2 bg-zinc-900 rounded text-[10px] text-white">← Prev</button>
-          <span id="pageInfo" class="text-[10px] text-zinc-500 font-mono">Page 1</span>
-          <button id="nextPage" class="px-4 py-2 bg-zinc-900 rounded text-[10px] text-white">Next →</button>
-        </div>
+        <select id="perPage" class="shrink-0 h-10 pl-4 pr-8 rounded-full bg-zinc-900 border border-zinc-800 text-[11px] font-bold uppercase tracking-wider text-zinc-300 outline-none focus:border-green-500/50 appearance-none bg-[url('data:image/svg+xml;utf8,<svg xmlns=%22http://www.w3.org/2000/svg%22 fill=%22none%22 viewBox=%220 0 24 24%22 stroke=%22%2371717a%22><path stroke-linecap=%22round%22 stroke-linejoin=%22round%22 stroke-width=%222%22 d=%22M19 9l-7 7-7-7%22/></svg>')] bg-no-repeat bg-[right_0.6rem_center] bg-[length:12px]">
+          <option value="10">10 / page</option>
+          <option value="50">50 / page</option>
+        </select>
       </div>
 
-      <!-- KORIGOVANA TABELA ZA MOBILNE UREĐAJE -->
-      <div class="border-transparent md:border-zinc-900 md:border rounded-xl bg-transparent md:bg-[#050505] overflow-x-hidden md:overflow-x-auto w-full">
-        <table class="w-full text-left border-collapse min-w-full md:min-w-[800px]">
-          <thead class="hidden md:table-header-group">
-            <tr class="text-[10px] uppercase text-zinc-500 border-b border-zinc-900">
-              <th class="px-6 py-4">Company</th>
-              <th class="px-6 py-4">Contact</th>
-              <th class="px-6 py-4">Phone</th>
-              <th class="px-6 py-4">Territory</th>
-              <th class="px-6 py-4">Status</th>
-              <th class="px-6 py-4">Date</th>
-            </tr>
-          </thead>
-          <tbody id="allContractorsTable" class="text-[11px] font-mono text-zinc-400 block md:table-row-group">
-            <tr><td colspan="6" class="px-6 py-4 text-center">Loading...</td></tr>
-          </tbody>
-        </table>
+      <div id="customDateRange" class="hidden flex flex-wrap gap-2 items-center bg-zinc-900 border border-zinc-800 p-3 rounded-xl">
+        <input type="date" id="dateFrom" class="bg-transparent text-[11px] text-zinc-300 outline-none h-6" />
+        <span class="text-zinc-600 font-bold text-[10px]">TO</span>
+        <input type="date" id="dateTo" class="bg-transparent text-[11px] text-zinc-300 outline-none h-6" />
+        <button id="applyDateBtn" class="ml-auto bg-green-500 text-black px-3 py-1.5 rounded-lg text-[9px] font-bold uppercase hover:bg-green-400">Apply</button>
+      </div>
+
+      <div id="allContractorsTable" class="space-y-2">
+        <div class="p-8 text-center text-zinc-600 text-sm">Loading...</div>
+      </div>
+
+      <div class="flex items-center justify-between pt-2">
+        <button id="prevPage" class="h-10 px-4 rounded-full bg-zinc-900 border border-zinc-800 text-[11px] font-bold text-zinc-300 hover:text-white hover:border-zinc-700 transition-colors">← Prev</button>
+        <span id="pageInfo" class="text-[11px] text-zinc-500 font-mono">Page 1</span>
+        <button id="nextPage" class="h-10 px-4 rounded-full bg-zinc-900 border border-zinc-800 text-[11px] font-bold text-zinc-300 hover:text-white hover:border-zinc-700 transition-colors">Next →</button>
       </div>
     </div>
 
     <!-- Sidebar za logove -->
     <div class="w-full xl:w-[400px] shrink-0">
-      <div class="bg-[#050505] border border-zinc-900 rounded-xl sticky top-8 w-full shadow-2xl">
+      <div class="bg-[#050505] border border-zinc-900 rounded-2xl sticky top-8 w-full">
         <div class="p-6 border-b border-zinc-900">
           <h3 class="text-[10px] font-bold uppercase tracking-[0.2em] text-white">Activity Timeline</h3>
         </div>
@@ -195,44 +190,38 @@ const { data: territories } = await supabase.from('service_territories').select(
     
     const { data: list } = await query.order('created_at', { ascending: false }).range(currentPage * itemsPerPage, (currentPage + 1) * itemsPerPage - 1);
 
-    const tableBody = document.getElementById('allContractorsTable');
-    if (tableBody && list) {
-      // IZMENA: Prikaz sa responzivnim klasama unutar map() funkcije
-      tableBody.innerHTML = list.length > 0 ? list.map(item => `
-        <tr class="block md:table-row bg-[#050505] border border-zinc-900 md:border-b md:border-zinc-900/50 md:border-x-0 md:border-t-0 rounded-xl md:rounded-none mb-4 md:mb-0 p-4 md:p-0 hover:bg-zinc-900/20 cursor-pointer transition-colors" onclick="window.location.href='/admin/contractors/${item.id}'">
-          
-          <td class="block md:table-cell py-1.5 md:px-6 md:py-4">
-            <span class="md:hidden text-[9px] uppercase font-bold text-zinc-600 mr-2 w-20 inline-block">Company:</span>
-            <span class="text-white font-bold">${item.company_name || 'N/A'}</span>
-          </td>
-          
-          <td class="block md:table-cell py-1.5 md:px-6 md:py-4">
-            <span class="md:hidden text-[9px] uppercase font-bold text-zinc-600 mr-2 w-20 inline-block">Contact:</span>
-            <span class="text-zinc-300">${item.contact_name || 'N/A'}</span>
-          </td>
-          
-          <td class="block md:table-cell py-1.5 md:px-6 md:py-4">
-            <span class="md:hidden text-[9px] uppercase font-bold text-zinc-600 mr-2 w-20 inline-block">Phone:</span>
-            <span class="text-zinc-300">${item.phone ? `<a href="tel:${item.phone}" onclick="event.stopPropagation()" class="hover:text-green-400 underline decoration-dotted underline-offset-2">${item.phone}</a>` : 'N/A'}</span>
-          </td>
-          
-          <td class="block md:table-cell py-1.5 md:px-6 md:py-4">
-            <span class="md:hidden text-[9px] uppercase font-bold text-zinc-600 mr-2 w-20 inline-block">Territory:</span>
-            <span class="text-zinc-300">${item.territory || 'N/A'}</span>
-          </td>
-          
-          <td class="flex items-center md:table-cell py-1.5 md:px-6 md:py-4">
-            <span class="md:hidden text-[9px] uppercase font-bold text-zinc-600 mr-2 w-20 inline-block">Status:</span>
-            <span class="px-2 py-1 rounded text-[9px] font-bold uppercase border ${item.status === 'active' ? 'bg-green-900/20 text-green-500 border-green-900/50' : item.status === 'rejected' ? 'bg-red-900/20 text-red-500 border-red-900/50' : 'bg-zinc-900 text-zinc-300 border-zinc-800'}">${item.status || 'pending'}</span>
-          </td>
-          
-          <td class="block md:table-cell py-1.5 md:px-6 md:py-4">
-            <span class="md:hidden text-[9px] uppercase font-bold text-zinc-600 mr-2 w-20 inline-block">Date:</span>
-            <span class="text-zinc-500">${item.created_at ? new Date(item.created_at).toLocaleDateString() : 'N/A'}</span>
-          </td>
-          
-        </tr>
-      `).join('') : '<tr><td colspan="6" class="px-6 py-4 text-center">No results.</td></tr>';
+    const listEl = document.getElementById('allContractorsTable');
+    if (listEl && list) {
+      listEl.innerHTML = list.length > 0 ? list.map(item => {
+        const statusStyles: Record<string, string> = {
+          active: 'bg-green-500/10 text-green-400 border-green-500/20',
+          rejected: 'bg-red-500/10 text-red-400 border-red-500/20',
+        };
+        const statusClass = statusStyles[item.status] || 'bg-amber-500/10 text-amber-400 border-amber-500/20';
+        const initials = (item.company_name || '?').slice(0, 2).toUpperCase();
+        return `
+        <div class="group flex items-center gap-3 sm:gap-4 p-3 sm:p-4 rounded-2xl border border-zinc-900 bg-[#050505] hover:border-zinc-700 hover:bg-zinc-900/40 transition-all cursor-pointer" onclick="window.location.href='/admin/contractors/${item.id}'">
+          <div class="w-10 h-10 rounded-full bg-zinc-900 border border-zinc-800 flex items-center justify-center shrink-0 text-[10px] font-bold text-zinc-400">${initials}</div>
+          <div class="min-w-0 flex-1">
+            <p class="text-sm font-bold text-white truncate">${item.company_name || 'N/A'}</p>
+            <div class="mt-0.5 flex items-center gap-2 text-[11px] text-zinc-500 font-mono truncate">
+              <span>${item.contact_name || 'No contact'}</span>
+              <span class="text-zinc-700">·</span>
+              <span>${item.territory || 'No territory'}</span>
+            </div>
+          </div>
+          <div class="flex items-center gap-1.5 shrink-0">
+            ${item.phone ? `<a href="tel:${item.phone}" onclick="event.stopPropagation()" class="w-8 h-8 rounded-full flex items-center justify-center text-zinc-500 hover:text-green-400 hover:bg-green-500/10 transition-colors" title="${item.phone}">
+              <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"/></svg>
+            </a>` : ''}
+            ${item.email ? `<a href="mailto:${item.email}" onclick="event.stopPropagation()" class="hidden sm:flex w-8 h-8 rounded-full items-center justify-center text-zinc-500 hover:text-green-400 hover:bg-green-500/10 transition-colors" title="${item.email}">
+              <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
+            </a>` : ''}
+            <span class="px-2.5 py-1 rounded-full text-[9px] font-bold uppercase border tracking-wide ${statusClass}">${item.status || 'pending'}</span>
+            <svg class="hidden sm:block w-4 h-4 text-zinc-700 group-hover:text-zinc-400 transition-colors" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+          </div>
+        </div>
+      `}).join('') : '<div class="p-8 text-center text-zinc-600 text-sm border border-dashed border-zinc-900 rounded-2xl">No results match these filters.</div>';
     }
     document.getElementById('pageInfo')!.textContent = `Page ${currentPage + 1}`;
   }
