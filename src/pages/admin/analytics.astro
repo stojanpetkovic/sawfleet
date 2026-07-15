@@ -7,13 +7,13 @@ import AdminLayout from "../../layouts/AdminLayout.astro";
   <div class="w-full flex flex-col gap-8 min-w-0">
     
     <!-- HEADER -->
-    <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 border-b border-zinc-900 pb-6">
+    <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 border-b border-zinc-100 pb-6">
       <div>
-        <span class="text-[10px] font-mono font-bold uppercase tracking-[0.2em] text-green-500">// Traffic & Conversions</span>
-        <h1 class="mt-2 text-2xl font-bold tracking-tight text-white sm:text-3xl">Analytics & Performance</h1>
+        <span class="text-[10px] font-mono font-bold uppercase tracking-[0.2em] text-green-700">// Traffic & Conversions</span>
+        <h1 class="mt-2 text-2xl font-bold tracking-tight text-slate-900 sm:text-3xl">Analytics & Performance</h1>
       </div>
       
-      <select id="analyticsFilter" class="w-full sm:w-auto bg-[#050505] border border-zinc-800 text-[10px] font-bold uppercase tracking-[0.2em] p-3 rounded-lg text-zinc-300 outline-none focus:border-green-500/50 transition-colors cursor-pointer">
+      <select id="analyticsFilter" class="w-full sm:w-auto bg-white border border-zinc-200 text-[10px] font-bold uppercase tracking-[0.2em] p-3 rounded-lg text-zinc-700 outline-none focus:border-green-500/50 transition-colors cursor-pointer">
         <option value="7">Last 7 Days</option>
         <option value="30">Last 30 Days</option>
         <option value="90">Last 90 Days</option>
@@ -24,41 +24,41 @@ import AdminLayout from "../../layouts/AdminLayout.astro";
     <div class="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-6 gap-4 md:gap-6 w-full">
       
       <!-- Total Leads -->
-      <div class="bg-[#050505] border border-zinc-900 p-5 rounded-xl shadow-xl hover:border-zinc-800 transition-colors flex flex-col justify-between">
+      <div class="bg-white border border-zinc-100 p-5 rounded-xl shadow-xl hover:border-zinc-200 transition-colors flex flex-col justify-between">
         <p class="text-[9px] font-bold uppercase tracking-[0.2em] text-zinc-500">Total Leads</p>
-        <h2 id="stat-total" class="text-2xl font-mono font-bold text-white mt-4">-</h2>
+        <h2 id="stat-total" class="text-2xl font-mono font-bold text-slate-900 mt-4">-</h2>
       </div>
 
       <!-- Claimed Leads -->
-      <div class="bg-[#050505] border border-zinc-900 p-5 rounded-xl border-t-2 border-t-green-500 shadow-xl hover:border-zinc-800 transition-colors relative overflow-hidden flex flex-col justify-between">
+      <div class="bg-white border border-zinc-100 p-5 rounded-xl border-t-2 border-t-green-500 shadow-xl hover:border-zinc-200 transition-colors relative overflow-hidden flex flex-col justify-between">
         <div class="absolute top-0 right-0 w-24 h-24 bg-green-500/5 blur-[30px] rounded-full pointer-events-none"></div>
-        <p class="text-[9px] font-bold uppercase tracking-[0.2em] text-green-500 relative z-10">Claimed</p>
-        <h2 id="stat-claimed" class="text-2xl font-mono font-bold text-white mt-4 relative z-10">-</h2>
+        <p class="text-[9px] font-bold uppercase tracking-[0.2em] text-green-700 relative z-10">Claimed</p>
+        <h2 id="stat-claimed" class="text-2xl font-mono font-bold text-slate-900 mt-4 relative z-10">-</h2>
       </div>
 
       <!-- Conversion Rate -->
-      <div class="bg-[#050505] border border-zinc-900 p-5 rounded-xl border-t-2 border-t-blue-500 shadow-xl hover:border-zinc-800 transition-colors relative overflow-hidden flex flex-col justify-between">
+      <div class="bg-white border border-zinc-100 p-5 rounded-xl border-t-2 border-t-blue-500 shadow-xl hover:border-zinc-200 transition-colors relative overflow-hidden flex flex-col justify-between">
         <div class="absolute top-0 right-0 w-24 h-24 bg-blue-500/5 blur-[30px] rounded-full pointer-events-none"></div>
-        <p class="text-[9px] font-bold uppercase tracking-[0.2em] text-blue-400 relative z-10">Conversion</p>
-        <h2 id="stat-conversion" class="text-2xl font-mono font-bold text-white mt-4 relative z-10">-</h2>
+        <p class="text-[9px] font-bold uppercase tracking-[0.2em] text-blue-600 relative z-10">Conversion</p>
+        <h2 id="stat-conversion" class="text-2xl font-mono font-bold text-slate-900 mt-4 relative z-10">-</h2>
       </div>
       
       <!-- Google Ads -->
-      <div class="bg-[#050505] border border-zinc-900 p-5 rounded-xl shadow-xl hover:border-zinc-800 transition-colors flex flex-col justify-between">
+      <div class="bg-white border border-zinc-100 p-5 rounded-xl shadow-xl hover:border-zinc-200 transition-colors flex flex-col justify-between">
         <p class="text-[9px] font-bold uppercase tracking-[0.2em] text-zinc-500">Google Ads</p>
-        <h2 id="stat-google" class="text-2xl font-mono font-bold text-white mt-4">-</h2>
+        <h2 id="stat-google" class="text-2xl font-mono font-bold text-slate-900 mt-4">-</h2>
       </div>
 
       <!-- Meta / FB -->
-      <div class="bg-[#050505] border border-zinc-900 p-5 rounded-xl shadow-xl hover:border-zinc-800 transition-colors flex flex-col justify-between">
+      <div class="bg-white border border-zinc-100 p-5 rounded-xl shadow-xl hover:border-zinc-200 transition-colors flex flex-col justify-between">
         <p class="text-[9px] font-bold uppercase tracking-[0.2em] text-zinc-500">Meta / FB</p>
-        <h2 id="stat-meta" class="text-2xl font-mono font-bold text-white mt-4">-</h2>
+        <h2 id="stat-meta" class="text-2xl font-mono font-bold text-slate-900 mt-4">-</h2>
       </div>
 
       <!-- Organic -->
-      <div class="bg-[#050505] border border-zinc-900 p-5 rounded-xl shadow-xl hover:border-zinc-800 transition-colors flex flex-col justify-between">
+      <div class="bg-white border border-zinc-100 p-5 rounded-xl shadow-xl hover:border-zinc-200 transition-colors flex flex-col justify-between">
         <p class="text-[9px] font-bold uppercase tracking-[0.2em] text-zinc-500">Organic</p>
-        <h2 id="stat-organic" class="text-2xl font-mono font-bold text-white mt-4">-</h2>
+        <h2 id="stat-organic" class="text-2xl font-mono font-bold text-slate-900 mt-4">-</h2>
       </div>
     </div>
 
@@ -66,12 +66,12 @@ import AdminLayout from "../../layouts/AdminLayout.astro";
     <div class="grid grid-cols-1 xl:grid-cols-3 gap-6 w-full">
       
       <!-- GLAVNI GRAFIKON (Trendovi) -->
-      <div class="xl:col-span-2 bg-[#050505] border border-zinc-900 p-6 md:p-8 rounded-xl shadow-xl flex flex-col">
+      <div class="xl:col-span-2 bg-white border border-zinc-100 p-6 md:p-8 rounded-xl shadow-xl flex flex-col">
         <div class="flex justify-between items-center mb-6">
           <h3 class="text-[10px] font-bold uppercase tracking-[0.2em] text-zinc-500">Lead Volume vs Conversion Trend</h3>
           <div class="flex gap-4">
-            <div class="flex items-center gap-2"><span class="w-2 h-2 rounded-full bg-blue-500"></span><span class="text-[9px] text-zinc-400 font-mono">Total</span></div>
-            <div class="flex items-center gap-2"><span class="w-2 h-2 rounded-full bg-green-500"></span><span class="text-[9px] text-zinc-400 font-mono">Claimed</span></div>
+            <div class="flex items-center gap-2"><span class="w-2 h-2 rounded-full bg-blue-500"></span><span class="text-[9px] text-zinc-600 font-mono">Total</span></div>
+            <div class="flex items-center gap-2"><span class="w-2 h-2 rounded-full bg-green-500"></span><span class="text-[9px] text-zinc-600 font-mono">Claimed</span></div>
           </div>
         </div>
         <div class="relative w-full flex-1 min-h-[250px] md:min-h-[350px]">
@@ -80,7 +80,7 @@ import AdminLayout from "../../layouts/AdminLayout.astro";
       </div>
 
       <!-- DOUGHNUT GRAFIKON (Izvori) -->
-      <div class="xl:col-span-1 bg-[#050505] border border-zinc-900 p-6 md:p-8 rounded-xl shadow-xl flex flex-col">
+      <div class="xl:col-span-1 bg-white border border-zinc-100 p-6 md:p-8 rounded-xl shadow-xl flex flex-col">
         <h3 class="text-[10px] font-bold uppercase tracking-[0.2em] text-zinc-500 mb-6">Acquisition Source</h3>
         <div class="relative w-full flex-1 min-h-[250px] flex items-center justify-center">
           <canvas id="donutChart"></canvas>

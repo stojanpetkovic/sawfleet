@@ -1,6 +1,99 @@
 @import "tailwindcss";
 
+/* ============================================================
+   APP SHELL / MOBILE-NATIVE FEEL
+   ============================================================ */
+
+html {
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  -webkit-tap-highlight-color: transparent;
+  overscroll-behavior-y: none;
+}
+
+/* Safe-area helpers for notches / home indicators on iOS & Android */
+.pt-safe { padding-top: env(safe-area-inset-top); }
+.pb-safe { padding-bottom: env(safe-area-inset-bottom); }
+.safe-bottom-nav { padding-bottom: calc(env(safe-area-inset-bottom) + 0.5rem); }
+
 /* Hide scrollbars on horizontally-scrollable filter/tab strips,
    while keeping them scrollable via touch/trackpad. */
 .no-scrollbar::-webkit-scrollbar { display: none; }
 .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+
+/* Modern soft elevation, used instead of heavy dark borders/glows */
+.shadow-soft {
+  box-shadow: 0 1px 2px rgba(15, 23, 42, 0.04), 0 8px 24px -12px rgba(15, 23, 42, 0.10);
+}
+.shadow-soft-lg {
+  box-shadow: 0 2px 8px rgba(15, 23, 42, 0.06), 0 24px 48px -16px rgba(15, 23, 42, 0.14);
+}
+
+/* Native-feeling tap state for cards / buttons on touch devices */
+.tap-scale { transition: transform .15s ease, box-shadow .15s ease; }
+.tap-scale:active { transform: scale(0.97); }
+
+/* ============================================================
+   CONTRACTOR/ADMIN NAV — active-tab indication
+   One source of truth for both server-rendered state and the
+   client-side tab switch, so clicking a tab always looks active
+   immediately and consistently (sidebar + mobile bottom bar).
+   ============================================================ */
+.nav-tab-btn--side {
+  color: #64748B; /* slate-500 */
+  border-color: transparent;
+  background-color: transparent;
+}
+.nav-tab-btn--side:hover:not(.is-active) {
+  color: #0F172A; /* slate-900 */
+  background-color: #F8FAFC; /* slate-50 */
+}
+.nav-tab-btn--side.is-active {
+  color: #15803D; /* green-700 */
+  background-color: #F0FDF4; /* green-50 */
+  border-color: rgba(22, 163, 74, 0.15);
+  position: relative;
+}
+.nav-tab-btn--side.is-active::before {
+  content: "";
+  position: absolute;
+  left: -0.75rem;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 3px;
+  height: 60%;
+  border-radius: 999px;
+  background-color: #16A34A; /* green-600 */
+}
+
+.nav-tab-btn--bottom {
+  color: #94A3B8; /* slate-400 */
+}
+.nav-tab-btn--bottom:hover:not(.is-active) {
+  color: #475569; /* slate-600 */
+}
+.nav-tab-btn--bottom.is-active {
+  color: #15803D; /* green-700 */
+}
+.nav-tab-btn--bottom.is-active::after {
+  content: "";
+  position: absolute;
+  bottom: 2px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 4px;
+  height: 4px;
+  border-radius: 999px;
+  background-color: #16A34A; /* green-600 */
+}
+
+/* Skeleton loading shimmer for async content */
+@keyframes shimmer { 100% { transform: translateX(100%); } }
+.skeleton { position: relative; overflow: hidden; background: #F1F3F2; }
+.skeleton::after {
+  content: ""; position: absolute; inset: 0; transform: translateX(-100%);
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.7), transparent);
+  animation: shimmer 1.4s infinite;
+}

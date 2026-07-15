@@ -9,30 +9,30 @@ const { data: territories } = await supabase.from('service_territories').select(
 
 <AdminLayout>
   <!-- Floating Plus Dugme -->
-  <button id="openModal" class="fixed bottom-24 lg:bottom-8 right-5 lg:right-8 w-14 h-14 bg-green-500 hover:bg-green-400 text-black rounded-full shadow-lg flex items-center justify-center text-3xl font-bold transition-all z-[100]">
+  <button id="openModal" class="fixed bottom-24 lg:bottom-8 right-5 lg:right-8 w-14 h-14 bg-green-500 hover:bg-green-400 text-slate-900 rounded-full shadow-lg flex items-center justify-center text-3xl font-bold transition-all z-[100]">
     +
   </button>
 
   <!-- Modal za dodavanje -->
-  <div id="leadModal" class="hidden fixed inset-0 bg-black/80 z-[200] flex items-center justify-center p-4">
-    <div class="bg-[#050505] border border-zinc-800 p-6 md:p-8 rounded-xl max-w-md w-full max-h-[90vh] overflow-y-auto">
-      <h2 class="text-white font-bold mb-6">Add New Lead</h2>
+  <div id="leadModal" class="hidden fixed inset-0 bg-slate-900/40 backdrop-blur-sm z-[200] flex items-center justify-center p-4">
+    <div class="bg-white border border-zinc-200 p-6 md:p-8 rounded-xl max-w-md w-full max-h-[90vh] overflow-y-auto">
+      <h2 class="text-slate-900 font-bold mb-6">Add New Lead</h2>
       <form id="addLeadForm" class="space-y-4">
-        <input type="email" id="newEmail" placeholder="Email" class="w-full bg-zinc-900 border border-zinc-800 p-3 rounded text-white" required />
-        <input type="text" id="newPhone" placeholder="Phone" class="w-full bg-zinc-900 border border-zinc-800 p-3 rounded text-white" />
+        <input type="email" id="newEmail" placeholder="Email" class="w-full bg-zinc-100 border border-zinc-200 p-3 rounded text-slate-900" required />
+        <input type="text" id="newPhone" placeholder="Phone" class="w-full bg-zinc-100 border border-zinc-200 p-3 rounded text-slate-900" />
         
         <!-- DINAMIČKI PADAKUĆI MENI ZA DODAVANJE -->
-        <select id="newCounty" class="w-full bg-zinc-900 border border-zinc-800 p-3 rounded text-white" required>
+        <select id="newCounty" class="w-full bg-zinc-100 border border-zinc-200 p-3 rounded text-slate-900" required>
           <option value="" disabled selected>Select County</option>
           {territories?.map(t => (
             <option value={t.name}>{t.name}</option>
           ))}
         </select>
 
-        <textarea id="newDetails" placeholder="Details" class="w-full bg-zinc-900 border border-zinc-800 p-3 rounded text-white"></textarea>
+        <textarea id="newDetails" placeholder="Details" class="w-full bg-zinc-100 border border-zinc-200 p-3 rounded text-slate-900"></textarea>
         <div class="flex gap-4 mt-6">
-          <button type="button" id="closeModal" class="flex-1 bg-zinc-800 p-3 rounded text-white">Cancel</button>
-          <button type="submit" class="flex-1 bg-green-500 p-3 rounded text-black font-bold">Save Lead</button>
+          <button type="button" id="closeModal" class="flex-1 bg-zinc-200 p-3 rounded text-slate-900">Cancel</button>
+          <button type="submit" class="flex-1 bg-green-500 p-3 rounded text-slate-900 font-bold">Save Lead</button>
         </div>
       </form>
     </div>
@@ -44,7 +44,7 @@ const { data: territories } = await supabase.from('service_territories').select(
       <!-- HEADER -->
       <div class="flex items-center justify-between">
         <div>
-          <h1 class="text-xl sm:text-2xl font-bold text-white tracking-tight">Service Leads</h1>
+          <h1 class="text-xl sm:text-2xl font-bold text-slate-900 tracking-tight">Service Leads</h1>
           <p class="text-[11px] text-zinc-500 mt-0.5">Every homeowner request that's come through the platform.</p>
         </div>
       </div>
@@ -52,14 +52,14 @@ const { data: territories } = await supabase.from('service_territories').select(
       <!-- STAT PILLS — horizontal scroll on mobile, grid on desktop -->
       <div class="flex sm:grid sm:grid-cols-5 gap-3 overflow-x-auto no-scrollbar -mx-4 px-4 sm:mx-0 sm:px-0 pb-1">
         {[
-          { id: 'total', label: 'Total', color: 'text-white' },
-          { id: 'new', label: 'New', color: 'text-zinc-300' },
-          { id: 'approved', label: 'Approved', color: 'text-green-400' },
-          { id: 'claimed', label: 'Claimed', color: 'text-blue-400' },
-          { id: 'rejected', label: 'Rejected', color: 'text-red-400' },
+          { id: 'total', label: 'Total', color: 'text-slate-900' },
+          { id: 'new', label: 'New', color: 'text-zinc-700' },
+          { id: 'approved', label: 'Approved', color: 'text-green-700' },
+          { id: 'claimed', label: 'Claimed', color: 'text-blue-600' },
+          { id: 'rejected', label: 'Rejected', color: 'text-red-600' },
         ].map(stat => (
-          <div class="shrink-0 w-[110px] sm:w-auto bg-[#050505] border border-zinc-900 p-4 rounded-2xl">
-            <p class="text-[9px] font-bold uppercase tracking-[0.15em] text-zinc-600">{stat.label}</p>
+          <div class="shrink-0 w-[110px] sm:w-auto bg-white border border-zinc-100 p-4 rounded-2xl">
+            <p class="text-[9px] font-bold uppercase tracking-[0.15em] text-zinc-400">{stat.label}</p>
             <h2 id={`count-${stat.id}`} class={`text-2xl font-mono font-bold mt-1.5 ${stat.color}`}>0</h2>
           </div>
         ))}
@@ -67,7 +67,7 @@ const { data: territories } = await supabase.from('service_territories').select(
 
       <!-- FILTER BAR -->
       <div class="flex items-center gap-2 overflow-x-auto no-scrollbar -mx-4 px-4 sm:mx-0 sm:px-0 pb-1">
-        <select id="statusFilter" class="shrink-0 h-10 pl-4 pr-8 rounded-full bg-zinc-900 border border-zinc-800 text-[11px] font-bold uppercase tracking-wider text-zinc-300 outline-none focus:border-green-500/50 appearance-none bg-[url('data:image/svg+xml;utf8,<svg xmlns=%22http://www.w3.org/2000/svg%22 fill=%22none%22 viewBox=%220 0 24 24%22 stroke=%22%2371717a%22><path stroke-linecap=%22round%22 stroke-linejoin=%22round%22 stroke-width=%222%22 d=%22M19 9l-7 7-7-7%22/></svg>')] bg-no-repeat bg-[right_0.6rem_center] bg-[length:12px]">
+        <select id="statusFilter" class="shrink-0 h-10 pl-4 pr-8 rounded-full bg-zinc-100 border border-zinc-200 text-[11px] font-bold uppercase tracking-wider text-zinc-700 outline-none focus:border-green-500/50 appearance-none bg-[url('data:image/svg+xml;utf8,<svg xmlns=%22http://www.w3.org/2000/svg%22 fill=%22none%22 viewBox=%220 0 24 24%22 stroke=%22%2371717a%22><path stroke-linecap=%22round%22 stroke-linejoin=%22round%22 stroke-width=%222%22 d=%22M19 9l-7 7-7-7%22/></svg>')] bg-no-repeat bg-[right_0.6rem_center] bg-[length:12px]">
           <option value="all">All Statuses</option>
           <option value="new">New</option>
           <option value="approved">Approved</option>
@@ -75,51 +75,51 @@ const { data: territories } = await supabase.from('service_territories').select(
           <option value="rejected">Rejected</option>
         </select>
 
-        <select id="countyFilter" class="shrink-0 h-10 pl-4 pr-8 rounded-full bg-zinc-900 border border-zinc-800 text-[11px] font-bold uppercase tracking-wider text-zinc-300 outline-none focus:border-green-500/50 appearance-none bg-[url('data:image/svg+xml;utf8,<svg xmlns=%22http://www.w3.org/2000/svg%22 fill=%22none%22 viewBox=%220 0 24 24%22 stroke=%22%2371717a%22><path stroke-linecap=%22round%22 stroke-linejoin=%22round%22 stroke-width=%222%22 d=%22M19 9l-7 7-7-7%22/></svg>')] bg-no-repeat bg-[right_0.6rem_center] bg-[length:12px]">
+        <select id="countyFilter" class="shrink-0 h-10 pl-4 pr-8 rounded-full bg-zinc-100 border border-zinc-200 text-[11px] font-bold uppercase tracking-wider text-zinc-700 outline-none focus:border-green-500/50 appearance-none bg-[url('data:image/svg+xml;utf8,<svg xmlns=%22http://www.w3.org/2000/svg%22 fill=%22none%22 viewBox=%220 0 24 24%22 stroke=%22%2371717a%22><path stroke-linecap=%22round%22 stroke-linejoin=%22round%22 stroke-width=%222%22 d=%22M19 9l-7 7-7-7%22/></svg>')] bg-no-repeat bg-[right_0.6rem_center] bg-[length:12px]">
           <option value="all">All Counties</option>
           {territories?.map(t => (
             <option value={t.name}>{t.name}</option>
           ))}
         </select>
 
-        <select id="timeFilter" class="shrink-0 h-10 pl-4 pr-8 rounded-full bg-zinc-900 border border-zinc-800 text-[11px] font-bold uppercase tracking-wider text-zinc-300 outline-none focus:border-green-500/50 appearance-none bg-[url('data:image/svg+xml;utf8,<svg xmlns=%22http://www.w3.org/2000/svg%22 fill=%22none%22 viewBox=%220 0 24 24%22 stroke=%22%2371717a%22><path stroke-linecap=%22round%22 stroke-linejoin=%22round%22 stroke-width=%222%22 d=%22M19 9l-7 7-7-7%22/></svg>')] bg-no-repeat bg-[right_0.6rem_center] bg-[length:12px]">
+        <select id="timeFilter" class="shrink-0 h-10 pl-4 pr-8 rounded-full bg-zinc-100 border border-zinc-200 text-[11px] font-bold uppercase tracking-wider text-zinc-700 outline-none focus:border-green-500/50 appearance-none bg-[url('data:image/svg+xml;utf8,<svg xmlns=%22http://www.w3.org/2000/svg%22 fill=%22none%22 viewBox=%220 0 24 24%22 stroke=%22%2371717a%22><path stroke-linecap=%22round%22 stroke-linejoin=%22round%22 stroke-width=%222%22 d=%22M19 9l-7 7-7-7%22/></svg>')] bg-no-repeat bg-[right_0.6rem_center] bg-[length:12px]">
           <option value="all">All Time</option>
           <option value="7">Last 7 Days</option>
           <option value="30">Last 30 Days</option>
           <option value="custom">Custom Range</option>
         </select>
 
-        <select id="perPage" class="shrink-0 h-10 pl-4 pr-8 rounded-full bg-zinc-900 border border-zinc-800 text-[11px] font-bold uppercase tracking-wider text-zinc-300 outline-none focus:border-green-500/50 appearance-none bg-[url('data:image/svg+xml;utf8,<svg xmlns=%22http://www.w3.org/2000/svg%22 fill=%22none%22 viewBox=%220 0 24 24%22 stroke=%22%2371717a%22><path stroke-linecap=%22round%22 stroke-linejoin=%22round%22 stroke-width=%222%22 d=%22M19 9l-7 7-7-7%22/></svg>')] bg-no-repeat bg-[right_0.6rem_center] bg-[length:12px]">
+        <select id="perPage" class="shrink-0 h-10 pl-4 pr-8 rounded-full bg-zinc-100 border border-zinc-200 text-[11px] font-bold uppercase tracking-wider text-zinc-700 outline-none focus:border-green-500/50 appearance-none bg-[url('data:image/svg+xml;utf8,<svg xmlns=%22http://www.w3.org/2000/svg%22 fill=%22none%22 viewBox=%220 0 24 24%22 stroke=%22%2371717a%22><path stroke-linecap=%22round%22 stroke-linejoin=%22round%22 stroke-width=%222%22 d=%22M19 9l-7 7-7-7%22/></svg>')] bg-no-repeat bg-[right_0.6rem_center] bg-[length:12px]">
           <option value="10">10 / page</option>
           <option value="50">50 / page</option>
         </select>
       </div>
 
-      <div id="customDateRange" class="hidden flex flex-wrap gap-2 items-center bg-zinc-900 border border-zinc-800 p-3 rounded-xl">
-        <input type="date" id="dateFrom" class="bg-transparent text-[11px] text-zinc-300 outline-none h-6" />
-        <span class="text-zinc-600 font-bold text-[10px]">TO</span>
-        <input type="date" id="dateTo" class="bg-transparent text-[11px] text-zinc-300 outline-none h-6" />
-        <button id="applyDateBtn" class="ml-auto bg-green-500 text-black px-3 py-1.5 rounded-lg text-[9px] font-bold uppercase hover:bg-green-400">Apply</button>
+      <div id="customDateRange" class="hidden flex flex-wrap gap-2 items-center bg-zinc-100 border border-zinc-200 p-3 rounded-xl">
+        <input type="date" id="dateFrom" class="bg-transparent text-[11px] text-zinc-700 outline-none h-6" />
+        <span class="text-zinc-400 font-bold text-[10px]">TO</span>
+        <input type="date" id="dateTo" class="bg-transparent text-[11px] text-zinc-700 outline-none h-6" />
+        <button id="applyDateBtn" class="ml-auto bg-green-500 text-slate-900 px-3 py-1.5 rounded-lg text-[9px] font-bold uppercase hover:bg-green-400">Apply</button>
       </div>
 
       <!-- LIST -->
       <div id="allLeadsTable" class="space-y-2">
-        <div class="p-8 text-center text-zinc-600 text-sm">Loading...</div>
+        <div class="p-8 text-center text-zinc-400 text-sm">Loading...</div>
       </div>
 
       <!-- PAGINATION -->
       <div class="flex items-center justify-between pt-2">
-        <button id="prevPage" class="h-10 px-4 rounded-full bg-zinc-900 border border-zinc-800 text-[11px] font-bold text-zinc-300 hover:text-white hover:border-zinc-700 transition-colors">← Prev</button>
+        <button id="prevPage" class="h-10 px-4 rounded-full bg-zinc-100 border border-zinc-200 text-[11px] font-bold text-zinc-700 hover:text-slate-900 hover:border-zinc-300 transition-colors">← Prev</button>
         <span id="pageInfo" class="text-[11px] text-zinc-500 font-mono">Page 1</span>
-        <button id="nextPage" class="h-10 px-4 rounded-full bg-zinc-900 border border-zinc-800 text-[11px] font-bold text-zinc-300 hover:text-white hover:border-zinc-700 transition-colors">Next →</button>
+        <button id="nextPage" class="h-10 px-4 rounded-full bg-zinc-100 border border-zinc-200 text-[11px] font-bold text-zinc-700 hover:text-slate-900 hover:border-zinc-300 transition-colors">Next →</button>
       </div>
     </div>
 
     <!-- Sidebar Logovi -->
     <div class="w-full xl:w-[400px] shrink-0">
-      <div class="bg-[#050505] border border-zinc-900 rounded-2xl sticky top-8 w-full">
-        <div class="p-6 border-b border-zinc-900">
-          <h3 class="text-[10px] font-bold uppercase tracking-[0.2em] text-white">Activity Timeline</h3>
+      <div class="bg-white border border-zinc-100 rounded-2xl sticky top-8 w-full">
+        <div class="p-6 border-b border-zinc-100">
+          <h3 class="text-[10px] font-bold uppercase tracking-[0.2em] text-slate-900">Activity Timeline</h3>
         </div>
         <div class="p-6">
           <div id="leadLogsContainer" class="space-y-6">
@@ -151,13 +151,13 @@ const { data: territories } = await supabase.from('service_territories').select(
     const llContainer = document.getElementById('leadLogsContainer');
     if (llContainer && leadLogs) {
       llContainer.innerHTML = leadLogs.length > 0 ? leadLogs.map(log => `
-        <div class="relative pl-6 before:content-[''] before:absolute before:left-0 before:top-1.5 before:w-2 before:h-2 before:bg-zinc-800 before:border-2 before:border-[#050505] before:rounded-full after:content-[''] after:absolute after:left-[3px] after:top-4 after:bottom-[-24px] after:w-[2px] after:bg-zinc-900 last:after:hidden">
-          <p class="text-[10px] text-zinc-400 font-mono mb-1 truncate">${log.leads?.email || 'Unknown Lead'}</p>
-          <p class="text-[11px] text-white font-bold leading-tight">${log.action || log.status || 'Updated'}</p>
+        <div class="relative pl-6 before:content-[''] before:absolute before:left-0 before:top-1.5 before:w-2 before:h-2 before:bg-zinc-200 before:border-2 before:border-slate-200 before:rounded-full after:content-[''] after:absolute after:left-[3px] after:top-4 after:bottom-[-24px] after:w-[2px] after:bg-zinc-100 last:after:hidden">
+          <p class="text-[10px] text-zinc-600 font-mono mb-1 truncate">${log.leads?.email || 'Unknown Lead'}</p>
+          <p class="text-[11px] text-slate-900 font-bold leading-tight">${log.action || log.status || 'Updated'}</p>
           <div class="flex items-center gap-2 mt-2">
-            <span class="text-[9px] text-zinc-500 font-mono">by <span class="text-zinc-300 font-bold tracking-wider uppercase">${log.user_email || log.changed_by || 'Stojan M.'}</span></span>
-            <span class="text-[7px] text-zinc-700">●</span>
-            <span class="text-[9px] text-zinc-600">${timeAgo(log.created_at)}</span>
+            <span class="text-[9px] text-zinc-500 font-mono">by <span class="text-zinc-700 font-bold tracking-wider uppercase">${log.user_email || log.changed_by || 'Stojan M.'}</span></span>
+            <span class="text-[7px] text-zinc-300">●</span>
+            <span class="text-[9px] text-zinc-400">${timeAgo(log.created_at)}</span>
           </div>
         </div>
       `).join('') : '<div class="text-[10px] text-zinc-500 italic">No activity recorded yet.</div>';
@@ -205,35 +205,35 @@ const { data: territories } = await supabase.from('service_territories').select(
     if (listEl && leads) {
       listEl.innerHTML = leads.length > 0 ? leads.map(lead => {
         const statusStyles: Record<string, string> = {
-          approved: 'bg-green-500/10 text-green-400 border-green-500/20',
-          claimed: 'bg-blue-500/10 text-blue-400 border-blue-500/20',
-          rejected: 'bg-red-500/10 text-red-400 border-red-500/20',
+          approved: 'bg-green-500/10 text-green-700 border-green-500/20',
+          claimed: 'bg-blue-500/10 text-blue-600 border-blue-500/20',
+          rejected: 'bg-red-500/10 text-red-600 border-red-500/20',
         };
-        const statusClass = statusStyles[lead.status] || 'bg-zinc-800/50 text-zinc-400 border-zinc-700';
+        const statusClass = statusStyles[lead.status] || 'bg-zinc-200/50 text-zinc-600 border-zinc-300';
         const initial = (lead.email || '?').charAt(0).toUpperCase();
         return `
-        <div class="group flex items-center gap-3 sm:gap-4 p-3 sm:p-4 rounded-2xl border border-zinc-900 bg-[#050505] hover:border-zinc-700 hover:bg-zinc-900/40 transition-all cursor-pointer" onclick="window.location.href='/admin/leads/${lead.id}'">
-          <div class="w-10 h-10 rounded-full bg-zinc-900 border border-zinc-800 flex items-center justify-center shrink-0 text-xs font-bold text-zinc-400">${initial}</div>
+        <div class="group flex items-center gap-3 sm:gap-4 p-3 sm:p-4 rounded-2xl border border-zinc-100 bg-white hover:border-zinc-300 hover:bg-zinc-100/40 transition-all cursor-pointer" onclick="window.location.href='/admin/leads/${lead.id}'">
+          <div class="w-10 h-10 rounded-full bg-zinc-100 border border-zinc-200 flex items-center justify-center shrink-0 text-xs font-bold text-zinc-600">${initial}</div>
           <div class="min-w-0 flex-1">
-            <p class="text-sm font-bold text-white truncate">${lead.email || 'No email'}</p>
+            <p class="text-sm font-bold text-slate-900 truncate">${lead.email || 'No email'}</p>
             <div class="mt-0.5 flex items-center gap-2 text-[11px] text-zinc-500 font-mono truncate">
               <span>${lead.county || 'No county'}</span>
-              <span class="text-zinc-700">·</span>
+              <span class="text-zinc-300">·</span>
               <span>${lead.created_at ? new Date(lead.created_at).toLocaleDateString() : 'N/A'}</span>
             </div>
           </div>
           <div class="flex items-center gap-1.5 shrink-0">
-            ${lead.phone ? `<a href="tel:${lead.phone}" onclick="event.stopPropagation()" class="w-8 h-8 rounded-full flex items-center justify-center text-zinc-500 hover:text-green-400 hover:bg-green-500/10 transition-colors" title="${lead.phone}">
+            ${lead.phone ? `<a href="tel:${lead.phone}" onclick="event.stopPropagation()" class="w-8 h-8 rounded-full flex items-center justify-center text-zinc-500 hover:text-green-700 hover:bg-green-500/10 transition-colors" title="${lead.phone}">
               <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"/></svg>
             </a>` : ''}
-            ${lead.email ? `<a href="mailto:${lead.email}" onclick="event.stopPropagation()" class="hidden sm:flex w-8 h-8 rounded-full items-center justify-center text-zinc-500 hover:text-green-400 hover:bg-green-500/10 transition-colors" title="${lead.email}">
+            ${lead.email ? `<a href="mailto:${lead.email}" onclick="event.stopPropagation()" class="hidden sm:flex w-8 h-8 rounded-full items-center justify-center text-zinc-500 hover:text-green-700 hover:bg-green-500/10 transition-colors" title="${lead.email}">
               <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
             </a>` : ''}
             <span class="px-2.5 py-1 rounded-full text-[9px] font-bold uppercase border tracking-wide ${statusClass}">${lead.status || 'New'}</span>
-            <svg class="hidden sm:block w-4 h-4 text-zinc-700 group-hover:text-zinc-400 transition-colors" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+            <svg class="hidden sm:block w-4 h-4 text-zinc-300 group-hover:text-zinc-600 transition-colors" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
           </div>
         </div>
-      `}).join('') : '<div class="p-8 text-center text-zinc-600 text-sm border border-dashed border-zinc-900 rounded-2xl">No results match these filters.</div>';
+      `}).join('') : '<div class="p-8 text-center text-zinc-400 text-sm border border-dashed border-zinc-100 rounded-2xl">No results match these filters.</div>';
     }
     document.getElementById('pageInfo')!.textContent = `Page ${currentPage + 1}`;
   }

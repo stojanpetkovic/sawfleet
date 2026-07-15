@@ -8,29 +8,29 @@ const navigation = [
 ];
 ---
 
-<header class="fixed inset-x-0 top-0 z-50 bg-[#000000]/80 backdrop-blur-md border-b border-zinc-900 font-sans">
-  <div class="mx-auto flex h-20 max-w-7xl items-center justify-between px-4 sm:px-8">
+<header class="fixed inset-x-0 top-0 z-50 bg-white/80 backdrop-blur-md border-b border-slate-200/80 font-sans">
+  <div class="mx-auto flex h-16 lg:h-20 max-w-7xl items-center justify-between px-4 sm:px-8">
 
     <!-- Logo -->
     <a href="/" class="flex items-center shrink-0">
-      <img src="/logo/logo.svg" alt="SawFleet" class="h-9 w-auto" />
+      <img src="/logo/logo.svg" alt="SawFleet" class="h-11 lg:h-14 w-auto" />
     </a>
 
   <!-- Desktop Nav -->
     <nav class="hidden items-center gap-8 lg:flex">
       {navigation.map((item) => (
-        <a href={item.href} class="text-[11px] font-mono font-bold uppercase tracking-[0.2em] text-zinc-400 hover:text-white transition-colors">
+        <a href={item.href} class="text-[11px] font-mono font-bold uppercase tracking-[0.2em] text-slate-500 hover:text-slate-900 transition-colors">
           {item.title}
         </a>
       ))}
-      <!-- Istaknuto Portal dugme (Sada sa zelenim akcentom) -->
-      <a href="/portal" class="h-9 px-4 flex items-center justify-center rounded-lg border border-green-500/20 bg-green-500/5 text-[11px] font-mono font-bold uppercase tracking-[0.2em] text-green-500 hover:bg-green-500/10 transition-all">
+      <!-- Istaknuto Portal dugme -->
+      <a href="/portal" class="h-9 px-4 flex items-center justify-center rounded-lg border border-green-600/20 bg-green-50 text-[11px] font-mono font-bold uppercase tracking-[0.2em] text-green-700 hover:bg-green-100 hover:border-green-600/30 transition-all">
         Portal
       </a>
     </nav>
 
     <!-- Mobilni Okidač -->
-    <button id="menu-toggle" class="flex h-10 w-10 items-center justify-center rounded-lg border border-zinc-800 bg-zinc-900/50 text-zinc-400 lg:hidden">
+    <button id="menu-toggle" class="flex h-10 w-10 items-center justify-center rounded-lg border border-slate-200 bg-slate-50 text-slate-500 active:scale-95 transition-transform lg:hidden">
       <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"/>
       </svg>
@@ -40,22 +40,22 @@ const navigation = [
 
 <!-- Mobile Menu Panel -->
 <div id="mobile-menu" class="fixed inset-0 z-[60] transform translate-x-full transition-transform duration-300 ease-in-out lg:hidden">
-  <div id="menu-backdrop" class="absolute inset-0 bg-black/80 backdrop-blur-sm"></div>
-  
-  <div class="absolute top-0 right-0 h-full w-[280px] bg-[#000000] border-l border-zinc-900 p-8">
-    <button id="close-menu" class="absolute top-6 right-6 text-zinc-400 hover:text-white transition-colors">
+  <div id="menu-backdrop" class="absolute inset-0 bg-slate-900/30 backdrop-blur-sm"></div>
+
+  <div class="absolute top-0 right-0 h-full w-[280px] bg-white border-l border-slate-200 p-8 pt-safe shadow-soft-lg">
+    <button id="close-menu" class="absolute top-6 right-6 text-slate-400 hover:text-slate-900 transition-colors">
       <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
       </svg>
     </button>
-    
+
     <nav class="mt-16 flex flex-col gap-6">
       {navigation.map((item) => (
-        <a href={item.href} class="text-sm font-bold uppercase tracking-[0.2em] text-white hover:text-green-500 transition-colors">
+        <a href={item.href} class="text-sm font-bold uppercase tracking-[0.2em] text-slate-900 hover:text-green-700 transition-colors">
           {item.title}
         </a>
       ))}
-      <a href="/portal" class="text-sm font-bold uppercase tracking-[0.2em] text-zinc-400 hover:text-green-500 transition-colors">Portal</a>
+      <a href="/portal" class="text-sm font-bold uppercase tracking-[0.2em] text-slate-500 hover:text-green-700 transition-colors">Portal</a>
     </nav>
   </div>
 </div>

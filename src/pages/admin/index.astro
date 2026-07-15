@@ -12,17 +12,17 @@ import AdminLayout from "../../layouts/AdminLayout.astro";
 
       <!-- NEEDS ATTENTION — uvek vidljivo, ne zavisi od hover-a (bitno za mobilne) -->
       <div id="attentionBar" class="hidden grid-cols-3 gap-3">
-        <a href="/admin/service-leads?status=new" class="flex flex-col items-center justify-center gap-1 p-4 rounded-2xl border border-green-900/40 bg-green-950/10 hover:bg-green-950/20 transition-colors">
-          <span id="attn-leads" class="text-2xl font-mono font-bold text-green-400">0</span>
-          <span class="text-[9px] font-bold uppercase tracking-[0.15em] text-green-500/70 text-center">New Leads</span>
+        <a href="/admin/service-leads?status=new" class="flex flex-col items-center justify-center gap-1 p-4 rounded-2xl border border-green-200 bg-green-50 hover:bg-green-100 transition-colors">
+          <span id="attn-leads" class="text-2xl font-mono font-bold text-green-700">0</span>
+          <span class="text-[9px] font-bold uppercase tracking-[0.15em] text-green-700/70 text-center">New Leads</span>
         </a>
-        <a href="/admin/contractors" class="flex flex-col items-center justify-center gap-1 p-4 rounded-2xl border border-blue-900/40 bg-blue-950/10 hover:bg-blue-950/20 transition-colors">
-          <span id="attn-contractors" class="text-2xl font-mono font-bold text-blue-400">0</span>
-          <span class="text-[9px] font-bold uppercase tracking-[0.15em] text-blue-500/70 text-center">Pending Contractors</span>
+        <a href="/admin/contractors" class="flex flex-col items-center justify-center gap-1 p-4 rounded-2xl border border-blue-200 bg-blue-50 hover:bg-blue-100 transition-colors">
+          <span id="attn-contractors" class="text-2xl font-mono font-bold text-blue-600">0</span>
+          <span class="text-[9px] font-bold uppercase tracking-[0.15em] text-blue-600/70 text-center">Pending Contractors</span>
         </a>
-        <a href="/admin/grapple-saw-trucks" class="flex flex-col items-center justify-center gap-1 p-4 rounded-2xl border border-purple-900/40 bg-purple-950/10 hover:bg-purple-950/20 transition-colors">
-          <span id="attn-trucks" class="text-2xl font-mono font-bold text-purple-400">0</span>
-          <span class="text-[9px] font-bold uppercase tracking-[0.15em] text-purple-500/70 text-center">Pending Assets</span>
+        <a href="/admin/grapple-saw-trucks" class="flex flex-col items-center justify-center gap-1 p-4 rounded-2xl border border-purple-200 bg-purple-50 hover:bg-purple-100 transition-colors">
+          <span id="attn-trucks" class="text-2xl font-mono font-bold text-purple-600">0</span>
+          <span class="text-[9px] font-bold uppercase tracking-[0.15em] text-purple-600/70 text-center">Pending Assets</span>
         </a>
       </div>
       
@@ -30,118 +30,118 @@ import AdminLayout from "../../layouts/AdminLayout.astro";
       <div class="grid grid-cols-1 md:grid-cols-3 gap-6 w-full">
         
         <!-- Karta 1: Leads Summary -->
-        <div class="bg-[#050505] border border-zinc-900 rounded-2xl p-6 flex flex-col justify-between w-full">
+        <div class="bg-white border border-zinc-100 rounded-2xl p-6 flex flex-col justify-between w-full">
           <div class="flex justify-between items-start mb-6">
             <div>
               <p class="text-[9px] font-bold uppercase tracking-[0.2em] text-zinc-500">Total Leads</p>
-              <h2 id="count-total" class="text-4xl font-mono font-bold text-white mt-2">-</h2>
+              <h2 id="count-total" class="text-4xl font-mono font-bold text-slate-900 mt-2">-</h2>
             </div>
-            <a href="/admin/service-leads" class="text-[9px] uppercase tracking-[0.2em] text-zinc-600 hover:text-white border border-zinc-800 px-3 py-1.5 rounded-lg transition-colors whitespace-nowrap">Manage →</a>
+            <a href="/admin/service-leads" class="text-[9px] uppercase tracking-[0.2em] text-zinc-400 hover:text-slate-900 border border-zinc-200 px-3 py-1.5 rounded-lg transition-colors whitespace-nowrap">Manage →</a>
           </div>
           
-          <div class="grid grid-cols-4 gap-4 pt-4 border-t border-zinc-900/50">
+          <div class="grid grid-cols-4 gap-4 pt-4 border-t border-zinc-100/50">
             <div>
-              <p class="text-[9px] text-zinc-600 uppercase font-bold tracking-[0.1em]">New</p>
-              <p id="count-new" class="text-sm font-mono text-zinc-300 mt-1">-</p>
+              <p class="text-[9px] text-zinc-400 uppercase font-bold tracking-[0.1em]">New</p>
+              <p id="count-new" class="text-sm font-mono text-zinc-700 mt-1">-</p>
             </div>
             <div>
-              <p class="text-[9px] text-zinc-600 uppercase font-bold tracking-[0.1em]">Apprv.</p>
-              <p id="count-approved" class="text-sm font-mono text-green-500 mt-1">-</p>
+              <p class="text-[9px] text-zinc-400 uppercase font-bold tracking-[0.1em]">Apprv.</p>
+              <p id="count-approved" class="text-sm font-mono text-green-700 mt-1">-</p>
             </div>
             <div>
-              <p class="text-[9px] text-zinc-600 uppercase font-bold tracking-[0.1em]">Claimed</p>
-              <p id="count-claimed" class="text-sm font-mono text-blue-500 mt-1">-</p>
+              <p class="text-[9px] text-zinc-400 uppercase font-bold tracking-[0.1em]">Claimed</p>
+              <p id="count-claimed" class="text-sm font-mono text-blue-600 mt-1">-</p>
             </div>
             <div>
-              <p class="text-[9px] text-zinc-600 uppercase font-bold tracking-[0.1em]">Rejct.</p>
-              <p id="count-rejected" class="text-sm font-mono text-red-500 mt-1">-</p>
+              <p class="text-[9px] text-zinc-400 uppercase font-bold tracking-[0.1em]">Rejct.</p>
+              <p id="count-rejected" class="text-sm font-mono text-red-600 mt-1">-</p>
             </div>
           </div>
         </div>
 
         <!-- Karta 2: Contractors Summary -->
-        <div class="bg-[#050505] border border-zinc-900 rounded-2xl p-6 flex flex-col justify-between w-full">
+        <div class="bg-white border border-zinc-100 rounded-2xl p-6 flex flex-col justify-between w-full">
           <div class="flex justify-between items-start mb-6">
             <div>
               <p class="text-[9px] font-bold uppercase tracking-[0.2em] text-zinc-500">Contractors</p>
-              <h2 id="count-c-total" class="text-4xl font-mono font-bold text-white mt-2">-</h2>
+              <h2 id="count-c-total" class="text-4xl font-mono font-bold text-slate-900 mt-2">-</h2>
             </div>
-            <a href="/admin/contractors" class="text-[9px] uppercase tracking-[0.2em] text-zinc-600 hover:text-white border border-zinc-800 px-3 py-1.5 rounded-lg transition-colors whitespace-nowrap">Manage →</a>
+            <a href="/admin/contractors" class="text-[9px] uppercase tracking-[0.2em] text-zinc-400 hover:text-slate-900 border border-zinc-200 px-3 py-1.5 rounded-lg transition-colors whitespace-nowrap">Manage →</a>
           </div>
           
-          <div class="grid grid-cols-3 gap-4 pt-4 border-t border-zinc-900/50">
+          <div class="grid grid-cols-3 gap-4 pt-4 border-t border-zinc-100/50">
             <div>
-              <p class="text-[9px] text-zinc-600 uppercase font-bold tracking-[0.1em]">Pending</p>
-              <p id="count-c-pending" class="text-sm font-mono text-zinc-300 mt-1">-</p>
+              <p class="text-[9px] text-zinc-400 uppercase font-bold tracking-[0.1em]">Pending</p>
+              <p id="count-c-pending" class="text-sm font-mono text-zinc-700 mt-1">-</p>
             </div>
             <div>
-              <p class="text-[9px] text-zinc-600 uppercase font-bold tracking-[0.1em]">Active</p>
-              <p id="count-c-active" class="text-sm font-mono text-green-500 mt-1">-</p>
+              <p class="text-[9px] text-zinc-400 uppercase font-bold tracking-[0.1em]">Active</p>
+              <p id="count-c-active" class="text-sm font-mono text-green-700 mt-1">-</p>
             </div>
             <div>
-              <p class="text-[9px] text-zinc-600 uppercase font-bold tracking-[0.1em]">Rejected</p>
-              <p id="count-c-rejected" class="text-sm font-mono text-red-500 mt-1">-</p>
+              <p class="text-[9px] text-zinc-400 uppercase font-bold tracking-[0.1em]">Rejected</p>
+              <p id="count-c-rejected" class="text-sm font-mono text-red-600 mt-1">-</p>
             </div>
           </div>
         </div>
 
         <!-- Karta 3: Trucks Summary -->
-        <div class="bg-[#050505] border border-zinc-900 rounded-2xl p-6 flex flex-col justify-between w-full">
+        <div class="bg-white border border-zinc-100 rounded-2xl p-6 flex flex-col justify-between w-full">
           <div class="flex justify-between items-start mb-6">
             <div>
               <p class="text-[9px] font-bold uppercase tracking-[0.2em] text-zinc-500">Trucks</p>
-              <h2 id="count-t-total" class="text-4xl font-mono font-bold text-white mt-2">-</h2>
+              <h2 id="count-t-total" class="text-4xl font-mono font-bold text-slate-900 mt-2">-</h2>
             </div>
-            <a href="/admin/grapple-saw-trucks" class="text-[9px] uppercase tracking-[0.2em] text-zinc-600 hover:text-white border border-zinc-800 px-3 py-1.5 rounded-lg transition-colors whitespace-nowrap">Manage →</a>
+            <a href="/admin/grapple-saw-trucks" class="text-[9px] uppercase tracking-[0.2em] text-zinc-400 hover:text-slate-900 border border-zinc-200 px-3 py-1.5 rounded-lg transition-colors whitespace-nowrap">Manage →</a>
           </div>
           
-          <div class="grid grid-cols-3 gap-4 pt-4 border-t border-zinc-900/50">
+          <div class="grid grid-cols-3 gap-4 pt-4 border-t border-zinc-100/50">
             <div>
-              <p class="text-[9px] text-zinc-600 uppercase font-bold tracking-[0.1em]">Pending</p>
-              <p id="count-t-pending" class="text-sm font-mono text-zinc-300 mt-1">-</p>
+              <p class="text-[9px] text-zinc-400 uppercase font-bold tracking-[0.1em]">Pending</p>
+              <p id="count-t-pending" class="text-sm font-mono text-zinc-700 mt-1">-</p>
             </div>
             <div>
-              <p class="text-[9px] text-zinc-600 uppercase font-bold tracking-[0.1em]">Approved</p>
-              <p id="count-t-approved" class="text-sm font-mono text-green-500 mt-1">-</p>
+              <p class="text-[9px] text-zinc-400 uppercase font-bold tracking-[0.1em]">Approved</p>
+              <p id="count-t-approved" class="text-sm font-mono text-green-700 mt-1">-</p>
             </div>
             <div>
-              <p class="text-[9px] text-zinc-600 uppercase font-bold tracking-[0.1em]">Rejected</p>
-              <p id="count-t-rejected" class="text-sm font-mono text-red-500 mt-1">-</p>
+              <p class="text-[9px] text-zinc-400 uppercase font-bold tracking-[0.1em]">Rejected</p>
+              <p id="count-t-rejected" class="text-sm font-mono text-red-600 mt-1">-</p>
             </div>
           </div>
         </div>
       </div>
 
       <!-- SEKCIJA: LEADS LISTA -->
-      <div class="bg-[#050505] border border-zinc-900 rounded-2xl overflow-hidden">
-        <div class="p-5 border-b border-zinc-900 flex items-center justify-between">
-          <h3 class="text-[10px] font-bold uppercase tracking-[0.2em] text-white">Recent Service Leads</h3>
-          <a href="/admin/service-leads" class="text-[9px] uppercase tracking-widest text-zinc-600 hover:text-white transition-colors">View all →</a>
+      <div class="bg-white border border-zinc-100 rounded-2xl overflow-hidden">
+        <div class="p-5 border-b border-zinc-100 flex items-center justify-between">
+          <h3 class="text-[10px] font-bold uppercase tracking-[0.2em] text-slate-900">Recent Service Leads</h3>
+          <a href="/admin/service-leads" class="text-[9px] uppercase tracking-widest text-zinc-400 hover:text-slate-900 transition-colors">View all →</a>
         </div>
         <div id="leadsTable" class="p-3 space-y-2">
-          <div class="p-6 text-center text-zinc-600 text-sm">Loading...</div>
+          <div class="p-6 text-center text-zinc-400 text-sm">Loading...</div>
         </div>
       </div>
 
       <!-- SEKCIJA: CONTRACTORS LISTA -->
-      <div class="bg-[#050505] border border-zinc-900 rounded-2xl overflow-hidden">
-        <div class="p-5 border-b border-zinc-900 flex items-center justify-between">
-          <h3 class="text-[10px] font-bold uppercase tracking-[0.2em] text-white">Recent Contractors</h3>
-          <a href="/admin/contractors" class="text-[9px] uppercase tracking-widest text-zinc-600 hover:text-white transition-colors">View all →</a>
+      <div class="bg-white border border-zinc-100 rounded-2xl overflow-hidden">
+        <div class="p-5 border-b border-zinc-100 flex items-center justify-between">
+          <h3 class="text-[10px] font-bold uppercase tracking-[0.2em] text-slate-900">Recent Contractors</h3>
+          <a href="/admin/contractors" class="text-[9px] uppercase tracking-widest text-zinc-400 hover:text-slate-900 transition-colors">View all →</a>
         </div>
         <div id="contractorsTable" class="p-3 space-y-2">
-          <div class="p-6 text-center text-zinc-600 text-sm">Loading...</div>
+          <div class="p-6 text-center text-zinc-400 text-sm">Loading...</div>
         </div>
       </div>
 
       <!-- SEKCIJA TRUCKS LISTA -->
-      <div class="bg-[#050505] border border-zinc-900 rounded-2xl overflow-hidden">
-        <div class="p-5 border-b border-zinc-900 flex items-center justify-between">
-          <h3 class="text-[10px] font-bold uppercase tracking-[0.2em] text-white">Recent Trucks</h3>
-          <a href="/admin/grapple-saw-trucks" class="text-[9px] uppercase tracking-widest text-zinc-600 hover:text-white transition-colors">View all →</a>
+      <div class="bg-white border border-zinc-100 rounded-2xl overflow-hidden">
+        <div class="p-5 border-b border-zinc-100 flex items-center justify-between">
+          <h3 class="text-[10px] font-bold uppercase tracking-[0.2em] text-slate-900">Recent Trucks</h3>
+          <a href="/admin/grapple-saw-trucks" class="text-[9px] uppercase tracking-widest text-zinc-400 hover:text-slate-900 transition-colors">View all →</a>
         </div>
         <div id="trucksTable" class="p-3 space-y-2">
-          <div class="p-6 text-center text-zinc-600 text-sm">Loading...</div>
+          <div class="p-6 text-center text-zinc-400 text-sm">Loading...</div>
         </div>
       </div>
 
@@ -149,15 +149,15 @@ import AdminLayout from "../../layouts/AdminLayout.astro";
 
     <!-- DESNA STRANA: Activity Sidebar -->
     <div class="w-full xl:w-[400px] shrink-0 mt-8 xl:mt-0">
-      <div class="bg-[#050505] border border-zinc-900 rounded-2xl sticky top-8 w-full">
-        <div class="p-6 border-b border-zinc-900">
-          <h3 class="text-[10px] font-bold uppercase tracking-[0.2em] text-white">Activity Timeline</h3>
+      <div class="bg-white border border-zinc-100 rounded-2xl sticky top-8 w-full">
+        <div class="p-6 border-b border-zinc-100">
+          <h3 class="text-[10px] font-bold uppercase tracking-[0.2em] text-slate-900">Activity Timeline</h3>
         </div>
         
         <div class="p-6 space-y-10">
           <!-- Leads Activity -->
           <div class="w-full">
-            <h4 class="text-[9px] uppercase tracking-[0.2em] text-zinc-600 mb-6 border-b border-zinc-900/50 pb-2">Leads Log</h4>
+            <h4 class="text-[9px] uppercase tracking-[0.2em] text-zinc-400 mb-6 border-b border-zinc-100/50 pb-2">Leads Log</h4>
             <div id="leadLogsContainer" class="space-y-6">
               <div class="text-[11px] font-mono text-zinc-500">Loading logs...</div>
             </div>
@@ -165,7 +165,7 @@ import AdminLayout from "../../layouts/AdminLayout.astro";
 
           <!-- Contractors Activity -->
           <div class="w-full">
-            <h4 class="text-[9px] uppercase tracking-[0.2em] text-zinc-600 mb-6 border-b border-zinc-900/50 pb-2">Contractors Log</h4>
+            <h4 class="text-[9px] uppercase tracking-[0.2em] text-zinc-400 mb-6 border-b border-zinc-100/50 pb-2">Contractors Log</h4>
             <div id="contractorLogsContainer" class="space-y-6">
               <div class="text-[11px] font-mono text-zinc-500">Loading logs...</div>
             </div>
@@ -173,7 +173,7 @@ import AdminLayout from "../../layouts/AdminLayout.astro";
 
           <!-- Trucks Activity -->
           <div class="w-full">
-            <h4 class="text-[9px] uppercase tracking-[0.2em] text-zinc-600 mb-6 border-b border-zinc-900/50 pb-2">Trucks Log</h4>
+            <h4 class="text-[9px] uppercase tracking-[0.2em] text-zinc-400 mb-6 border-b border-zinc-100/50 pb-2">Trucks Log</h4>
             <div id="truckLogsContainer" class="space-y-6">
               <div class="text-[11px] font-mono text-zinc-500">Loading logs...</div>
             </div>
@@ -201,13 +201,13 @@ import AdminLayout from "../../layouts/AdminLayout.astro";
 
   function generateProLogHtml(entityName: string, actionText: string, changedBy: string, dateStr: string) {
     return `
-      <div class="relative pl-6 before:content-[''] before:absolute before:left-0 before:top-1.5 before:w-2 before:h-2 before:bg-zinc-800 before:border-2 before:border-[#050505] before:rounded-full after:content-[''] after:absolute after:left-[3px] after:top-4 after:bottom-[-24px] after:w-[2px] after:bg-zinc-900 last:after:hidden">
-        <p class="text-[10px] text-zinc-400 font-mono mb-1 truncate">${entityName}</p>
-        <p class="text-[11px] text-white font-bold leading-tight">${actionText}</p>
+      <div class="relative pl-6 before:content-[''] before:absolute before:left-0 before:top-1.5 before:w-2 before:h-2 before:bg-zinc-200 before:border-2 before:border-slate-200 before:rounded-full after:content-[''] after:absolute after:left-[3px] after:top-4 after:bottom-[-24px] after:w-[2px] after:bg-zinc-100 last:after:hidden">
+        <p class="text-[10px] text-zinc-600 font-mono mb-1 truncate">${entityName}</p>
+        <p class="text-[11px] text-slate-900 font-bold leading-tight">${actionText}</p>
         <div class="flex items-center gap-2 mt-2">
-          <span class="text-[9px] text-zinc-500 font-mono">by <span class="text-zinc-300 font-bold tracking-wider uppercase">${changedBy}</span></span>
-          <span class="text-[7px] text-zinc-700">●</span>
-          <span class="text-[9px] text-zinc-600">${timeAgo(dateStr)}</span>
+          <span class="text-[9px] text-zinc-500 font-mono">by <span class="text-zinc-700 font-bold tracking-wider uppercase">${changedBy}</span></span>
+          <span class="text-[7px] text-zinc-300">●</span>
+          <span class="text-[9px] text-zinc-400">${timeAgo(dateStr)}</span>
         </div>
       </div>
     `;
@@ -227,16 +227,16 @@ import AdminLayout from "../../layouts/AdminLayout.astro";
       
       document.getElementById('leadsTable')!.innerHTML = leads.slice(0, 3).map(l => {
         const statusStyles: Record<string, string> = {
-          approved: 'bg-green-500/10 text-green-400 border-green-500/20',
-          claimed: 'bg-blue-500/10 text-blue-400 border-blue-500/20',
-          rejected: 'bg-red-500/10 text-red-400 border-red-500/20',
+          approved: 'bg-green-500/10 text-green-700 border-green-500/20',
+          claimed: 'bg-blue-500/10 text-blue-600 border-blue-500/20',
+          rejected: 'bg-red-500/10 text-red-600 border-red-500/20',
         };
-        const statusClass = statusStyles[l.status] || 'bg-zinc-800/50 text-zinc-400 border-zinc-700';
+        const statusClass = statusStyles[l.status] || 'bg-zinc-200/50 text-zinc-600 border-zinc-300';
         return `
-        <div class="flex items-center gap-3 p-3 rounded-xl hover:bg-zinc-900/50 transition-colors cursor-pointer" onclick="window.location.href='/admin/leads/${l.id}'">
-          <div class="w-9 h-9 rounded-full bg-zinc-900 border border-zinc-800 flex items-center justify-center shrink-0 text-[10px] font-bold text-zinc-400">${(l.email || '?').charAt(0).toUpperCase()}</div>
+        <div class="flex items-center gap-3 p-3 rounded-xl hover:bg-zinc-100/50 transition-colors cursor-pointer" onclick="window.location.href='/admin/leads/${l.id}'">
+          <div class="w-9 h-9 rounded-full bg-zinc-100 border border-zinc-200 flex items-center justify-center shrink-0 text-[10px] font-bold text-zinc-600">${(l.email || '?').charAt(0).toUpperCase()}</div>
           <div class="min-w-0 flex-1">
-            <p class="text-[13px] font-bold text-white truncate">${l.email || 'No email'}</p>
+            <p class="text-[13px] font-bold text-slate-900 truncate">${l.email || 'No email'}</p>
             <p class="text-[10px] text-zinc-500 font-mono truncate">${l.county || 'N/A'} · ${new Date(l.created_at).toLocaleDateString()}</p>
           </div>
           <span class="shrink-0 px-2 py-0.5 rounded-full text-[9px] font-bold uppercase border tracking-wide ${statusClass}">${l.status || 'New'}</span>
@@ -255,15 +255,15 @@ import AdminLayout from "../../layouts/AdminLayout.astro";
       
       document.getElementById('contractorsTable')!.innerHTML = contractors.slice(0, 3).map(c => {
         const statusStyles: Record<string, string> = {
-          active: 'bg-green-500/10 text-green-400 border-green-500/20',
-          rejected: 'bg-red-500/10 text-red-400 border-red-500/20',
+          active: 'bg-green-500/10 text-green-700 border-green-500/20',
+          rejected: 'bg-red-500/10 text-red-600 border-red-500/20',
         };
-        const statusClass = statusStyles[c.status] || 'bg-amber-500/10 text-amber-400 border-amber-500/20';
+        const statusClass = statusStyles[c.status] || 'bg-amber-500/10 text-amber-600 border-amber-500/20';
         return `
-        <div class="flex items-center gap-3 p-3 rounded-xl hover:bg-zinc-900/50 transition-colors cursor-pointer" onclick="window.location.href='/admin/contractors/${c.id}'">
-          <div class="w-9 h-9 rounded-full bg-zinc-900 border border-zinc-800 flex items-center justify-center shrink-0 text-[10px] font-bold text-zinc-400">${(c.company_name || '?').slice(0, 2).toUpperCase()}</div>
+        <div class="flex items-center gap-3 p-3 rounded-xl hover:bg-zinc-100/50 transition-colors cursor-pointer" onclick="window.location.href='/admin/contractors/${c.id}'">
+          <div class="w-9 h-9 rounded-full bg-zinc-100 border border-zinc-200 flex items-center justify-center shrink-0 text-[10px] font-bold text-zinc-600">${(c.company_name || '?').slice(0, 2).toUpperCase()}</div>
           <div class="min-w-0 flex-1">
-            <p class="text-[13px] font-bold text-white truncate">${c.company_name || 'N/A'}</p>
+            <p class="text-[13px] font-bold text-slate-900 truncate">${c.company_name || 'N/A'}</p>
             <p class="text-[10px] text-zinc-500 font-mono truncate">${c.territory || 'N/A'} · ${new Date(c.created_at).toLocaleDateString()}</p>
           </div>
           <span class="shrink-0 px-2 py-0.5 rounded-full text-[9px] font-bold uppercase border tracking-wide ${statusClass}">${c.status || 'pending'}</span>
@@ -282,16 +282,16 @@ import AdminLayout from "../../layouts/AdminLayout.astro";
       
       document.getElementById('trucksTable')!.innerHTML = trucks.slice(0, 3).map(t => {
         const appStatus = t.approval_status || 'pending';
-        const appBadge = appStatus === 'approved' ? 'bg-green-500/10 text-green-400 border-green-500/20' :
-                         appStatus === 'rejected' ? 'bg-red-500/10 text-red-400 border-red-500/20' :
-                         'bg-amber-500/10 text-amber-400 border-amber-500/20';
+        const appBadge = appStatus === 'approved' ? 'bg-green-500/10 text-green-700 border-green-500/20' :
+                         appStatus === 'rejected' ? 'bg-red-500/10 text-red-600 border-red-500/20' :
+                         'bg-amber-500/10 text-amber-600 border-amber-500/20';
         return `
-        <div class="flex items-center gap-3 p-3 rounded-xl hover:bg-zinc-900/50 transition-colors cursor-pointer" onclick="window.location.href='/admin/grapple-saw-trucks/${t.id}'">
-          <div class="w-9 h-9 rounded-full bg-zinc-900 border border-zinc-800 flex items-center justify-center shrink-0">
+        <div class="flex items-center gap-3 p-3 rounded-xl hover:bg-zinc-100/50 transition-colors cursor-pointer" onclick="window.location.href='/admin/grapple-saw-trucks/${t.id}'">
+          <div class="w-9 h-9 rounded-full bg-zinc-100 border border-zinc-200 flex items-center justify-center shrink-0">
             <svg class="w-4 h-4 text-zinc-500" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M8 17h8m-8 0a2 2 0 11-4 0 2 2 0 014 0zm8 0a2 2 0 104 0 2 2 0 00-4 0zM3 17V7a1 1 0 011-1h9l4 4v7M3 10h13"/></svg>
           </div>
           <div class="min-w-0 flex-1">
-            <p class="text-[13px] font-bold text-white truncate">${t.equipment_type || 'N/A'}</p>
+            <p class="text-[13px] font-bold text-slate-900 truncate">${t.equipment_type || 'N/A'}</p>
             <p class="text-[10px] text-zinc-500 font-mono truncate">${t.lift_capacity_tons ? t.lift_capacity_tons + ' tons · ' : ''}${new Date(t.created_at).toLocaleDateString()}</p>
           </div>
           <span class="shrink-0 px-2 py-0.5 rounded-full text-[9px] font-bold uppercase border tracking-wide ${appBadge}">${appStatus}</span>

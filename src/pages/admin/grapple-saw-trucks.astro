@@ -8,34 +8,69 @@ const { data: territories } = await supabase.from('service_territories').select(
 ---
 
 <AdminLayout>
-  <!-- Floating Plus Dugme -->
-  <button id="openModal" class="fixed bottom-24 lg:bottom-8 right-5 lg:right-8 w-14 h-14 bg-green-500 hover:bg-green-400 text-black rounded-full shadow-lg flex items-center justify-center text-3xl font-bold transition-all z-[100]">
+  <!-- Floating Dugmad -->
+  <button id="openOwnerModal" class="fixed bottom-24 lg:bottom-8 right-24 lg:right-28 h-14 px-5 bg-white border border-zinc-200 hover:border-zinc-300 text-slate-900 rounded-full shadow-lg flex items-center gap-2 text-xs font-bold uppercase tracking-wider transition-all z-[100]">
+    + Owner
+  </button>
+  <button id="openModal" class="fixed bottom-24 lg:bottom-8 right-5 lg:right-8 w-14 h-14 bg-green-500 hover:bg-green-400 text-slate-900 rounded-full shadow-lg flex items-center justify-center text-3xl font-bold transition-all z-[100]">
     +
   </button>
 
+  <!-- Modal za dodavanje NOVOG VLASNIKA -->
+  <div id="ownerModal" class="hidden fixed inset-0 bg-slate-900/40 backdrop-blur-sm z-[200] flex items-center justify-center p-4">
+    <div class="bg-white border border-zinc-200 p-6 md:p-8 rounded-xl max-w-md w-full max-h-[90vh] overflow-y-auto">
+      <h2 class="text-slate-900 font-bold mb-1">Add Truck Owner</h2>
+      <p class="text-xs text-zinc-500 mb-6">Creates a fleet owner account. You can add trucks for them right after.</p>
+      <form id="addOwnerForm" class="space-y-4">
+        <input type="text" id="ownerCompany" placeholder="Company Name (optional)" class="w-full bg-zinc-100 border border-zinc-200 p-3 rounded text-slate-900" />
+        <input type="text" id="ownerContact" placeholder="Contact Name" class="w-full bg-zinc-100 border border-zinc-200 p-3 rounded text-slate-900" required />
+        <input type="email" id="ownerEmail" placeholder="Email" class="w-full bg-zinc-100 border border-zinc-200 p-3 rounded text-slate-900" required />
+        <input type="text" id="ownerPhone" placeholder="Phone" class="w-full bg-zinc-100 border border-zinc-200 p-3 rounded text-slate-900" />
+        <input type="password" id="ownerPassword" placeholder="Temporary password (min. 6 characters)" minlength="6" class="w-full bg-zinc-100 border border-zinc-200 p-3 rounded text-slate-900" required />
+        <div class="flex gap-4 mt-4">
+          <button type="button" id="closeOwnerModal" class="flex-1 bg-zinc-200 p-3 rounded text-slate-900">Cancel</button>
+          <button type="submit" id="ownerSubmitBtn" class="flex-1 bg-green-500 p-3 rounded text-slate-900 font-bold">Create Owner</button>
+        </div>
+        <p id="ownerFormMsg" class="text-[11px]"></p>
+      </form>
+    </div>
+  </div>
+
   <!-- Modal za dodavanje -->
-  <div id="truckModal" class="hidden fixed inset-0 bg-black/80 z-[200] flex items-center justify-center p-4">
-    <div class="bg-[#050505] border border-zinc-800 p-6 md:p-8 rounded-xl max-w-lg w-full max-h-[90vh] overflow-y-auto">
-      <h2 class="text-white font-bold mb-6">Add Grapple Saw Truck</h2>
+  <div id="truckModal" class="hidden fixed inset-0 bg-slate-900/40 backdrop-blur-sm z-[200] flex items-center justify-center p-4">
+    <div class="bg-white border border-zinc-200 p-6 md:p-8 rounded-xl max-w-lg w-full max-h-[90vh] overflow-y-auto">
+      <h2 class="text-slate-900 font-bold mb-6">Add Grapple Saw Truck</h2>
       <form id="addTruckForm" class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-        <input type="text" id="newType" placeholder="Equipment Type" class="col-span-1 sm:col-span-2 bg-zinc-900 border border-zinc-800 p-3 rounded text-white" required />
-        
-        <input type="email" id="newEmail" placeholder="Owner Email" class="bg-zinc-900 border border-zinc-800 p-3 rounded text-white" />
-        <input type="text" id="newPhone" placeholder="Owner Phone" class="bg-zinc-900 border border-zinc-800 p-3 rounded text-white" />
-        
-        <input type="number" id="newCapacity" placeholder="Lift Capacity (tons)" class="bg-zinc-900 border border-zinc-800 p-3 rounded text-white" />
-        <input type="number" id="newHeight" placeholder="Working Height (ft)" class="bg-zinc-900 border border-zinc-800 p-3 rounded text-white" />
-        <select id="newAccess" class="bg-zinc-900 border border-zinc-800 p-3 rounded text-white">
+        <input type="text" id="newType" placeholder="Equipment Type" class="col-span-1 sm:col-span-2 bg-zinc-100 border border-zinc-200 p-3 rounded text-slate-900" required />
+
+        <!-- OWNER MODE TOGGLE -->
+        <div class="col-span-1 sm:col-span-2 flex gap-2 p-1 bg-zinc-100 rounded-lg">
+          <button type="button" id="ownerModeNewBtn" class="flex-1 h-9 rounded-md text-[10px] font-bold uppercase tracking-wider transition-colors bg-white text-slate-900 shadow-sm">New Owner</button>
+          <button type="button" id="ownerModeExistingBtn" class="flex-1 h-9 rounded-md text-[10px] font-bold uppercase tracking-wider transition-colors text-zinc-500 hover:text-slate-900">Existing Owner</button>
+        </div>
+
+        <!-- EXISTING OWNER PICKER (skriveno dok se ne izabere "Existing Owner") -->
+        <select id="existingOwnerSelect" class="hidden col-span-1 sm:col-span-2 bg-zinc-100 border border-zinc-200 p-3 rounded text-slate-900">
+          <option value="" disabled selected>Select a registered fleet owner…</option>
+        </select>
+
+        <!-- NEW / MANUAL OWNER FIELDS -->
+        <input type="email" id="newEmail" placeholder="Owner Email" class="bg-zinc-100 border border-zinc-200 p-3 rounded text-slate-900" />
+        <input type="text" id="newPhone" placeholder="Owner Phone" class="bg-zinc-100 border border-zinc-200 p-3 rounded text-slate-900" />
+
+        <input type="number" id="newCapacity" placeholder="Lift Capacity (tons)" class="bg-zinc-100 border border-zinc-200 p-3 rounded text-slate-900" />
+        <input type="number" id="newHeight" placeholder="Working Height (ft)" class="bg-zinc-100 border border-zinc-200 p-3 rounded text-slate-900" />
+        <select id="newAccess" class="bg-zinc-100 border border-zinc-200 p-3 rounded text-slate-900">
           <option value="wheeled">Wheeled</option>
           <option value="tracked">Tracked</option>
         </select>
-        <select id="newListing" class="bg-zinc-900 border border-zinc-800 p-3 rounded text-white">
+        <select id="newListing" class="bg-zinc-100 border border-zinc-200 p-3 rounded text-slate-900">
           <option value="Rent">Rent</option>
           <option value="Sale">Sale</option>
         </select>
 
         <!-- DINAMIČKI PADAKUĆI MENI ZA LOKACIJU -->
-        <select id="newLocation" class="col-span-1 sm:col-span-2 bg-zinc-900 border border-zinc-800 p-3 rounded text-white" required>
+        <select id="newLocation" class="col-span-1 sm:col-span-2 bg-zinc-100 border border-zinc-200 p-3 rounded text-slate-900" required>
           <option value="" disabled selected>Select Location</option>
           {territories?.map(t => (
             <option value={t.name}>{t.name}</option>
@@ -43,8 +78,8 @@ const { data: territories } = await supabase.from('service_territories').select(
         </select>
 
         <div class="col-span-1 sm:col-span-2 flex gap-4 mt-4">
-          <button type="button" id="closeModal" class="flex-1 bg-zinc-800 p-3 rounded text-white">Cancel</button>
-          <button type="submit" class="flex-1 bg-green-500 p-3 rounded text-black font-bold">Save Truck</button>
+          <button type="button" id="closeModal" class="flex-1 bg-zinc-200 p-3 rounded text-slate-900">Cancel</button>
+          <button type="submit" class="flex-1 bg-green-500 p-3 rounded text-slate-900 font-bold">Save Truck</button>
         </div>
       </form>
     </div>
@@ -54,20 +89,20 @@ const { data: territories } = await supabase.from('service_territories').select(
     <div class="flex-1 space-y-5 min-w-0 w-full">
 
       <div>
-        <h1 class="text-xl sm:text-2xl font-bold text-white tracking-tight">Grapple Saw Trucks</h1>
+        <h1 class="text-xl sm:text-2xl font-bold text-slate-900 tracking-tight">Grapple Saw Trucks</h1>
         <p class="text-[11px] text-zinc-500 mt-0.5">Equipment listed for rent or sale on the platform.</p>
       </div>
 
       <!-- Stats -->
       <div class="flex sm:grid sm:grid-cols-4 gap-3 overflow-x-auto no-scrollbar -mx-4 px-4 sm:mx-0 sm:px-0 pb-1">
         {[
-          { id: 'total', label: 'Total', color: 'text-white' },
-          { id: 'pending', label: 'Pending', color: 'text-amber-400' },
-          { id: 'approved', label: 'Approved', color: 'text-green-400' },
-          { id: 'rejected', label: 'Rejected', color: 'text-red-400' },
+          { id: 'total', label: 'Total', color: 'text-slate-900' },
+          { id: 'pending', label: 'Pending', color: 'text-amber-600' },
+          { id: 'approved', label: 'Approved', color: 'text-green-700' },
+          { id: 'rejected', label: 'Rejected', color: 'text-red-600' },
         ].map(stat => (
-          <div class="shrink-0 w-[110px] sm:w-auto bg-[#050505] border border-zinc-900 p-4 rounded-2xl">
-            <p class="text-[9px] font-bold uppercase tracking-[0.15em] text-zinc-600">{stat.label}</p>
+          <div class="shrink-0 w-[110px] sm:w-auto bg-white border border-zinc-100 p-4 rounded-2xl">
+            <p class="text-[9px] font-bold uppercase tracking-[0.15em] text-zinc-400">{stat.label}</p>
             <h2 id={`count-${stat.id}`} class={`text-2xl font-mono font-bold mt-1.5 ${stat.color}`}>0</h2>
           </div>
         ))}
@@ -75,15 +110,15 @@ const { data: territories } = await supabase.from('service_territories').select(
 
       <!-- LIST -->
       <div id="trucksTable" class="space-y-2">
-        <div class="p-8 text-center text-zinc-600 text-sm">Loading...</div>
+        <div class="p-8 text-center text-zinc-400 text-sm">Loading...</div>
       </div>
     </div>
 
     <!-- Sidebar za logove -->
     <div class="w-full xl:w-[400px] shrink-0">
-      <div class="bg-[#050505] border border-zinc-900 rounded-2xl sticky top-8 w-full">
-        <div class="p-6 border-b border-zinc-900">
-          <h3 class="text-[10px] font-bold uppercase tracking-[0.2em] text-white">Activity Timeline</h3>
+      <div class="bg-white border border-zinc-100 rounded-2xl sticky top-8 w-full">
+        <div class="p-6 border-b border-zinc-100">
+          <h3 class="text-[10px] font-bold uppercase tracking-[0.2em] text-slate-900">Activity Timeline</h3>
         </div>
         
         <div class="p-6">
@@ -110,6 +145,88 @@ const { data: territories } = await supabase.from('service_territories').select(
     return `${Math.floor(diffInSeconds / 86400)}d ago`;
   }
 
+  // Lista poznatih vlasnika. Izvor istine je truck_owners tabela (tako se
+  // vide i vlasnici koji još nemaju nijedan kamion) — broj kamiona po
+  // vlasniku se dodaje iz liste koju admin već učitava.
+  let knownOwners: { key: string; email: string; phone: string; userId: string | null; truckCount: number }[] = [];
+
+  async function rebuildKnownOwners(trucks: any[]) {
+    const truckCounts = new Map<string, number>();
+    trucks.forEach((t) => {
+      const key = t.owner_user_id || t.owner_email;
+      if (!key) return;
+      truckCounts.set(key, (truckCounts.get(key) || 0) + 1);
+    });
+
+    const { data: owners } = await supabase.from('truck_owners').select('*').order('email');
+
+    if (owners && owners.length > 0) {
+      knownOwners = owners.map((o: any) => ({
+        key: o.id,
+        email: o.email || '(no email)',
+        phone: o.phone || '',
+        userId: o.id,
+        truckCount: truckCounts.get(o.id) || 0,
+      }));
+    } else {
+      // Fallback za kamione dodate pre nego što je truck_owners tabela
+      // postojala — i dalje ih prikazujemo kao "vlasnika" grupisanjem po
+      // owner_email, samo bez pravog naloga.
+      const map = new Map<string, { key: string; email: string; phone: string; userId: string | null; truckCount: number }>();
+      trucks.forEach((t) => {
+        if (!t.owner_email && !t.owner_user_id) return;
+        const key = t.owner_user_id || t.owner_email;
+        const existing = map.get(key);
+        if (existing) {
+          existing.truckCount += 1;
+        } else {
+          map.set(key, { key, email: t.owner_email || '(no email)', phone: t.owner_phone || '', userId: t.owner_user_id || null, truckCount: 1 });
+        }
+      });
+      knownOwners = Array.from(map.values());
+    }
+
+    knownOwners.sort((a, b) => a.email.localeCompare(b.email));
+
+    const select = document.getElementById('existingOwnerSelect') as HTMLSelectElement;
+    if (select) {
+      const placeholder = select.options[0];
+      select.innerHTML = '';
+      select.appendChild(placeholder);
+      knownOwners.forEach((o) => {
+        const opt = document.createElement('option');
+        opt.value = o.key;
+        opt.textContent = `${o.email}${o.phone ? ' · ' + o.phone : ''} — ${o.truckCount} truck${o.truckCount === 1 ? '' : 's'}${o.userId ? '' : ' (no account)'}`;
+        select.appendChild(opt);
+      });
+    }
+  }
+
+  function setOwnerMode(mode: 'new' | 'existing') {
+    const newBtn = document.getElementById('ownerModeNewBtn')!;
+    const existingBtn = document.getElementById('ownerModeExistingBtn')!;
+    const existingSelect = document.getElementById('existingOwnerSelect')!;
+    const newEmail = document.getElementById('newEmail') as HTMLInputElement;
+    const newPhone = document.getElementById('newPhone') as HTMLInputElement;
+
+    const isExisting = mode === 'existing';
+    newBtn.classList.toggle('bg-white', !isExisting);
+    newBtn.classList.toggle('shadow-sm', !isExisting);
+    newBtn.classList.toggle('text-slate-900', !isExisting);
+    newBtn.classList.toggle('text-zinc-500', isExisting);
+    existingBtn.classList.toggle('bg-white', isExisting);
+    existingBtn.classList.toggle('shadow-sm', isExisting);
+    existingBtn.classList.toggle('text-slate-900', isExisting);
+    existingBtn.classList.toggle('text-zinc-500', !isExisting);
+
+    existingSelect.classList.toggle('hidden', !isExisting);
+    newEmail.classList.toggle('hidden', isExisting);
+    newPhone.classList.toggle('hidden', isExisting);
+  }
+
+  document.getElementById('ownerModeNewBtn')?.addEventListener('click', () => setOwnerMode('new'));
+  document.getElementById('ownerModeExistingBtn')?.addEventListener('click', () => setOwnerMode('existing'));
+
   async function updateDashboard() {
     const { data: trucks } = await supabase.from('grapple_saw_trucks').select('*').order('created_at', { ascending: false });
     if (!trucks) return;
@@ -120,17 +237,19 @@ const { data: territories } = await supabase.from('service_territories').select(
     document.getElementById('count-approved')!.textContent = trucks.filter(t => t.approval_status === 'approved').length.toString();
     document.getElementById('count-rejected')!.textContent = trucks.filter(t => t.approval_status === 'rejected').length.toString();
 
+    await rebuildKnownOwners(trucks);
+
     // Renderuj listu kao moderne kartice
     const listEl = document.getElementById('trucksTable');
     if (listEl) {
       listEl.innerHTML = trucks.length > 0 ? trucks.map(t => {
         const appStatus = t.approval_status || 'pending';
-        const appBadge = appStatus === 'approved' ? 'bg-green-500/10 text-green-400 border-green-500/20' :
-                         appStatus === 'rejected' ? 'bg-red-500/10 text-red-400 border-red-500/20' :
-                         'bg-amber-500/10 text-amber-400 border-amber-500/20';
+        const appBadge = appStatus === 'approved' ? 'bg-green-500/10 text-green-700 border-green-500/20' :
+                         appStatus === 'rejected' ? 'bg-red-500/10 text-red-600 border-red-500/20' :
+                         'bg-amber-500/10 text-amber-600 border-amber-500/20';
 
         const availStatus = t.availability_status || 'Available';
-        const availDot = appStatus === 'approved' ? (availStatus === 'Available' ? 'bg-green-400' : 'bg-yellow-400') : 'bg-zinc-700';
+        const availDot = appStatus === 'approved' ? (availStatus === 'Available' ? 'bg-green-400' : 'bg-yellow-400') : 'bg-zinc-300';
 
         const specs = [
           t.lift_capacity_tons ? `${t.lift_capacity_tons} tons` : '',
@@ -139,21 +258,27 @@ const { data: territories } = await supabase.from('service_territories').select(
         ].filter(Boolean).join(' · ');
 
         return `
-        <div class="group flex items-center gap-3 sm:gap-4 p-3 sm:p-4 rounded-2xl border border-zinc-900 bg-[#050505] hover:border-zinc-700 hover:bg-zinc-900/40 transition-all cursor-pointer" onclick="window.location.href='/admin/grapple-saw-trucks/${t.id}'">
-          <div class="w-10 h-10 rounded-full bg-zinc-900 border border-zinc-800 flex items-center justify-center shrink-0">
+        <div class="group flex items-center gap-3 sm:gap-4 p-3 sm:p-4 rounded-2xl border border-zinc-100 bg-white hover:border-zinc-300 hover:bg-zinc-100/40 transition-all cursor-pointer" onclick="window.location.href='/admin/grapple-saw-trucks/${t.id}'">
+          <div class="w-10 h-10 rounded-full bg-zinc-100 border border-zinc-200 flex items-center justify-center shrink-0">
             <svg class="w-5 h-5 text-zinc-500" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M8 17h8m-8 0a2 2 0 11-4 0 2 2 0 014 0zm8 0a2 2 0 104 0 2 2 0 00-4 0zM3 17V7a1 1 0 011-1h9l4 4v7M3 10h13"/></svg>
           </div>
           <div class="min-w-0 flex-1">
-            <p class="text-sm font-bold text-white truncate">${t.equipment_type || 'Equipment'}</p>
+            <p class="text-sm font-bold text-slate-900 truncate">${t.equipment_type || 'Equipment'}</p>
             <p class="mt-0.5 text-[11px] text-zinc-500 font-mono truncate">${specs || 'No specs listed'}</p>
+            <p class="mt-1 text-[10px] text-zinc-400 truncate flex items-center gap-1.5">
+              <span class="inline-flex items-center justify-center w-3.5 h-3.5 rounded-full ${t.owner_user_id ? 'bg-green-100 text-green-700' : 'bg-zinc-100 text-zinc-400'}" title="${t.owner_user_id ? 'Linked fleet owner account' : 'No linked account — added manually'}">
+                <svg class="w-2 h-2" fill="currentColor" viewBox="0 0 8 8"><circle cx="4" cy="4" r="4"/></svg>
+              </span>
+              ${t.owner_email || 'No owner on file'}
+            </p>
           </div>
           <div class="flex items-center gap-3 shrink-0">
             ${appStatus === 'approved' ? `<span class="hidden sm:flex items-center gap-1.5 text-[10px] text-zinc-500"><span class="w-1.5 h-1.5 rounded-full ${availDot}"></span>${availStatus}</span>` : ''}
             <span class="px-2.5 py-1 rounded-full text-[9px] font-bold uppercase border tracking-wide ${appBadge}">${appStatus}</span>
-            <svg class="hidden sm:block w-4 h-4 text-zinc-700 group-hover:text-zinc-400 transition-colors" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+            <svg class="hidden sm:block w-4 h-4 text-zinc-300 group-hover:text-zinc-600 transition-colors" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
           </div>
         </div>
-      `}).join('') : '<div class="p-8 text-center text-zinc-600 text-sm border border-dashed border-zinc-900 rounded-2xl">No equipment listed yet.</div>';
+      `}).join('') : '<div class="p-8 text-center text-zinc-400 text-sm border border-dashed border-zinc-100 rounded-2xl">No equipment listed yet.</div>';
     }
     loadLogs();
   }
@@ -164,13 +289,13 @@ const { data: territories } = await supabase.from('service_territories').select(
     const container = document.getElementById('truckLogsContainer');
     if (container && logs) {
       container.innerHTML = logs.length > 0 ? logs.map(log => `
-        <div class="relative pl-6 before:content-[''] before:absolute before:left-0 before:top-1.5 before:w-2 before:h-2 before:bg-zinc-800 before:border-2 before:border-[#050505] before:rounded-full after:content-[''] after:absolute after:left-[3px] after:top-4 after:bottom-[-24px] after:w-[2px] after:bg-zinc-900 last:after:hidden">
-          <p class="text-[10px] text-zinc-400 font-mono mb-1 truncate">${log.grapple_saw_trucks?.equipment_type || 'Unknown Truck'}</p>
-          <p class="text-[11px] text-white font-bold leading-tight">${log.action}</p>
+        <div class="relative pl-6 before:content-[''] before:absolute before:left-0 before:top-1.5 before:w-2 before:h-2 before:bg-zinc-200 before:border-2 before:border-slate-200 before:rounded-full after:content-[''] after:absolute after:left-[3px] after:top-4 after:bottom-[-24px] after:w-[2px] after:bg-zinc-100 last:after:hidden">
+          <p class="text-[10px] text-zinc-600 font-mono mb-1 truncate">${log.grapple_saw_trucks?.equipment_type || 'Unknown Truck'}</p>
+          <p class="text-[11px] text-slate-900 font-bold leading-tight">${log.action}</p>
           <div class="flex items-center gap-2 mt-2">
-            <span class="text-[9px] text-zinc-500 font-mono">by <span class="text-zinc-300 font-bold tracking-wider uppercase">${log.changed_by || 'Stojan M.'}</span></span>
-            <span class="text-[7px] text-zinc-700">●</span>
-            <span class="text-[9px] text-zinc-600">${timeAgo(log.created_at)}</span>
+            <span class="text-[9px] text-zinc-500 font-mono">by <span class="text-zinc-700 font-bold tracking-wider uppercase">${log.changed_by || 'Stojan M.'}</span></span>
+            <span class="text-[7px] text-zinc-300">●</span>
+            <span class="text-[9px] text-zinc-400">${timeAgo(log.created_at)}</span>
           </div>
         </div>
       `).join('') : '<div class="text-[10px] text-zinc-500 italic">No activity recorded yet.</div>';
@@ -180,32 +305,113 @@ const { data: territories } = await supabase.from('service_territories').select(
   // Forma za dodavanje
   document.getElementById('addTruckForm')?.addEventListener('submit', async (e) => {
     e.preventDefault();
+
+    const existingSelect = document.getElementById('existingOwnerSelect') as HTMLSelectElement;
+    const usingExistingOwner = !existingSelect.classList.contains('hidden');
+
+    let ownerEmail = (document.getElementById('newEmail') as HTMLInputElement).value;
+    let ownerPhone = (document.getElementById('newPhone') as HTMLInputElement).value;
+    let ownerUserId: string | null = null;
+
+    if (usingExistingOwner) {
+      const chosen = knownOwners.find((o) => o.key === existingSelect.value);
+      if (!chosen) {
+        alert('Please select an owner from the list, or switch to "New Owner".');
+        return;
+      }
+      ownerEmail = chosen.email === '(no email)' ? '' : chosen.email;
+      ownerPhone = chosen.phone;
+      ownerUserId = chosen.userId;
+    }
+
     const newTruck = {
       equipment_type: (document.getElementById('newType') as HTMLInputElement).value,
-      owner_email: (document.getElementById('newEmail') as HTMLInputElement).value,
-      owner_phone: (document.getElementById('newPhone') as HTMLInputElement).value,
+      owner_email: ownerEmail,
+      owner_phone: ownerPhone,
+      owner_user_id: ownerUserId,
       lift_capacity_tons: (document.getElementById('newCapacity') as HTMLInputElement).value || null,
       working_height_ft: (document.getElementById('newHeight') as HTMLInputElement).value || null,
       access_type: (document.getElementById('newAccess') as HTMLSelectElement).value,
       listing_type: (document.getElementById('newListing') as HTMLSelectElement).value,
       location: (document.getElementById('newLocation') as HTMLSelectElement).value,
       availability_status: 'Available',
-      approval_status: 'pending' 
+      approval_status: usingExistingOwner ? 'approved' : 'pending'
     };
     
     const { data } = await supabase.from('grapple_saw_trucks').insert([newTruck]).select().single();
     
     if (data) {
-      await supabase.from('truck_logs').insert([{ truck_id: data.id, action: 'Added new truck listing', changed_by: 'Stojan M.' }]);
+      await supabase.from('truck_logs').insert([{ truck_id: data.id, action: usingExistingOwner ? 'Added new truck for existing owner' : 'Added new truck listing', changed_by: 'Stojan M.' }]);
     }
 
     document.getElementById('truckModal')?.classList.add('hidden');
     (e.target as HTMLFormElement).reset();
+    setOwnerMode('new');
     updateDashboard();
   });
 
-  document.getElementById('openModal')?.addEventListener('click', () => document.getElementById('truckModal')?.classList.remove('hidden'));
+  document.getElementById('openModal')?.addEventListener('click', () => { setOwnerMode('new'); document.getElementById('truckModal')?.classList.remove('hidden'); });
   document.getElementById('closeModal')?.addEventListener('click', () => document.getElementById('truckModal')?.classList.add('hidden'));
+
+  // -- DODAVANJE NOVOG VLASNIKA --
+  document.getElementById('openOwnerModal')?.addEventListener('click', () => {
+    (document.getElementById('addOwnerForm') as HTMLFormElement).reset();
+    document.getElementById('ownerFormMsg')!.textContent = '';
+    document.getElementById('ownerModal')?.classList.remove('hidden');
+  });
+  document.getElementById('closeOwnerModal')?.addEventListener('click', () => {
+    document.getElementById('ownerModal')?.classList.add('hidden');
+  });
+
+  document.getElementById('addOwnerForm')?.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const msg = document.getElementById('ownerFormMsg')!;
+    const submitBtn = document.getElementById('ownerSubmitBtn') as HTMLButtonElement;
+    submitBtn.disabled = true;
+    msg.textContent = 'Creating owner account...';
+    msg.className = 'text-[11px] text-zinc-500';
+
+    const { data: { session } } = await supabase.auth.getSession();
+    if (!session) {
+      msg.textContent = 'Your admin session expired — please log in again.';
+      msg.className = 'text-[11px] text-red-600';
+      submitBtn.disabled = false;
+      return;
+    }
+
+    const payload = {
+      companyName: (document.getElementById('ownerCompany') as HTMLInputElement).value || null,
+      contactName: (document.getElementById('ownerContact') as HTMLInputElement).value,
+      email: (document.getElementById('ownerEmail') as HTMLInputElement).value,
+      phone: (document.getElementById('ownerPhone') as HTMLInputElement).value,
+      password: (document.getElementById('ownerPassword') as HTMLInputElement).value,
+    };
+
+    const res = await fetch('/api/admin-create-truck-owner', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${session.access_token}` },
+      body: JSON.stringify(payload),
+    });
+    const result = await res.json();
+    submitBtn.disabled = false;
+
+    if (!res.ok) {
+      msg.textContent = '❌ ' + (result.message || result.error || 'Could not create owner.');
+      msg.className = 'text-[11px] text-red-600';
+      return;
+    }
+
+    document.getElementById('ownerModal')?.classList.add('hidden');
+    await updateDashboard();
+
+    // Ponudi da odmah doda kamion za novokreiranog vlasnika
+    if (confirm(`Owner ${result.email} created. Add a truck for them now?`)) {
+      setOwnerMode('existing');
+      document.getElementById('truckModal')?.classList.remove('hidden');
+      const select = document.getElementById('existingOwnerSelect') as HTMLSelectElement;
+      if (select) select.value = result.ownerId;
+    }
+  });
 
   updateDashboard();
 </script>

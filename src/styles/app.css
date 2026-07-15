@@ -4,28 +4,34 @@
 
   /* Brand */
 
-  --color-brand: #2E7D32;
-  --color-brand-hover: #388E3C;
-  --color-brand-light: #4CAF50;
+  --color-brand: #16803C;
+  --color-brand-hover: #146C33;
+  --color-brand-light: #22C55E;
+  --color-brand-tint: #F0FDF4;
 
   /* Background */
 
-  --color-background: #0B0F0C;
-  --color-surface: #121815;
-  --color-card: #1A221D;
+  --color-background: #FFFFFF;
+  --color-surface: #F7F8F7;
+  --color-card: #FFFFFF;
 
   /* Text */
 
-  --color-heading: #F8FAF9;
-  --color-body: #CDD5CF;
-  --color-muted: #8A958D;
+  --color-heading: #0F172A;
+  --color-body: #475569;
+  --color-muted: #94A3B8;
+
+  /* Borders */
+
+  --color-border: #E7EAE8;
+  --color-border-strong: #D8DCDA;
 
   /* Status */
 
-  --color-success: #22C55E;
-  --color-warning: #F59E0B;
-  --color-danger: #EF4444;
-  --color-info: #3B82F6;
+  --color-success: #16A34A;
+  --color-warning: #D97706;
+  --color-danger: #DC2626;
+  --color-info: #2563EB;
 
   /* Radius */
 
@@ -33,5 +39,9 @@
   --radius-md: 16px;
   --radius-lg: 22px;
   --radius-xl: 28px;
+
+  /* Shadows — soft, modern, minimal elevation (no harsh dark glows) */
+
+  --shadow-color: 220 20% 30%;
 
 }

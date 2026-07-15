@@ -24,7 +24,7 @@ const coordsMap: Record<string, [number, number]> = {
   <!-- Učitavanje Leaflet CSS-a -->
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
 
-  <main class="relative pt-32 pb-16 bg-[#000000] min-h-screen overflow-hidden">
+  <main class="relative pt-32 pb-16 bg-white min-h-screen overflow-hidden">
     
     <!-- Glow u pozadini (Gornji deo) -->
     <div class="absolute top-0 left-1/2 -translate-x-1/2 w-full max-w-3xl h-[400px] bg-green-500/5 blur-[120px] rounded-full pointer-events-none"></div>
@@ -35,20 +35,20 @@ const coordsMap: Record<string, [number, number]> = {
       <div class="mb-12 max-w-2xl font-sans">
         
         <!-- Premium Minimal Badge -->
-        <div class="inline-flex items-center gap-2 rounded-md border border-slate-700 bg-slate-800 px-3 py-1.5 shadow-sm mb-6">
+        <div class="inline-flex items-center gap-2 rounded-md border border-slate-300 bg-slate-200 px-3 py-1.5 shadow-sm mb-6">
           <span class="relative flex h-2 w-2">
             <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-500 opacity-75"></span>
             <span class="relative inline-flex rounded-full h-2 w-2 bg-green-500"></span>
           </span>
-          <span class="text-[10px] font-bold uppercase tracking-[0.2em] text-slate-300">
+          <span class="text-[10px] font-bold uppercase tracking-[0.2em] text-slate-700">
             Operational Territories
           </span>
         </div>
 
-        <h1 class="text-4xl sm:text-5xl lg:text-[4rem] font-bold text-white tracking-tighter leading-[1.05]">
+        <h1 class="text-4xl sm:text-5xl lg:text-[4rem] font-bold text-slate-900 tracking-tighter leading-[1.05]">
           Service Coverage.
         </h1>
-        <p class="mt-6 text-sm sm:text-base leading-relaxed text-slate-400">
+        <p class="mt-6 text-sm sm:text-base leading-relaxed text-slate-600">
           Currently active service territories managed in your settings. Our dispatch logistics span the verified coverage areas below.
         </p>
       </div>
@@ -58,31 +58,31 @@ const coordsMap: Record<string, [number, number]> = {
         <!-- Lista iz baze -->
         <div class="space-y-4">
           {territories?.map((t, index) => (
-            <div class="group rounded-2xl border border-slate-700 bg-slate-900 p-5 hover:border-slate-600 transition-colors flex items-center justify-between">
+            <div class="group rounded-2xl border border-slate-300 bg-slate-100 p-5 hover:border-slate-400 transition-colors flex items-center justify-between">
               <div class="flex items-center gap-4">
-                <span class="text-[10px] font-mono font-bold text-slate-600 group-hover:text-green-500 transition-colors">
+                <span class="text-[10px] font-mono font-bold text-slate-400 group-hover:text-green-700 transition-colors">
                   0{index + 1}
                 </span>
-                <h3 class="text-sm font-bold text-white tracking-wide">{t.name}</h3>
+                <h3 class="text-sm font-bold text-slate-900 tracking-wide">{t.name}</h3>
               </div>
               <span class="h-2 w-2 rounded-full shadow-[0_0_8px_rgba(34,197,94,0.6)] bg-green-500"></span>
             </div>
           ))}
           {(!territories || territories.length === 0) && (
-            <div class="rounded-2xl border border-slate-700 border-dashed p-8 text-center">
+            <div class="rounded-2xl border border-slate-300 border-dashed p-8 text-center">
               <p class="text-slate-500 text-xs uppercase tracking-widest font-bold">No territories defined</p>
             </div>
           )}
         </div>
 
         <!-- Mapa Wrapper sa Premium okvirom -->
-        <div class="relative rounded-2xl sm:rounded-3xl border border-slate-700 bg-slate-900 p-2 sm:p-3 shadow-[0_20px_50px_-15px_rgba(0,0,0,0.5)] overflow-hidden">
+        <div class="relative rounded-2xl sm:rounded-3xl border border-slate-200 bg-white p-2 sm:p-3 shadow-soft-lg overflow-hidden">
           
           <!-- Dekorativni sjaj u uglu mape -->
           <div class="absolute top-0 right-0 -mr-16 -mt-16 w-40 h-40 bg-green-500/10 blur-[50px] rounded-full pointer-events-none z-0"></div>
           
           <!-- Mapa kontejner -->
-          <div id="map" class="relative z-10 w-full h-[450px] lg:h-auto lg:aspect-[16/10] rounded-xl border border-slate-800 bg-[#050505] overflow-hidden"></div>
+          <div id="map" class="relative z-10 w-full h-[450px] lg:h-auto lg:aspect-[16/10] rounded-xl border border-slate-200 bg-white overflow-hidden"></div>
         </div>
 
       </div>

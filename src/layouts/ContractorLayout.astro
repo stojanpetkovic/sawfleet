@@ -1,5 +1,6 @@
 ---
 import '../styles/global.css';
+import '../styles/app.css';
 import { Menu as MenuIcon } from "lucide-astro";
 
 interface NavItem {
@@ -29,43 +30,44 @@ const {
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+    <meta name="theme-color" content="#ffffff" />
     <title>SawFleet | {companyName}</title>
   </head>
-  <body class="bg-[#000000] text-zinc-100 antialiased font-sans">
+  <body class="bg-slate-50 text-slate-900 antialiased font-sans">
 
-    <div id="mobileOverlay" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-40 hidden lg:hidden transition-opacity"></div>
+    <div id="mobileOverlay" class="fixed inset-0 bg-slate-900/30 backdrop-blur-sm z-40 hidden lg:hidden transition-opacity"></div>
 
     <div class="flex w-full min-h-screen">
 
       <!-- SIDEBAR (desktop) -->
-      <aside id="sidebar" class="fixed inset-y-0 left-0 z-50 w-64 border-r border-zinc-900 bg-[#000000] p-6 flex flex-col justify-between h-screen transform -translate-x-full lg:relative lg:translate-x-0 transition-transform duration-300 ease-in-out shrink-0">
+      <aside id="sidebar" class="fixed inset-y-0 left-0 z-50 w-64 border-r border-slate-200 bg-white p-6 flex flex-col justify-between h-screen transform -translate-x-full lg:relative lg:translate-x-0 transition-transform duration-300 ease-in-out shrink-0 pt-safe">
         <div>
           <div class="flex items-center justify-between mb-12 px-2">
             <a href={homeHref} class="flex items-center gap-2">
-              <img src="/logo/logo.svg" alt="SawFleet" class="h-14 w-auto" />
+              <img src="/logo/logo.svg" alt="SawFleet" class="h-12 w-auto" />
             </a>
-            <button id="closeMenuBtn" class="lg:hidden text-zinc-500 hover:text-white">
+            <button id="closeMenuBtn" class="lg:hidden text-slate-400 hover:text-slate-900">
               <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-6 h-6">
                 <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
               </svg>
             </button>
           </div>
 
-          <p class="text-[9px] font-bold uppercase tracking-[0.2em] text-zinc-600 mb-4 px-3 truncate">{companyName}</p>
+          <p class="text-[9px] font-bold uppercase tracking-[0.2em] text-slate-400 mb-4 px-3 truncate">{companyName}</p>
 
           <nav class="space-y-1">
             {navItems.map((item) => {
               const isActive = item.tab ? item.tab === activeTab : false;
               const Icon = item.icon;
               return item.href ? (
-                <a href={item.href} class="flex items-center gap-3 px-3 py-3 rounded-lg text-[10px] font-mono font-bold uppercase tracking-[0.2em] text-zinc-500 hover:text-zinc-300 hover:bg-zinc-900/50 border border-transparent transition-all duration-200">
+                <a href={item.href} class="flex items-center gap-3 px-3 py-3 rounded-lg text-[10px] font-mono font-bold uppercase tracking-[0.2em] text-slate-500 hover:text-slate-900 hover:bg-slate-50 border border-transparent transition-all duration-200">
                   {Icon && <Icon size={15} strokeWidth={1.75} />}
                   {item.label}
                 </a>
               ) : (
-                <button data-tab={item.tab} class={`nav-tab-btn w-full flex items-center gap-3 px-3 py-3 rounded-lg text-[10px] font-mono font-bold uppercase tracking-[0.2em] transition-all duration-200 ${isActive ? 'bg-zinc-900 text-white border border-zinc-800' : 'text-zinc-500 hover:text-zinc-300 hover:bg-zinc-900/50 border border-transparent'}`}>
-                  {Icon && <Icon size={15} strokeWidth={1.75} />}
+                <button data-tab={item.tab} class={`nav-tab-btn nav-tab-btn--side ${isActive ? 'is-active' : ''} w-full flex items-center gap-3 px-3 py-3 rounded-lg border text-[10px] font-mono font-bold uppercase tracking-[0.2em] transition-all duration-200`}>
+                  {Icon && <Icon size={15} strokeWidth={isActive ? 2 : 1.75} />}
                   {item.label}
                 </button>
               );
@@ -73,8 +75,8 @@ const {
           </nav>
         </div>
 
-        <div class="flex flex-col gap-4 border-t border-zinc-900 pt-6 mt-8">
-          <button id="logoutBtn" data-login-href={loginHref} class="h-11 px-4 w-full flex items-center justify-center rounded-lg border border-red-900/30 bg-red-950/10 text-[10px] font-bold uppercase tracking-[0.2em] text-red-500 hover:bg-red-950/30 hover:border-red-900/50 transition-all">
+        <div class="flex flex-col gap-4 border-t border-slate-200 pt-6 mt-8">
+          <button id="logoutBtn" data-login-href={loginHref} class="h-11 px-4 w-full flex items-center justify-center rounded-lg border border-red-200 bg-red-50 text-[10px] font-bold uppercase tracking-[0.2em] text-red-600 hover:bg-red-100 hover:border-red-300 transition-all">
             Sign out
           </button>
         </div>
@@ -82,32 +84,32 @@ const {
 
       <!-- MAIN -->
       <div class="flex-1 flex flex-col min-w-0 pb-20 lg:pb-0">
-        <header class="w-full h-16 lg:h-20 border-b border-zinc-900 flex items-center justify-between px-4 lg:px-8 bg-[#000000]/80 backdrop-blur-md sticky top-0 z-30 shrink-0">
+        <header class="w-full h-16 lg:h-20 border-b border-slate-200 flex items-center justify-between px-4 lg:px-8 bg-white/80 backdrop-blur-md sticky top-0 z-30 shrink-0 pt-safe">
           <div class="flex items-center gap-4">
-            <button id="openMenuBtn" class="lg:hidden text-zinc-500 hover:text-white focus:outline-none">
+            <button id="openMenuBtn" class="lg:hidden text-slate-400 hover:text-slate-900 focus:outline-none">
               <MenuIcon size={22} strokeWidth={1.75} />
             </button>
-            <img src="/logo/logo.svg" alt="SawFleet" class="h-8 lg:hidden w-auto" />
+            <img src="/logo/logo.svg" alt="SawFleet" class="h-7 lg:hidden w-auto" />
           </div>
 
           <div class="flex items-center gap-4">
             <div class="relative">
-              <button id="notifBtn" class="text-zinc-500 hover:text-white transition-colors relative mt-1">
+              <button id="notifBtn" class="text-slate-400 hover:text-slate-900 transition-colors relative mt-1">
                 <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path d="M14.857 17.082a23.848 23.848 0 005.454-1.31A8.967 8.967 0 0118 9.75v-.7V9A6 6 0 006 9v.75a8.967 8.967 0 01-2.312 6.022c1.733.64 3.56 1.085 5.455 1.31m5.714 0a24.255 24.255 0 01-5.714 0m5.714 0a3 3 0 11-5.714 0"/></svg>
                 <span id="notificationBadge" class="hidden absolute -top-1 -right-1 h-4 min-w-[16px] px-1 rounded-full bg-red-500 text-[9px] font-bold text-white flex items-center justify-center">0</span>
               </button>
-              <div id="notifDropdown" class="hidden absolute right-0 mt-2 w-72 bg-zinc-950 border border-zinc-800 rounded-xl shadow-2xl z-50">
-                <div class="px-4 py-3 border-b border-zinc-900 bg-black"><h3 class="text-[10px] font-bold uppercase tracking-[0.2em] text-zinc-400">Notifications</h3></div>
+              <div id="notifDropdown" class="hidden absolute right-0 mt-2 w-72 bg-white border border-slate-200 rounded-xl shadow-soft-lg z-50">
+                <div class="px-4 py-3 border-b border-slate-100 bg-slate-50 rounded-t-xl"><h3 class="text-[10px] font-bold uppercase tracking-[0.2em] text-slate-500">Notifications</h3></div>
                 <div id="notifContent" class="p-2 space-y-1 max-h-64 overflow-y-auto">
-                  <p class="px-3 py-4 text-[11px] text-zinc-600 text-center">Nothing new right now.</p>
+                  <p class="px-3 py-4 text-[11px] text-slate-400 text-center">Nothing new right now.</p>
                 </div>
               </div>
             </div>
-            <span id="companyNameLabel" class="hidden sm:block text-[10px] font-mono font-bold uppercase tracking-[0.2em] text-zinc-400 max-w-[160px] truncate">{companyName}</span>
+            <span id="companyNameLabel" class="hidden sm:block text-[10px] font-mono font-bold uppercase tracking-[0.2em] text-slate-500 max-w-[160px] truncate">{companyName}</span>
           </div>
         </header>
 
-        <main class="p-4 sm:p-6 lg:p-8 w-full flex-grow max-w-5xl">
+        <main class="p-4 sm:p-6 lg:p-8 w-full flex-grow">
           <slot />
         </main>
       </div>
@@ -115,18 +117,18 @@ const {
 
     <!-- BOTTOM TAB BAR (mobile) -->
     {navItems.length > 0 && (
-      <nav class="lg:hidden fixed bottom-0 left-0 right-0 z-40 border-t border-zinc-900 bg-[#060807]/95 backdrop-blur-md pb-[env(safe-area-inset-bottom)]">
+      <nav class="lg:hidden fixed bottom-0 left-0 right-0 z-40 border-t border-slate-200 bg-white/95 backdrop-blur-md safe-bottom-nav">
         <div class="flex items-center justify-around h-16">
           {navItems.map((item) => {
             const isActive = item.tab ? item.tab === activeTab : false;
             const Icon = item.icon;
             return item.href ? (
-              <a href={item.href} class="flex flex-col items-center justify-center gap-1 w-16 h-full text-zinc-500 hover:text-zinc-300 transition-colors">
+              <a href={item.href} class="flex flex-col items-center justify-center gap-1 w-16 h-full text-slate-400 hover:text-slate-600 transition-colors">
                 {Icon && <Icon size={20} strokeWidth={1.75} />}
                 <span class="text-[9px] font-mono font-bold uppercase tracking-wide">{item.label}</span>
               </a>
             ) : (
-              <button data-tab={item.tab} class={`nav-tab-btn flex flex-col items-center justify-center gap-1 w-16 h-full transition-colors ${isActive ? 'text-green-500' : 'text-zinc-500 hover:text-zinc-300'}`}>
+              <button data-tab={item.tab} class={`nav-tab-btn nav-tab-btn--bottom ${isActive ? 'is-active' : ''} relative flex flex-col items-center justify-center gap-1 w-16 h-full transition-colors`}>
                 {Icon && <Icon size={20} strokeWidth={isActive ? 2 : 1.75} />}
                 <span class="text-[9px] font-mono font-bold uppercase tracking-wide">{item.label}</span>
               </button>
@@ -168,7 +170,16 @@ const {
       // Klik na bilo koji nav-tab-btn (sidebar ILI bottom bar) emituje
       // custom event koji stranica (dashboard.astro / truck-dashboard.astro)
       // sluša da promeni svoj aktivni tab.
-      document.querySelectorAll('.nav-tab-btn').forEach((btn) => {
+      // Vizuelno stanje "aktivan tab" se upravlja OVDE, na jednom mestu —
+      // i pri prvom renderu i posle svakog klika, tako da sidebar (desktop)
+      // i bottom bar (mobilni) UVEK pokazuju isti, tačan aktivan tab.
+      function setActiveNavTab(tab: string) {
+        document.querySelectorAll<HTMLElement>('.nav-tab-btn[data-tab]').forEach((btn) => {
+          btn.classList.toggle('is-active', btn.dataset.tab === tab);
+        });
+      }
+
+      document.querySelectorAll('.nav-tab-btn[data-tab]').forEach((btn) => {
         btn.addEventListener('click', () => {
           const tab = (btn as HTMLElement).dataset.tab;
           if (tab) {
@@ -177,6 +188,13 @@ const {
             if (!sidebar?.classList.contains('-translate-x-full') && window.innerWidth < 1024) toggleMenu();
           }
         });
+      });
+
+      // Ako stranica programski promeni tab (npr. klik na notifikaciju),
+      // sidebar/bottom bar prate to preko istog eventa.
+      document.addEventListener('layout:tab-change', (e) => {
+        const tab = (e as CustomEvent).detail?.tab;
+        if (tab) setActiveNavTab(tab);
       });
     </script>
   </body>

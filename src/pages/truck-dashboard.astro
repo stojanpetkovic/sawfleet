@@ -1,7 +1,7 @@
 ---
 import ContractorLayout from "../layouts/ContractorLayout.astro";
 import { supabase } from "../lib/supabase";
-import { Truck as TruckIcon, PlusCircle } from "lucide-astro";
+import { Truck as TruckIcon } from "lucide-astro";
 
 const { data: territories } = await supabase
   .from('service_territories')
@@ -10,67 +10,127 @@ const { data: territories } = await supabase
 
 const navItems = [
   { label: 'Equipment', tab: 'equipment', icon: TruckIcon },
-  { label: 'Add New', href: '/truck-registration', icon: PlusCircle },
 ];
 ---
 
 <ContractorLayout companyName="Fleet Owner" homeHref="/truck-dashboard" loginHref="/truck-login" navItems={navItems} activeTab="equipment">
-  <!-- EDIT MODAL -->
-  <div id="editTruckModal" class="hidden fixed inset-0 bg-black/80 z-[200] flex items-center justify-center p-4">
-    <div class="bg-slate-900 border border-slate-800 p-6 sm:p-8 rounded-2xl max-w-lg w-full max-h-[90vh] overflow-y-auto">
-      <h2 class="text-white font-bold mb-6">Edit Equipment</h2>
-      <form id="editTruckForm" class="space-y-4">
-        <input type="hidden" id="editTruckId" />
+  <!-- ADD TRUCK MODAL -->
+  <div id="addTruckModal" class="hidden fixed inset-0 bg-slate-900/40 backdrop-blur-sm z-[200] flex items-center justify-center p-4 overflow-y-auto">
+    <div class="bg-white border border-slate-200 shadow-2xl p-6 sm:p-8 rounded-2xl max-w-lg w-full my-8">
+      <div class="flex items-center justify-between mb-6">
         <div>
-          <label class="mb-2 block text-[10px] font-bold uppercase tracking-[0.15em] text-slate-400">Equipment Type</label>
-          <input id="editEquipmentType" type="text" required class="h-11 w-full rounded-xl border border-slate-700 bg-slate-950 px-4 text-sm text-white outline-none focus:border-green-500"/>
+          <span class="text-[10px] font-mono font-bold uppercase tracking-[0.2em] text-green-700">// New Equipment</span>
+          <h2 class="mt-1 text-xl font-bold text-slate-900">Add a Truck</h2>
+        </div>
+        <button type="button" id="closeAddTruckModal" class="text-slate-400 hover:text-slate-900 text-xl leading-none">&times;</button>
+      </div>
+      <form id="addTruckForm" class="space-y-4">
+        <div>
+          <label class="mb-2 block text-[10px] font-bold uppercase tracking-[0.15em] text-slate-500">Equipment Type</label>
+          <input id="addEquipmentType" type="text" required placeholder="e.g. Knuckleboom, Grapple Saw..." class="h-12 w-full rounded-xl border border-slate-200 bg-slate-50 px-4 text-sm text-slate-900 outline-none focus:border-green-500 focus:ring-2 focus:ring-green-500/20 focus:bg-white"/>
         </div>
         <div class="grid grid-cols-2 gap-4">
           <div>
-            <label class="mb-2 block text-[10px] font-bold uppercase tracking-[0.15em] text-slate-400">Lift Capacity (tons)</label>
-            <input id="editCapacity" type="number" class="h-11 w-full rounded-xl border border-slate-700 bg-slate-950 px-4 text-sm text-white outline-none focus:border-green-500"/>
+            <label class="mb-2 block text-[10px] font-bold uppercase tracking-[0.15em] text-slate-500">Lift Capacity <span class="text-slate-400">(tons)</span></label>
+            <input id="addCapacity" type="number" placeholder="e.g. 35" class="h-12 w-full rounded-xl border border-slate-200 bg-slate-50 px-4 text-sm text-slate-900 outline-none focus:border-green-500 focus:ring-2 focus:ring-green-500/20 focus:bg-white"/>
           </div>
           <div>
-            <label class="mb-2 block text-[10px] font-bold uppercase tracking-[0.15em] text-slate-400">Working Height (ft)</label>
-            <input id="editHeight" type="number" class="h-11 w-full rounded-xl border border-slate-700 bg-slate-950 px-4 text-sm text-white outline-none focus:border-green-500"/>
+            <label class="mb-2 block text-[10px] font-bold uppercase tracking-[0.15em] text-slate-500">Working Height <span class="text-slate-400">(ft)</span></label>
+            <input id="addHeight" type="number" placeholder="e.g. 110" class="h-12 w-full rounded-xl border border-slate-200 bg-slate-50 px-4 text-sm text-slate-900 outline-none focus:border-green-500 focus:ring-2 focus:ring-green-500/20 focus:bg-white"/>
           </div>
         </div>
         <div class="grid grid-cols-2 gap-4">
           <div>
-            <label class="mb-2 block text-[10px] font-bold uppercase tracking-[0.15em] text-slate-400">Access Type</label>
-            <select id="editAccess" class="h-11 w-full rounded-xl border border-slate-700 bg-slate-950 px-4 text-sm text-white outline-none focus:border-green-500">
+            <label class="mb-2 block text-[10px] font-bold uppercase tracking-[0.15em] text-slate-500">Access Type</label>
+            <select id="addAccess" class="h-12 w-full rounded-xl border border-slate-200 bg-slate-50 px-4 text-sm text-slate-900 outline-none focus:border-green-500 focus:ring-2 focus:ring-green-500/20 focus:bg-white">
               <option value="Wheeled">Wheeled</option>
               <option value="Tracked">Tracked</option>
             </select>
           </div>
           <div>
-            <label class="mb-2 block text-[10px] font-bold uppercase tracking-[0.15em] text-slate-400">Listing Type</label>
-            <select id="editListing" class="h-11 w-full rounded-xl border border-slate-700 bg-slate-950 px-4 text-sm text-white outline-none focus:border-green-500">
+            <label class="mb-2 block text-[10px] font-bold uppercase tracking-[0.15em] text-slate-500">Listing Type</label>
+            <select id="addListing" class="h-12 w-full rounded-xl border border-slate-200 bg-slate-50 px-4 text-sm text-slate-900 outline-none focus:border-green-500 focus:ring-2 focus:ring-green-500/20 focus:bg-white">
               <option value="Rent">Rent</option>
               <option value="Sale">Sale</option>
             </select>
           </div>
         </div>
         <div>
-          <label class="mb-2 block text-[10px] font-bold uppercase tracking-[0.15em] text-slate-400">Location</label>
-          <select id="editLocation" class="h-11 w-full rounded-xl border border-slate-700 bg-slate-950 px-4 text-sm text-white outline-none focus:border-green-500">
+          <label class="mb-2 block text-[10px] font-bold uppercase tracking-[0.15em] text-slate-500">Location</label>
+          <select id="addLocation" required class="h-12 w-full rounded-xl border border-slate-200 bg-slate-50 px-4 text-sm text-slate-900 outline-none focus:border-green-500 focus:ring-2 focus:ring-green-500/20 focus:bg-white">
+            <option value="" selected disabled>Select Location</option>
             {territories?.map((t) => <option value={t.name}>{t.name}</option>)}
           </select>
         </div>
         <div>
-          <label class="mb-2 block text-[10px] font-bold uppercase tracking-[0.15em] text-slate-400">Owner Phone</label>
-          <input id="editOwnerPhone" type="tel" class="h-11 w-full rounded-xl border border-slate-700 bg-slate-950 px-4 text-sm text-white outline-none focus:border-green-500"/>
+          <label class="mb-2 block text-[10px] font-bold uppercase tracking-[0.15em] text-slate-500">Contact Phone for this truck</label>
+          <input id="addOwnerPhone" type="tel" placeholder="(555) 000-0000" class="h-12 w-full rounded-xl border border-slate-200 bg-slate-50 px-4 text-sm text-slate-900 outline-none focus:border-green-500 focus:ring-2 focus:ring-green-500/20 focus:bg-white"/>
+        </div>
+        <div class="flex gap-3 pt-2">
+          <button type="button" id="cancelAddTruck" class="flex-1 h-12 rounded-xl bg-slate-100 text-slate-900 text-[10px] font-bold uppercase tracking-wider hover:bg-slate-200 transition-colors">Cancel</button>
+          <button type="submit" id="addTruckSubmitBtn" class="flex-1 h-12 rounded-xl bg-green-500 text-white text-[10px] font-bold uppercase tracking-wider hover:bg-green-600 transition-colors shadow-[0_8px_24px_-6px_rgba(34,197,94,0.4)]">Add Truck</button>
+        </div>
+        <p id="addTruckMsg" class="text-[11px]"></p>
+      </form>
+    </div>
+  </div>
+
+  <!-- EDIT MODAL -->
+  <div id="editTruckModal" class="hidden fixed inset-0 bg-slate-900/40 backdrop-blur-sm z-[200] flex items-center justify-center p-4">
+    <div class="bg-slate-100 border border-slate-200 p-6 sm:p-8 rounded-2xl max-w-lg w-full max-h-[90vh] overflow-y-auto">
+      <h2 class="text-slate-900 font-bold mb-6">Edit Equipment</h2>
+      <form id="editTruckForm" class="space-y-4">
+        <input type="hidden" id="editTruckId" />
+        <div>
+          <label class="mb-2 block text-[10px] font-bold uppercase tracking-[0.15em] text-slate-600">Equipment Type</label>
+          <input id="editEquipmentType" type="text" required class="h-11 w-full rounded-xl border border-slate-300 bg-slate-50 px-4 text-sm text-slate-900 outline-none focus:border-green-500"/>
+        </div>
+        <div class="grid grid-cols-2 gap-4">
+          <div>
+            <label class="mb-2 block text-[10px] font-bold uppercase tracking-[0.15em] text-slate-600">Lift Capacity (tons)</label>
+            <input id="editCapacity" type="number" class="h-11 w-full rounded-xl border border-slate-300 bg-slate-50 px-4 text-sm text-slate-900 outline-none focus:border-green-500"/>
+          </div>
+          <div>
+            <label class="mb-2 block text-[10px] font-bold uppercase tracking-[0.15em] text-slate-600">Working Height (ft)</label>
+            <input id="editHeight" type="number" class="h-11 w-full rounded-xl border border-slate-300 bg-slate-50 px-4 text-sm text-slate-900 outline-none focus:border-green-500"/>
+          </div>
+        </div>
+        <div class="grid grid-cols-2 gap-4">
+          <div>
+            <label class="mb-2 block text-[10px] font-bold uppercase tracking-[0.15em] text-slate-600">Access Type</label>
+            <select id="editAccess" class="h-11 w-full rounded-xl border border-slate-300 bg-slate-50 px-4 text-sm text-slate-900 outline-none focus:border-green-500">
+              <option value="Wheeled">Wheeled</option>
+              <option value="Tracked">Tracked</option>
+            </select>
+          </div>
+          <div>
+            <label class="mb-2 block text-[10px] font-bold uppercase tracking-[0.15em] text-slate-600">Listing Type</label>
+            <select id="editListing" class="h-11 w-full rounded-xl border border-slate-300 bg-slate-50 px-4 text-sm text-slate-900 outline-none focus:border-green-500">
+              <option value="Rent">Rent</option>
+              <option value="Sale">Sale</option>
+            </select>
+          </div>
+        </div>
+        <div>
+          <label class="mb-2 block text-[10px] font-bold uppercase tracking-[0.15em] text-slate-600">Location</label>
+          <select id="editLocation" class="h-11 w-full rounded-xl border border-slate-300 bg-slate-50 px-4 text-sm text-slate-900 outline-none focus:border-green-500">
+            {territories?.map((t) => <option value={t.name}>{t.name}</option>)}
+          </select>
+        </div>
+        <div>
+          <label class="mb-2 block text-[10px] font-bold uppercase tracking-[0.15em] text-slate-600">Owner Phone</label>
+          <input id="editOwnerPhone" type="tel" class="h-11 w-full rounded-xl border border-slate-300 bg-slate-50 px-4 text-sm text-slate-900 outline-none focus:border-green-500"/>
         </div>
         <div id="editAvailabilityWrap">
-          <label class="mb-2 block text-[10px] font-bold uppercase tracking-[0.15em] text-slate-400">Availability</label>
-          <select id="editAvailability" class="h-11 w-full rounded-xl border border-slate-700 bg-slate-950 px-4 text-sm text-white outline-none focus:border-green-500">
+          <label class="mb-2 block text-[10px] font-bold uppercase tracking-[0.15em] text-slate-600">Availability</label>
+          <select id="editAvailability" class="h-11 w-full rounded-xl border border-slate-300 bg-slate-50 px-4 text-sm text-slate-900 outline-none focus:border-green-500">
             <option value="Available">Available</option>
             <option value="Unavailable">Unavailable</option>
           </select>
         </div>
         <div class="flex gap-3 pt-2">
-          <button type="button" id="closeEditTruckModal" class="flex-1 h-11 rounded-xl bg-slate-800 text-white text-[10px] font-bold uppercase tracking-wider hover:bg-slate-700 transition-colors">Cancel</button>
-          <button type="submit" class="flex-1 h-11 rounded-xl bg-green-500 text-slate-950 text-[10px] font-bold uppercase tracking-wider hover:bg-green-400 transition-colors">Save Changes</button>
+          <button type="button" id="closeEditTruckModal" class="flex-1 h-11 rounded-xl bg-slate-200 text-slate-900 text-[10px] font-bold uppercase tracking-wider hover:bg-slate-300 transition-colors">Cancel</button>
+          <button type="submit" class="flex-1 h-11 rounded-xl bg-green-500 text-slate-50 text-[10px] font-bold uppercase tracking-wider hover:bg-green-400 transition-colors">Save Changes</button>
         </div>
         <p id="editTruckMsg" class="text-[11px]"></p>
       </form>
@@ -78,36 +138,41 @@ const navItems = [
   </div>
 
   <div id="stateLoading" class="flex flex-col items-center justify-center py-32 text-center">
-    <div class="w-8 h-8 border-2 border-zinc-800 border-t-green-500 rounded-full animate-spin"></div>
+    <div class="w-8 h-8 border-2 border-zinc-200 border-t-green-500 rounded-full animate-spin"></div>
     <p class="mt-4 text-xs text-zinc-500 font-mono uppercase tracking-widest">Loading your listings...</p>
   </div>
 
   <div id="stateNoAccess" class="hidden flex-col items-center justify-center py-32 text-center max-w-md mx-auto px-4">
-    <span class="text-[10px] font-mono font-bold uppercase tracking-[0.2em] text-red-500">// Access Denied</span>
-    <h1 class="mt-4 text-2xl font-bold text-white">No truck listings found</h1>
-    <p class="mt-3 text-sm text-slate-400">This account isn't linked to any equipment listing.</p>
-    <a href="/truck-login" class="mt-8 inline-flex h-12 px-8 items-center justify-center rounded-xl bg-green-500 text-sm font-bold text-slate-950 hover:bg-green-400 transition-all w-full sm:w-auto">Back to login</a>
+    <span class="text-[10px] font-mono font-bold uppercase tracking-[0.2em] text-red-600">// Access Denied</span>
+    <h1 class="mt-4 text-2xl font-bold text-slate-900">Something went wrong</h1>
+    <p class="mt-3 text-sm text-slate-600">We couldn't load your fleet owner account. Try logging in again.</p>
+    <a href="/truck-login" class="mt-8 inline-flex h-12 px-8 items-center justify-center rounded-xl bg-green-500 text-sm font-bold text-slate-50 hover:bg-green-400 transition-all w-full sm:w-auto">Back to login</a>
   </div>
 
   <div id="stateActive" class="hidden flex-col space-y-6 w-full">
-    <div>
-      <span class="text-[10px] font-mono font-bold uppercase tracking-[0.2em] text-green-500">// Fleet Owner Portal</span>
-      <h1 class="mt-2 text-2xl font-bold tracking-tight text-white sm:text-3xl">Your Equipment</h1>
-      <p class="mt-2 text-sm text-slate-400">Status of the equipment you've listed on SawFleet.</p>
+    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+      <div>
+        <span class="text-[10px] font-mono font-bold uppercase tracking-[0.2em] text-green-700">// Fleet Owner Portal</span>
+        <h1 class="mt-2 text-2xl font-bold tracking-tight text-slate-900 sm:text-3xl">Your Equipment</h1>
+        <p class="mt-2 text-sm text-slate-600">Status of the equipment you've listed on SawFleet.</p>
+      </div>
+      <button id="openAddTruckModal" class="shrink-0 flex items-center justify-center gap-2 h-12 px-6 rounded-xl bg-green-500 text-white text-xs font-bold uppercase tracking-wider hover:bg-green-600 transition-all active:scale-[0.98] shadow-[0_8px_24px_-6px_rgba(34,197,94,0.4)]">
+        <span class="text-lg leading-none">+</span> Add Truck
+      </button>
     </div>
 
     <!-- QUICK STATS -->
     <div class="grid grid-cols-3 gap-3">
-      <div class="p-4 bg-slate-900 border border-slate-800 rounded-xl text-center">
-        <p id="statTotal" class="text-2xl font-mono font-bold text-white">0</p>
+      <div class="p-4 bg-slate-100 border border-slate-200 rounded-xl text-center">
+        <p id="statTotal" class="text-2xl font-mono font-bold text-slate-900">0</p>
         <p class="text-[9px] font-bold uppercase tracking-wider text-slate-500 mt-1">Total</p>
       </div>
-      <div class="p-4 bg-slate-900 border border-slate-800 rounded-xl text-center">
-        <p id="statApproved" class="text-2xl font-mono font-bold text-green-400">0</p>
+      <div class="p-4 bg-slate-100 border border-slate-200 rounded-xl text-center">
+        <p id="statApproved" class="text-2xl font-mono font-bold text-green-700">0</p>
         <p class="text-[9px] font-bold uppercase tracking-wider text-slate-500 mt-1">Approved</p>
       </div>
-      <div class="p-4 bg-slate-900 border border-slate-800 rounded-xl text-center">
-        <p id="statPending" class="text-2xl font-mono font-bold text-amber-400">0</p>
+      <div class="p-4 bg-slate-100 border border-slate-200 rounded-xl text-center">
+        <p id="statPending" class="text-2xl font-mono font-bold text-amber-600">0</p>
         <p class="text-[9px] font-bold uppercase tracking-wider text-slate-500 mt-1">Pending</p>
       </div>
     </div>
@@ -134,25 +199,25 @@ const navItems = [
 
   function renderTruck(t: Truck) {
     const status = t.approval_status || 'pending';
-    const badge = status === 'approved' ? 'bg-green-500/10 border-green-500/20 text-green-400' :
-                  status === 'rejected' ? 'bg-red-500/10 border-red-500/20 text-red-400' :
-                  'bg-amber-500/10 border-amber-500/20 text-amber-400';
+    const badge = status === 'approved' ? 'bg-green-500/10 border-green-500/20 text-green-700' :
+                  status === 'rejected' ? 'bg-red-500/10 border-red-500/20 text-red-600' :
+                  'bg-amber-500/10 border-amber-500/20 text-amber-600';
     const wrapper = document.createElement('div');
-    wrapper.className = 'p-5 sm:p-6 bg-slate-900 border border-slate-800 rounded-2xl';
+    wrapper.className = 'p-5 sm:p-6 bg-slate-100 border border-slate-200 rounded-2xl';
     wrapper.innerHTML = `
       <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
         <div class="min-w-0">
-          <p class="text-white font-bold truncate">${t.equipment_type || 'Equipment'}</p>
+          <p class="text-slate-900 font-bold truncate">${t.equipment_type || 'Equipment'}</p>
           <p class="mt-1 text-[11px] font-mono text-slate-500">${[t.location, t.lift_capacity_tons ? t.lift_capacity_tons + ' tons' : '', t.working_height_ft ? t.working_height_ft + ' ft' : ''].filter(Boolean).join(' · ')}</p>
         </div>
         <div class="flex items-center gap-2 shrink-0">
           <span class="px-2.5 py-1 rounded-md text-[9px] font-bold uppercase border tracking-wider ${badge}">${status}</span>
-          <button class="edit-truck-btn w-8 h-8 rounded-full flex items-center justify-center text-zinc-500 hover:text-white hover:bg-zinc-800 transition-colors" title="Edit">✏️</button>
+          <button class="edit-truck-btn w-8 h-8 rounded-full flex items-center justify-center text-zinc-500 hover:text-slate-900 hover:bg-zinc-200 transition-colors" title="Edit">✏️</button>
         </div>
       </div>
-      ${status === 'approved' ? `<p class="mt-3 pt-3 border-t border-slate-800/50 text-[11px] text-slate-400">Availability: <span class="text-white font-bold">${t.availability_status || 'Available'}</span></p>` : ''}
-      ${status === 'pending' ? `<p class="mt-3 pt-3 border-t border-slate-800/50 text-[11px] text-slate-500">Waiting for administrator review.</p>` : ''}
-      ${status === 'rejected' ? `<p class="mt-3 pt-3 border-t border-slate-800/50 text-[11px] text-slate-500">This listing wasn't approved. Contact the administrator for details.</p>` : ''}
+      ${status === 'approved' ? `<p class="mt-3 pt-3 border-t border-slate-200/50 text-[11px] text-slate-600">Availability: <span class="text-slate-900 font-bold">${t.availability_status || 'Available'}</span></p>` : ''}
+      ${status === 'pending' ? `<p class="mt-3 pt-3 border-t border-slate-200/50 text-[11px] text-slate-500">Waiting for administrator review.</p>` : ''}
+      ${status === 'rejected' ? `<p class="mt-3 pt-3 border-t border-slate-200/50 text-[11px] text-slate-500">This listing wasn't approved. Contact the administrator for details.</p>` : ''}
     `;
     wrapper.querySelector('.edit-truck-btn')?.addEventListener('click', () => openEditModal(t));
     return wrapper;
@@ -182,14 +247,18 @@ const navItems = [
 
     const { data: trucks, error } = await supabase.rpc('link_truck_owner_account');
 
-    if (error || !trucks || trucks.length === 0) {
+    // Samo prava greška vodi na "Access Denied". Prazna lista (npr. tek
+    // registrovan vlasnik koji još nije dodao nijedan kamion) je validno
+    // stanje — pokazujemo prazan dashboard sa pozivom da doda prvi kamion.
+    if (error) {
       show('stateNoAccess');
       return;
     }
 
-    const pendingCount = trucks.filter((t: Truck) => t.approval_status !== 'approved' && t.approval_status !== 'rejected').length;
-    document.getElementById('statTotal')!.textContent = trucks.length.toString();
-    document.getElementById('statApproved')!.textContent = trucks.filter((t: Truck) => t.approval_status === 'approved').length.toString();
+    const list: Truck[] = trucks || [];
+    const pendingCount = list.filter((t) => t.approval_status !== 'approved' && t.approval_status !== 'rejected').length;
+    document.getElementById('statTotal')!.textContent = list.length.toString();
+    document.getElementById('statApproved')!.textContent = list.filter((t) => t.approval_status === 'approved').length.toString();
     document.getElementById('statPending')!.textContent = pendingCount.toString();
 
     const badge = document.getElementById('notificationBadge');
@@ -200,15 +269,83 @@ const navItems = [
     }
     if (notifContent) {
       notifContent.innerHTML = pendingCount > 0
-        ? `<div class="px-3 py-2.5"><p class="text-xs text-white font-bold">${pendingCount} listing${pendingCount === 1 ? '' : 's'} pending review</p><p class="text-[10px] text-zinc-500 mt-0.5">Waiting for administrator approval.</p></div>`
-        : `<p class="px-3 py-4 text-[11px] text-zinc-600 text-center">All caught up.</p>`;
+        ? `<div class="px-3 py-2.5"><p class="text-xs text-slate-900 font-bold">${pendingCount} listing${pendingCount === 1 ? '' : 's'} pending review</p><p class="text-[10px] text-zinc-500 mt-0.5">Waiting for administrator approval.</p></div>`
+        : `<p class="px-3 py-4 text-[11px] text-zinc-400 text-center">All caught up.</p>`;
     }
 
     const container = document.getElementById('trucksContainer')!;
     container.innerHTML = '';
-    trucks.forEach((t: Truck) => container.appendChild(renderTruck(t)));
+    if (list.length === 0) {
+      const empty = document.createElement('div');
+      empty.className = 'p-10 border border-dashed border-slate-300 rounded-2xl text-center';
+      empty.innerHTML = `
+        <p class="text-sm font-bold text-slate-900">You haven't added any trucks yet</p>
+        <p class="mt-1.5 text-xs text-slate-500">List your first piece of equipment to start receiving dispatches.</p>
+        <button id="emptyStateAddTruckBtn" class="mt-5 inline-flex items-center gap-2 h-11 px-6 rounded-xl bg-green-500 text-white text-xs font-bold uppercase tracking-wider hover:bg-green-600 transition-all">+ Add Your First Truck</button>
+      `;
+      container.appendChild(empty);
+      document.getElementById('emptyStateAddTruckBtn')?.addEventListener('click', openAddTruckModal);
+    } else {
+      list.forEach((t) => container.appendChild(renderTruck(t)));
+    }
     show('stateActive');
   }
+
+  // -- DODAVANJE NOVOG KAMIONA --
+  function openAddTruckModal() {
+    (document.getElementById('addTruckForm') as HTMLFormElement).reset();
+    document.getElementById('addTruckMsg')!.textContent = '';
+    document.getElementById('addTruckModal')?.classList.remove('hidden');
+  }
+  function closeAddTruckModal() {
+    document.getElementById('addTruckModal')?.classList.add('hidden');
+  }
+
+  document.getElementById('openAddTruckModal')?.addEventListener('click', openAddTruckModal);
+  document.getElementById('cancelAddTruck')?.addEventListener('click', closeAddTruckModal);
+  document.getElementById('closeAddTruckModal')?.addEventListener('click', closeAddTruckModal);
+
+  document.getElementById('addTruckForm')?.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const msg = document.getElementById('addTruckMsg')!;
+    const submitBtn = document.getElementById('addTruckSubmitBtn') as HTMLButtonElement;
+    submitBtn.disabled = true;
+    msg.textContent = 'Saving...';
+    msg.className = 'text-[11px] text-slate-600';
+
+    const { data: { session } } = await supabase.auth.getSession();
+    if (!session) {
+      msg.textContent = 'Your session expired — please log in again.';
+      msg.className = 'text-[11px] text-red-600';
+      submitBtn.disabled = false;
+      return;
+    }
+
+    const { error } = await supabase.from('grapple_saw_trucks').insert([{
+      equipment_type: (document.getElementById('addEquipmentType') as HTMLInputElement).value,
+      lift_capacity_tons: (document.getElementById('addCapacity') as HTMLInputElement).value || null,
+      working_height_ft: (document.getElementById('addHeight') as HTMLInputElement).value || null,
+      access_type: (document.getElementById('addAccess') as HTMLSelectElement).value,
+      listing_type: (document.getElementById('addListing') as HTMLSelectElement).value,
+      location: (document.getElementById('addLocation') as HTMLSelectElement).value,
+      owner_phone: (document.getElementById('addOwnerPhone') as HTMLInputElement).value,
+      owner_email: session.user.email,
+      owner_user_id: session.user.id,
+      approval_status: 'pending',
+      availability_status: 'Available',
+    }]);
+
+    submitBtn.disabled = false;
+
+    if (error) {
+      msg.textContent = '❌ ' + error.message;
+      msg.className = 'text-[11px] text-red-600';
+      return;
+    }
+
+    closeAddTruckModal();
+    await init();
+  });
 
   document.getElementById('closeEditTruckModal')?.addEventListener('click', () => {
     document.getElementById('editTruckModal')?.classList.add('hidden');
@@ -219,7 +356,7 @@ const navItems = [
     const msg = document.getElementById('editTruckMsg')!;
     const truckId = (document.getElementById('editTruckId') as HTMLInputElement).value;
     msg.textContent = 'Saving...';
-    msg.className = 'text-[11px] text-slate-400';
+    msg.className = 'text-[11px] text-slate-600';
 
     const availWrap = document.getElementById('editAvailabilityWrap')!;
     const updates: Record<string, unknown> = {
@@ -239,7 +376,7 @@ const navItems = [
 
     if (error) {
       msg.textContent = '❌ ' + error.message;
-      msg.className = 'text-[11px] text-red-400';
+      msg.className = 'text-[11px] text-red-600';
       return;
     }
 

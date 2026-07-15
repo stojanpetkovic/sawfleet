@@ -8,12 +8,12 @@ import {
 } from "lucide-astro";
 ---
 
-<nav class="fixed bottom-0 left-0 right-0 z-50 border-t border-zinc-900 bg-[#060807]/90 backdrop-blur-md lg:hidden selection:bg-green-500/30 selection:text-white">
-  
+<nav class="fixed bottom-0 left-0 right-0 z-50 border-t border-slate-200 bg-white/90 backdrop-blur-md lg:hidden safe-bottom-nav selection:bg-green-200 selection:text-slate-900">
+
   <div class="mx-auto flex h-16 max-w-md items-center justify-between px-6 relative">
 
     <!-- Home -->
-    <a href="/" class="flex flex-col items-center justify-center w-12 h-full text-zinc-500 transition-colors duration-200 hover:text-green-400 group relative">
+    <a href="/" class="flex flex-col items-center justify-center w-12 h-full text-slate-400 transition-colors duration-200 hover:text-green-700 group relative">
       <House size={20} strokeWidth={1.75} />
       <span class="mt-1 text-[9px] font-mono uppercase tracking-wider">
         Home
@@ -21,7 +21,7 @@ import {
     </a>
 
     <!-- Services -->
-    <a href="/services" class="flex flex-col items-center justify-center w-12 h-full text-zinc-500 transition-colors duration-200 hover:text-white group">
+    <a href="/services" class="flex flex-col items-center justify-center w-12 h-full text-slate-400 transition-colors duration-200 hover:text-slate-900 group">
       <Trees size={20} strokeWidth={1.75} />
       <span class="mt-1 text-[9px] font-mono uppercase tracking-wider">
         Services
@@ -30,23 +30,23 @@ import {
 
     <!-- Centralno Dugme -->
     <div class="absolute left-1/2 bottom-5 -translate-x-1/2 z-50">
-      <a 
-        href="#quote" 
-        class="flex h-14 w-14 items-center justify-center rounded-full border border-green-500/30 bg-zinc-950 p-0 shadow-[0_10px_30px_rgba(0,0,0,0.8),0_0_20px_rgba(34,197,94,0.1)] transition-all duration-300 hover:scale-105 hover:border-green-400 hover:bg-[#0b120d] active:scale-95 group"
+      <a
+        href="#quote"
+        class="flex h-14 w-14 items-center justify-center rounded-full border border-green-600/20 bg-white shadow-soft-lg transition-all duration-300 hover:scale-105 hover:border-green-600/40 active:scale-95 group"
         aria-label="Request Quote"
       >
-        <CirclePlus 
-          size={26} 
-          strokeWidth={1.5} 
-          class="text-green-400 transition-transform duration-300 group-hover:rotate-90" 
+        <CirclePlus
+          size={26}
+          strokeWidth={1.5}
+          class="text-green-600 transition-transform duration-300 group-hover:rotate-90"
         />
       </a>
     </div>
-    
+
     <div class="w-14 h-full pointer-events-none" aria-hidden="true"></div>
 
     <!-- Areas -->
-    <a href="/service-areas" class="flex flex-col items-center justify-center w-12 h-full text-zinc-500 transition-colors duration-200 hover:text-white group">
+    <a href="/service-areas" class="flex flex-col items-center justify-center w-12 h-full text-slate-400 transition-colors duration-200 hover:text-slate-900 group">
       <MapPinned size={20} strokeWidth={1.75} />
       <span class="mt-1 text-[9px] font-mono uppercase tracking-wider">
         Areas
@@ -54,7 +54,7 @@ import {
     </a>
 
     <!-- Support / Žalbe -->
-    <a href="/support" class="flex flex-col items-center justify-center w-12 h-full text-zinc-500 transition-colors duration-200 hover:text-white group">
+    <a href="/support" class="flex flex-col items-center justify-center w-12 h-full text-slate-400 transition-colors duration-200 hover:text-slate-900 group">
       <MessageSquareWarning size={20} strokeWidth={1.75} />
       <span class="mt-1 text-[9px] font-mono uppercase tracking-wider">
         Support

@@ -36,21 +36,21 @@ const portals = [
 const accentClasses: Record<string, { border: string; text: string; glow: string; btn: string }> = {
   green: {
     border: "hover:border-green-500/50",
-    text: "text-green-500",
+    text: "text-green-700",
     glow: "bg-green-500/5",
-    btn: "bg-green-500 hover:bg-green-400 text-slate-950",
+    btn: "bg-green-500 hover:bg-green-400 text-slate-50",
   },
   blue: {
     border: "hover:border-blue-500/50",
-    text: "text-blue-400",
+    text: "text-blue-600",
     glow: "bg-blue-500/5",
-    btn: "bg-blue-500 hover:bg-blue-400 text-slate-950",
+    btn: "bg-blue-500 hover:bg-blue-400 text-slate-50",
   },
   slate: {
     border: "hover:border-slate-500/50",
-    text: "text-slate-300",
+    text: "text-slate-700",
     glow: "bg-slate-500/5",
-    btn: "bg-slate-200 hover:bg-white text-slate-950",
+    btn: "bg-slate-800 hover:bg-white text-slate-50",
   },
 };
 ---
@@ -58,13 +58,13 @@ const accentClasses: Record<string, { border: string; text: string; glow: string
 <MainLayout title="Portal | SawFleet">
   <Header />
 
-  <main class="min-h-screen bg-[#000000] pt-32 pb-24">
+  <main class="min-h-screen bg-white pt-32 pb-24">
     <div class="mx-auto max-w-[1100px] px-4 sm:px-8">
 
       <div class="text-center max-w-xl mx-auto mb-16">
-        <span class="text-[10px] font-mono font-bold uppercase tracking-[0.3em] text-green-500">// Choose Your Portal</span>
-        <h1 class="mt-4 text-3xl sm:text-4xl font-bold tracking-tighter text-white">Sign in to SawFleet</h1>
-        <p class="mt-4 text-sm text-slate-400 leading-relaxed">
+        <span class="text-[10px] font-mono font-bold uppercase tracking-[0.3em] text-green-700">// Choose Your Portal</span>
+        <h1 class="mt-4 text-3xl sm:text-4xl font-bold tracking-tighter text-slate-900">Sign in to SawFleet</h1>
+        <p class="mt-4 text-sm text-slate-600 leading-relaxed">
           Pick the portal that matches your role. Each has its own sign-in and dashboard.
         </p>
       </div>
@@ -73,19 +73,19 @@ const accentClasses: Record<string, { border: string; text: string; glow: string
         {portals.map((p) => {
           const a = accentClasses[p.accent];
           return (
-            <div class={`group relative rounded-2xl border border-slate-800 bg-slate-900/60 p-8 flex flex-col transition-all ${a.border}`}>
+            <div class={`group relative rounded-2xl border border-slate-200 bg-slate-100/60 p-8 flex flex-col transition-all ${a.border}`}>
               <div class={`absolute top-0 right-0 w-32 h-32 blur-[50px] rounded-full pointer-events-none ${a.glow}`}></div>
 
               <span class={`relative text-[9px] font-mono font-bold uppercase tracking-[0.2em] ${a.text}`}>// {p.label}</span>
-              <h2 class="relative mt-3 text-xl font-bold text-white">{p.title}</h2>
-              <p class="relative mt-3 text-[13px] leading-relaxed text-slate-400 flex-1">{p.desc}</p>
+              <h2 class="relative mt-3 text-xl font-bold text-slate-900">{p.title}</h2>
+              <p class="relative mt-3 text-[13px] leading-relaxed text-slate-600 flex-1">{p.desc}</p>
 
               <a href={p.login} class={`relative mt-8 h-12 flex items-center justify-center rounded-xl text-sm font-bold transition-all active:scale-[0.98] ${a.btn}`}>
                 Sign In →
               </a>
 
               {p.register && (
-                <a href={p.register} class="relative mt-3 text-center text-[11px] text-slate-500 hover:text-slate-300 transition-colors">
+                <a href={p.register} class="relative mt-3 text-center text-[11px] text-slate-500 hover:text-slate-700 transition-colors">
                   New here? Register
                 </a>
               )}
