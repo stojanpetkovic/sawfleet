@@ -88,9 +88,14 @@ const { data: territories } = await supabase.from('service_territories').select(
   <div class="flex flex-col xl:flex-row gap-6 lg:gap-8 w-full">
     <div class="flex-1 space-y-5 min-w-0 w-full">
 
-      <div>
-        <h1 class="text-xl sm:text-2xl font-bold text-slate-900 tracking-tight">Grapple Saw Trucks</h1>
-        <p class="text-[11px] text-zinc-500 mt-0.5">Equipment listed for rent or sale on the platform.</p>
+      <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+        <div>
+          <h1 class="text-xl sm:text-2xl font-bold text-slate-900 tracking-tight">Grapple Saw Trucks</h1>
+          <p class="text-[11px] text-zinc-500 mt-0.5">Equipment listed for rent or sale on the platform.</p>
+        </div>
+        <a href="/admin/truck-owners" class="text-[10px] font-bold uppercase tracking-[0.2em] text-zinc-500 hover:text-slate-900 border border-zinc-200 px-4 py-2.5 rounded-lg hover:bg-zinc-100 transition-colors whitespace-nowrap">
+          View Owners →
+        </a>
       </div>
 
       <!-- Stats -->
@@ -106,6 +111,33 @@ const { data: territories } = await supabase.from('service_territories').select(
             <h2 id={`count-${stat.id}`} class={`text-2xl font-mono font-bold mt-1.5 ${stat.color}`}>0</h2>
           </div>
         ))}
+      </div>
+
+      <!-- FILTERI -->
+      <div class="bg-white border border-zinc-100 rounded-2xl p-4 flex flex-col md:flex-row gap-3">
+        <input id="searchInput" type="text" placeholder="Search equipment or owner…" class="flex-1 h-11 px-4 rounded-lg border border-zinc-200 bg-zinc-50 text-sm text-slate-900 outline-none focus:border-green-500" />
+        <select id="statusFilter" class="h-11 px-4 rounded-lg border border-zinc-200 bg-zinc-50 text-sm text-slate-900 outline-none focus:border-green-500">
+          <option value="all">All statuses</option>
+          <option value="pending">Pending</option>
+          <option value="approved">Approved</option>
+          <option value="rejected">Rejected</option>
+        </select>
+        <select id="availabilityFilter" class="h-11 px-4 rounded-lg border border-zinc-200 bg-zinc-50 text-sm text-slate-900 outline-none focus:border-green-500">
+          <option value="all">Any availability</option>
+          <option value="Available">Available</option>
+          <option value="Busy">Busy</option>
+        </select>
+        <select id="locationFilter" class="h-11 px-4 rounded-lg border border-zinc-200 bg-zinc-50 text-sm text-slate-900 outline-none focus:border-green-500">
+          <option value="all">All locations</option>
+          {territories?.map(t => <option value={t.name}>{t.name}</option>)}
+        </select>
+        <button id="clearFiltersBtn" type="button" class="h-11 px-4 rounded-lg border border-zinc-200 text-zinc-500 text-xs font-bold uppercase tracking-wider hover:bg-zinc-100 hover:text-slate-900 transition-colors whitespace-nowrap">Clear</button>
+      </div>
+
+      <!-- Aktivni filter po vlasniku (kad se stigne sa /admin/truck-owners) -->
+      <div id="ownerFilterBanner" class="hidden items-center justify-between gap-3 rounded-xl border border-blue-200 bg-blue-50 px-4 py-3 text-xs text-blue-800">
+        <span>Showing trucks for <span id="ownerFilterLabel" class="font-bold"></span> only.</span>
+        <button id="clearOwnerFilterBtn" type="button" class="font-bold uppercase text-[10px] tracking-wider underline">Clear</button>
       </div>
 
       <!-- LIST -->
@@ -227,19 +259,70 @@ const { data: territories } = await supabase.from('service_territories').select(
   document.getElementById('ownerModeNewBtn')?.addEventListener('click', () => setOwnerMode('new'));
   document.getElementById('ownerModeExistingBtn')?.addEventListener('click', () => setOwnerMode('existing'));
 
-  async function updateDashboard() {
+  let allTrucks: any[] = [];
+
+  async function loadTrucks() {
     const { data: trucks } = await supabase.from('grapple_saw_trucks').select('*').order('created_at', { ascending: false });
     if (!trucks) return;
+    allTrucks = trucks;
 
-    // Ažuriraj statistiku
+    // Ažuriraj statistiku (uvek na PUNOM setu, ne na filtriranom)
     document.getElementById('count-total')!.textContent = trucks.length.toString();
     document.getElementById('count-pending')!.textContent = trucks.filter(t => t.approval_status === 'pending' || !t.approval_status).length.toString();
     document.getElementById('count-approved')!.textContent = trucks.filter(t => t.approval_status === 'approved').length.toString();
     document.getElementById('count-rejected')!.textContent = trucks.filter(t => t.approval_status === 'rejected').length.toString();
 
     await rebuildKnownOwners(trucks);
+    applyTruckFilters();
+    loadLogs();
+  }
 
-    // Renderuj listu kao moderne kartice
+  // Vlasnik na koga smo filtrirani kad se stigne sa /admin/truck-owners?owner=...
+  let ownerFilterId: string | null = null;
+
+  function applyTruckFilters() {
+    const search = (document.getElementById('searchInput') as HTMLInputElement)?.value.trim().toLowerCase() || '';
+    const status = (document.getElementById('statusFilter') as HTMLSelectElement)?.value || 'all';
+    const availability = (document.getElementById('availabilityFilter') as HTMLSelectElement)?.value || 'all';
+    const location = (document.getElementById('locationFilter') as HTMLSelectElement)?.value || 'all';
+
+    const filtered = allTrucks.filter((t) => {
+      if (ownerFilterId && t.owner_user_id !== ownerFilterId && t.owner_email !== ownerFilterId) return false;
+      if (search) {
+        const haystack = `${t.equipment_type || ''} ${t.owner_email || ''} ${t.owner_phone || ''}`.toLowerCase();
+        if (!haystack.includes(search)) return false;
+      }
+      if (status !== 'all' && (t.approval_status || 'pending') !== status) return false;
+      if (availability !== 'all' && (t.availability_status || 'Available') !== availability) return false;
+      if (location !== 'all' && t.location !== location) return false;
+      return true;
+    });
+
+    renderTrucksList(filtered);
+  }
+
+  [ 'searchInput', 'statusFilter', 'availabilityFilter', 'locationFilter' ].forEach((id) => {
+    document.getElementById(id)?.addEventListener('input', applyTruckFilters);
+    document.getElementById(id)?.addEventListener('change', applyTruckFilters);
+  });
+
+  document.getElementById('clearFiltersBtn')?.addEventListener('click', () => {
+    (document.getElementById('searchInput') as HTMLInputElement).value = '';
+    (document.getElementById('statusFilter') as HTMLSelectElement).value = 'all';
+    (document.getElementById('availabilityFilter') as HTMLSelectElement).value = 'all';
+    (document.getElementById('locationFilter') as HTMLSelectElement).value = 'all';
+    applyTruckFilters();
+  });
+
+  document.getElementById('clearOwnerFilterBtn')?.addEventListener('click', () => {
+    ownerFilterId = null;
+    document.getElementById('ownerFilterBanner')?.classList.add('hidden');
+    document.getElementById('ownerFilterBanner')?.classList.remove('flex');
+    history.replaceState(null, '', '/admin/grapple-saw-trucks');
+    applyTruckFilters();
+  });
+
+  function renderTrucksList(trucks: any[]) {
     const listEl = document.getElementById('trucksTable');
     if (listEl) {
       listEl.innerHTML = trucks.length > 0 ? trucks.map(t => {
@@ -278,9 +361,8 @@ const { data: territories } = await supabase.from('service_territories').select(
             <svg class="hidden sm:block w-4 h-4 text-zinc-300 group-hover:text-zinc-600 transition-colors" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
           </div>
         </div>
-      `}).join('') : '<div class="p-8 text-center text-zinc-400 text-sm border border-dashed border-zinc-100 rounded-2xl">No equipment listed yet.</div>';
+      `}).join('') : '<div class="p-8 text-center text-zinc-400 text-sm border border-dashed border-zinc-100 rounded-2xl">No equipment matches these filters.</div>';
     }
-    loadLogs();
   }
 
   // Učitavanje logova
@@ -347,7 +429,7 @@ const { data: territories } = await supabase.from('service_territories').select(
     document.getElementById('truckModal')?.classList.add('hidden');
     (e.target as HTMLFormElement).reset();
     setOwnerMode('new');
-    updateDashboard();
+    loadTrucks();
   });
 
   document.getElementById('openModal')?.addEventListener('click', () => { setOwnerMode('new'); document.getElementById('truckModal')?.classList.remove('hidden'); });
@@ -402,7 +484,7 @@ const { data: territories } = await supabase.from('service_territories').select(
     }
 
     document.getElementById('ownerModal')?.classList.add('hidden');
-    await updateDashboard();
+    await loadTrucks();
 
     // Ponudi da odmah doda kamion za novokreiranog vlasnika
     if (confirm(`Owner ${result.email} created. Add a truck for them now?`)) {
@@ -413,5 +495,26 @@ const { data: territories } = await supabase.from('service_territories').select(
     }
   });
 
-  updateDashboard();
+  // Ako se stiglo sa /admin/truck-owners?owner=<id>, filtriraj samo na
+  // tog vlasnika i prikaži baner koji to jasno kaže.
+  async function initOwnerFilterFromUrl() {
+    const params = new URLSearchParams(window.location.search);
+    const owner = params.get('owner');
+    if (!owner) return;
+
+    ownerFilterId = owner;
+    const { data: ownerRow } = await supabase.from('truck_owners').select('company_name, contact_name, email').eq('id', owner).maybeSingle();
+    // Ako nema pravog naloga, "owner" je zapravo email ručno unetog vlasnika
+    const label = ownerRow ? (ownerRow.company_name || ownerRow.contact_name || ownerRow.email || owner) : owner;
+
+    const banner = document.getElementById('ownerFilterBanner');
+    banner?.classList.remove('hidden');
+    banner?.classList.add('flex');
+    document.getElementById('ownerFilterLabel')!.textContent = label;
+  }
+
+  (async () => {
+    await initOwnerFilterFromUrl();
+    loadTrucks();
+  })();
 </script>

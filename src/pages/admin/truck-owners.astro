@@ -1,0 +1,389 @@
+---
+export const prerender = false;
+import AdminLayout from "../../layouts/AdminLayout.astro";
+---
+
+<AdminLayout>
+  <!-- Modal za dodavanje NOVOG VLASNIKA -->
+  <div id="ownerModal" class="hidden fixed inset-0 bg-slate-900/40 backdrop-blur-sm z-[200] flex items-center justify-center p-4">
+    <div class="bg-white border border-zinc-200 p-6 md:p-8 rounded-xl max-w-md w-full max-h-[90vh] overflow-y-auto">
+      <h2 class="text-slate-900 font-bold mb-1">Add Truck Owner</h2>
+      <p class="text-xs text-zinc-500 mb-6">Creates a fleet owner account. You can add trucks for them right after.</p>
+      <form id="addOwnerForm" class="space-y-4">
+        <input type="text" id="ownerCompany" placeholder="Company Name (optional)" class="w-full bg-zinc-100 border border-zinc-200 p-3 rounded text-slate-900" />
+        <input type="text" id="ownerContact" placeholder="Contact Name" class="w-full bg-zinc-100 border border-zinc-200 p-3 rounded text-slate-900" required />
+        <input type="email" id="ownerEmail" placeholder="Email" class="w-full bg-zinc-100 border border-zinc-200 p-3 rounded text-slate-900" required />
+        <input type="text" id="ownerPhone" placeholder="Phone" class="w-full bg-zinc-100 border border-zinc-200 p-3 rounded text-slate-900" />
+        <input type="password" id="ownerPassword" placeholder="Temporary password (min. 6 characters)" minlength="6" class="w-full bg-zinc-100 border border-zinc-200 p-3 rounded text-slate-900" required />
+        <div class="flex gap-4 mt-4">
+          <button type="button" id="closeOwnerModal" class="flex-1 bg-zinc-200 p-3 rounded text-slate-900">Cancel</button>
+          <button type="submit" id="ownerSubmitBtn" class="flex-1 bg-green-500 p-3 rounded text-slate-900 font-bold">Create Owner</button>
+        </div>
+        <p id="ownerFormMsg" class="text-[11px]"></p>
+      </form>
+    </div>
+  </div>
+
+  <!-- Modal za promenu šifre -->
+  <div id="passwordModal" class="hidden fixed inset-0 bg-slate-900/40 backdrop-blur-sm z-[200] flex items-center justify-center p-4">
+    <div class="bg-white border border-zinc-200 p-6 md:p-8 rounded-xl max-w-md w-full">
+      <h2 class="text-slate-900 font-bold mb-1">Set New Password</h2>
+      <p class="text-xs text-zinc-500 mb-6">For <span id="passwordModalOwnerLabel" class="font-bold text-slate-700"></span>. Share it with them directly — this does not send an email.</p>
+      <div class="flex flex-col sm:flex-row gap-3">
+        <input id="newPasswordInput" type="text" placeholder="New password (min. 6 characters)" class="flex-1 bg-zinc-100 border border-zinc-200 p-3 rounded-lg text-slate-900 text-sm" />
+        <button id="generatePasswordBtn" type="button" class="shrink-0 px-4 py-3 rounded-lg bg-zinc-200 text-zinc-700 text-[10px] font-bold uppercase hover:bg-zinc-300 transition-colors">Generate</button>
+      </div>
+      <div class="flex gap-3 mt-4">
+        <button id="cancelPasswordModal" type="button" class="flex-1 h-11 rounded-lg bg-zinc-200 text-slate-900 text-[10px] font-bold uppercase tracking-wider hover:bg-zinc-300 transition-colors">Cancel</button>
+        <button id="confirmResetBtn" type="button" class="flex-1 h-11 rounded-lg bg-blue-500 text-slate-900 text-[10px] font-bold uppercase tracking-wider hover:bg-blue-400 transition-colors">Save Password</button>
+      </div>
+      <p id="resetPasswordMsg" class="text-[11px] mt-3"></p>
+    </div>
+  </div>
+
+  <!-- Floating dugme -->
+  <button id="openOwnerModal" class="fixed bottom-24 lg:bottom-8 right-5 lg:right-8 h-14 px-5 bg-green-500 hover:bg-green-400 text-slate-900 rounded-full shadow-lg flex items-center gap-2 text-xs font-bold uppercase tracking-wider transition-all z-[100]">
+    + Add Owner
+  </button>
+
+  <div class="space-y-5 w-full">
+
+    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+      <div>
+        <h1 class="text-xl sm:text-2xl font-bold text-slate-900 tracking-tight">Truck Owners</h1>
+        <p class="text-[11px] text-zinc-500 mt-0.5">Everyone with a fleet owner account on the platform.</p>
+      </div>
+      <a href="/admin/grapple-saw-trucks" class="text-[10px] font-bold uppercase tracking-[0.2em] text-zinc-500 hover:text-slate-900 border border-zinc-200 px-4 py-2.5 rounded-lg hover:bg-zinc-100 transition-colors whitespace-nowrap">
+        View Trucks →
+      </a>
+    </div>
+
+    <!-- Stats -->
+    <div class="flex sm:grid sm:grid-cols-4 gap-3 overflow-x-auto no-scrollbar -mx-4 px-4 sm:mx-0 sm:px-0 pb-1">
+      {[
+        { id: 'total', label: 'Total Owners', color: 'text-slate-900' },
+        { id: 'pending', label: 'Pending Approval', color: 'text-amber-600' },
+        { id: 'approved', label: 'Approved', color: 'text-green-700' },
+        { id: 'totalTrucks', label: 'Trucks Managed', color: 'text-blue-600' },
+      ].map(stat => (
+        <div class="shrink-0 w-[130px] sm:w-auto bg-white border border-zinc-100 p-4 rounded-2xl">
+          <p class="text-[9px] font-bold uppercase tracking-[0.15em] text-zinc-400">{stat.label}</p>
+          <h2 id={`count-${stat.id}`} class={`text-2xl font-mono font-bold mt-1.5 ${stat.color}`}>0</h2>
+        </div>
+      ))}
+    </div>
+
+    <!-- FILTERI -->
+    <div class="bg-white border border-zinc-100 rounded-2xl p-4 flex flex-col md:flex-row gap-3">
+      <input id="searchInput" type="text" placeholder="Search name, email, or phone…" class="flex-1 h-11 px-4 rounded-lg border border-zinc-200 bg-zinc-50 text-sm text-slate-900 outline-none focus:border-green-500" />
+      <select id="truckFilter" class="h-11 px-4 rounded-lg border border-zinc-200 bg-zinc-50 text-sm text-slate-900 outline-none focus:border-green-500">
+        <option value="all">All owners</option>
+        <option value="withTrucks">Has trucks</option>
+        <option value="noTrucks">No trucks yet</option>
+      </select>
+      <select id="statusFilter" class="h-11 px-4 rounded-lg border border-zinc-200 bg-zinc-50 text-sm text-slate-900 outline-none focus:border-green-500">
+        <option value="all">All statuses</option>
+        <option value="pending">Pending</option>
+        <option value="approved">Approved</option>
+        <option value="rejected">Rejected</option>
+      </select>
+      <select id="sortFilter" class="h-11 px-4 rounded-lg border border-zinc-200 bg-zinc-50 text-sm text-slate-900 outline-none focus:border-green-500">
+        <option value="newest">Newest first</option>
+        <option value="oldest">Oldest first</option>
+        <option value="name">Name A–Z</option>
+        <option value="trucks">Most trucks</option>
+      </select>
+    </div>
+
+    <!-- LISTA -->
+    <div id="ownersTable" class="space-y-2">
+      <div class="p-8 text-center text-zinc-400 text-sm">Loading...</div>
+    </div>
+  </div>
+</AdminLayout>
+
+<script>
+  import { supabase } from "../../lib/supabase";
+
+  type Owner = {
+    id: string;
+    company_name: string | null;
+    contact_name: string | null;
+    email: string | null;
+    phone: string | null;
+    created_at: string;
+    status: string;
+    truckTotal: number;
+    truckApproved: number;
+    truckPending: number;
+    hasAccount: boolean;
+  };
+
+  let allOwners: Owner[] = [];
+
+  function timeAgo(dateInput: string) {
+    const diff = Math.floor((Date.now() - new Date(dateInput).getTime()) / 1000);
+    if (diff < 60) return 'Just now';
+    if (diff < 3600) return `${Math.floor(diff / 60)}m ago`;
+    if (diff < 86400) return `${Math.floor(diff / 3600)}h ago`;
+    if (diff < 2592000) return `${Math.floor(diff / 86400)}d ago`;
+    return new Date(dateInput).toLocaleDateString();
+  }
+
+  async function loadOwners() {
+    const [{ data: owners }, { data: trucks }] = await Promise.all([
+      supabase.from('truck_owners').select('*').order('created_at', { ascending: false }),
+      supabase.from('grapple_saw_trucks').select('owner_user_id, owner_email, owner_phone, approval_status, created_at'),
+    ]);
+
+    const truckStats = new Map<string, { total: number; approved: number; pending: number }>();
+    (trucks || []).forEach((t: any) => {
+      const key = t.owner_user_id || t.owner_email;
+      if (!key) return;
+      const s = truckStats.get(key) || { total: 0, approved: 0, pending: 0 };
+      s.total += 1;
+      if (t.approval_status === 'approved') s.approved += 1;
+      if (!t.approval_status || t.approval_status === 'pending') s.pending += 1;
+      truckStats.set(key, s);
+    });
+
+    // 1) Pravi nalozi (truck_owners tabela)
+    const linked: Owner[] = (owners || []).map((o: any) => {
+      const s = truckStats.get(o.id) || { total: 0, approved: 0, pending: 0 };
+      return { ...o, truckTotal: s.total, truckApproved: s.approved, truckPending: s.pending, hasAccount: true };
+    });
+
+    // 2) Kamioni dodati ručno (owner_email upisan direktno na kamion, bez
+    //    naloga) — grupišemo po owner_email da bi se i ONI videli ovde,
+    //    ne samo pravi vlasnički nalozi.
+    const linkedUserIds = new Set(linked.map((o) => o.id));
+    const linkedEmails = new Set(linked.map((o) => (o.email || '').toLowerCase()));
+    const manualMap = new Map<string, Owner>();
+    (trucks || []).forEach((t: any) => {
+      if (t.owner_user_id || !t.owner_email) return; // ima nalog ili nema email — preskoči
+      if (linkedEmails.has(t.owner_email.toLowerCase())) return; // već pokriveno pravim nalogom
+      const key = t.owner_email;
+      if (!manualMap.has(key)) {
+        const s = truckStats.get(key) || { total: 0, approved: 0, pending: 0 };
+        manualMap.set(key, {
+          id: key,
+          company_name: null,
+          contact_name: null,
+          email: t.owner_email,
+          phone: t.owner_phone || null,
+          created_at: t.created_at,
+          status: 'approved', // ručno dodati kamioni se automatski odobravaju, nema tok odobravanja za takve "vlasnike"
+          truckTotal: s.total,
+          truckApproved: s.approved,
+          truckPending: s.pending,
+          hasAccount: false,
+        });
+      }
+    });
+
+    allOwners = [...linked, ...Array.from(manualMap.values())];
+
+    document.getElementById('count-total')!.textContent = allOwners.length.toString();
+    document.getElementById('count-pending')!.textContent = allOwners.filter(o => o.hasAccount && (o.status || 'pending') === 'pending').length.toString();
+    document.getElementById('count-approved')!.textContent = allOwners.filter(o => o.hasAccount && o.status === 'approved').length.toString();
+    document.getElementById('count-totalTrucks')!.textContent = allOwners.reduce((sum, o) => sum + o.truckTotal, 0).toString();
+
+    applyFilters();
+  }
+
+  function applyFilters() {
+    const search = (document.getElementById('searchInput') as HTMLInputElement).value.trim().toLowerCase();
+    const truckFilter = (document.getElementById('truckFilter') as HTMLSelectElement).value;
+    const statusFilter = (document.getElementById('statusFilter') as HTMLSelectElement).value;
+    const sort = (document.getElementById('sortFilter') as HTMLSelectElement).value;
+
+    let list = allOwners.filter((o) => {
+      if (search) {
+        const haystack = `${o.company_name || ''} ${o.contact_name || ''} ${o.email || ''} ${o.phone || ''}`.toLowerCase();
+        if (!haystack.includes(search)) return false;
+      }
+      if (truckFilter === 'withTrucks' && o.truckTotal === 0) return false;
+      if (truckFilter === 'noTrucks' && o.truckTotal > 0) return false;
+      if (statusFilter !== 'all' && (o.status || 'pending') !== statusFilter) return false;
+      return true;
+    });
+
+    list = list.slice().sort((a, b) => {
+      if (sort === 'oldest') return new Date(a.created_at).getTime() - new Date(b.created_at).getTime();
+      if (sort === 'name') return (a.company_name || a.contact_name || a.email || '').localeCompare(b.company_name || b.contact_name || b.email || '');
+      if (sort === 'trucks') return b.truckTotal - a.truckTotal;
+      return new Date(b.created_at).getTime() - new Date(a.created_at).getTime(); // newest
+    });
+
+    renderOwners(list);
+  }
+
+  function renderOwners(list: Owner[]) {
+    const el = document.getElementById('ownersTable');
+    if (!el) return;
+
+    if (list.length === 0) {
+      el.innerHTML = '<div class="p-8 text-center text-zinc-400 text-sm border border-dashed border-zinc-200 rounded-2xl">No owners match these filters.</div>';
+      return;
+    }
+
+    el.innerHTML = list.map((o) => {
+      const status = o.status || 'pending';
+      const statusBadge = status === 'approved' ? 'bg-green-500/10 text-green-700 border-green-500/20' :
+                          status === 'rejected' ? 'bg-red-500/10 text-red-600 border-red-500/20' :
+                          'bg-amber-500/10 text-amber-600 border-amber-500/20';
+
+      const rowClickAttr = o.hasAccount ? ` onclick="window.location.href='/admin/truck-owners/${o.id}'"` : '';
+      const rowCursorClass = o.hasAccount ? 'cursor-pointer' : '';
+
+      return `
+      <div class="group flex flex-col sm:flex-row sm:items-center gap-3 sm:gap-4 p-4 rounded-2xl border border-zinc-100 bg-white hover:border-zinc-300 hover:bg-zinc-100/40 transition-all ${rowCursorClass}"${rowClickAttr}>
+        <div class="w-10 h-10 rounded-full bg-zinc-100 border border-zinc-200 flex items-center justify-center shrink-0 text-[11px] font-bold text-zinc-500">
+          ${(o.company_name || o.contact_name || o.email || '?').charAt(0).toUpperCase()}
+        </div>
+        <div class="min-w-0 flex-1">
+          <div class="flex items-center gap-2 flex-wrap">
+            <p class="text-sm font-bold text-slate-900 truncate">${o.company_name || o.contact_name || o.email || 'Unnamed Owner'}</p>
+            <span class="inline-flex items-center gap-1 text-[9px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-full border ${o.hasAccount ? 'text-green-700 border-green-200 bg-green-50' : 'text-zinc-500 border-zinc-200 bg-zinc-100'}">
+              <span class="w-1.5 h-1.5 rounded-full ${o.hasAccount ? 'bg-green-500' : 'bg-zinc-400'}"></span>
+              ${o.hasAccount ? 'Linked account' : 'No account'}
+            </span>
+            ${o.hasAccount ? `<span class="px-2 py-0.5 rounded-full text-[9px] font-bold uppercase border tracking-wide ${statusBadge}">${status}</span>` : ''}
+          </div>
+          <p class="mt-0.5 text-[11px] text-zinc-500 font-mono truncate">${[o.contact_name, o.email, o.phone].filter(Boolean).join(' · ') || 'No contact info'}</p>
+          <p class="mt-1 text-[10px] text-zinc-400">Joined ${timeAgo(o.created_at)}</p>
+        </div>
+        <div class="flex items-center gap-2 shrink-0 flex-wrap">
+          <span class="px-2.5 py-1 rounded-full text-[9px] font-bold uppercase border tracking-wide ${o.truckTotal > 0 ? 'bg-green-500/10 text-green-700 border-green-500/20' : 'bg-zinc-100 text-zinc-400 border-zinc-200'}">
+            ${o.truckTotal} truck${o.truckTotal === 1 ? '' : 's'}
+          </span>
+          ${o.truckPending > 0 ? `<span class="px-2.5 py-1 rounded-full text-[9px] font-bold uppercase border tracking-wide bg-amber-500/10 text-amber-600 border-amber-500/20">${o.truckPending} pending</span>` : ''}
+          <a href="/admin/grapple-saw-trucks?owner=${encodeURIComponent(o.id)}" onclick="event.stopPropagation()" class="text-[10px] font-bold uppercase tracking-wider text-zinc-500 hover:text-slate-900 border border-zinc-200 px-3 py-1.5 rounded-lg hover:bg-zinc-100 transition-colors whitespace-nowrap">View Trucks</a>
+          ${o.hasAccount
+            ? `<button class="reset-pw-btn text-[10px] font-bold uppercase tracking-wider text-blue-600 border border-blue-200 bg-blue-50 px-3 py-1.5 rounded-lg hover:bg-blue-500 hover:text-white transition-colors whitespace-nowrap" onclick="event.stopPropagation()" data-owner-id="${o.id}" data-owner-label="${(o.company_name || o.contact_name || o.email || 'this owner').replace(/"/g, '&quot;')}">🔑 Password</button>`
+            : `<span class="text-[10px] font-bold uppercase tracking-wider text-zinc-300 border border-zinc-100 px-3 py-1.5 rounded-lg whitespace-nowrap" title="Added manually — no login account to reset">🔑 No login</span>`
+          }
+        </div>
+      </div>
+    `;
+    }).join('');
+
+    el.querySelectorAll('.reset-pw-btn').forEach((btn) => {
+      btn.addEventListener('click', () => {
+        const ownerId = (btn as HTMLElement).dataset.ownerId!;
+        const ownerLabel = (btn as HTMLElement).dataset.ownerLabel!;
+        openPasswordModal(ownerId, ownerLabel);
+      });
+    });
+  }
+
+  document.getElementById('searchInput')?.addEventListener('input', applyFilters);
+  document.getElementById('truckFilter')?.addEventListener('change', applyFilters);
+  document.getElementById('statusFilter')?.addEventListener('change', applyFilters);
+  document.getElementById('sortFilter')?.addEventListener('change', applyFilters);
+
+  // -- DODAVANJE NOVOG VLASNIKA --
+  document.getElementById('openOwnerModal')?.addEventListener('click', () => {
+    (document.getElementById('addOwnerForm') as HTMLFormElement).reset();
+    document.getElementById('ownerFormMsg')!.textContent = '';
+    document.getElementById('ownerModal')?.classList.remove('hidden');
+  });
+  document.getElementById('closeOwnerModal')?.addEventListener('click', () => {
+    document.getElementById('ownerModal')?.classList.add('hidden');
+  });
+
+  document.getElementById('addOwnerForm')?.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const msg = document.getElementById('ownerFormMsg')!;
+    const submitBtn = document.getElementById('ownerSubmitBtn') as HTMLButtonElement;
+    submitBtn.disabled = true;
+    msg.textContent = 'Creating owner account...';
+    msg.className = 'text-[11px] text-zinc-500';
+
+    const { data: { session } } = await supabase.auth.getSession();
+    if (!session) {
+      msg.textContent = 'Your admin session expired — please log in again.';
+      msg.className = 'text-[11px] text-red-600';
+      submitBtn.disabled = false;
+      return;
+    }
+
+    const payload = {
+      companyName: (document.getElementById('ownerCompany') as HTMLInputElement).value || null,
+      contactName: (document.getElementById('ownerContact') as HTMLInputElement).value,
+      email: (document.getElementById('ownerEmail') as HTMLInputElement).value,
+      phone: (document.getElementById('ownerPhone') as HTMLInputElement).value,
+      password: (document.getElementById('ownerPassword') as HTMLInputElement).value,
+    };
+
+    const res = await fetch('/api/admin-create-truck-owner', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${session.access_token}` },
+      body: JSON.stringify(payload),
+    });
+    const result = await res.json();
+    submitBtn.disabled = false;
+
+    if (!res.ok) {
+      msg.textContent = '❌ ' + (result.message || result.error || 'Could not create owner.');
+      msg.className = 'text-[11px] text-red-600';
+      return;
+    }
+
+    document.getElementById('ownerModal')?.classList.add('hidden');
+    await loadOwners();
+  });
+
+  // -- PROMENA ŠIFRE --
+  let activeOwnerId = '';
+
+  function openPasswordModal(ownerId: string, ownerLabel: string) {
+    activeOwnerId = ownerId;
+    document.getElementById('passwordModalOwnerLabel')!.textContent = ownerLabel;
+    (document.getElementById('newPasswordInput') as HTMLInputElement).value = '';
+    document.getElementById('resetPasswordMsg')!.textContent = '';
+    document.getElementById('passwordModal')?.classList.remove('hidden');
+  }
+  document.getElementById('cancelPasswordModal')?.addEventListener('click', () => {
+    document.getElementById('passwordModal')?.classList.add('hidden');
+  });
+  document.getElementById('generatePasswordBtn')?.addEventListener('click', () => {
+    const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnpqrstuvwxyz23456789';
+    let pwd = '';
+    for (let i = 0; i < 10; i++) pwd += chars[Math.floor(Math.random() * chars.length)];
+    (document.getElementById('newPasswordInput') as HTMLInputElement).value = pwd;
+  });
+
+  document.getElementById('confirmResetBtn')?.addEventListener('click', async () => {
+    const msg = document.getElementById('resetPasswordMsg')!;
+    const newPassword = (document.getElementById('newPasswordInput') as HTMLInputElement).value;
+    if (!newPassword || newPassword.length < 6) {
+      msg.textContent = 'Password must be at least 6 characters.';
+      msg.className = 'text-[11px] text-red-600 mt-3';
+      return;
+    }
+
+    msg.textContent = 'Saving...';
+    msg.className = 'text-[11px] text-zinc-600 mt-3';
+
+    const { data: { session } } = await supabase.auth.getSession();
+    const res = await fetch('/api/admin-reset-password', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${session?.access_token}` },
+      // Generička ruta — "contractorUserId" je samo ime parametra, radi
+      // za bilo koji auth nalog (ovde: vlasnik kamiona).
+      body: JSON.stringify({ contractorUserId: activeOwnerId, newPassword }),
+    });
+    const result = await res.json();
+
+    if (res.ok && result.ok) {
+      msg.textContent = `✅ Password updated: "${newPassword}"`;
+      msg.className = 'text-[11px] text-green-700 break-all mt-3';
+    } else {
+      msg.textContent = '❌ ' + (result.message || result.error || 'Failed to update password.');
+      msg.className = 'text-[11px] text-red-600 mt-3';
+    }
+  });
+
+  loadOwners();
+</script>

@@ -53,6 +53,7 @@ export async function POST({ request }: { request: Request }) {
       contact_name: contactName || null,
       email: String(email).trim().toLowerCase(),
       phone: phone || null,
+      status: "pending",
     }]);
 
     if (profileError) {

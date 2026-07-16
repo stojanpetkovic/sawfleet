@@ -1,0 +1,380 @@
+---
+export const prerender = false;
+import AdminLayout from "../../../layouts/AdminLayout.astro";
+import { supabase } from "../../../lib/supabase";
+
+const { id } = Astro.params;
+
+const { data: owner } = await supabase.from('truck_owners').select('*').eq('id', id).single();
+if (!owner) return Astro.redirect('/admin/truck-owners');
+
+const { data: trucks } = await supabase
+  .from('grapple_saw_trucks')
+  .select('id, equipment_type, approval_status, availability_status, location, lift_capacity_tons, working_height_ft, created_at')
+  .eq('owner_user_id', id)
+  .order('created_at', { ascending: false });
+
+const { data: logs } = await supabase.from('truck_owner_logs').select('*').eq('owner_id', id).order('created_at', { ascending: false });
+
+const { data: territories } = await supabase.from('service_territories').select('*').order('name');
+
+const status = owner.status || 'pending';
+---
+
+<AdminLayout>
+  <!-- MODAL ZA IZMENU VLASNIKA -->
+  <div id="editModal" class="hidden fixed inset-0 bg-slate-900/40 backdrop-blur-sm z-[200] flex items-center justify-center p-4">
+    <div class="bg-white border border-zinc-200 p-8 rounded-xl max-w-md w-full shadow-2xl">
+      <h2 class="text-slate-900 font-bold mb-6">Edit Owner</h2>
+      <form id="editForm" class="space-y-4">
+        <div>
+          <label class="text-[9px] uppercase tracking-[0.2em] text-zinc-500 ml-1">Company Name</label>
+          <input type="text" id="editCompany" value={owner.company_name || ''} class="mt-1 w-full bg-zinc-100 border border-zinc-200 p-3 rounded text-slate-900" />
+        </div>
+        <div>
+          <label class="text-[9px] uppercase tracking-[0.2em] text-zinc-500 ml-1">Contact Name</label>
+          <input type="text" id="editContact" value={owner.contact_name || ''} class="mt-1 w-full bg-zinc-100 border border-zinc-200 p-3 rounded text-slate-900" />
+        </div>
+        <div>
+          <label class="text-[9px] uppercase tracking-[0.2em] text-zinc-500 ml-1">Phone</label>
+          <input type="text" id="editPhone" value={owner.phone || ''} class="mt-1 w-full bg-zinc-100 border border-zinc-200 p-3 rounded text-slate-900" />
+        </div>
+        <div>
+          <label class="text-[9px] uppercase tracking-[0.2em] text-zinc-500 ml-1">Email</label>
+          <input type="email" id="editEmail" value={owner.email || ''} class="mt-1 w-full bg-zinc-100 border border-zinc-200 p-3 rounded text-slate-900" />
+        </div>
+        <div class="flex gap-4 mt-8 pt-4 border-t border-zinc-100/50">
+          <button type="button" id="closeEditModal" class="flex-1 bg-zinc-200 p-3 rounded text-slate-900 font-bold text-[10px] uppercase tracking-wider hover:bg-zinc-300 transition-colors">Cancel</button>
+          <button type="submit" class="flex-1 bg-green-500 p-3 rounded text-slate-900 font-bold text-[10px] uppercase tracking-wider hover:bg-green-400 transition-colors">Save Changes</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- MODAL ZA DODAVANJE KAMIONA OVOM VLASNIKU -->
+  <div id="addTruckModal" class="hidden fixed inset-0 bg-slate-900/40 backdrop-blur-sm z-[200] flex items-center justify-center p-4 overflow-y-auto">
+    <div class="bg-white border border-zinc-200 shadow-2xl p-6 sm:p-8 rounded-2xl max-w-lg w-full my-8">
+      <div class="flex items-center justify-between mb-6">
+        <div>
+          <span class="text-[10px] font-mono font-bold uppercase tracking-[0.2em] text-green-700">// New Equipment</span>
+          <h2 class="mt-1 text-xl font-bold text-slate-900">Add Truck for {owner.company_name || owner.contact_name || owner.email}</h2>
+        </div>
+        <button type="button" id="closeAddTruckModal" class="text-slate-400 hover:text-slate-900 text-xl leading-none">&times;</button>
+      </div>
+      <form id="addTruckForm" class="space-y-4">
+        <div>
+          <label class="mb-2 block text-[10px] font-bold uppercase tracking-[0.15em] text-slate-500">Equipment Type</label>
+          <input id="addEquipmentType" type="text" required placeholder="e.g. Knuckleboom, Grapple Saw..." class="h-12 w-full rounded-xl border border-slate-200 bg-slate-50 px-4 text-sm text-slate-900 outline-none focus:border-green-500 focus:ring-2 focus:ring-green-500/20 focus:bg-white"/>
+        </div>
+        <div class="grid grid-cols-2 gap-4">
+          <div>
+            <label class="mb-2 block text-[10px] font-bold uppercase tracking-[0.15em] text-slate-500">Lift Capacity <span class="text-slate-400">(tons)</span></label>
+            <input id="addCapacity" type="number" placeholder="e.g. 35" class="h-12 w-full rounded-xl border border-slate-200 bg-slate-50 px-4 text-sm text-slate-900 outline-none focus:border-green-500 focus:ring-2 focus:ring-green-500/20 focus:bg-white"/>
+          </div>
+          <div>
+            <label class="mb-2 block text-[10px] font-bold uppercase tracking-[0.15em] text-slate-500">Working Height <span class="text-slate-400">(ft)</span></label>
+            <input id="addHeight" type="number" placeholder="e.g. 110" class="h-12 w-full rounded-xl border border-slate-200 bg-slate-50 px-4 text-sm text-slate-900 outline-none focus:border-green-500 focus:ring-2 focus:ring-green-500/20 focus:bg-white"/>
+          </div>
+        </div>
+        <div class="grid grid-cols-2 gap-4">
+          <div>
+            <label class="mb-2 block text-[10px] font-bold uppercase tracking-[0.15em] text-slate-500">Access Type</label>
+            <select id="addAccess" class="h-12 w-full rounded-xl border border-slate-200 bg-slate-50 px-4 text-sm text-slate-900 outline-none focus:border-green-500 focus:ring-2 focus:ring-green-500/20 focus:bg-white">
+              <option value="Wheeled">Wheeled</option>
+              <option value="Tracked">Tracked</option>
+            </select>
+          </div>
+          <div>
+            <label class="mb-2 block text-[10px] font-bold uppercase tracking-[0.15em] text-slate-500">Listing Type</label>
+            <select id="addListing" class="h-12 w-full rounded-xl border border-slate-200 bg-slate-50 px-4 text-sm text-slate-900 outline-none focus:border-green-500 focus:ring-2 focus:ring-green-500/20 focus:bg-white">
+              <option value="Rent">Rent</option>
+              <option value="Sale">Sale</option>
+            </select>
+          </div>
+        </div>
+        <div>
+          <label class="mb-2 block text-[10px] font-bold uppercase tracking-[0.15em] text-slate-500">Location</label>
+          <select id="addLocation" required class="h-12 w-full rounded-xl border border-slate-200 bg-slate-50 px-4 text-sm text-slate-900 outline-none focus:border-green-500 focus:ring-2 focus:ring-green-500/20 focus:bg-white">
+            <option value="" selected disabled>Select Location</option>
+            {territories?.map((t) => <option value={t.name}>{t.name}</option>)}
+          </select>
+        </div>
+        <div class="flex gap-3 pt-2">
+          <button type="button" id="cancelAddTruck" class="flex-1 h-12 rounded-xl bg-slate-100 text-slate-900 text-[10px] font-bold uppercase tracking-wider hover:bg-slate-200 transition-colors">Cancel</button>
+          <button type="submit" id="addTruckSubmitBtn" class="flex-1 h-12 rounded-xl bg-green-500 text-white text-[10px] font-bold uppercase tracking-wider hover:bg-green-600 transition-colors shadow-[0_8px_24px_-6px_rgba(34,197,94,0.4)]">Add Truck</button>
+        </div>
+        <p id="addTruckMsg" class="text-[11px]"></p>
+      </form>
+    </div>
+  </div>
+
+  <div class="w-full grid grid-cols-1 xl:grid-cols-12 gap-8">
+    <div class="xl:col-span-8 space-y-6">
+      <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+        <div>
+          <a href="/admin/truck-owners" class="text-[10px] font-bold uppercase tracking-[0.2em] text-zinc-400 hover:text-slate-900 transition-colors">← Truck Owners</a>
+          <h1 class="mt-1 text-xl font-bold text-slate-900 tracking-wide">Truck Owner Management</h1>
+          <p class="text-[10px] font-mono text-zinc-500 mt-1 uppercase">ID: {owner.id.split('-')[0]}</p>
+        </div>
+        <div class="flex flex-wrap gap-3 w-full sm:w-auto">
+          {owner.phone && (
+            <a href={`tel:${owner.phone}`} class="flex-1 sm:flex-none text-center text-[10px] text-green-700 uppercase font-bold tracking-[0.2em] transition-colors border border-green-200 bg-green-50 px-4 py-2.5 rounded-lg hover:bg-green-500 hover:text-slate-50">📞 Call</a>
+          )}
+          {owner.email && (
+            <a href={`mailto:${owner.email}`} class="flex-1 sm:flex-none text-center text-[10px] text-blue-600 uppercase font-bold tracking-[0.2em] transition-colors border border-blue-200 bg-blue-50 px-4 py-2.5 rounded-lg hover:bg-blue-500 hover:text-slate-50">✉️ Email</a>
+          )}
+          <button id="editBtn" class="text-[10px] text-zinc-600 hover:text-slate-900 uppercase font-bold tracking-[0.2em] transition-colors border border-zinc-200 px-4 py-2.5 rounded-lg hover:bg-zinc-100">Edit</button>
+          <button id="deleteBtn" class="text-[10px] text-red-600/70 hover:text-red-600 uppercase font-bold tracking-[0.2em] transition-colors border border-red-200 px-4 py-2.5 rounded-lg hover:bg-red-50">Delete</button>
+        </div>
+      </div>
+
+      <div class="bg-white border border-zinc-100 p-8 rounded-xl space-y-8 shadow-2xl">
+        <div class="pb-6 border-b border-zinc-100">
+          <p class="text-[9px] uppercase tracking-[0.2em] text-zinc-400 mb-2">Current Status</p>
+          <span class={`px-3 py-1.5 rounded text-[10px] font-bold border uppercase tracking-wider
+            ${status === 'approved' ? 'border-green-700/50 text-green-700 bg-green-500/10' :
+              status === 'rejected' ? 'border-red-700/50 text-red-600 bg-red-500/10' : 'border-zinc-300 text-zinc-600 bg-zinc-200/50'}`}>
+            {status}
+          </span>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+          <div><p class="text-[9px] uppercase tracking-[0.2em] text-zinc-400">Company</p><p class="text-slate-900 font-mono mt-1 font-bold text-lg">{owner.company_name || 'N/A'}</p></div>
+          <div><p class="text-[9px] uppercase tracking-[0.2em] text-zinc-400">Contact</p><p class="text-slate-900 font-mono mt-1 text-lg">{owner.contact_name || 'N/A'}</p></div>
+          <div><p class="text-[9px] uppercase tracking-[0.2em] text-zinc-400">Phone</p>{owner.phone ? <a href={`tel:${owner.phone}`} class="text-slate-900 font-mono mt-1 text-lg block hover:text-green-700 transition-colors">{owner.phone}</a> : <p class="text-slate-900 font-mono mt-1 text-lg">N/A</p>}</div>
+          <div><p class="text-[9px] uppercase tracking-[0.2em] text-zinc-400">Login Email</p>{owner.email ? <a href={`mailto:${owner.email}`} class="text-slate-900 font-mono mt-1 text-lg block hover:text-green-700 transition-colors break-all">{owner.email}</a> : <p class="text-slate-900 font-mono mt-1 text-lg">N/A</p>}</div>
+          <div><p class="text-[9px] uppercase tracking-[0.2em] text-zinc-400">Joined</p><p class="text-slate-900 font-mono mt-1 text-lg">{new Date(owner.created_at).toLocaleDateString()}</p></div>
+          <div><p class="text-[9px] uppercase tracking-[0.2em] text-zinc-400">Account Linked</p><p class="text-slate-900 font-mono mt-1 text-lg">✅ Yes</p></div>
+        </div>
+
+        <div class="pt-6 border-t border-zinc-100 mt-8">
+          <p class="text-[10px] font-bold uppercase tracking-[0.2em] text-zinc-500 mb-4 flex items-center gap-2"><span class="w-1 h-1 bg-zinc-500 rounded-full"></span> Approval Controls</p>
+          <div class="flex gap-4">
+            <button id="approveBtn" class="flex-1 h-12 rounded-lg bg-green-500/10 border border-green-500/30 text-green-700 font-bold uppercase tracking-[0.2em] text-[10px] hover:bg-green-500 hover:text-slate-900 transition-all">Approve Owner</button>
+            <button id="rejectBtn" class="flex-1 h-12 rounded-lg bg-red-50 border border-red-200 text-red-600 font-bold uppercase tracking-[0.2em] text-[10px] hover:bg-red-50 transition-all">Reject Owner</button>
+          </div>
+        </div>
+
+        <div class="pt-6 border-t border-zinc-100">
+          <p class="text-[10px] font-bold uppercase tracking-[0.2em] text-zinc-500 mb-4 flex items-center gap-2"><span class="w-1 h-1 bg-zinc-500 rounded-full"></span> Account Access</p>
+          <button id="resetPasswordBtn" class="w-full sm:w-auto h-12 px-6 rounded-lg bg-blue-500/10 border border-blue-500/30 text-blue-600 font-bold uppercase tracking-[0.2em] text-[10px] hover:bg-blue-500 hover:text-slate-900 transition-all">
+            🔑 Set New Password
+          </button>
+
+          <div id="resetPasswordForm" class="hidden mt-4 p-5 bg-zinc-100/50 border border-zinc-200 rounded-xl space-y-3">
+            <p class="text-[11px] text-zinc-600">Set a new password for this owner's account. Share it with them directly — this does not send an email.</p>
+            <div class="flex flex-col sm:flex-row gap-3">
+              <input id="newPasswordInput" type="text" placeholder="New password (min. 6 characters)" class="flex-1 bg-zinc-50 border border-zinc-200 p-3 rounded-lg text-slate-900 text-sm" />
+              <button id="generatePasswordBtn" type="button" class="shrink-0 px-4 py-3 rounded-lg bg-zinc-200 text-zinc-700 text-[10px] font-bold uppercase hover:bg-zinc-300 transition-colors">Generate</button>
+            </div>
+            <div class="flex gap-3">
+              <button id="cancelResetBtn" type="button" class="flex-1 h-11 rounded-lg bg-zinc-200 text-slate-900 text-[10px] font-bold uppercase tracking-wider hover:bg-zinc-300 transition-colors">Cancel</button>
+              <button id="confirmResetBtn" type="button" class="flex-1 h-11 rounded-lg bg-blue-500 text-slate-900 text-[10px] font-bold uppercase tracking-wider hover:bg-blue-400 transition-colors">Save Password</button>
+            </div>
+            <p id="resetPasswordMsg" class="text-[11px]"></p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Kamioni ovog vlasnika -->
+      <div class="bg-white border border-zinc-100 rounded-2xl overflow-hidden">
+        <div class="p-5 border-b border-zinc-100 flex items-center justify-between gap-3">
+          <h3 class="text-[10px] font-bold uppercase tracking-[0.2em] text-slate-900">Trucks ({trucks?.length || 0})</h3>
+          <button id="openAddTruckModal" class="shrink-0 flex items-center gap-1.5 text-[10px] font-bold uppercase tracking-wider text-white bg-green-500 hover:bg-green-600 px-4 py-2 rounded-lg transition-all">
+            <span class="text-sm leading-none">+</span> Add Truck
+          </button>
+        </div>
+        <div id="ownerTrucksList" class="p-3 space-y-2">
+          {trucks && trucks.length > 0 ? trucks.map((t: any) => (
+            <a href={`/admin/grapple-saw-trucks/${t.id}`} class="flex items-center gap-3 p-3 rounded-xl hover:bg-zinc-100/40 transition-colors">
+              <div class="w-9 h-9 rounded-full bg-zinc-100 border border-zinc-200 flex items-center justify-center shrink-0 text-[10px] font-bold text-zinc-600">
+                {(t.equipment_type || '?').charAt(0).toUpperCase()}
+              </div>
+              <div class="min-w-0 flex-1">
+                <p class="text-[13px] font-bold text-slate-900 truncate">{t.equipment_type || 'Equipment'}</p>
+                <p class="text-[10px] text-zinc-500 font-mono truncate">{t.location || 'N/A'}</p>
+              </div>
+              <span class={`px-2.5 py-1 rounded-full text-[9px] font-bold uppercase border tracking-wide shrink-0 ${t.approval_status === 'approved' ? 'bg-green-500/10 text-green-700 border-green-500/20' : t.approval_status === 'rejected' ? 'bg-red-500/10 text-red-600 border-red-500/20' : 'bg-amber-500/10 text-amber-600 border-amber-500/20'}`}>{t.approval_status || 'pending'}</span>
+            </a>
+          )) : (
+            <div class="p-8 text-center text-zinc-400 text-sm">This owner hasn't added any trucks yet.</div>
+          )}
+        </div>
+      </div>
+    </div>
+
+    <!-- Activity Timeline -->
+    <div class="xl:col-span-4 bg-white border border-zinc-100 p-6 rounded-xl self-start sticky top-8 shadow-2xl">
+      <h3 class="text-[10px] font-bold uppercase tracking-[0.2em] text-slate-900 mb-8 border-b border-zinc-100 pb-4">Activity Timeline</h3>
+      <div class="space-y-6">
+        {logs?.map((log: any) => (
+          <div class="relative pl-6 before:content-[''] before:absolute before:left-0 before:top-1.5 before:w-2 before:h-2 before:bg-zinc-200 before:border-2 before:border-slate-200 before:rounded-full after:content-[''] after:absolute after:left-[3px] after:top-4 after:bottom-[-20px] after:w-[2px] after:bg-zinc-100 last:after:hidden">
+            <p class="text-[11px] text-slate-900 font-bold leading-tight">{log.action}</p>
+            <div class="flex items-center gap-2 mt-1.5">
+              <span class="text-[9px] text-zinc-500 font-mono">by <span class="text-zinc-700 font-bold tracking-wider uppercase">{log.changed_by || 'Stojan M.'}</span></span>
+              <span class="text-[7px] text-zinc-300">●</span>
+              <span class="text-[9px] text-zinc-400">{new Date(log.created_at).toLocaleDateString()} {new Date(log.created_at).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}</span>
+            </div>
+          </div>
+        ))}
+        {(!logs || logs.length === 0) && <p class="text-[10px] text-zinc-400 italic">No activity recorded yet.</p>}
+      </div>
+    </div>
+  </div>
+</AdminLayout>
+
+<script>
+  import { supabase } from "../../../lib/supabase";
+
+  const pathParts = window.location.pathname.split('/');
+  const id = pathParts[pathParts.length - 1];
+  const currentUser = "Stojan M.";
+
+  async function logActivity(action: string) {
+    await supabase.from('truck_owner_logs').insert([{ owner_id: id, action, changed_by: currentUser }]);
+  }
+
+  async function updateStatus(newStatus: string) {
+    if (!id) return;
+    document.body.style.opacity = '0.5';
+    await supabase.from('truck_owners').update({ status: newStatus }).eq('id', id);
+    await logActivity(`Status changed to ${newStatus}`);
+    window.location.reload();
+  }
+
+  document.getElementById('approveBtn')?.addEventListener('click', () => updateStatus('approved'));
+  document.getElementById('rejectBtn')?.addEventListener('click', () => updateStatus('rejected'));
+
+  document.getElementById('editBtn')?.addEventListener('click', () => document.getElementById('editModal')?.classList.remove('hidden'));
+  document.getElementById('closeEditModal')?.addEventListener('click', () => document.getElementById('editModal')?.classList.add('hidden'));
+
+  document.getElementById('editForm')?.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    if (!id) return;
+    document.body.style.opacity = '0.5';
+
+    const updates = {
+      company_name: (document.getElementById('editCompany') as HTMLInputElement).value || null,
+      contact_name: (document.getElementById('editContact') as HTMLInputElement).value || null,
+      phone: (document.getElementById('editPhone') as HTMLInputElement).value || null,
+      email: (document.getElementById('editEmail') as HTMLInputElement).value || null,
+    };
+
+    await supabase.from('truck_owners').update(updates).eq('id', id);
+    await logActivity('Updated owner details');
+    window.location.reload();
+  });
+
+  document.getElementById('deleteBtn')?.addEventListener('click', async () => {
+    const isConfirmed = confirm("Are you sure you want to permanently delete this owner's profile? This does not delete their login account or their trucks — only removes them from the owner roster.");
+    if (isConfirmed && id) {
+      document.body.style.opacity = '0.5';
+      await supabase.from('truck_owner_logs').delete().eq('owner_id', id);
+      await supabase.from('truck_owners').delete().eq('id', id);
+      window.location.href = '/admin/truck-owners';
+    }
+  });
+
+  // --- RESET PASSWORD (isti generički /api/admin-reset-password) ---
+  const resetForm = document.getElementById('resetPasswordForm');
+  const resetMsg = document.getElementById('resetPasswordMsg')!;
+
+  document.getElementById('resetPasswordBtn')?.addEventListener('click', () => {
+    resetForm?.classList.remove('hidden');
+  });
+  document.getElementById('cancelResetBtn')?.addEventListener('click', () => {
+    resetForm?.classList.add('hidden');
+    resetMsg.textContent = '';
+    (document.getElementById('newPasswordInput') as HTMLInputElement).value = '';
+  });
+  document.getElementById('generatePasswordBtn')?.addEventListener('click', () => {
+    const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnpqrstuvwxyz23456789';
+    let pwd = '';
+    for (let i = 0; i < 10; i++) pwd += chars[Math.floor(Math.random() * chars.length)];
+    (document.getElementById('newPasswordInput') as HTMLInputElement).value = pwd;
+  });
+
+  document.getElementById('confirmResetBtn')?.addEventListener('click', async () => {
+    const newPassword = (document.getElementById('newPasswordInput') as HTMLInputElement).value;
+    if (!newPassword || newPassword.length < 6) {
+      resetMsg.textContent = 'Password must be at least 6 characters.';
+      resetMsg.className = 'text-[11px] text-red-600';
+      return;
+    }
+
+    resetMsg.textContent = 'Saving...';
+    resetMsg.className = 'text-[11px] text-zinc-600';
+
+    const { data: { session } } = await supabase.auth.getSession();
+    const res = await fetch('/api/admin-reset-password', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${session?.access_token}` },
+      body: JSON.stringify({ contractorUserId: id, newPassword }),
+    });
+    const result = await res.json();
+
+    if (res.ok && result.ok) {
+      resetMsg.textContent = `✅ Password updated. Share it with the owner: "${newPassword}"`;
+      resetMsg.className = 'text-[11px] text-green-700 break-all';
+    } else {
+      resetMsg.textContent = '❌ ' + (result.message || result.error || 'Failed to update password.');
+      resetMsg.className = 'text-[11px] text-red-600';
+    }
+  });
+
+  // --- DODAVANJE KAMIONA DIREKTNO SA OVE STRANE ---
+  function openAddTruckModal() {
+    (document.getElementById('addTruckForm') as HTMLFormElement).reset();
+    document.getElementById('addTruckMsg')!.textContent = '';
+    document.getElementById('addTruckModal')?.classList.remove('hidden');
+  }
+  function closeAddTruckModal() {
+    document.getElementById('addTruckModal')?.classList.add('hidden');
+  }
+  document.getElementById('openAddTruckModal')?.addEventListener('click', openAddTruckModal);
+  document.getElementById('cancelAddTruck')?.addEventListener('click', closeAddTruckModal);
+  document.getElementById('closeAddTruckModal')?.addEventListener('click', closeAddTruckModal);
+
+  document.getElementById('addTruckForm')?.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const msg = document.getElementById('addTruckMsg')!;
+    const submitBtn = document.getElementById('addTruckSubmitBtn') as HTMLButtonElement;
+    submitBtn.disabled = true;
+    msg.textContent = 'Saving...';
+    msg.className = 'text-[11px] text-slate-600';
+
+    // Vlasnik je već poznat (ova strana) — odmah odobren jer ga admin
+    // direktno dodaje za VEĆ postojeći, poznat nalog.
+    const { data: ownerRow } = await supabase.from('truck_owners').select('email, phone').eq('id', id).single();
+
+    const { data: newTruck, error } = await supabase.from('grapple_saw_trucks').insert([{
+      equipment_type: (document.getElementById('addEquipmentType') as HTMLInputElement).value,
+      lift_capacity_tons: (document.getElementById('addCapacity') as HTMLInputElement).value || null,
+      working_height_ft: (document.getElementById('addHeight') as HTMLInputElement).value || null,
+      access_type: (document.getElementById('addAccess') as HTMLSelectElement).value,
+      listing_type: (document.getElementById('addListing') as HTMLSelectElement).value,
+      location: (document.getElementById('addLocation') as HTMLSelectElement).value,
+      owner_email: ownerRow?.email || null,
+      owner_phone: ownerRow?.phone || null,
+      owner_user_id: id,
+      approval_status: 'approved',
+      availability_status: 'Available',
+    }]).select().single();
+
+    submitBtn.disabled = false;
+
+    if (error) {
+      msg.textContent = '❌ ' + error.message;
+      msg.className = 'text-[11px] text-red-600';
+      return;
+    }
+
+    if (newTruck) {
+      await supabase.from('truck_logs').insert([{ truck_id: newTruck.id, action: 'Added new truck for existing owner', changed_by: currentUser }]);
+    }
+    await logActivity('Added a new truck (via owner page)');
+
+    closeAddTruckModal();
+    window.location.reload();
+  });
+</script>

@@ -233,18 +233,45 @@ import Footer from "../components/layout/Footer.astro";
 
     const ownerId = signUpData.user?.id;
 
-    // Napravi profil vlasnika (odvojeno od bilo kog kamiona)
-    if (ownerId) {
-      const { error: profileError } = await supabase.from('truck_owners').insert([{
-        id: ownerId,
-        company_name: fd.get('companyName') || null,
-        contact_name: fd.get('contactName'),
-        email,
-        phone: fd.get('phone'),
-      }]);
+    // Supabase namerno NE baca grešku kad se signUp ponovo pošalje za
+    // email koji već postoji ali još nije potvrđen (da ne otkrije da
+    // nalog postoji) — umesto toga vraća user objekat sa praznim
+    // identities nizom, i taj id NE odgovara stvarnom redu u auth.users.
+    // Ako bismo tim id-jem pokušali upis u truck_owners, pukne na
+    // foreign key constraint. Prepoznajemo ovo OVDE i jasno objašnjavamo
+    // umesto nejasne greške posle.
+    const looksUnconfirmedRetry = Array.isArray(signUpData.user?.identities) && signUpData.user!.identities!.length === 0;
 
-      if (profileError) {
-        alert('Account created, but saving your profile failed: ' + profileError.message + '\nYou can still log in and add trucks.');
+    if (looksUnconfirmedRetry) {
+      alert('This email is already registered but not yet confirmed. Check your inbox for the confirmation link, or use "Forgot password" on the login page if you need a new one.');
+      window.location.href = '/truck-login';
+      return;
+    }
+
+    // Napravi profil vlasnika preko servera (service_role) — ne zavisi
+    // od toga da li postoji aktivna sesija odmah posle signUp-a. Ako je
+    // u Supabase Auth uključeno "Confirm email", signUp NE vraća sesiju
+    // dok korisnik ne potvrdi mejl, pa bi direktan insert sa browser
+    // klijenta pukao na RLS (auth.uid() bio bi null).
+    if (ownerId) {
+      try {
+        const res = await fetch('/api/create-owner-profile', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            ownerId,
+            email,
+            companyName: fd.get('companyName') || null,
+            contactName: fd.get('contactName'),
+            phone: fd.get('phone'),
+          }),
+        });
+        const result = await res.json();
+        if (!res.ok) {
+          alert('Account created, but saving your profile failed: ' + (result.message || result.error) + '\nYou can still log in and add trucks.');
+        }
+      } catch (err) {
+        alert('Account created, but saving your profile failed. You can still log in and add trucks.');
       }
     }
 

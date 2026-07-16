@@ -1,7 +1,7 @@
 ---
 import ContractorLayout from "../layouts/ContractorLayout.astro";
 import { supabase } from "../lib/supabase";
-import { Truck as TruckIcon } from "lucide-astro";
+import { Truck as TruckIcon, UserCog2 } from "lucide-astro";
 
 const { data: territories } = await supabase
   .from('service_territories')
@@ -10,6 +10,7 @@ const { data: territories } = await supabase
 
 const navItems = [
   { label: 'Equipment', tab: 'equipment', icon: TruckIcon },
+  { label: 'Profile', tab: 'profile', icon: UserCog2 },
 ];
 ---
 
@@ -149,35 +150,91 @@ const navItems = [
     <a href="/truck-login" class="mt-8 inline-flex h-12 px-8 items-center justify-center rounded-xl bg-green-500 text-sm font-bold text-slate-50 hover:bg-green-400 transition-all w-full sm:w-auto">Back to login</a>
   </div>
 
+  <!-- STATE: PENDING APPROVAL (nalog vlasnika još nije odobren) -->
+  <div id="statePending" class="hidden flex-col items-center justify-center py-32 text-center max-w-md mx-auto px-4">
+    <span class="text-[10px] font-mono font-bold uppercase tracking-[0.2em] text-amber-600">// Pending Approval</span>
+    <h1 class="mt-4 text-2xl font-bold text-slate-900">Awaiting approval</h1>
+    <p class="mt-3 text-sm text-slate-600">The administrator hasn't activated your fleet owner account yet. You'll be able to add trucks as soon as you're approved.</p>
+  </div>
+
+  <!-- STATE: REJECTED -->
+  <div id="stateRejected" class="hidden flex-col items-center justify-center py-32 text-center max-w-md mx-auto px-4">
+    <span class="text-[10px] font-mono font-bold uppercase tracking-[0.2em] text-red-600">// Account Rejected</span>
+    <h1 class="mt-4 text-2xl font-bold text-slate-900">Account not approved</h1>
+    <p class="mt-3 text-sm text-slate-600">Your fleet owner account wasn't approved. Contact the administrator for details.</p>
+  </div>
+
   <div id="stateActive" class="hidden flex-col space-y-6 w-full">
-    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-      <div>
-        <span class="text-[10px] font-mono font-bold uppercase tracking-[0.2em] text-green-700">// Fleet Owner Portal</span>
-        <h1 class="mt-2 text-2xl font-bold tracking-tight text-slate-900 sm:text-3xl">Your Equipment</h1>
-        <p class="mt-2 text-sm text-slate-600">Status of the equipment you've listed on SawFleet.</p>
+
+    <!-- PANEL: EQUIPMENT -->
+    <div id="panelEquipment" class="space-y-6">
+      <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+        <div>
+          <span class="text-[10px] font-mono font-bold uppercase tracking-[0.2em] text-green-700">// Fleet Owner Portal</span>
+          <h1 class="mt-2 text-2xl font-bold tracking-tight text-slate-900 sm:text-3xl">Your Equipment</h1>
+          <p class="mt-2 text-sm text-slate-600">Status of the equipment you've listed on SawFleet.</p>
+        </div>
+        <button id="openAddTruckModal" class="shrink-0 flex items-center justify-center gap-2 h-12 px-6 rounded-xl bg-green-500 text-white text-xs font-bold uppercase tracking-wider hover:bg-green-600 transition-all active:scale-[0.98] shadow-[0_8px_24px_-6px_rgba(34,197,94,0.4)]">
+          <span class="text-lg leading-none">+</span> Add Truck
+        </button>
       </div>
-      <button id="openAddTruckModal" class="shrink-0 flex items-center justify-center gap-2 h-12 px-6 rounded-xl bg-green-500 text-white text-xs font-bold uppercase tracking-wider hover:bg-green-600 transition-all active:scale-[0.98] shadow-[0_8px_24px_-6px_rgba(34,197,94,0.4)]">
-        <span class="text-lg leading-none">+</span> Add Truck
-      </button>
+
+      <!-- QUICK STATS -->
+      <div class="grid grid-cols-3 gap-3">
+        <div class="p-4 bg-slate-100 border border-slate-200 rounded-xl text-center">
+          <p id="statTotal" class="text-2xl font-mono font-bold text-slate-900">0</p>
+          <p class="text-[9px] font-bold uppercase tracking-wider text-slate-500 mt-1">Total</p>
+        </div>
+        <div class="p-4 bg-slate-100 border border-slate-200 rounded-xl text-center">
+          <p id="statApproved" class="text-2xl font-mono font-bold text-green-700">0</p>
+          <p class="text-[9px] font-bold uppercase tracking-wider text-slate-500 mt-1">Approved</p>
+        </div>
+        <div class="p-4 bg-slate-100 border border-slate-200 rounded-xl text-center">
+          <p id="statPending" class="text-2xl font-mono font-bold text-amber-600">0</p>
+          <p class="text-[9px] font-bold uppercase tracking-wider text-slate-500 mt-1">Pending</p>
+        </div>
+      </div>
+
+      <div id="trucksContainer" class="space-y-4"></div>
     </div>
 
-    <!-- QUICK STATS -->
-    <div class="grid grid-cols-3 gap-3">
-      <div class="p-4 bg-slate-100 border border-slate-200 rounded-xl text-center">
-        <p id="statTotal" class="text-2xl font-mono font-bold text-slate-900">0</p>
-        <p class="text-[9px] font-bold uppercase tracking-wider text-slate-500 mt-1">Total</p>
-      </div>
-      <div class="p-4 bg-slate-100 border border-slate-200 rounded-xl text-center">
-        <p id="statApproved" class="text-2xl font-mono font-bold text-green-700">0</p>
-        <p class="text-[9px] font-bold uppercase tracking-wider text-slate-500 mt-1">Approved</p>
-      </div>
-      <div class="p-4 bg-slate-100 border border-slate-200 rounded-xl text-center">
-        <p id="statPending" class="text-2xl font-mono font-bold text-amber-600">0</p>
-        <p class="text-[9px] font-bold uppercase tracking-wider text-slate-500 mt-1">Pending</p>
+    <!-- PANEL: PROFILE (generalije vlasnika) -->
+    <div id="panelProfile" class="hidden max-w-2xl">
+      <div class="relative overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-soft">
+        <div class="absolute inset-x-0 top-0 h-1 bg-gradient-to-r from-green-500 via-emerald-500 to-green-500"></div>
+        <div class="p-6 sm:p-8 space-y-5">
+          <div class="pb-2">
+            <span class="text-[10px] font-mono font-bold uppercase tracking-[0.2em] text-green-700">// Account Settings</span>
+            <h2 class="mt-1 text-xl font-bold text-slate-900">Company Profile</h2>
+            <p class="mt-1 text-xs text-slate-500">Keep this up to date — it's what dispatch and admin see for your account.</p>
+          </div>
+          <form id="profileForm" class="space-y-5">
+            <div>
+              <label class="mb-2 block text-[10px] font-bold uppercase tracking-[0.15em] text-slate-500">Company Name</label>
+              <input id="profileCompany" type="text" placeholder="e.g. South Florida Heavy Equipment" class="h-12 w-full rounded-xl border border-slate-200 bg-slate-50 px-4 text-sm text-slate-900 outline-none focus:border-green-500 focus:ring-2 focus:ring-green-500/20 focus:bg-white transition-all"/>
+            </div>
+            <div class="grid gap-4 sm:grid-cols-2">
+              <div>
+                <label class="mb-2 block text-[10px] font-bold uppercase tracking-[0.15em] text-slate-500">Contact Name</label>
+                <input id="profileContact" type="text" class="h-12 w-full rounded-xl border border-slate-200 bg-slate-50 px-4 text-sm text-slate-900 outline-none focus:border-green-500 focus:ring-2 focus:ring-green-500/20 focus:bg-white transition-all"/>
+              </div>
+              <div>
+                <label class="mb-2 block text-[10px] font-bold uppercase tracking-[0.15em] text-slate-500">Phone</label>
+                <input id="profilePhone" type="tel" class="h-12 w-full rounded-xl border border-slate-200 bg-slate-50 px-4 text-sm text-slate-900 outline-none focus:border-green-500 focus:ring-2 focus:ring-green-500/20 focus:bg-white transition-all"/>
+              </div>
+            </div>
+            <div class="pt-2 border-t border-slate-100">
+              <label class="mb-2 block text-[10px] font-bold uppercase tracking-[0.15em] text-slate-500">Login Email</label>
+              <input id="profileEmail" type="email" disabled class="h-12 w-full rounded-xl border border-slate-200 bg-slate-100 px-4 text-sm text-slate-500 outline-none cursor-not-allowed"/>
+              <p class="mt-1.5 text-[10px] text-slate-400">Contact the administrator to change your login email.</p>
+            </div>
+            <button type="submit" id="saveProfileBtn" class="h-12 w-full rounded-xl bg-green-500 text-sm font-bold text-white hover:bg-green-600 transition-all active:scale-[0.98] shadow-[0_8px_24px_-6px_rgba(34,197,94,0.4)]">Save Changes</button>
+            <p id="profileMsg" class="text-[11px]"></p>
+          </form>
+        </div>
       </div>
     </div>
 
-    <div id="trucksContainer" class="space-y-4"></div>
   </div>
 </ContractorLayout>
 
@@ -191,11 +248,20 @@ const navItems = [
   };
 
   function show(id: string) {
-    ['stateLoading', 'stateNoAccess', 'stateActive'].forEach((s) => document.getElementById(s)?.classList.add('hidden'));
+    ['stateLoading', 'stateNoAccess', 'statePending', 'stateRejected', 'stateActive'].forEach((s) => document.getElementById(s)?.classList.add('hidden'));
     const el = document.getElementById(id);
     el?.classList.remove('hidden');
     el?.classList.add('flex');
   }
+
+  function showTab(tab: 'equipment' | 'profile') {
+    document.getElementById('panelEquipment')?.classList.toggle('hidden', tab !== 'equipment');
+    document.getElementById('panelProfile')?.classList.toggle('hidden', tab !== 'profile');
+  }
+  document.addEventListener('layout:tab-change', (e) => {
+    const tab = (e as CustomEvent).detail?.tab;
+    if (tab === 'equipment' || tab === 'profile') showTab(tab);
+  });
 
   function renderTruck(t: Truck) {
     const status = t.approval_status || 'pending';
@@ -241,9 +307,39 @@ const navItems = [
     document.getElementById('editTruckModal')?.classList.remove('hidden');
   }
 
+  let ownerHadNoRow = false;
+
   async function init() {
     const { data: { session } } = await supabase.auth.getSession();
     if (!session) { window.location.href = '/truck-login'; return; }
+
+    // Prvo proveri profil/status vlasnika. Ako nalog nije odobren, ne
+    // učitavamo kamione uopšte — samo obaveštavamo vlasnika o statusu.
+    const { data: owner, error: ownerError } = await supabase
+      .from('truck_owners')
+      .select('*')
+      .eq('id', session.user.id)
+      .maybeSingle();
+
+    if (ownerError) {
+      show('stateNoAccess');
+      return;
+    }
+
+    if (owner) {
+      (document.getElementById('profileCompany') as HTMLInputElement).value = owner.company_name || '';
+      (document.getElementById('profileContact') as HTMLInputElement).value = owner.contact_name || '';
+      (document.getElementById('profilePhone') as HTMLInputElement).value = owner.phone || '';
+      (document.getElementById('profileEmail') as HTMLInputElement).value = owner.email || session.user.email || '';
+
+      if (owner.status === 'pending') { show('statePending'); return; }
+      if (owner.status === 'rejected') { show('stateRejected'); return; }
+    } else {
+      // Nema truck_owners reda (npr. nalog napravljen pre ove migracije) —
+      // ne blokiramo, samo popuni email iz sesije.
+      ownerHadNoRow = true;
+      (document.getElementById('profileEmail') as HTMLInputElement).value = session.user.email || '';
+    }
 
     const { data: trucks, error } = await supabase.rpc('link_truck_owner_account');
 
@@ -382,6 +478,47 @@ const navItems = [
 
     document.getElementById('editTruckModal')?.classList.add('hidden');
     await init();
+  });
+
+  document.getElementById('profileForm')?.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const msg = document.getElementById('profileMsg')!;
+    const saveBtn = document.getElementById('saveProfileBtn') as HTMLButtonElement;
+    saveBtn.disabled = true;
+    msg.textContent = 'Saving...';
+    msg.className = 'text-[11px] text-slate-600';
+
+    const { data: { session } } = await supabase.auth.getSession();
+    if (!session) {
+      msg.textContent = 'Your session expired — please log in again.';
+      msg.className = 'text-[11px] text-red-600';
+      saveBtn.disabled = false;
+      return;
+    }
+
+    const { error } = await supabase.from('truck_owners').upsert({
+      id: session.user.id,
+      email: session.user.email,
+      company_name: (document.getElementById('profileCompany') as HTMLInputElement).value || null,
+      contact_name: (document.getElementById('profileContact') as HTMLInputElement).value || null,
+      phone: (document.getElementById('profilePhone') as HTMLInputElement).value || null,
+      // Ako ovo tek SADA pravi red (nalog iz vremena pre nego što je
+      // odobravanje uvedeno), ne blokiramo retroaktivno nekoga ko je već
+      // imao pristup dashboard-u — samo update ne bi ni pipnuo status,
+      // ali upsert bez ovoga bi upisao default 'pending' pri prvom insertu.
+      ...(ownerHadNoRow ? { status: 'approved' } : {}),
+    }, { onConflict: 'id' });
+
+    saveBtn.disabled = false;
+
+    if (error) {
+      msg.textContent = '❌ ' + error.message;
+      msg.className = 'text-[11px] text-red-600';
+      return;
+    }
+
+    msg.textContent = '✅ Saved.';
+    msg.className = 'text-[11px] text-green-700';
   });
 
   document.addEventListener('DOMContentLoaded', init);
