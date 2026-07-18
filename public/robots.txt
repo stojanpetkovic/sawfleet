@@ -1,0 +1,8 @@
+User-agent: *
+Allow: /
+Disallow: /admin/
+Disallow: /dashboard/
+Disallow: /truck-dashboard/
+Disallow: /api/
+
+Sitemap: https://sftreeremoval.com/sitemap-index.xml

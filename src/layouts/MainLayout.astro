@@ -9,13 +9,38 @@ interface Props {
 }
 
 const {
-  title = "SawFleet | Premium Tree Service Dispatch Network",
+  title = "SF Tree Removal | Premium Tree Service Dispatch Network",
   description = "Connect homeowners with trusted local tree service professionals and grapple saw truck operators across South Florida.",
   image = "/og-image.jpg" // Putanja do slike koja će se prikazati kada neko podeli link na Viberu/WhatsAppu/FB-u
 } = Astro.props;
 
 // Generisanje kanoničnog URL-a za SEO (sprečava duplicate content penale)
 const canonicalURL = new URL(Astro.url.pathname, Astro.site || Astro.url.origin);
+
+// Organization schema (sajtska, ne LocalBusiness — ovo je dispatch/
+// marketplace platforma bez jedne fizičke adrese/telefona, pa ne
+// izmišljamo te podatke; koristimo samo ono što stvarno znamo)
+const organizationSchema = {
+  "@context": "https://schema.org",
+  "@type": "Organization",
+  name: "SF Tree Removal",
+  url: "https://sftreeremoval.com/",
+  logo: "https://sftreeremoval.com/logo/logo.png",
+  description:
+    "Premium tree service dispatch network connecting South Florida homeowners with vetted, compliant tree service contractors.",
+  areaServed: [
+    { "@type": "AdministrativeArea", name: "Miami-Dade County" },
+    { "@type": "AdministrativeArea", name: "Broward County" },
+    { "@type": "AdministrativeArea", name: "Palm Beach County" },
+  ],
+};
+
+const websiteSchema = {
+  "@context": "https://schema.org",
+  "@type": "WebSite",
+  name: "SF Tree Removal",
+  url: "https://sftreeremoval.com/",
+};
 
 // Povlačimo globalne skripte (Analytics, Pixel) koje si uneo kroz Settings panel
 const { data: tracking } = await supabase
@@ -59,6 +84,12 @@ const { data: tracking } = await supabase
   <meta property="twitter:title" content={title} />
   <meta property="twitter:description" content={description} />
   <meta property="twitter:image" content={new URL(image, Astro.url)} />
+
+  <!-- ============================================== -->
+  <!-- STRUCTURED DATA (schema.org) -->
+  <!-- ============================================== -->
+  <script type="application/ld+json" set:html={JSON.stringify(organizationSchema)}></script>
+  <script type="application/ld+json" set:html={JSON.stringify(websiteSchema)}></script>
 
   <!-- ============================================== -->
   <!-- THEME & ICONS -->

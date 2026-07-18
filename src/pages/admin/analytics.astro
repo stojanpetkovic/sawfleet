@@ -4,132 +4,262 @@ import AdminLayout from "../../layouts/AdminLayout.astro";
 ---
 
 <AdminLayout>
-  <div class="w-full flex flex-col gap-8 min-w-0">
-    
+  <div class="w-full flex flex-col gap-8 min-w-0 print:gap-4">
+
     <!-- HEADER -->
-    <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 border-b border-zinc-100 pb-6">
+    <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 border-b border-zinc-100 pb-6 print:pb-2">
       <div>
-        <span class="text-[10px] font-mono font-bold uppercase tracking-[0.2em] text-green-700">// Traffic & Conversions</span>
+        <span class="text-[10px] font-mono font-bold uppercase tracking-[0.2em] text-green-700">// Full Platform Report</span>
         <h1 class="mt-2 text-2xl font-bold tracking-tight text-slate-900 sm:text-3xl">Analytics & Performance</h1>
-      </div>
-      
-      <select id="analyticsFilter" class="w-full sm:w-auto bg-white border border-zinc-200 text-[10px] font-bold uppercase tracking-[0.2em] p-3 rounded-lg text-zinc-700 outline-none focus:border-green-500/50 transition-colors cursor-pointer">
-        <option value="7">Last 7 Days</option>
-        <option value="30">Last 30 Days</option>
-        <option value="90">Last 90 Days</option>
-      </select>
-    </div>
-
-    <!-- KARTICE SA STATISTIKOM -->
-    <div class="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-6 gap-4 md:gap-6 w-full">
-      
-      <!-- Total Leads -->
-      <div class="bg-white border border-zinc-100 p-5 rounded-xl shadow-xl hover:border-zinc-200 transition-colors flex flex-col justify-between">
-        <p class="text-[9px] font-bold uppercase tracking-[0.2em] text-zinc-500">Total Leads</p>
-        <h2 id="stat-total" class="text-2xl font-mono font-bold text-slate-900 mt-4">-</h2>
+        <p id="reportDate" class="mt-1 text-[11px] text-zinc-400 font-mono"></p>
       </div>
 
-      <!-- Claimed Leads -->
-      <div class="bg-white border border-zinc-100 p-5 rounded-xl border-t-2 border-t-green-500 shadow-xl hover:border-zinc-200 transition-colors relative overflow-hidden flex flex-col justify-between">
-        <div class="absolute top-0 right-0 w-24 h-24 bg-green-500/5 blur-[30px] rounded-full pointer-events-none"></div>
-        <p class="text-[9px] font-bold uppercase tracking-[0.2em] text-green-700 relative z-10">Claimed</p>
-        <h2 id="stat-claimed" class="text-2xl font-mono font-bold text-slate-900 mt-4 relative z-10">-</h2>
-      </div>
-
-      <!-- Conversion Rate -->
-      <div class="bg-white border border-zinc-100 p-5 rounded-xl border-t-2 border-t-blue-500 shadow-xl hover:border-zinc-200 transition-colors relative overflow-hidden flex flex-col justify-between">
-        <div class="absolute top-0 right-0 w-24 h-24 bg-blue-500/5 blur-[30px] rounded-full pointer-events-none"></div>
-        <p class="text-[9px] font-bold uppercase tracking-[0.2em] text-blue-600 relative z-10">Conversion</p>
-        <h2 id="stat-conversion" class="text-2xl font-mono font-bold text-slate-900 mt-4 relative z-10">-</h2>
-      </div>
-      
-      <!-- Google Ads -->
-      <div class="bg-white border border-zinc-100 p-5 rounded-xl shadow-xl hover:border-zinc-200 transition-colors flex flex-col justify-between">
-        <p class="text-[9px] font-bold uppercase tracking-[0.2em] text-zinc-500">Google Ads</p>
-        <h2 id="stat-google" class="text-2xl font-mono font-bold text-slate-900 mt-4">-</h2>
-      </div>
-
-      <!-- Meta / FB -->
-      <div class="bg-white border border-zinc-100 p-5 rounded-xl shadow-xl hover:border-zinc-200 transition-colors flex flex-col justify-between">
-        <p class="text-[9px] font-bold uppercase tracking-[0.2em] text-zinc-500">Meta / FB</p>
-        <h2 id="stat-meta" class="text-2xl font-mono font-bold text-slate-900 mt-4">-</h2>
-      </div>
-
-      <!-- Organic -->
-      <div class="bg-white border border-zinc-100 p-5 rounded-xl shadow-xl hover:border-zinc-200 transition-colors flex flex-col justify-between">
-        <p class="text-[9px] font-bold uppercase tracking-[0.2em] text-zinc-500">Organic</p>
-        <h2 id="stat-organic" class="text-2xl font-mono font-bold text-slate-900 mt-4">-</h2>
+      <div class="flex items-center gap-3 w-full sm:w-auto print:hidden">
+        <select id="analyticsFilter" class="flex-1 sm:flex-none bg-white border border-zinc-200 text-[10px] font-bold uppercase tracking-[0.2em] p-3 rounded-lg text-zinc-700 outline-none focus:border-green-500/50 transition-colors cursor-pointer">
+          <option value="7">Last 7 Days</option>
+          <option value="30" selected>Last 30 Days</option>
+          <option value="90">Last 90 Days</option>
+        </select>
+        <button id="printBtn" type="button" class="shrink-0 h-[46px] px-4 rounded-lg border border-zinc-200 text-[10px] font-bold uppercase tracking-[0.2em] text-zinc-600 hover:bg-zinc-100 hover:text-slate-900 transition-colors whitespace-nowrap">🖨️ Print Report</button>
       </div>
     </div>
 
-    <!-- GRAFIKONI -->
-    <div class="grid grid-cols-1 xl:grid-cols-3 gap-6 w-full">
-      
-      <!-- GLAVNI GRAFIKON (Trendovi) -->
-      <div class="xl:col-span-2 bg-white border border-zinc-100 p-6 md:p-8 rounded-xl shadow-xl flex flex-col">
-        <div class="flex justify-between items-center mb-6">
-          <h3 class="text-[10px] font-bold uppercase tracking-[0.2em] text-zinc-500">Lead Volume vs Conversion Trend</h3>
-          <div class="flex gap-4">
-            <div class="flex items-center gap-2"><span class="w-2 h-2 rounded-full bg-blue-500"></span><span class="text-[9px] text-zinc-600 font-mono">Total</span></div>
-            <div class="flex items-center gap-2"><span class="w-2 h-2 rounded-full bg-green-500"></span><span class="text-[9px] text-zinc-600 font-mono">Claimed</span></div>
+    <!-- ============================================================ -->
+    <!-- SECTION 1: SERVICE LEADS (glavni sajt) -->
+    <!-- ============================================================ -->
+    <section class="space-y-6">
+      <h2 class="text-[10px] font-bold uppercase tracking-[0.25em] text-zinc-400">Service Leads</h2>
+
+      <div class="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-6 gap-4 md:gap-6 w-full">
+        <div class="bg-white border border-zinc-100 p-5 rounded-xl shadow-xl hover:border-zinc-200 transition-colors flex flex-col justify-between">
+          <p class="text-[9px] font-bold uppercase tracking-[0.2em] text-zinc-500">Total Leads</p>
+          <h2 id="stat-total" class="text-2xl font-mono font-bold text-slate-900 mt-4">-</h2>
+        </div>
+        <div class="bg-white border border-zinc-100 p-5 rounded-xl border-t-2 border-t-green-500 shadow-xl hover:border-zinc-200 transition-colors relative overflow-hidden flex flex-col justify-between">
+          <div class="absolute top-0 right-0 w-24 h-24 bg-green-500/5 blur-[30px] rounded-full pointer-events-none"></div>
+          <p class="text-[9px] font-bold uppercase tracking-[0.2em] text-green-700 relative z-10">Claimed</p>
+          <h2 id="stat-claimed" class="text-2xl font-mono font-bold text-slate-900 mt-4 relative z-10">-</h2>
+        </div>
+        <div class="bg-white border border-zinc-100 p-5 rounded-xl border-t-2 border-t-blue-500 shadow-xl hover:border-zinc-200 transition-colors relative overflow-hidden flex flex-col justify-between">
+          <div class="absolute top-0 right-0 w-24 h-24 bg-blue-500/5 blur-[30px] rounded-full pointer-events-none"></div>
+          <p class="text-[9px] font-bold uppercase tracking-[0.2em] text-blue-600 relative z-10">Conversion</p>
+          <h2 id="stat-conversion" class="text-2xl font-mono font-bold text-slate-900 mt-4 relative z-10">-</h2>
+        </div>
+        <div class="bg-white border border-zinc-100 p-5 rounded-xl shadow-xl hover:border-zinc-200 transition-colors flex flex-col justify-between">
+          <p class="text-[9px] font-bold uppercase tracking-[0.2em] text-zinc-500">Google Ads</p>
+          <h2 id="stat-google" class="text-2xl font-mono font-bold text-slate-900 mt-4">-</h2>
+        </div>
+        <div class="bg-white border border-zinc-100 p-5 rounded-xl shadow-xl hover:border-zinc-200 transition-colors flex flex-col justify-between">
+          <p class="text-[9px] font-bold uppercase tracking-[0.2em] text-zinc-500">Meta / FB</p>
+          <h2 id="stat-meta" class="text-2xl font-mono font-bold text-slate-900 mt-4">-</h2>
+        </div>
+        <div class="bg-white border border-zinc-100 p-5 rounded-xl shadow-xl hover:border-zinc-200 transition-colors flex flex-col justify-between">
+          <p class="text-[9px] font-bold uppercase tracking-[0.2em] text-zinc-500">Organic</p>
+          <h2 id="stat-organic" class="text-2xl font-mono font-bold text-slate-900 mt-4">-</h2>
+        </div>
+      </div>
+
+      <div class="grid grid-cols-1 xl:grid-cols-3 gap-6 w-full print:grid-cols-1">
+        <div class="xl:col-span-2 bg-white border border-zinc-100 p-6 md:p-8 rounded-xl shadow-xl flex flex-col print:break-inside-avoid">
+          <div class="flex justify-between items-center mb-6">
+            <h3 class="text-[10px] font-bold uppercase tracking-[0.2em] text-zinc-500">Lead Volume vs Conversion Trend</h3>
+            <div class="flex gap-4">
+              <div class="flex items-center gap-2"><span class="w-2 h-2 rounded-full bg-blue-500"></span><span class="text-[9px] text-zinc-600 font-mono">Total</span></div>
+              <div class="flex items-center gap-2"><span class="w-2 h-2 rounded-full bg-green-500"></span><span class="text-[9px] text-zinc-600 font-mono">Claimed</span></div>
+            </div>
+          </div>
+          <div class="relative w-full flex-1 min-h-[250px] md:min-h-[350px]">
+            <canvas id="lineChart"></canvas>
           </div>
         </div>
-        <div class="relative w-full flex-1 min-h-[250px] md:min-h-[350px]">
-          <canvas id="lineChart"></canvas>
+
+        <div class="xl:col-span-1 bg-white border border-zinc-100 p-6 md:p-8 rounded-xl shadow-xl flex flex-col print:break-inside-avoid">
+          <h3 class="text-[10px] font-bold uppercase tracking-[0.2em] text-zinc-500 mb-6">Acquisition Source</h3>
+          <div class="relative w-full flex-1 min-h-[250px] flex items-center justify-center">
+            <canvas id="donutChart"></canvas>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================================ -->
+    <!-- SECTION 2: EXTERNAL LEADS (drugi domeni) -->
+    <!-- ============================================================ -->
+    <section class="space-y-6 pt-4 border-t border-zinc-100">
+      <h2 class="text-[10px] font-bold uppercase tracking-[0.25em] text-zinc-400">External Leads</h2>
+
+      <div class="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-6 gap-4 md:gap-6 w-full">
+        <div class="bg-white border border-zinc-100 p-5 rounded-xl shadow-xl flex flex-col justify-between">
+          <p class="text-[9px] font-bold uppercase tracking-[0.2em] text-zinc-500">Total</p>
+          <h2 id="ext-total" class="text-2xl font-mono font-bold text-slate-900 mt-4">-</h2>
+        </div>
+        <div class="bg-white border border-zinc-100 p-5 rounded-xl border-t-2 border-t-amber-500 shadow-xl flex flex-col justify-between">
+          <p class="text-[9px] font-bold uppercase tracking-[0.2em] text-amber-600">New</p>
+          <h2 id="ext-new" class="text-2xl font-mono font-bold text-slate-900 mt-4">-</h2>
+        </div>
+        <div class="bg-white border border-zinc-100 p-5 rounded-xl border-t-2 border-t-green-500 shadow-xl flex flex-col justify-between">
+          <p class="text-[9px] font-bold uppercase tracking-[0.2em] text-green-700">Approved</p>
+          <h2 id="ext-approved" class="text-2xl font-mono font-bold text-slate-900 mt-4">-</h2>
+        </div>
+        <div class="bg-white border border-zinc-100 p-5 rounded-xl border-t-2 border-t-red-500 shadow-xl flex flex-col justify-between">
+          <p class="text-[9px] font-bold uppercase tracking-[0.2em] text-red-600">Rejected</p>
+          <h2 id="ext-rejected" class="text-2xl font-mono font-bold text-slate-900 mt-4">-</h2>
+        </div>
+        <div class="bg-white border border-zinc-100 p-5 rounded-xl border-t-2 border-t-blue-500 shadow-xl flex flex-col justify-between">
+          <p class="text-[9px] font-bold uppercase tracking-[0.2em] text-blue-600">Contacted</p>
+          <h2 id="ext-contacted" class="text-2xl font-mono font-bold text-slate-900 mt-4">-</h2>
+        </div>
+        <div class="bg-white border border-zinc-100 p-5 rounded-xl shadow-xl flex flex-col justify-between">
+          <p class="text-[9px] font-bold uppercase tracking-[0.2em] text-teal-600">↩ Migrated</p>
+          <h2 id="ext-migrated" class="text-2xl font-mono font-bold text-slate-900 mt-4">-</h2>
         </div>
       </div>
 
-      <!-- DOUGHNUT GRAFIKON (Izvori) -->
-      <div class="xl:col-span-1 bg-white border border-zinc-100 p-6 md:p-8 rounded-xl shadow-xl flex flex-col">
-        <h3 class="text-[10px] font-bold uppercase tracking-[0.2em] text-zinc-500 mb-6">Acquisition Source</h3>
-        <div class="relative w-full flex-1 min-h-[250px] flex items-center justify-center">
-          <canvas id="donutChart"></canvas>
+      <div class="grid grid-cols-1 xl:grid-cols-3 gap-6 w-full print:grid-cols-1">
+        <div class="xl:col-span-1 bg-white border border-zinc-100 p-6 md:p-8 rounded-xl shadow-xl flex flex-col print:break-inside-avoid">
+          <h3 class="text-[10px] font-bold uppercase tracking-[0.2em] text-zinc-500 mb-6">Volume Trend</h3>
+          <div class="relative w-full flex-1 min-h-[220px]">
+            <canvas id="extLineChart"></canvas>
+          </div>
+        </div>
+        <div class="xl:col-span-1 bg-white border border-zinc-100 p-6 md:p-8 rounded-xl shadow-xl flex flex-col print:break-inside-avoid">
+          <h3 class="text-[10px] font-bold uppercase tracking-[0.2em] text-zinc-500 mb-6">By Site</h3>
+          <div class="relative w-full flex-1 min-h-[220px] flex items-center justify-center">
+            <canvas id="extSiteChart"></canvas>
+          </div>
+        </div>
+        <div class="xl:col-span-1 bg-white border border-zinc-100 p-6 md:p-8 rounded-xl shadow-xl flex flex-col print:break-inside-avoid">
+          <h3 class="text-[10px] font-bold uppercase tracking-[0.2em] text-zinc-500 mb-6">By Form Type</h3>
+          <div class="relative w-full flex-1 min-h-[220px] flex items-center justify-center">
+            <canvas id="extFormChart"></canvas>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================================ -->
+    <!-- SECTION 3: NETWORK — Contractors / Truck Owners / Trucks -->
+    <!-- ============================================================ -->
+    <section class="space-y-6 pt-4 border-t border-zinc-100">
+      <h2 class="text-[10px] font-bold uppercase tracking-[0.25em] text-zinc-400">Network — Current Roster</h2>
+
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-6 w-full">
+        <div class="bg-white border border-zinc-100 p-6 rounded-xl shadow-xl print:break-inside-avoid">
+          <p class="text-[10px] font-bold uppercase tracking-[0.2em] text-zinc-500 mb-4">Contractors</p>
+          <div class="grid grid-cols-3 gap-3 text-center">
+            <div><h3 id="net-contractors-total" class="text-xl font-mono font-bold text-slate-900">-</h3><p class="text-[9px] text-zinc-400 uppercase mt-1">Total</p></div>
+            <div><h3 id="net-contractors-active" class="text-xl font-mono font-bold text-green-700">-</h3><p class="text-[9px] text-zinc-400 uppercase mt-1">Active</p></div>
+            <div><h3 id="net-contractors-pending" class="text-xl font-mono font-bold text-amber-600">-</h3><p class="text-[9px] text-zinc-400 uppercase mt-1">Pending</p></div>
+          </div>
+        </div>
+        <div class="bg-white border border-zinc-100 p-6 rounded-xl shadow-xl print:break-inside-avoid">
+          <p class="text-[10px] font-bold uppercase tracking-[0.2em] text-zinc-500 mb-4">Truck Owners</p>
+          <div class="grid grid-cols-3 gap-3 text-center">
+            <div><h3 id="net-owners-total" class="text-xl font-mono font-bold text-slate-900">-</h3><p class="text-[9px] text-zinc-400 uppercase mt-1">Total</p></div>
+            <div><h3 id="net-owners-approved" class="text-xl font-mono font-bold text-green-700">-</h3><p class="text-[9px] text-zinc-400 uppercase mt-1">Approved</p></div>
+            <div><h3 id="net-owners-pending" class="text-xl font-mono font-bold text-amber-600">-</h3><p class="text-[9px] text-zinc-400 uppercase mt-1">Pending</p></div>
+          </div>
+        </div>
+        <div class="bg-white border border-zinc-100 p-6 rounded-xl shadow-xl print:break-inside-avoid">
+          <p class="text-[10px] font-bold uppercase tracking-[0.2em] text-zinc-500 mb-4">Grapple Saw Trucks</p>
+          <div class="grid grid-cols-3 gap-3 text-center">
+            <div><h3 id="net-trucks-total" class="text-xl font-mono font-bold text-slate-900">-</h3><p class="text-[9px] text-zinc-400 uppercase mt-1">Total</p></div>
+            <div><h3 id="net-trucks-approved" class="text-xl font-mono font-bold text-green-700">-</h3><p class="text-[9px] text-zinc-400 uppercase mt-1">Approved</p></div>
+            <div><h3 id="net-trucks-pending" class="text-xl font-mono font-bold text-amber-600">-</h3><p class="text-[9px] text-zinc-400 uppercase mt-1">Pending</p></div>
+          </div>
         </div>
       </div>
 
-    </div>
-    
+      <div class="bg-white border border-zinc-100 p-6 md:p-8 rounded-xl shadow-xl print:break-inside-avoid">
+        <h3 class="text-[10px] font-bold uppercase tracking-[0.2em] text-zinc-500 mb-6">Network Status Breakdown</h3>
+        <div class="relative w-full min-h-[220px]">
+          <canvas id="networkChart"></canvas>
+        </div>
+      </div>
+    </section>
+
   </div>
 </AdminLayout>
+
+<style>
+  @media print {
+    :global(aside), :global(header), :global(nav) { display: none !important; }
+    :global(main) { padding: 0 !important; }
+  }
+</style>
 
 <script>
   import { supabase } from "../../lib/supabase";
   import Chart from 'chart.js/auto';
 
+  // ------------------------------------------------------------------
+  // Zajednička svetla tema za sve grafikone (ranije su ostali tamni
+  // stilovi iz pre-light-theme verzije — sad je sve usklađeno)
+  // ------------------------------------------------------------------
+  const GRID_COLOR = '#F1F5F9';
+  const AXIS_TEXT = '#94A3B8';
+  const TOOLTIP = {
+    backgroundColor: '#FFFFFF',
+    titleColor: '#0F172A',
+    bodyColor: '#334155',
+    borderColor: '#E2E8F0',
+    borderWidth: 1,
+    padding: 10,
+    titleFont: { family: 'monospace', size: 10 },
+    bodyFont: { family: 'monospace', size: 12 },
+  };
+  const LEGEND_LABELS = { color: '#475569', font: { family: 'monospace', size: 10 }, padding: 16, usePointStyle: true, pointStyle: 'circle' };
+
+  document.getElementById('reportDate')!.textContent = `Generated ${new Date().toLocaleString()}`;
+  document.getElementById('printBtn')?.addEventListener('click', () => window.print());
+
   let lineChart: any = null;
   let donutChart: any = null;
+  let extLineChart: any = null;
+  let extSiteChart: any = null;
+  let extFormChart: any = null;
+  let networkChart: any = null;
 
-  async function updateAnalytics(days: string) {
+  function dateLabels(days: number) {
+    const labels: string[] = [];
+    for (let i = days - 1; i >= 0; i--) {
+      const d = new Date();
+      d.setDate(d.getDate() - i);
+      labels.push(d.toLocaleDateString('en-US', { month: 'short', day: 'numeric' }));
+    }
+    return labels;
+  }
+
+  function countByDay(rows: { created_at: string }[], labels: string[]) {
+    return labels.map((label) =>
+      rows.filter((r) => new Date(r.created_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric' }) === label).length
+    );
+  }
+
+  async function updateAnalytics(daysStr: string) {
+    const days = parseInt(daysStr);
     const date = new Date();
-    date.setDate(date.getDate() - parseInt(days));
-    
-    const { data: leads } = await supabase
-      .from('leads')
-      .select('created_at, status, source')
-      .gte('created_at', date.toISOString());
+    date.setDate(date.getDate() - days);
+    const sinceIso = date.toISOString();
+    const labels = dateLabels(days);
 
-    if (!leads) return;
+    // ================= SERVICE LEADS =================
+    const { data: leads } = await supabase.from('leads').select('created_at, status, source').gte('created_at', sinceIso);
+    const leadRows = leads || [];
 
-    // 1. OBRADA PODATAKA ZA IZVORE I KONVERZIJE
-    let google = 0, meta = 0, organic = 0, other = 0;
-    let claimedCount = 0;
-
-    leads.forEach(lead => {
-      // Izbroj izvore
-      const src = lead.source ? lead.source.toLowerCase() : 'organic'; 
+    let google = 0, meta = 0, organic = 0, other = 0, claimedCount = 0;
+    leadRows.forEach((lead: any) => {
+      const src = lead.source ? lead.source.toLowerCase() : 'organic';
       if (src.includes('google') || src.includes('gads')) google++;
       else if (src.includes('fb') || src.includes('facebook') || src.includes('meta') || src.includes('ig') || src.includes('instagram')) meta++;
       else if (src.includes('organic') || src.includes('direct') || src.includes('seo')) organic++;
       else other++;
-
-      // Izbroj konverzije (preuzete lidove)
       if (lead.status === 'claimed') claimedCount++;
     });
 
-    const totalCount = leads.length;
+    const totalCount = leadRows.length;
     const conversionRate = totalCount > 0 ? ((claimedCount / totalCount) * 100).toFixed(1) : '0.0';
 
-    // Ažuriranje brojčanih kartica
     document.getElementById('stat-total')!.textContent = totalCount.toString();
     document.getElementById('stat-claimed')!.textContent = claimedCount.toString();
     document.getElementById('stat-conversion')!.textContent = `${conversionRate}%`;
@@ -137,146 +267,152 @@ import AdminLayout from "../../layouts/AdminLayout.astro";
     document.getElementById('stat-meta')!.textContent = meta.toString();
     document.getElementById('stat-organic')!.textContent = organic.toString();
 
-    // 2. OBRADA PODATAKA ZA VREMENSKI TREND (Line Chart)
-    const labels: string[] = [];
-    const totalCountsArray: number[] = [];
-    const claimedCountsArray: number[] = [];
-    
-    for (let i = parseInt(days) - 1; i >= 0; i--) {
-      const d = new Date();
-      d.setDate(d.getDate() - i);
-      const dateStr = d.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
-      labels.push(dateStr);
-      
-      const dayLeads = leads.filter(l => new Date(l.created_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric' }) === dateStr);
-      totalCountsArray.push(dayLeads.length);
-      claimedCountsArray.push(dayLeads.filter(l => l.status === 'claimed').length);
-    }
+    const totalCountsArray = labels.map((label) => leadRows.filter((l: any) => new Date(l.created_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric' }) === label).length);
+    const claimedCountsArray = labels.map((label) => leadRows.filter((l: any) => l.status === 'claimed' && new Date(l.created_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric' }) === label).length);
 
-    // 3. CRTANJE LINE GRAFIKONA SA DVE LINIJE
     const lineCtx = document.getElementById('lineChart') as HTMLCanvasElement;
     if (lineChart) lineChart.destroy();
-    
     lineChart = new Chart(lineCtx, {
       type: 'line',
       data: {
-        labels: labels,
+        labels,
         datasets: [
-          {
-            label: 'Claimed Leads',
-            data: claimedCountsArray,
-            borderColor: '#22c55e', // Zelena
-            backgroundColor: 'rgba(34, 197, 94, 0.1)',
-            borderWidth: 2,
-            pointBackgroundColor: '#050505',
-            pointBorderColor: '#22c55e',
-            pointBorderWidth: 2,
-            pointRadius: 3,
-            pointHoverRadius: 6,
-            fill: true,
-            tension: 0.4,
-            yAxisID: 'y'
-          },
-          {
-            label: 'Total Leads',
-            data: totalCountsArray,
-            borderColor: '#3b82f6', // Plava
-            backgroundColor: 'transparent',
-            borderWidth: 2,
-            borderDash: [5, 5], // Isprekidana linija za total da ne guši grafikon
-            pointBackgroundColor: '#050505',
-            pointBorderColor: '#3b82f6',
-            pointBorderWidth: 2,
-            pointRadius: 3,
-            pointHoverRadius: 6,
-            fill: false,
-            tension: 0.4,
-            yAxisID: 'y'
-          }
-        ]
+          { label: 'Claimed Leads', data: claimedCountsArray, borderColor: '#16A34A', backgroundColor: 'rgba(22, 163, 74, 0.08)', borderWidth: 2, pointBackgroundColor: '#FFFFFF', pointBorderColor: '#16A34A', pointBorderWidth: 2, pointRadius: 3, pointHoverRadius: 6, fill: true, tension: 0.4 },
+          { label: 'Total Leads', data: totalCountsArray, borderColor: '#2563EB', backgroundColor: 'transparent', borderWidth: 2, borderDash: [5, 5], pointBackgroundColor: '#FFFFFF', pointBorderColor: '#2563EB', pointBorderWidth: 2, pointRadius: 3, pointHoverRadius: 6, fill: false, tension: 0.4 },
+        ],
       },
       options: {
-        responsive: true,
-        maintainAspectRatio: false,
-        plugins: { 
-          legend: { display: false }, 
-          tooltip: { 
-            mode: 'index', 
-            intersect: false,
-            backgroundColor: 'rgba(5, 5, 5, 0.9)',
-            titleColor: '#a1a1aa',
-            bodyColor: '#fff',
-            borderColor: '#27272a',
-            borderWidth: 1,
-            titleFont: { family: 'monospace', size: 10 },
-            bodyFont: { family: 'monospace', size: 12 }
-          } 
+        responsive: true, maintainAspectRatio: false,
+        plugins: { legend: { display: false }, tooltip: { mode: 'index', intersect: false, ...TOOLTIP } },
+        scales: {
+          y: { beginAtZero: true, ticks: { color: AXIS_TEXT, stepSize: 1, font: { family: 'monospace', size: 10 } }, grid: { color: GRID_COLOR }, border: { display: false } },
+          x: { ticks: { color: AXIS_TEXT, font: { family: 'monospace', size: 10 } }, grid: { display: false }, border: { display: false } },
         },
-        scales: { 
-          y: { 
-            beginAtZero: true, 
-            ticks: { color: '#71717a', stepSize: 1, font: { family: 'monospace', size: 10 } }, 
-            grid: { color: '#18181b' },
-            border: { display: false }
-          }, 
-          x: { 
-            ticks: { color: '#71717a', font: { family: 'monospace', size: 10 } }, 
-            grid: { color: '#18181b' },
-            border: { display: false }
-          } 
-        },
-        interaction: { mode: 'nearest', axis: 'x', intersect: false }
-      }
+        interaction: { mode: 'nearest', axis: 'x', intersect: false },
+      },
     });
 
-    // 4. CRTANJE DOUGHNUT GRAFIKONA
     const donutCtx = document.getElementById('donutChart') as HTMLCanvasElement;
     if (donutChart) donutChart.destroy();
-
     donutChart = new Chart(donutCtx, {
       type: 'doughnut',
       data: {
         labels: ['Google Ads', 'Meta / FB', 'Organic', 'Other'],
-        datasets: [{
-          data: [google, meta, organic, other],
-          backgroundColor: [
-            '#3b82f6', // Blue
-            '#a855f7', // Purple
-            '#22c55e', // Green
-            '#27272a'  // Zinc-800
-          ],
-          borderColor: '#050505',
-          borderWidth: 2,
-          hoverOffset: 4
-        }]
+        datasets: [{ data: [google, meta, organic, other], backgroundColor: ['#2563EB', '#A855F7', '#16A34A', '#CBD5E1'], borderColor: '#FFFFFF', borderWidth: 2, hoverOffset: 4 }],
       },
       options: {
-        responsive: true,
-        maintainAspectRatio: false,
-        cutout: '75%', 
-        plugins: {
-          legend: {
-            position: 'bottom',
-            labels: { color: '#a1a1aa', font: { family: 'monospace', size: 10 }, padding: 20, usePointStyle: true, pointStyle: 'circle' }
-          },
-          tooltip: {
-            backgroundColor: 'rgba(5, 5, 5, 0.9)',
-            titleColor: '#a1a1aa',
-            bodyColor: '#fff',
-            borderColor: '#27272a',
-            borderWidth: 1,
-            bodyFont: { family: 'monospace', size: 12 },
-            callbacks: {
-              label: function(context) {
-                let label = context.label || '';
-                if (label) { label += ': '; }
-                if (context.parsed !== null) { label += context.parsed; }
-                return label;
-              }
-            }
-          }
-        }
-      }
+        responsive: true, maintainAspectRatio: false, cutout: '72%',
+        plugins: { legend: { position: 'bottom', labels: LEGEND_LABELS }, tooltip: TOOLTIP },
+      },
+    });
+
+    // ================= EXTERNAL LEADS =================
+    const { data: extAll } = await supabase.from('external_leads').select('created_at, status, source_domain, form_type, extra');
+    const extAllRows = extAll || [];
+    const extRows = extAllRows.filter((r: any) => new Date(r.created_at) >= date);
+
+    document.getElementById('ext-total')!.textContent = extAllRows.length.toString();
+    document.getElementById('ext-new')!.textContent = extAllRows.filter((r: any) => r.status === 'new').length.toString();
+    document.getElementById('ext-approved')!.textContent = extAllRows.filter((r: any) => r.status === 'approved').length.toString();
+    document.getElementById('ext-rejected')!.textContent = extAllRows.filter((r: any) => r.status === 'rejected').length.toString();
+    document.getElementById('ext-contacted')!.textContent = extAllRows.filter((r: any) => r.status === 'contacted').length.toString();
+    document.getElementById('ext-migrated')!.textContent = extAllRows.filter((r: any) => r.extra && (r.extra as any).migrated_from_lead_id).length.toString();
+
+    const extCountsArray = countByDay(extRows, labels);
+    const extLineCtx = document.getElementById('extLineChart') as HTMLCanvasElement;
+    if (extLineChart) extLineChart.destroy();
+    extLineChart = new Chart(extLineCtx, {
+      type: 'line',
+      data: { labels, datasets: [{ label: 'External Leads', data: extCountsArray, borderColor: '#0D9488', backgroundColor: 'rgba(13, 148, 136, 0.08)', borderWidth: 2, pointBackgroundColor: '#FFFFFF', pointBorderColor: '#0D9488', pointBorderWidth: 2, pointRadius: 3, pointHoverRadius: 6, fill: true, tension: 0.4 }] },
+      options: {
+        responsive: true, maintainAspectRatio: false,
+        plugins: { legend: { display: false }, tooltip: { mode: 'index', intersect: false, ...TOOLTIP } },
+        scales: {
+          y: { beginAtZero: true, ticks: { color: AXIS_TEXT, stepSize: 1, font: { family: 'monospace', size: 10 } }, grid: { color: GRID_COLOR }, border: { display: false } },
+          x: { ticks: { color: AXIS_TEXT, font: { family: 'monospace', size: 9 } }, grid: { display: false }, border: { display: false } },
+        },
+      },
+    });
+
+    const siteCounts = new Map<string, number>();
+    extAllRows.forEach((r: any) => { const k = r.source_domain || 'Unknown'; siteCounts.set(k, (siteCounts.get(k) || 0) + 1); });
+    const siteEntries = Array.from(siteCounts.entries()).sort((a, b) => b[1] - a[1]);
+    const siteColors = ['#16A34A', '#2563EB', '#A855F7', '#D97706', '#0D9488', '#DB2777', '#CBD5E1'];
+
+    const extSiteCtx = document.getElementById('extSiteChart') as HTMLCanvasElement;
+    if (extSiteChart) extSiteChart.destroy();
+    extSiteChart = new Chart(extSiteCtx, {
+      type: 'doughnut',
+      data: { labels: siteEntries.map(([k]) => k), datasets: [{ data: siteEntries.map(([, v]) => v), backgroundColor: siteColors, borderColor: '#FFFFFF', borderWidth: 2, hoverOffset: 4 }] },
+      options: { responsive: true, maintainAspectRatio: false, cutout: '72%', plugins: { legend: { position: 'bottom', labels: LEGEND_LABELS }, tooltip: TOOLTIP } },
+    });
+
+    const formLabels: Record<string, string> = { lead: 'Lead', job: 'Free Job' };
+    const formCounts = new Map<string, number>();
+    extAllRows.forEach((r: any) => { const k = r.form_type || 'lead'; formCounts.set(k, (formCounts.get(k) || 0) + 1); });
+    const formEntries = Array.from(formCounts.entries()).sort((a, b) => b[1] - a[1]);
+
+    const extFormCtx = document.getElementById('extFormChart') as HTMLCanvasElement;
+    if (extFormChart) extFormChart.destroy();
+    extFormChart = new Chart(extFormCtx, {
+      type: 'doughnut',
+      data: { labels: formEntries.map(([k]) => formLabels[k] || k), datasets: [{ data: formEntries.map(([, v]) => v), backgroundColor: ['#16A34A', '#2563EB', '#A855F7', '#D97706'], borderColor: '#FFFFFF', borderWidth: 2, hoverOffset: 4 }] },
+      options: { responsive: true, maintainAspectRatio: false, cutout: '72%', plugins: { legend: { position: 'bottom', labels: LEGEND_LABELS }, tooltip: TOOLTIP } },
+    });
+
+    // ================= NETWORK (current roster, ne zavisi od date filtera) =================
+    const { data: contractors } = await supabase.from('contractors').select('status');
+    const { data: owners } = await supabase.from('truck_owners').select('status');
+    const { data: trucks } = await supabase.from('grapple_saw_trucks').select('approval_status');
+
+    const contractorRows = contractors || [];
+    const ownerRows = owners || [];
+    const truckRows = trucks || [];
+
+    const cActive = contractorRows.filter((c: any) => c.status === 'active').length;
+    const cPending = contractorRows.filter((c: any) => !c.status || c.status === 'pending').length;
+    const cRejected = contractorRows.filter((c: any) => c.status === 'rejected').length;
+
+    const oApproved = ownerRows.filter((o: any) => o.status === 'approved').length;
+    const oPending = ownerRows.filter((o: any) => !o.status || o.status === 'pending').length;
+    const oRejected = ownerRows.filter((o: any) => o.status === 'rejected').length;
+
+    const tApproved = truckRows.filter((t: any) => t.approval_status === 'approved').length;
+    const tPending = truckRows.filter((t: any) => !t.approval_status || t.approval_status === 'pending').length;
+    const tRejected = truckRows.filter((t: any) => t.approval_status === 'rejected').length;
+
+    document.getElementById('net-contractors-total')!.textContent = contractorRows.length.toString();
+    document.getElementById('net-contractors-active')!.textContent = cActive.toString();
+    document.getElementById('net-contractors-pending')!.textContent = cPending.toString();
+
+    document.getElementById('net-owners-total')!.textContent = ownerRows.length.toString();
+    document.getElementById('net-owners-approved')!.textContent = oApproved.toString();
+    document.getElementById('net-owners-pending')!.textContent = oPending.toString();
+
+    document.getElementById('net-trucks-total')!.textContent = truckRows.length.toString();
+    document.getElementById('net-trucks-approved')!.textContent = tApproved.toString();
+    document.getElementById('net-trucks-pending')!.textContent = tPending.toString();
+
+    const networkCtx = document.getElementById('networkChart') as HTMLCanvasElement;
+    if (networkChart) networkChart.destroy();
+    networkChart = new Chart(networkCtx, {
+      type: 'bar',
+      data: {
+        labels: ['Contractors', 'Truck Owners', 'Trucks'],
+        datasets: [
+          { label: 'Approved', data: [cActive, oApproved, tApproved], backgroundColor: '#16A34A', borderRadius: 6 },
+          { label: 'Pending', data: [cPending, oPending, tPending], backgroundColor: '#D97706', borderRadius: 6 },
+          { label: 'Rejected', data: [cRejected, oRejected, tRejected], backgroundColor: '#DC2626', borderRadius: 6 },
+        ],
+      },
+      options: {
+        responsive: true, maintainAspectRatio: false,
+        plugins: { legend: { position: 'bottom', labels: LEGEND_LABELS }, tooltip: TOOLTIP },
+        scales: {
+          y: { beginAtZero: true, ticks: { color: AXIS_TEXT, stepSize: 1, font: { family: 'monospace', size: 10 } }, grid: { color: GRID_COLOR }, border: { display: false } },
+          x: { ticks: { color: '#334155', font: { family: 'monospace', size: 10, weight: 'bold' } }, grid: { display: false }, border: { display: false } },
+        },
+      },
     });
   }
 
@@ -284,6 +420,5 @@ import AdminLayout from "../../layouts/AdminLayout.astro";
     updateAnalytics((e.target as HTMLSelectElement).value);
   });
 
-  // Pokrećemo početno iscrtavanje
-  document.addEventListener('DOMContentLoaded', () => updateAnalytics('7'));
+  document.addEventListener('DOMContentLoaded', () => updateAnalytics('30'));
 </script>

@@ -18,17 +18,21 @@ export async function POST({ request }: { request: Request }) {
     const { data: userData, error: userErr } = await supabase.auth.getUser(token);
     if (userErr || !userData?.user) return json({ error: "invalid_token" }, 401);
 
-    const { data: adminRow } = await supabase
+    if (!supabaseAdmin) {
+      return json({ error: "service_role_not_configured", message: "SUPABASE_SERVICE_ROLE_KEY is not set in .env" }, 500);
+    }
+
+    // Isti razlog kao u admin-reset-password.ts: anon klijent nema
+    // sesiju u ovom kontekstu, pa RLS blokira čitanje admins tabele —
+    // koristimo service_role ZA OVU proveru (identitet je već potvrđen
+    // gore preko tokena).
+    const { data: adminRow } = await supabaseAdmin
       .from("admins")
       .select("user_id")
       .eq("user_id", userData.user.id)
       .maybeSingle();
 
     if (!adminRow) return json({ error: "not_admin" }, 403);
-
-    if (!supabaseAdmin) {
-      return json({ error: "service_role_not_configured", message: "SUPABASE_SERVICE_ROLE_KEY is not set in .env" }, 500);
-    }
 
     const { email, password, companyName, contactName, phone } = await request.json();
     if (!email || !password || password.length < 6) {

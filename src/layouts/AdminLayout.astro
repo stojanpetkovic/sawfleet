@@ -7,6 +7,7 @@ import {
   Users,
   Truck,
   UserCog2,
+  Globe2,
   Menu as MenuIcon,
 } from "lucide-astro";
 
@@ -15,6 +16,7 @@ const currentPath = Astro.url.pathname;
 const menuItems = [
   { name: 'Dashboard', path: '/admin', icon: LayoutDashboard },
   { name: 'Service Leads', path: '/admin/service-leads', icon: Inbox },
+  { name: 'External Leads', path: '/admin/external-leads', icon: Globe2 },
   { name: 'Contractors', path: '/admin/contractors', icon: Users },
   { name: 'Grapple Saw Trucks', path: '/admin/grapple-saw-trucks', icon: Truck },
   { name: 'Truck Owners', path: '/admin/truck-owners', icon: UserCog2 },
@@ -30,7 +32,7 @@ const tabItems = menuItems.slice(0, 4);
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
     <meta name="theme-color" content="#ffffff" />
-    <title>SawFleet Admin</title>
+    <title>SF Tree Removal Admin</title>
   </head>
   <body class="bg-slate-50 text-slate-900 antialiased font-sans">
 
@@ -46,7 +48,7 @@ const tabItems = menuItems.slice(0, 4);
         <div>
           <div class="flex items-center justify-between mb-16 px-2">
             <a href="/admin" class="flex items-center gap-2">
-              <img src="/logo/logo.svg" alt="SawFleet" class="h-14 lg:h-16 w-auto" />
+              <img src="/logo/logo.svg" alt="SF Tree Removal" class="h-14 lg:h-16 w-auto" loading="eager" />
             </a>
             <button id="closeMenuBtn" class="lg:hidden text-slate-400 hover:text-slate-900">
               <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-6 h-6">
@@ -90,7 +92,7 @@ const tabItems = menuItems.slice(0, 4);
               <MenuIcon size={22} strokeWidth={1.75} />
             </button>
             <span class="text-[10px] font-mono font-bold uppercase tracking-[0.2em] text-slate-400 hidden sm:inline">Platform Overview</span>
-            <span class="text-sm font-bold text-slate-900 sm:hidden">SawFleet</span>
+            <span class="text-sm font-bold text-slate-900 sm:hidden">SF Tree Removal</span>
           </div>
 
           <div class="flex items-center gap-4 lg:gap-6">
@@ -103,6 +105,7 @@ const tabItems = menuItems.slice(0, 4);
                 <div class="px-4 py-3 border-b border-slate-100 bg-slate-50 rounded-t-xl"><h3 class="text-[10px] font-bold uppercase tracking-[0.2em] text-slate-500">Action Required</h3></div>
                 <div class="p-2 space-y-1">
                   <a href="/admin/service-leads" class="flex items-center justify-between px-3 py-2 rounded-lg hover:bg-slate-50 transition-colors"><span class="text-xs text-slate-600">New Leads</span><span id="badge-leads" class="text-[10px] font-mono text-green-700 bg-green-50 px-2 py-0.5 rounded">0</span></a>
+                  <a href="/admin/external-leads" class="flex items-center justify-between px-3 py-2 rounded-lg hover:bg-slate-50 transition-colors"><span class="text-xs text-slate-600">New External Leads</span><span id="badge-external" class="text-[10px] font-mono text-teal-600 bg-teal-50 px-2 py-0.5 rounded">0</span></a>
                   <a href="/admin/contractors" class="flex items-center justify-between px-3 py-2 rounded-lg hover:bg-slate-50 transition-colors"><span class="text-xs text-slate-600">Pending Contractors</span><span id="badge-contractors" class="text-[10px] font-mono text-blue-600 bg-blue-50 px-2 py-0.5 rounded">0</span></a>
                   <a href="/admin/truck-owners" class="flex items-center justify-between px-3 py-2 rounded-lg hover:bg-slate-50 transition-colors"><span class="text-xs text-slate-600">Pending Owners</span><span id="badge-owners" class="text-[10px] font-mono text-amber-600 bg-amber-50 px-2 py-0.5 rounded">0</span></a>
                   <a href="/admin/grapple-saw-trucks" class="flex items-center justify-between px-3 py-2 rounded-lg hover:bg-slate-50 transition-colors"><span class="text-xs text-slate-600">Pending Assets</span><span id="badge-trucks" class="text-[10px] font-mono text-purple-600 bg-purple-50 px-2 py-0.5 rounded">0</span></a>
@@ -188,13 +191,15 @@ const tabItems = menuItems.slice(0, 4);
 
       async function fetchNotifications() {
         const { count: leads } = await supabase.from('leads').select('*', { count: 'exact', head: true }).eq('status', 'new');
+        const { count: external } = await supabase.from('external_leads').select('*', { count: 'exact', head: true }).eq('status', 'new');
         const { count: contr } = await supabase.from('contractors').select('*', { count: 'exact', head: true }).eq('status', 'pending');
         const { count: owners } = await supabase.from('truck_owners').select('*', { count: 'exact', head: true }).eq('status', 'pending');
         const { count: trucks } = await supabase.from('grapple_saw_trucks').select('*', { count: 'exact', head: true }).eq('approval_status', 'pending');
-        const total = (leads || 0) + (contr || 0) + (owners || 0) + (trucks || 0);
+        const total = (leads || 0) + (external || 0) + (contr || 0) + (owners || 0) + (trucks || 0);
         const badge = document.getElementById('notificationBadge');
         if (total > 0 && badge) { badge.textContent = total.toString(); badge.classList.remove('hidden'); }
         document.getElementById('badge-leads')!.textContent = (leads || 0).toString();
+        document.getElementById('badge-external')!.textContent = (external || 0).toString();
         document.getElementById('badge-contractors')!.textContent = (contr || 0).toString();
         document.getElementById('badge-owners')!.textContent = (owners || 0).toString();
         document.getElementById('badge-trucks')!.textContent = (trucks || 0).toString();

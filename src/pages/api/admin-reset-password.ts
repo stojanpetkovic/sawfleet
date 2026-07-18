@@ -19,19 +19,21 @@ export async function POST({ request }: { request: Request }) {
     const { data: userData, error: userErr } = await supabase.auth.getUser(token);
     if (userErr || !userData?.user) return json({ error: "invalid_token" }, 401);
 
-    // 2) Da li je taj korisnik stvarno admin?
-    const { data: adminRow } = await supabase
+    // 2) Da li je taj korisnik stvarno admin? Koristimo supabaseAdmin
+    //    (service_role) za OVU proveru — identitet pozivaoca je već
+    //    potvrđen gore preko njegovog tokena, ovo samo čita admins
+    //    tabelu bez da nas RLS blokira (anon klijent ovde nema sesiju).
+    if (!supabaseAdmin) {
+      return json({ error: "service_role_not_configured", message: "SUPABASE_SERVICE_ROLE_KEY is not set in .env" }, 500);
+    }
+
+    const { data: adminRow } = await supabaseAdmin
       .from("admins")
       .select("user_id")
       .eq("user_id", userData.user.id)
       .maybeSingle();
 
     if (!adminRow) return json({ error: "not_admin" }, 403);
-
-    // 3) Is the service_role key even configured?
-    if (!supabaseAdmin) {
-      return json({ error: "service_role_not_configured", message: "SUPABASE_SERVICE_ROLE_KEY is not set in .env" }, 500);
-    }
 
     const { contractorUserId, newPassword } = await request.json();
     if (!contractorUserId || !newPassword || newPassword.length < 6) {

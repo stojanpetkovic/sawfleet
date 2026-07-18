@@ -2,21 +2,27 @@
 export const prerender = false;
 import AdminLayout from "../../../layouts/AdminLayout.astro";
 import { supabase } from "../../../lib/supabase";
+import { supabaseAdmin } from "../../../lib/supabaseAdmin";
 
 const { id } = Astro.params;
 
+// Ove strane su već zaštićene AdminLayout proverom na klijentu, ali
+// SAM frontmatter (SSR) nema pristup toj sesiji — zato ovde koristimo
+// supabaseAdmin (service_role) da RLS ne blokira čitanje.
+const db = supabaseAdmin ?? supabase;
+
 // Dohvati kontraktora
-const { data: contractor } = await supabase.from('contractors').select('*').eq('id', id).single();
+const { data: contractor } = await db.from('contractors').select('*').eq('id', id).single();
 
 // Dohvati logove
-const { data: logs } = await supabase.from('contractor_logs').select('*').eq('contractor_id', id).order('created_at', { ascending: false });
+const { data: logs } = await db.from('contractor_logs').select('*').eq('contractor_id', id).order('created_at', { ascending: false });
 
 // POVLAČIMO TERITORIJE IZ BAZE
 const { data: territories } = await supabase.from('service_territories').select('*').order('name');
 
 // Lidovi koje je OVAJ kontraktor preuzeo (contractor_id je auth user_id, ne contractors.id)
 const { data: claimedLeads } = contractor?.user_id
-  ? await supabase.from('leads').select('*').eq('contractor_id', contractor.user_id).order('claimed_at', { ascending: false, nullsFirst: false })
+  ? await db.from('leads').select('*').eq('contractor_id', contractor.user_id).order('claimed_at', { ascending: false, nullsFirst: false })
   : { data: [] };
 
 if (!contractor) return Astro.redirect('/admin/contractors');

@@ -2,19 +2,21 @@
 export const prerender = false;
 import AdminLayout from "../../../layouts/AdminLayout.astro";
 import { supabase } from "../../../lib/supabase";
+import { supabaseAdmin } from "../../../lib/supabaseAdmin";
 
 const { id } = Astro.params;
+const db = supabaseAdmin ?? supabase;
 
-const { data: owner } = await supabase.from('truck_owners').select('*').eq('id', id).single();
+const { data: owner } = await db.from('truck_owners').select('*').eq('id', id).single();
 if (!owner) return Astro.redirect('/admin/truck-owners');
 
-const { data: trucks } = await supabase
+const { data: trucks } = await db
   .from('grapple_saw_trucks')
   .select('id, equipment_type, approval_status, availability_status, location, lift_capacity_tons, working_height_ft, created_at')
   .eq('owner_user_id', id)
   .order('created_at', { ascending: false });
 
-const { data: logs } = await supabase.from('truck_owner_logs').select('*').eq('owner_id', id).order('created_at', { ascending: false });
+const { data: logs } = await db.from('truck_owner_logs').select('*').eq('owner_id', id).order('created_at', { ascending: false });
 
 const { data: territories } = await supabase.from('service_territories').select('*').order('name');
 

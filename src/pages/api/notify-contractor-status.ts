@@ -25,7 +25,7 @@ export async function POST({ request }) {
 
     const result = await sendEmail({
       to: contractor.email,
-      subject: status === "active" ? "Tvoj SawFleet nalog je odobren" : "Status tvog SawFleet naloga",
+      subject: status === "active" ? "Tvoj SF Tree Removal nalog je odobren" : "Status tvog SF Tree Removal naloga",
       html: contractorStatusEmailHtml({
         companyName: contractor.company_name,
         status,

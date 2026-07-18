@@ -1,5 +1,5 @@
 {
-  "name": "sawfleet",
+  "name": "sf-tree-removal",
   "type": "module",
   "version": "0.0.1",
   "main": "dist/server/entry.mjs",
@@ -15,6 +15,7 @@
   },
   "dependencies": {
     "@astrojs/node": "^11.0.2",
+    "@astrojs/sitemap": "^3.7.3",
     "@supabase/supabase-js": "^2.110.2",
     "@tailwindcss/vite": "^4.3.2",
     "astro": "^7.0.7",

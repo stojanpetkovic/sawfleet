@@ -2,14 +2,16 @@
 export const prerender = false;
 import AdminLayout from "../../../layouts/AdminLayout.astro";
 import { supabase } from "../../../lib/supabase";
+import { supabaseAdmin } from "../../../lib/supabaseAdmin";
 
 const { id } = Astro.params;
+const db = supabaseAdmin ?? supabase;
 
 // Dohvati kamion
-const { data: truck } = await supabase.from('grapple_saw_trucks').select('*').eq('id', id).single();
+const { data: truck } = await db.from('grapple_saw_trucks').select('*').eq('id', id).single();
 
 // Dohvati logove
-const { data: logs } = await supabase.from('truck_logs').select('*').eq('truck_id', id).order('created_at', { ascending: false });
+const { data: logs } = await db.from('truck_logs').select('*').eq('truck_id', id).order('created_at', { ascending: false });
 
 // POVLAČIMO TERITORIJE IZ BAZE ZA EDIT MODAL
 const { data: territories } = await supabase.from('service_territories').select('*').order('name');
@@ -22,10 +24,10 @@ const availStatus = truck.availability_status || 'Available';
 // Ostali kamioni istog vlasnika (po nalogu ako postoji, inače po emailu)
 let siblingTrucks: any[] = [];
 if (truck.owner_user_id) {
-  const { data } = await supabase.from('grapple_saw_trucks').select('id, equipment_type, approval_status, availability_status').eq('owner_user_id', truck.owner_user_id).neq('id', id);
+  const { data } = await db.from('grapple_saw_trucks').select('id, equipment_type, approval_status, availability_status').eq('owner_user_id', truck.owner_user_id).neq('id', id);
   siblingTrucks = data || [];
 } else if (truck.owner_email) {
-  const { data } = await supabase.from('grapple_saw_trucks').select('id, equipment_type, approval_status, availability_status').eq('owner_email', truck.owner_email).neq('id', id);
+  const { data } = await db.from('grapple_saw_trucks').select('id, equipment_type, approval_status, availability_status').eq('owner_email', truck.owner_email).neq('id', id);
   siblingTrucks = data || [];
 }
 ---

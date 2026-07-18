@@ -34,7 +34,7 @@ async function runNotify(county: string, details: string, origin: string) {
     (contractors || []).map(async (c) => {
       const r = await sendEmail({
         to: c.email,
-        subject: `Novi lid u ${county} — SawFleet`,
+        subject: `Novi lid u ${county} — SF Tree Removal`,
         html: newLeadEmailHtml({ companyName: c.company_name, county, details, dashboardUrl }),
       });
       return { email: c.email, ok: r.ok, error: r.ok ? undefined : r.error };

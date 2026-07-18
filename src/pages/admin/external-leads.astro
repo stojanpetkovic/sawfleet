@@ -1,0 +1,371 @@
+---
+export const prerender = false;
+import AdminLayout from "../../layouts/AdminLayout.astro";
+---
+
+<AdminLayout>
+  <!-- Modal za detalje / promenu statusa -->
+  <div id="detailModal" class="hidden fixed inset-0 bg-slate-900/40 backdrop-blur-sm z-[200] flex items-center justify-center p-4 overflow-y-auto">
+    <div class="bg-white border border-zinc-200 shadow-2xl p-6 sm:p-8 rounded-2xl max-w-lg w-full my-8">
+      <div class="flex items-center justify-between mb-6">
+        <div>
+          <span id="detailFormType" class="text-[10px] font-mono font-bold uppercase tracking-[0.2em] text-green-700">// External Lead</span>
+          <h2 id="detailName" class="mt-1 text-xl font-bold text-slate-900"></h2>
+        </div>
+        <button type="button" id="closeDetailModal" class="text-slate-400 hover:text-slate-900 text-xl leading-none">&times;</button>
+      </div>
+
+      <div class="space-y-4">
+        <div class="grid grid-cols-2 gap-4">
+          <div>
+            <p class="text-[9px] uppercase tracking-[0.2em] text-zinc-400">Email</p>
+            <p id="detailEmail" class="text-slate-900 font-mono mt-1 text-sm break-all">N/A</p>
+          </div>
+          <div>
+            <p class="text-[9px] uppercase tracking-[0.2em] text-zinc-400">Phone</p>
+            <p id="detailPhone" class="text-slate-900 font-mono mt-1 text-sm">N/A</p>
+          </div>
+          <div>
+            <p class="text-[9px] uppercase tracking-[0.2em] text-zinc-400">Source Domain</p>
+            <p id="detailDomain" class="text-slate-900 font-mono mt-1 text-sm">N/A</p>
+          </div>
+          <div>
+            <p class="text-[9px] uppercase tracking-[0.2em] text-zinc-400">Received</p>
+            <p id="detailDate" class="text-slate-900 font-mono mt-1 text-sm">N/A</p>
+          </div>
+        </div>
+
+        <div>
+          <p class="text-[9px] uppercase tracking-[0.2em] text-zinc-400">Message</p>
+          <p id="detailMessage" class="text-slate-900 mt-1 text-sm leading-relaxed whitespace-pre-wrap">N/A</p>
+        </div>
+
+        <div id="detailSmsWrap" class="rounded-xl border border-zinc-200 bg-zinc-50 p-4">
+          <p class="text-[9px] uppercase tracking-[0.2em] text-zinc-400 mb-1">SMS Consent</p>
+          <p id="detailSmsConsent" class="text-sm font-bold"></p>
+          <p id="detailSmsText" class="text-[11px] text-zinc-500 mt-1 leading-relaxed"></p>
+        </div>
+
+        <div id="detailExtraWrap" class="hidden rounded-xl border border-zinc-200 bg-zinc-50 p-4">
+          <p class="text-[9px] uppercase tracking-[0.2em] text-zinc-400 mb-1">Additional Fields</p>
+          <pre id="detailExtra" class="text-[11px] text-zinc-700 font-mono whitespace-pre-wrap"></pre>
+        </div>
+
+        <div class="pt-4 border-t border-zinc-100">
+          <p class="text-[10px] font-bold uppercase tracking-[0.2em] text-zinc-500 mb-3">Approval</p>
+          <div class="flex gap-3">
+            <button type="button" class="status-btn flex-1 h-11 rounded-lg bg-green-500/10 border border-green-500/30 text-green-700 font-bold uppercase tracking-[0.15em] text-[10px] hover:bg-green-500 hover:text-slate-900 transition-all" data-status="approved">Approve</button>
+            <button type="button" class="status-btn flex-1 h-11 rounded-lg bg-red-50 border border-red-200 text-red-600 font-bold uppercase tracking-[0.15em] text-[10px] hover:bg-red-500 hover:text-white transition-all" data-status="rejected">Reject</button>
+          </div>
+        </div>
+
+        <div class="pt-4 border-t border-zinc-100">
+          <p class="text-[10px] font-bold uppercase tracking-[0.2em] text-zinc-500 mb-3">Contact Status</p>
+          <div class="flex gap-3">
+            <button type="button" class="status-btn flex-1 h-11 rounded-lg bg-zinc-100 border border-zinc-200 text-zinc-600 font-bold uppercase tracking-[0.15em] text-[10px] hover:bg-zinc-200 transition-all" data-status="new">New</button>
+            <button type="button" class="status-btn flex-1 h-11 rounded-lg bg-blue-500/10 border border-blue-500/30 text-blue-600 font-bold uppercase tracking-[0.15em] text-[10px] hover:bg-blue-500 hover:text-white transition-all" data-status="contacted">Contacted</button>
+            <button type="button" class="status-btn flex-1 h-11 rounded-lg bg-zinc-100 border border-zinc-200 text-zinc-600 font-bold uppercase tracking-[0.15em] text-[10px] hover:bg-zinc-200 transition-all" data-status="closed">Closed</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="space-y-5 w-full">
+    <div>
+      <h1 class="text-xl sm:text-2xl font-bold text-slate-900 tracking-tight">External Leads</h1>
+      <p class="text-[11px] text-zinc-500 mt-0.5">Submissions from forms on other domains/sites.</p>
+    </div>
+
+    <!-- Stats -->
+    <div class="flex sm:grid sm:grid-cols-6 gap-3 overflow-x-auto no-scrollbar -mx-4 px-4 sm:mx-0 sm:px-0 pb-1">
+      {[
+        { id: 'total', label: 'Total', color: 'text-slate-900' },
+        { id: 'new', label: 'New', color: 'text-amber-600' },
+        { id: 'approved', label: 'Approved', color: 'text-green-700' },
+        { id: 'rejected', label: 'Rejected', color: 'text-red-600' },
+        { id: 'contacted', label: 'Contacted', color: 'text-blue-600' },
+        { id: 'closed', label: 'Closed', color: 'text-zinc-500' },
+      ].map(stat => (
+        <div class="shrink-0 w-[100px] sm:w-auto bg-white border border-zinc-100 p-4 rounded-2xl">
+          <p class="text-[9px] font-bold uppercase tracking-[0.15em] text-zinc-400">{stat.label}</p>
+          <h2 id={`count-${stat.id}`} class={`text-2xl font-mono font-bold mt-1.5 ${stat.color}`}>0</h2>
+        </div>
+      ))}
+    </div>
+
+    <!-- Raščlamba po sajtu i po tipu forme -->
+    <div class="grid sm:grid-cols-2 gap-3">
+      <div class="bg-white border border-zinc-100 rounded-2xl p-5">
+        <p class="text-[9px] font-bold uppercase tracking-[0.15em] text-zinc-400 mb-3">By Site</p>
+        <div id="breakdownBySite" class="space-y-2.5"></div>
+      </div>
+      <div class="bg-white border border-zinc-100 rounded-2xl p-5">
+        <p class="text-[9px] font-bold uppercase tracking-[0.15em] text-zinc-400 mb-3">By Form Type</p>
+        <div id="breakdownByFormType" class="space-y-2.5"></div>
+      </div>
+    </div>
+
+    <!-- Filteri -->
+    <div class="bg-white border border-zinc-100 rounded-2xl p-4 flex flex-col md:flex-row gap-3">
+      <input id="searchInput" type="text" placeholder="Search name, email, phone, or message…" class="flex-1 h-11 px-4 rounded-lg border border-zinc-200 bg-zinc-50 text-sm text-slate-900 outline-none focus:border-green-500" />
+      <select id="formTypeFilter" class="h-11 px-4 rounded-lg border border-zinc-200 bg-zinc-50 text-sm text-slate-900 outline-none focus:border-green-500">
+        <option value="all">All form types</option>
+        <option value="lead">Lead</option>
+        <option value="job">Free Job</option>
+      </select>
+      <select id="domainFilter" class="h-11 px-4 rounded-lg border border-zinc-200 bg-zinc-50 text-sm text-slate-900 outline-none focus:border-green-500">
+        <option value="all">All domains</option>
+      </select>
+      <select id="statusFilter" class="h-11 px-4 rounded-lg border border-zinc-200 bg-zinc-50 text-sm text-slate-900 outline-none focus:border-green-500">
+        <option value="all">All statuses</option>
+        <option value="new">New</option>
+        <option value="approved">Approved</option>
+        <option value="rejected">Rejected</option>
+        <option value="contacted">Contacted</option>
+        <option value="closed">Closed</option>
+      </select>
+      <button id="clearFiltersBtn" type="button" class="h-11 px-4 rounded-lg border border-zinc-200 text-zinc-500 text-xs font-bold uppercase tracking-wider hover:bg-zinc-100 hover:text-slate-900 transition-colors whitespace-nowrap">Clear</button>
+    </div>
+
+    <!-- Lista -->
+    <div id="leadsTable" class="space-y-2">
+      <div class="p-8 text-center text-zinc-400 text-sm">Loading...</div>
+    </div>
+  </div>
+</AdminLayout>
+
+<script>
+  import { supabase } from "../../lib/supabase";
+
+  type ExternalLead = {
+    id: string;
+    created_at: string;
+    form_type: string;
+    source_domain: string | null;
+    full_name: string | null;
+    email: string | null;
+    phone: string | null;
+    message: string | null;
+    sms_consent: boolean;
+    sms_consent_text: string | null;
+    status: string;
+    extra: Record<string, unknown> | null;
+  };
+
+  let allLeads: ExternalLead[] = [];
+  let activeId = '';
+
+  function timeAgo(dateInput: string) {
+    const diff = Math.floor((Date.now() - new Date(dateInput).getTime()) / 1000);
+    if (diff < 60) return 'Just now';
+    if (diff < 3600) return `${Math.floor(diff / 60)}m ago`;
+    if (diff < 86400) return `${Math.floor(diff / 3600)}h ago`;
+    if (diff < 2592000) return `${Math.floor(diff / 86400)}d ago`;
+    return new Date(dateInput).toLocaleDateString();
+  }
+
+  async function loadLeads() {
+    const { data } = await supabase.from('external_leads').select('*').order('created_at', { ascending: false });
+    allLeads = data || [];
+
+    document.getElementById('count-total')!.textContent = allLeads.length.toString();
+    document.getElementById('count-new')!.textContent = allLeads.filter(l => l.status === 'new').length.toString();
+    document.getElementById('count-approved')!.textContent = allLeads.filter(l => l.status === 'approved').length.toString();
+    document.getElementById('count-rejected')!.textContent = allLeads.filter(l => l.status === 'rejected').length.toString();
+    document.getElementById('count-contacted')!.textContent = allLeads.filter(l => l.status === 'contacted').length.toString();
+    document.getElementById('count-closed')!.textContent = allLeads.filter(l => l.status === 'closed').length.toString();
+
+    // Popuni filter domena iz onoga što stvarno postoji
+    const domainSelect = document.getElementById('domainFilter') as HTMLSelectElement;
+    const domains = Array.from(new Set(allLeads.map(l => l.source_domain).filter(Boolean))) as string[];
+    const currentValue = domainSelect.value;
+    domainSelect.innerHTML = '<option value="all">All domains</option>' + domains.sort().map(d => `<option value="${d}">${d}</option>`).join('');
+    domainSelect.value = domains.includes(currentValue) ? currentValue : 'all';
+
+    renderBreakdowns();
+    applyFilters();
+  }
+
+  function renderBreakdowns() {
+    const formTypeLabels: Record<string, string> = { lead: 'Lead', job: 'Free Job' };
+
+    function groupCounts(getKey: (l: ExternalLead) => string | null) {
+      const counts = new Map<string, { total: number; new: number }>();
+      allLeads.forEach((l) => {
+        const key = getKey(l) || 'Unknown';
+        const c = counts.get(key) || { total: 0, new: 0 };
+        c.total += 1;
+        if (l.status === 'new') c.new += 1;
+        counts.set(key, c);
+      });
+      return Array.from(counts.entries()).sort((a, b) => b[1].total - a[1].total);
+    }
+
+    function renderGroup(containerId: string, entries: [string, { total: number; new: number }][], onClickFilter: (key: string) => void, labelFor: (key: string) => string) {
+      const el = document.getElementById(containerId)!;
+      if (entries.length === 0) {
+        el.innerHTML = '<p class="text-[11px] text-zinc-400 italic">No data yet.</p>';
+        return;
+      }
+      const max = Math.max(...entries.map(([, c]) => c.total));
+      el.innerHTML = entries.map(([key, c]) => `
+        <button type="button" class="breakdown-row w-full text-left group" data-key="${key}">
+          <div class="flex items-center justify-between text-[11px] mb-1">
+            <span class="font-bold text-slate-700 truncate group-hover:text-green-700 transition-colors">${labelFor(key)}</span>
+            <span class="font-mono text-zinc-500 shrink-0 ml-2">${c.total}${c.new > 0 ? ` <span class="text-amber-600">(${c.new} new)</span>` : ''}</span>
+          </div>
+          <div class="h-1.5 rounded-full bg-zinc-100 overflow-hidden">
+            <div class="h-full bg-green-500/60 rounded-full group-hover:bg-green-500 transition-colors" style="width:${(c.total / max) * 100}%"></div>
+          </div>
+        </button>
+      `).join('');
+      el.querySelectorAll('.breakdown-row').forEach((row) => {
+        row.addEventListener('click', () => onClickFilter((row as HTMLElement).dataset.key!));
+      });
+    }
+
+    renderGroup(
+      'breakdownBySite',
+      groupCounts((l) => l.source_domain),
+      (key) => {
+        (document.getElementById('domainFilter') as HTMLSelectElement).value = key === 'Unknown' ? 'all' : key;
+        applyFilters();
+      },
+      (key) => key
+    );
+
+    renderGroup(
+      'breakdownByFormType',
+      groupCounts((l) => l.form_type),
+      (key) => {
+        (document.getElementById('formTypeFilter') as HTMLSelectElement).value = key;
+        applyFilters();
+      },
+      (key) => formTypeLabels[key] || key
+    );
+  }
+
+  function applyFilters() {
+    const search = (document.getElementById('searchInput') as HTMLInputElement).value.trim().toLowerCase();
+    const formType = (document.getElementById('formTypeFilter') as HTMLSelectElement).value;
+    const domain = (document.getElementById('domainFilter') as HTMLSelectElement).value;
+    const status = (document.getElementById('statusFilter') as HTMLSelectElement).value;
+
+    const filtered = allLeads.filter((l) => {
+      if (search) {
+        const haystack = `${l.full_name || ''} ${l.email || ''} ${l.phone || ''} ${l.message || ''}`.toLowerCase();
+        if (!haystack.includes(search)) return false;
+      }
+      if (formType !== 'all' && l.form_type !== formType) return false;
+      if (domain !== 'all' && l.source_domain !== domain) return false;
+      if (status !== 'all' && l.status !== status) return false;
+      return true;
+    });
+
+    renderList(filtered);
+  }
+
+  ['searchInput', 'formTypeFilter', 'domainFilter', 'statusFilter'].forEach((id) => {
+    document.getElementById(id)?.addEventListener('input', applyFilters);
+    document.getElementById(id)?.addEventListener('change', applyFilters);
+  });
+
+  document.getElementById('clearFiltersBtn')?.addEventListener('click', () => {
+    (document.getElementById('searchInput') as HTMLInputElement).value = '';
+    (document.getElementById('formTypeFilter') as HTMLSelectElement).value = 'all';
+    (document.getElementById('domainFilter') as HTMLSelectElement).value = 'all';
+    (document.getElementById('statusFilter') as HTMLSelectElement).value = 'all';
+    applyFilters();
+  });
+
+  function renderList(list: ExternalLead[]) {
+    const el = document.getElementById('leadsTable');
+    if (!el) return;
+
+    if (list.length === 0) {
+      el.innerHTML = '<div class="p-8 text-center text-zinc-400 text-sm border border-dashed border-zinc-200 rounded-2xl">No external leads match these filters.</div>';
+      return;
+    }
+
+    const statusBadge: Record<string, string> = {
+      new: 'bg-amber-500/10 text-amber-600 border-amber-500/20',
+      approved: 'bg-green-500/10 text-green-700 border-green-500/20',
+      rejected: 'bg-red-500/10 text-red-600 border-red-500/20',
+      contacted: 'bg-blue-500/10 text-blue-600 border-blue-500/20',
+      closed: 'bg-zinc-200/60 text-zinc-600 border-zinc-300',
+    };
+
+    el.innerHTML = list.map((l) => `
+      <div class="group flex items-center gap-3 sm:gap-4 p-3 sm:p-4 rounded-2xl border border-zinc-100 bg-white hover:border-zinc-300 hover:bg-zinc-100/40 transition-all cursor-pointer" data-open-id="${l.id}">
+        <div class="w-10 h-10 rounded-full bg-zinc-100 border border-zinc-200 flex items-center justify-center shrink-0 text-[11px] font-bold text-zinc-500">
+          ${(l.full_name || '?').charAt(0).toUpperCase()}
+        </div>
+        <div class="min-w-0 flex-1">
+          <div class="flex items-center gap-2 flex-wrap">
+            <p class="text-sm font-bold text-slate-900 truncate">${l.full_name || 'Unnamed'}</p>
+            <span class="px-2 py-0.5 rounded-full text-[9px] font-bold uppercase border tracking-wide bg-zinc-100 text-zinc-500 border-zinc-200">${l.form_type}</span>
+            ${l.extra && (l.extra as any).migrated_from_lead_id ? '<span class="px-2 py-0.5 rounded-full text-[9px] font-bold uppercase border tracking-wide bg-teal-500/10 text-teal-700 border-teal-500/20">↩ Migrated</span>' : ''}
+          </div>
+          <p class="mt-0.5 text-[11px] text-zinc-500 font-mono truncate">${[l.email, l.phone].filter(Boolean).join(' · ') || 'No contact info'}</p>
+          <p class="mt-1 text-[10px] text-zinc-400 truncate">${l.source_domain || 'Unknown domain'} · ${timeAgo(l.created_at)}</p>
+        </div>
+        <span class="px-2.5 py-1 rounded-full text-[9px] font-bold uppercase border tracking-wide shrink-0 ${statusBadge[l.status] || statusBadge.new}">${l.status}</span>
+        <svg class="hidden sm:block w-4 h-4 text-zinc-300 group-hover:text-zinc-600 transition-colors shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+      </div>
+    `).join('');
+
+    el.querySelectorAll('[data-open-id]').forEach((row) => {
+      row.addEventListener('click', () => openDetail((row as HTMLElement).dataset.openId!));
+    });
+  }
+
+  function openDetail(id: string) {
+    const lead = allLeads.find((l) => l.id === id);
+    if (!lead) return;
+    activeId = id;
+
+    document.getElementById('detailFormType')!.textContent = `// ${lead.form_type === 'job' ? 'Free Job' : 'External Lead'}`;
+    document.getElementById('detailName')!.textContent = lead.full_name || 'Unnamed';
+    document.getElementById('detailEmail')!.textContent = lead.email || 'N/A';
+    document.getElementById('detailPhone')!.textContent = lead.phone || 'N/A';
+    document.getElementById('detailDomain')!.textContent = lead.source_domain || 'N/A';
+    document.getElementById('detailDate')!.textContent = new Date(lead.created_at).toLocaleString();
+    document.getElementById('detailMessage')!.textContent = lead.message || 'No message provided.';
+
+    document.getElementById('detailSmsConsent')!.textContent = lead.sms_consent ? '✅ Consented' : '❌ Not given';
+    document.getElementById('detailSmsConsent')!.className = `text-sm font-bold ${lead.sms_consent ? 'text-green-700' : 'text-zinc-500'}`;
+    document.getElementById('detailSmsText')!.textContent = lead.sms_consent_text || '';
+
+    const extraWrap = document.getElementById('detailExtraWrap')!;
+    if (lead.extra && Object.keys(lead.extra).length > 0) {
+      extraWrap.classList.remove('hidden');
+      document.getElementById('detailExtra')!.textContent = JSON.stringify(lead.extra, null, 2);
+    } else {
+      extraWrap.classList.add('hidden');
+    }
+
+    document.querySelectorAll('.status-btn').forEach((btn) => {
+      const isActive = (btn as HTMLElement).dataset.status === lead.status;
+      btn.classList.toggle('ring-2', isActive);
+      btn.classList.toggle('ring-offset-1', isActive);
+    });
+
+    document.getElementById('detailModal')?.classList.remove('hidden');
+  }
+
+  document.getElementById('closeDetailModal')?.addEventListener('click', () => {
+    document.getElementById('detailModal')?.classList.add('hidden');
+  });
+
+  document.querySelectorAll('.status-btn').forEach((btn) => {
+    btn.addEventListener('click', async () => {
+      const newStatus = (btn as HTMLElement).dataset.status!;
+      await supabase.from('external_leads').update({ status: newStatus }).eq('id', activeId);
+      document.getElementById('detailModal')?.classList.add('hidden');
+      await loadLeads();
+    });
+  });
+
+  loadLeads();
+</script>

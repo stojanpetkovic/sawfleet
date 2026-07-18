@@ -12,7 +12,7 @@ const { data: territories } = await supabase
   .order('name', { ascending: true });
 ---
 
-<MainLayout title="Register as a Contractor | SawFleet">
+<MainLayout title="Register as a Contractor | SF Tree Removal">
   <Header />
 
   <!-- Svetla pozadina -->
@@ -23,11 +23,11 @@ const { data: territories } = await supabase
     <!-- ============================================== -->
     <section class="relative isolate overflow-hidden pt-28 pb-20 lg:pt-36 lg:pb-28 px-4 sm:px-8 lg:min-h-[88vh] lg:flex lg:items-center bg-slate-900">
 
-      <!-- Video pozadina (stavi fajl na /public/videos/hero-contractors.mp4 + poster na /public/videos/hero-contractors-poster.jpg) -->
+      <!-- Video pozadina -->
       <div class="absolute inset-0 -z-20">
         <video
-          autoplay muted loop playsinline
-          poster="/videos/hero-contractors-poster.jpg"
+          autoplay muted loop playsinline preload="metadata"
+          poster="/videos/hero-contractors-poster.webp"
           class="h-full w-full object-cover"
         >
           <source src="/videos/hero-contractors.mp4" type="video/mp4" />
@@ -67,7 +67,7 @@ const { data: territories } = await supabase
 
           <!-- Clean System Description -->
           <p class="mt-6 text-sm leading-relaxed text-white/60 border-l-2 border-white/20 pl-4 py-1">
-            SawFleet automatically routes localized requests based on your specific service criteria, capacity, and real-time availability.
+            SF Tree Removal automatically routes localized requests based on your specific service criteria, capacity, and real-time availability.
           </p>
 
           <!-- Benefits Grid: Kompaktni "App" layout -->
@@ -193,7 +193,7 @@ const { data: territories } = await supabase
         <!-- Naslov -->
         <div class="mb-12">
           <span class="text-[10px] font-mono font-bold uppercase tracking-[0.2em] text-green-700">// Growth Accelerators</span>
-          <h2 class="mt-3 text-2xl sm:text-4xl font-bold text-slate-900 tracking-tighter">Why join SawFleet?</h2>
+          <h2 class="mt-3 text-2xl sm:text-4xl font-bold text-slate-900 tracking-tighter">Why join SF Tree Removal?</h2>
         </div>
 
         <!-- Benefits Grid u Slate Bojama -->
@@ -370,18 +370,31 @@ const { data: territories } = await supabase
 
     const userId = signUpData.user?.id;
 
-    // 2) Create the company profile, already linked to the account
-    const { error: insertError } = await supabase.from('contractors').insert([{
-      company_name,
-      contact_name,
-      phone,
-      email,
-      territory,
-      status: 'pending',
-      user_id: userId,
-      source: trafficSource,
-      created_at: new Date().toISOString(),
-    }]);
+    // Isti signal kao kod truck ownera: ako je email već postojao ali
+    // nije potvrđen, Supabase (namerno) vraća user objekat sa praznim
+    // identities nizom umesto greške. Taj id ne bi prošao FK proveru.
+    const looksUnconfirmedRetry = Array.isArray(signUpData.user?.identities) && signUpData.user!.identities!.length === 0;
+
+    if (looksUnconfirmedRetry) {
+      errorMsg.textContent = 'This email is already registered but not yet confirmed. Check your inbox for the confirmation link, or try signing in.';
+      errorMsg.classList.remove('hidden');
+      btn.disabled = false;
+      btn.innerText = "Apply For Network Access →";
+      return;
+    }
+
+    // 2) Napravi profil firme preko servera (service_role) — ne zavisi
+    // od toga da li postoji aktivna sesija odmah posle signUp-a.
+    let insertError: { message: string } | null = null;
+    if (userId) {
+      const res = await fetch('/api/create-contractor-profile', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ userId, email, companyName: company_name, contactName: contact_name, phone, territory, source: trafficSource }),
+      });
+      const result = await res.json();
+      if (!res.ok) insertError = { message: result.message || result.error || 'Unknown error' };
+    }
 
     if (insertError) {
       errorMsg.textContent = 'Your account was created, but the company profile could not be saved (' + insertError.message + '). Please contact the administrator.';
