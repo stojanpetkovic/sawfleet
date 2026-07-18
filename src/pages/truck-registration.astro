@@ -274,6 +274,17 @@ import Footer from "../components/layout/Footer.astro";
       }
     }
 
+    // Obavesti admine mejlom o novoj prijavi vlasnika (best effort — ne
+    // blokira redirect ako padne)
+    fetch('/api/notify-new-truck-owner', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        ownerName: fd.get('contactName'),
+        companyName: fd.get('companyName'),
+      }),
+    }).catch((err) => console.error('notify-new-truck-owner failed:', err));
+
     // REDIRECT TO THANK YOU PAGE (fires pixel/ads conversion)
     window.location.href = '/thank-you';
   });

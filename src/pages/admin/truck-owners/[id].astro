@@ -241,6 +241,18 @@ const status = owner.status || 'pending';
     document.body.style.opacity = '0.5';
     await supabase.from('truck_owners').update({ status: newStatus }).eq('id', id);
     await logActivity(`Status changed to ${newStatus}`);
+
+    try {
+      await fetch('/api/notify-truck-owner-status', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        keepalive: true,
+        body: JSON.stringify({ ownerId: id, status: newStatus }),
+      });
+    } catch (e) {
+      console.error('notify-truck-owner-status failed:', e);
+    }
+
     window.location.reload();
   }
 
