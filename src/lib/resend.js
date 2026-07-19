@@ -1,46 +1,45 @@
 // Server-only helper — NIKAD ne importuj ovo u <script> (client) blok,
 // samo u .astro frontmatter ili u src/pages/api/*.ts fajlove.
+// RESEND_API_KEY namerno NIJE prefiksovan sa PUBLIC_, pa Astro
+// ne sme da ga ubaci u JS bundle koji ide u browser.
 
-// VAŽNO: mejlovi se NE šalju direktno sa Railway servera ka Resend-u —
-// Resend odbija SVE pozive sa Railway IP opsega generičkom "API key is
-// invalid" greškom (potvrđeno: čak i namerno pogrešan ključ dobija
-// istu grešku, dok isti nalog radi savršeno preko drugog kanala).
-// Zato ide preko Supabase Edge Function-a ("send-notification-email"),
-// koji šalje ka Resend-u sa Supabase infrastrukture umesto Railway-a.
-
-const SUPABASE_URL = import.meta.env.PUBLIC_SUPABASE_URL;
-const SUPABASE_ANON_KEY = import.meta.env.PUBLIC_SUPABASE_ANON_KEY;
+const RESEND_API_KEY = import.meta.env.RESEND_API_KEY;
 const FROM_EMAIL = import.meta.env.RESEND_FROM_EMAIL || "SF Tree Removal <notifications@sftreeremoval.com>";
 
 /**
  * @param {{ to: string | string[], subject: string, html: string }} params
  */
 export async function sendEmail({ to, subject, html }) {
-  if (!SUPABASE_URL || !SUPABASE_ANON_KEY) {
-    console.error("PUBLIC_SUPABASE_URL / PUBLIC_SUPABASE_ANON_KEY nisu podešeni — email nije poslat.");
-    return { ok: false, error: "missing_supabase_config" };
+  if (!RESEND_API_KEY) {
+    console.error("RESEND_API_KEY nije podešen u .env — email nije poslat.");
+    return { ok: false, error: "missing_api_key" };
   }
 
   try {
-    const res = await fetch(`${SUPABASE_URL}/functions/v1/send-notification-email`, {
+    const res = await fetch("https://api.resend.com/emails", {
       method: "POST",
       headers: {
-        Authorization: `Bearer ${SUPABASE_ANON_KEY}`,
+        Authorization: `Bearer ${RESEND_API_KEY}`,
         "Content-Type": "application/json",
       },
-      body: JSON.stringify({ to, subject, html, from: FROM_EMAIL }),
+      body: JSON.stringify({
+        from: FROM_EMAIL,
+        to: Array.isArray(to) ? to : [to],
+        subject,
+        html,
+      }),
     });
 
-    const data = await res.json();
-
-    if (!res.ok || !data.ok) {
-      console.error("Edge function email error:", res.status, data);
-      return { ok: false, error: JSON.stringify(data) };
+    if (!res.ok) {
+      const errText = await res.text();
+      console.error("Resend error:", res.status, errText);
+      return { ok: false, error: errText };
     }
 
-    return { ok: true, data: data.data };
+    const data = await res.json();
+    return { ok: true, data };
   } catch (err) {
-    console.error("Edge function request failed:", err);
+    console.error("Resend request failed:", err);
     return { ok: false, error: String(err) };
   }
 }
