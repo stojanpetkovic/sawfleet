@@ -19,13 +19,13 @@ export async function POST({ request }) {
       (admins || []).map((a) =>
         sendEmail({
           to: a.email,
-          subject: `Nova prijava izvođača: ${companyName}`,
+          subject: `New contractor application: ${companyName}`,
           html: `
           <div style="font-family: -apple-system, sans-serif; max-width: 480px; margin: 0 auto; background:#FFFFFF; color:#0F172A; padding:32px; border-radius:16px; border:1px solid #E7EAE8;">
             <p style="font-size:10px; letter-spacing:2px; text-transform:uppercase; color:#16803C; font-weight:bold; margin:0 0 12px;">// New Application</p>
-            <h1 style="font-size:22px; margin:0 0 16px;">Nova prijava izvođača</h1>
-            <p style="color:#475569; font-size:14px; line-height:1.6;"><strong>${companyName}</strong> se prijavio(la) za teritoriju <strong>${territory}</strong> i čeka tvoje odobrenje.</p>
-            <a href="${siteUrl}/admin/contractors" style="display:inline-block; margin-top:8px; background:#22C55E; color:#FFFFFF; text-decoration:none; font-weight:bold; font-size:13px; padding:12px 24px; border-radius:10px;">Pregledaj prijavu →</a>
+            <h1 style="font-size:22px; margin:0 0 16px;">New contractor application</h1>
+            <p style="color:#475569; font-size:14px; line-height:1.6;"><strong>${companyName}</strong> applied for the <strong>${territory}</strong> territory and is waiting for your approval.</p>
+            <a href="${siteUrl}/admin/contractors" style="display:inline-block; margin-top:8px; background:#22C55E; color:#FFFFFF; text-decoration:none; font-weight:bold; font-size:13px; padding:12px 24px; border-radius:10px;">Review application →</a>
           </div>`,
         })
       )

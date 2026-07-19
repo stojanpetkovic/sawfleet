@@ -29,7 +29,7 @@ export async function POST({ request }) {
 
     const result = await sendEmail({
       to: contractor.email,
-      subject: status === "active" ? "Tvoj SF Tree Removal nalog je odobren" : "Status tvog SF Tree Removal naloga",
+      subject: status === "active" ? "Your SF Tree Removal account is approved" : "Update on your SF Tree Removal account",
       html: contractorStatusEmailHtml({
         companyName: contractor.company_name,
         status,
