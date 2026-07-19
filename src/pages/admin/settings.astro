@@ -9,7 +9,7 @@ const { data: territories } = await supabase
   .select('*')
   .order('name', { ascending: true });
 
-// Dohvatamo skripte
+// Dohvatamo skripte + notifikacione email adrese
 const { data: tracking } = await supabase
   .from('tracking_settings')
   .select('*')
@@ -38,6 +38,10 @@ const { data: tracking } = await supabase
         <button id="tabBtn-tracking" class="tab-btn flex-shrink-0 lg:w-full text-left px-4 py-3 text-zinc-500 hover:bg-zinc-100/50 hover:text-slate-900 rounded-lg text-[11px] font-bold uppercase tracking-wider transition-all border border-transparent flex items-center gap-3">
           <span class="indicator w-2 h-2 rounded-full bg-zinc-200"></span>
           Tracking & Analytics
+        </button>
+        <button id="tabBtn-notifications" class="tab-btn flex-shrink-0 lg:w-full text-left px-4 py-3 text-zinc-500 hover:bg-zinc-100/50 hover:text-slate-900 rounded-lg text-[11px] font-bold uppercase tracking-wider transition-all border border-transparent flex items-center gap-3">
+          <span class="indicator w-2 h-2 rounded-full bg-zinc-200"></span>
+          Notifications
         </button>
       </div>
 
@@ -113,6 +117,51 @@ const { data: tracking } = await supabase
           </form>
         </div>
 
+        <!-- NOTIFIKACIJE -->
+        <div id="section-notifications" class="tab-section hidden bg-white border border-zinc-100 p-6 md:p-8 rounded-xl shadow-2xl">
+          <div class="border-b border-zinc-100 pb-5 mb-6">
+            <h2 class="text-sm font-bold text-slate-900 uppercase tracking-wider mb-2">Notifications</h2>
+            <p class="text-[11px] text-zinc-500">Choose who gets emailed when a new external lead comes in (e.g. from Tree Jaws or other partner sites).</p>
+          </div>
+
+          <form id="notificationsForm" class="space-y-6">
+            <div>
+              <label class="text-[10px] uppercase tracking-[0.2em] text-zinc-600 font-bold block mb-2">
+                External Lead Notification Emails
+              </label>
+              <p class="text-[11px] text-zinc-500 mb-3">Comma-separated list. Leave empty to notify all admins by default.</p>
+              <textarea id="externalLeadEmails" rows="3" class="w-full bg-white border border-zinc-200 p-4 rounded-xl text-zinc-700 font-mono text-xs outline-none focus:border-green-500/50 transition-colors placeholder:text-zinc-300" placeholder="e.g. dispatch@sftreeremoval.com, stojan@sftreeremoval.com">{tracking?.external_lead_notification_emails || ''}</textarea>
+            </div>
+
+            <div class="pt-4 border-t border-zinc-100">
+              <label class="text-[10px] uppercase tracking-[0.2em] text-zinc-600 font-bold block mb-2">
+                When To Send
+              </label>
+              <p class="text-[11px] text-zinc-500 mb-3">Choose when the notification above fires for a new external lead.</p>
+              <div class="space-y-2">
+                <label class="flex items-start gap-3 p-4 rounded-xl border border-zinc-200 cursor-pointer hover:border-green-500/40 transition-colors has-[:checked]:border-green-500 has-[:checked]:bg-green-50/50">
+                  <input type="radio" name="notifyTiming" id="notifyTimingImmediate" value="immediate" class="mt-1 accent-green-600" checked={!tracking?.external_lead_notify_on_approval_only} />
+                  <span>
+                    <span class="block text-xs font-bold text-slate-900">Immediately on arrival</span>
+                    <span class="block text-[11px] text-zinc-500 mt-0.5">Send the moment a new external lead comes in, before anyone reviews it.</span>
+                  </span>
+                </label>
+                <label class="flex items-start gap-3 p-4 rounded-xl border border-zinc-200 cursor-pointer hover:border-green-500/40 transition-colors has-[:checked]:border-green-500 has-[:checked]:bg-green-50/50">
+                  <input type="radio" name="notifyTiming" id="notifyTimingApproval" value="approval" class="mt-1 accent-green-600" checked={!!tracking?.external_lead_notify_on_approval_only} />
+                  <span>
+                    <span class="block text-xs font-bold text-slate-900">Only after it's approved</span>
+                    <span class="block text-[11px] text-zinc-500 mt-0.5">Wait until you click "Approve" on the lead in /admin/external-leads before notifying.</span>
+                  </span>
+                </label>
+              </div>
+            </div>
+
+            <button type="submit" id="saveNotificationsBtn" class="flex h-12 w-full sm:w-auto px-8 items-center justify-center rounded-xl bg-green-500 text-sm font-bold text-slate-900 transition-all hover:bg-green-400 active:scale-[0.98]">
+              Save Notification Settings
+            </button>
+          </form>
+        </div>
+
       </div>
     </div>
   </div>
@@ -129,25 +178,66 @@ const { data: tracking } = await supabase
   // --- TABOVI LOGIKA ---
   const tabTerritories = document.getElementById('tabBtn-territories');
   const tabTracking = document.getElementById('tabBtn-tracking');
+  const tabNotifications = document.getElementById('tabBtn-notifications');
   const secTerritories = document.getElementById('section-territories');
   const secTracking = document.getElementById('section-tracking');
+  const secNotifications = document.getElementById('section-notifications');
 
-  function switchTab(activeTab: HTMLElement, inactiveTab: HTMLElement, showSec: HTMLElement, hideSec: HTMLElement) {
-    // Reset inactive
-    inactiveTab.className = "tab-btn flex-shrink-0 lg:w-full text-left px-4 py-3 text-zinc-500 hover:bg-zinc-100/50 hover:text-slate-900 rounded-lg text-[11px] font-bold uppercase tracking-wider transition-all border border-transparent flex items-center gap-3";
-    inactiveTab.querySelector('.indicator')!.className = "indicator w-2 h-2 rounded-full bg-zinc-200";
-    // Set active
-    activeTab.className = "tab-btn active flex-shrink-0 lg:w-full text-left px-4 py-3 bg-zinc-100 border border-zinc-200 rounded-lg text-slate-900 text-[11px] font-bold uppercase tracking-wider flex items-center gap-3 transition-all";
-    activeTab.querySelector('.indicator')!.className = "indicator w-2 h-2 rounded-full bg-green-500";
-    // Toggle views
-    hideSec.classList.add('hidden');
-    hideSec.classList.remove('block');
-    showSec.classList.remove('hidden');
-    showSec.classList.add('block');
+  const allTabs = [tabTerritories, tabTracking, tabNotifications] as HTMLElement[];
+  const allSections = [secTerritories, secTracking, secNotifications] as HTMLElement[];
+
+  function switchTab(activeTab: HTMLElement, showSec: HTMLElement) {
+    allTabs.forEach((tab) => {
+      if (tab === activeTab) {
+        tab.className = "tab-btn active flex-shrink-0 lg:w-full text-left px-4 py-3 bg-zinc-100 border border-zinc-200 rounded-lg text-slate-900 text-[11px] font-bold uppercase tracking-wider flex items-center gap-3 transition-all";
+        tab.querySelector('.indicator')!.className = "indicator w-2 h-2 rounded-full bg-green-500";
+      } else {
+        tab.className = "tab-btn flex-shrink-0 lg:w-full text-left px-4 py-3 text-zinc-500 hover:bg-zinc-100/50 hover:text-slate-900 rounded-lg text-[11px] font-bold uppercase tracking-wider transition-all border border-transparent flex items-center gap-3";
+        tab.querySelector('.indicator')!.className = "indicator w-2 h-2 rounded-full bg-zinc-200";
+      }
+    });
+    allSections.forEach((sec) => {
+      const show = sec === showSec;
+      sec.classList.toggle('hidden', !show);
+      sec.classList.toggle('block', show);
+    });
   }
 
-  tabTerritories?.addEventListener('click', () => switchTab(tabTerritories, tabTracking!, secTerritories!, secTracking!));
-  tabTracking?.addEventListener('click', () => switchTab(tabTracking, tabTerritories!, secTracking!, secTerritories!));
+  tabTerritories?.addEventListener('click', () => switchTab(tabTerritories, secTerritories!));
+  tabTracking?.addEventListener('click', () => switchTab(tabTracking, secTracking!));
+  tabNotifications?.addEventListener('click', () => switchTab(tabNotifications, secNotifications!));
+
+  // --- ČUVANJE NOTIFIKACIONIH EMAIL ADRESA ---
+  document.getElementById('notificationsForm')?.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const saveNotifBtn = document.getElementById('saveNotificationsBtn') as HTMLButtonElement;
+    saveNotifBtn.innerText = "Saving...";
+    saveNotifBtn.disabled = true;
+
+    const emailsVal = (document.getElementById('externalLeadEmails') as HTMLTextAreaElement).value;
+    const notifyOnApprovalOnly = (document.getElementById('notifyTimingApproval') as HTMLInputElement).checked;
+
+    const { error } = await supabase.from('tracking_settings').update({
+      external_lead_notification_emails: emailsVal,
+      external_lead_notify_on_approval_only: notifyOnApprovalOnly
+    }).eq('id', 1);
+
+    if (error) {
+      alert("Error saving notification settings!");
+      saveNotifBtn.innerText = "Save Notification Settings";
+      saveNotifBtn.disabled = false;
+    } else {
+      saveNotifBtn.innerText = "Saved Successfully ✓";
+      saveNotifBtn.classList.replace('bg-green-500', 'bg-zinc-300');
+      saveNotifBtn.classList.replace('text-slate-900', 'text-green-700');
+      setTimeout(() => {
+        saveNotifBtn.innerText = "Save Notification Settings";
+        saveNotifBtn.classList.replace('bg-zinc-300', 'bg-green-500');
+        saveNotifBtn.classList.replace('text-green-700', 'text-slate-900');
+        saveNotifBtn.disabled = false;
+      }, 2000);
+    }
+  });
 
   // --- DODAVANJE TERITORIJE ---
   document.getElementById('addTerritoryForm')?.addEventListener('submit', async (e) => {

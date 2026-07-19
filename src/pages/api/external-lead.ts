@@ -1,6 +1,7 @@
 export const prerender = false;
 
 import { supabaseAdmin } from "../../lib/supabaseAdmin";
+import { notifyNewExternalLead } from "./notify-new-external-lead";
 
 // CORS — ovo namerno prima pozive sa DRUGIH domena (spoljni sajtovi
 // šalju svoje forme ovde), pa je Access-Control-Allow-Origin otvoren.
@@ -81,6 +82,24 @@ export async function POST({ request }: { request: Request }) {
 
     if (error) {
       return json({ error: "insert_failed", message: error.message }, 500);
+    }
+
+    // Obavesti admina/podešene adrese SAMO ako je "Immediately on arrival"
+    // izabrano u Settings -> Notifications. Ako je "Only after it's
+    // approved", ništa se ne šalje ovde — čeka se klik na Approve
+    // dugme na /admin/external-leads.
+    const { data: notifySettings } = await supabaseAdmin
+      .from("tracking_settings")
+      .select("external_lead_notify_on_approval_only")
+      .eq("id", 1)
+      .single();
+
+    if (!notifySettings?.external_lead_notify_on_approval_only) {
+      const siteUrl = import.meta.env.PUBLIC_SITE_URL || origin || new URL(request.url).origin;
+      notifyNewExternalLead(
+        { fullName, email, phone, message, sourceDomain: resolvedDomain, formType: formType || "lead" },
+        siteUrl
+      ).catch((err) => console.error("notifyNewExternalLead failed:", err));
     }
 
     return json({ ok: true }, 200);
