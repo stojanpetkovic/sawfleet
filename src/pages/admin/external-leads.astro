@@ -43,6 +43,11 @@ const { data: territories } = await supabase.from('service_territories').select(
           <p id="detailMessage" class="text-slate-900 mt-1 text-sm leading-relaxed whitespace-pre-wrap">N/A</p>
         </div>
 
+        <div id="detailPhotosWrap" class="hidden">
+          <p class="text-[9px] uppercase tracking-[0.2em] text-zinc-400 mb-2">Photos</p>
+          <div id="detailPhotos" class="flex gap-2 flex-wrap"></div>
+        </div>
+
         <div id="detailSmsWrap" class="rounded-xl border border-zinc-200 bg-zinc-50 p-4">
           <p class="text-[9px] uppercase tracking-[0.2em] text-zinc-400 mb-1">SMS Consent</p>
           <p id="detailSmsConsent" class="text-sm font-bold"></p>
@@ -328,6 +333,7 @@ const { data: territories } = await supabase.from('service_territories').select(
             <p class="text-sm font-bold text-slate-900 truncate">${l.full_name || 'Unnamed'}</p>
             <span class="px-2 py-0.5 rounded-full text-[9px] font-bold uppercase border tracking-wide bg-zinc-100 text-zinc-500 border-zinc-200">${l.form_type}</span>
             ${l.extra && (l.extra as any).migrated_from_lead_id ? '<span class="px-2 py-0.5 rounded-full text-[9px] font-bold uppercase border tracking-wide bg-teal-500/10 text-teal-700 border-teal-500/20">↩ Migrated</span>' : ''}
+            ${l.extra && (l.extra as any).photoUrls?.length > 0 ? `<span class="px-2 py-0.5 rounded-full text-[9px] font-bold uppercase border tracking-wide bg-purple-500/10 text-purple-700 border-purple-500/20">📷 ${(l.extra as any).photoUrls.length}</span>` : ''}
           </div>
           <p class="mt-0.5 text-[11px] text-zinc-500 font-mono truncate">${[l.email, l.phone].filter(Boolean).join(' · ') || 'No contact info'}</p>
           <p class="mt-1 text-[10px] text-zinc-400 truncate">${l.source_domain || 'Unknown domain'} · ${timeAgo(l.created_at)}</p>
@@ -354,6 +360,21 @@ const { data: territories } = await supabase.from('service_territories').select(
     document.getElementById('detailDomain')!.textContent = lead.source_domain || 'N/A';
     document.getElementById('detailDate')!.textContent = new Date(lead.created_at).toLocaleString();
     document.getElementById('detailMessage')!.textContent = lead.message || 'No message provided.';
+
+    const photoUrls: string[] = (lead.extra as any)?.photoUrls || [];
+    const photosWrap = document.getElementById('detailPhotosWrap')!;
+    const photosEl = document.getElementById('detailPhotos')!;
+    if (photoUrls.length > 0) {
+      photosWrap.classList.remove('hidden');
+      photosEl.innerHTML = photoUrls.map((url) => `
+        <a href="${url}" target="_blank" rel="noopener">
+          <img src="${url}" class="w-20 h-20 object-cover rounded-lg border border-zinc-200 hover:border-green-500 transition-colors" />
+        </a>
+      `).join('');
+    } else {
+      photosWrap.classList.add('hidden');
+      photosEl.innerHTML = '';
+    }
 
     document.getElementById('detailSmsConsent')!.textContent = lead.sms_consent ? '✅ Consented' : '❌ Not given';
     document.getElementById('detailSmsConsent')!.className = `text-sm font-bold ${lead.sms_consent ? 'text-green-700' : 'text-zinc-500'}`;
@@ -404,6 +425,7 @@ const { data: territories } = await supabase.from('service_territories').select(
                 message: lead.message,
                 sourceDomain: lead.source_domain,
                 formType: lead.form_type,
+                photoUrls: (lead.extra as any)?.photoUrls || [],
               }),
             }).catch((err) => console.error('notify-new-external-lead failed:', err));
           }

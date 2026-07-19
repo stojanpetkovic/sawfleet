@@ -41,7 +41,7 @@ export async function POST({ request }: { request: Request }) {
     }
 
     const {
-      formType,       // 'lead' | 'job' (job stiže kasnije)
+      formType,       // 'lead' | 'job'
       sourceDomain,   // koji sajt šalje — ako nije poslat, uzimamo iz Origin/Referer header-a
       fullName,
       email,
@@ -49,7 +49,8 @@ export async function POST({ request }: { request: Request }) {
       message,
       smsConsent,
       smsConsentText,
-      extra,          // slobodna torba za polja specifična za formu (npr. buduća "job" forma)
+      extra,          // slobodna torba za polja specifična za formu
+      photos,         // niz base64 data-url stringova (npr. "data:image/jpeg;base64,...."), najviše 4
     } = body;
 
     if (!fullName || (!email && !phone)) {
@@ -65,7 +66,7 @@ export async function POST({ request }: { request: Request }) {
     const ip = request.headers.get("x-forwarded-for")?.split(",")[0]?.trim() || null;
     const userAgent = request.headers.get("user-agent") || null;
 
-    const { error } = await supabaseAdmin.from("external_leads").insert([{
+    const { data: inserted, error } = await supabaseAdmin.from("external_leads").insert([{
       form_type: formType || "lead",
       source_domain: resolvedDomain,
       full_name: fullName,
@@ -78,10 +79,50 @@ export async function POST({ request }: { request: Request }) {
       extra: extra || null,
       ip_address: ip,
       user_agent: userAgent,
-    }]);
+    }]).select().single();
 
     if (error) {
       return json({ error: "insert_failed", message: error.message }, 500);
+    }
+
+    // Upload fotografija (best effort — ako neka padne, ostale se i
+    // dalje čuvaju, ne rušimo ceo submit zbog jedne slike).
+    let photoUrls: string[] = [];
+    if (Array.isArray(photos) && photos.length > 0) {
+      const uploads = await Promise.all(
+        photos.slice(0, 4).map(async (dataUrl: string, i: number) => {
+          try {
+            const match = /^data:(image\/[a-zA-Z+]+);base64,(.+)$/.exec(dataUrl);
+            if (!match) return null;
+            const [, mimeType, base64Data] = match;
+            const ext = mimeType.split("/")[1]?.replace("jpeg", "jpg") || "jpg";
+            const buffer = Buffer.from(base64Data, "base64");
+            const path = `${inserted.id}/${i + 1}.${ext}`;
+
+            const { error: uploadError } = await supabaseAdmin!.storage
+              .from("external-lead-photos")
+              .upload(path, buffer, { contentType: mimeType, upsert: true });
+
+            if (uploadError) {
+              console.error("Photo upload failed:", uploadError.message);
+              return null;
+            }
+
+            const { data: publicUrl } = supabaseAdmin!.storage.from("external-lead-photos").getPublicUrl(path);
+            return publicUrl.publicUrl;
+          } catch (err) {
+            console.error("Photo processing failed:", err);
+            return null;
+          }
+        })
+      );
+      photoUrls = uploads.filter((u): u is string => !!u);
+
+      if (photoUrls.length > 0) {
+        await supabaseAdmin.from("external_leads").update({
+          extra: { ...(extra || {}), photoUrls },
+        }).eq("id", inserted.id);
+      }
     }
 
     // Obavesti admina/podešene adrese SAMO ako je "Immediately on arrival"
@@ -97,7 +138,7 @@ export async function POST({ request }: { request: Request }) {
     if (!notifySettings?.external_lead_notify_on_approval_only) {
       const siteUrl = import.meta.env.PUBLIC_SITE_URL || origin || new URL(request.url).origin;
       notifyNewExternalLead(
-        { fullName, email, phone, message, sourceDomain: resolvedDomain, formType: formType || "lead" },
+        { fullName, email, phone, message, sourceDomain: resolvedDomain, formType: formType || "lead", photoUrls },
         siteUrl
       ).catch((err) => console.error("notifyNewExternalLead failed:", err));
     }
