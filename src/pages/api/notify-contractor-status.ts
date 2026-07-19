@@ -1,6 +1,7 @@
 export const prerender = false;
 
 import { supabase } from "../../lib/supabase";
+import { supabaseAdmin } from "../../lib/supabaseAdmin";
 import { sendEmail, contractorStatusEmailHtml } from "../../lib/resend";
 
 // Poziva se iz admin panela kad se odobri/odbije kontraktor.
@@ -11,7 +12,10 @@ export async function POST({ request }) {
       return new Response(JSON.stringify({ error: "contractorId and status are required" }), { status: 400 });
     }
 
-    const { data: contractor, error } = await supabase
+    // Server-to-server poziv, nema korisničke sesije — mora service role
+    const db = supabaseAdmin ?? supabase;
+
+    const { data: contractor, error } = await db
       .from("contractors")
       .select("company_name, email")
       .eq("id", contractorId)

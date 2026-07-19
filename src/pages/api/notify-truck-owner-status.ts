@@ -1,6 +1,7 @@
 export const prerender = false;
 
 import { supabase } from "../../lib/supabase";
+import { supabaseAdmin } from "../../lib/supabaseAdmin";
 import { sendEmail, truckOwnerStatusEmailHtml } from "../../lib/resend";
 
 // Poziva se iz admin panela kad se odobri/odbije vlasnik kamiona.
@@ -11,7 +12,10 @@ export async function POST({ request }) {
       return new Response(JSON.stringify({ error: "ownerId and status are required" }), { status: 400 });
     }
 
-    const { data: owner, error } = await supabase
+    // Server-to-server poziv, nema korisničke sesije — mora service role
+    const db = supabaseAdmin ?? supabase;
+
+    const { data: owner, error } = await db
       .from("truck_owners")
       .select("company_name, contact_name, email")
       .eq("id", ownerId)

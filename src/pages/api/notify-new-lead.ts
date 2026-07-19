@@ -1,6 +1,7 @@
 export const prerender = false;
 
 import { supabase } from "../../lib/supabase";
+import { supabaseAdmin } from "../../lib/supabaseAdmin";
 import { sendEmail, newLeadEmailHtml } from "../../lib/resend";
 
 async function runNotify(county: string, details: string, origin: string) {
@@ -8,15 +9,21 @@ async function runNotify(county: string, details: string, origin: string) {
     return { status: 400, body: { error: "county is required" } };
   }
 
+  // Ova ruta se poziva server-to-server (fetch iz admin panela ka
+  // sopstvenom API-ju) — nema korisničke sesije u ovom kontekstu, pa
+  // anon klijent uvek dobija 0 redova od RLS-a. Service role je
+  // ispravan izbor ovde (isti obrazac kao admin/[id].astro strane).
+  const db = supabaseAdmin ?? supabase;
+
   // Dijagnostika: koliko kontraktora uopšte postoji za tu teritoriju,
   // BEZ obzira na status/email — da vidimo da li je problem u
   // poklapanju teritorije ili u statusu/email-u.
-  const { data: allInTerritory } = await supabase
+  const { data: allInTerritory } = await db
     .from("contractors")
     .select("company_name, email, status, territory")
     .eq("territory", county);
 
-  const { data: contractors, error } = await supabase
+  const { data: contractors, error } = await db
     .from("contractors")
     .select("company_name, email")
     .eq("territory", county)
