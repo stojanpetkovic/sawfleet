@@ -1,0 +1,28 @@
+---
+import MainLayout from "../layouts/MainLayout.astro";
+import Header from "../components/layout/Header.astro";
+import Footer from "../components/layout/Footer.astro";
+import MobileNav from "../components/layout/MobileNav.astro";
+import { House, Users, Truck, HelpCircle } from "lucide-astro";
+
+const paths = [
+  { icon: House, title: "Property owners", text: "Need an estimate or help with a submitted request? Start with the estimate flow so dispatch has the project details.", href: "/#quote", action: "Request or update a project" },
+  { icon: Users, title: "Contractors", text: "Access claimed leads and profile settings from the contractor portal. Registration support begins on the network application page.", href: "/portal", action: "Open contractor access" },
+  { icon: Truck, title: "Fleet owners", text: "Manage equipment listings, availability and profile information from the Fleet Owner portal.", href: "/portal", action: "Open fleet access" },
+];
+---
+<MainLayout title="Support | SF Tree Removal" description="Get help with homeowner requests, contractor accounts and fleet listings on SF Tree Removal.">
+  <Header />
+  <main class="min-h-screen bg-white pt-28 lg:pt-32">
+    <section class="px-4 py-16 sm:px-8 lg:py-24">
+      <div class="mx-auto max-w-[1100px]">
+        <div class="max-w-2xl"><span class="text-[10px] font-mono font-bold uppercase tracking-[0.22em] text-green-700">// Help center</span><h1 class="mt-4 text-4xl font-bold tracking-tighter text-slate-950 sm:text-5xl">How can we point you in the right direction?</h1><p class="mt-5 text-base leading-relaxed text-slate-600">Choose the path that matches your account or request. This gets you to the right workflow without repeating information.</p></div>
+        <div class="mt-12 grid gap-5 lg:grid-cols-3">
+          {paths.map(({ icon: Icon, title, text, href, action }) => <article class="flex flex-col rounded-2xl border border-slate-200 bg-white p-6 shadow-soft"><span class="flex h-11 w-11 items-center justify-center rounded-xl bg-green-50 text-green-700"><Icon size={21} strokeWidth={1.7} /></span><h2 class="mt-6 text-lg font-bold text-slate-950">{title}</h2><p class="mt-3 flex-1 text-sm leading-relaxed text-slate-600">{text}</p><a href={href} class="mt-6 text-[10px] font-bold uppercase tracking-[0.15em] text-green-700 hover:text-green-900">{action} →</a></article>)}
+        </div>
+        <div class="mt-10 flex items-start gap-4 rounded-2xl border border-slate-200 bg-slate-50 p-6"><HelpCircle class="mt-0.5 shrink-0 text-slate-500" size={20} /><div><h2 class="text-sm font-bold text-slate-900">Before submitting another request</h2><p class="mt-2 text-xs leading-relaxed text-slate-600">If a contractor has already contacted you, reply through the contact method they used. For account access problems, use the correct portal and password-reset option first.</p></div></div>
+      </div>
+    </section>
+  </main>
+  <Footer /><MobileNav />
+</MainLayout>

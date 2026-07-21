@@ -42,7 +42,7 @@ import AdminLayout from "../../layouts/AdminLayout.astro";
   </div>
 
   <!-- Floating dugme -->
-  <button id="openOwnerModal" class="fixed bottom-24 lg:bottom-8 right-5 lg:right-8 h-14 px-5 bg-green-500 hover:bg-green-400 text-slate-900 rounded-full shadow-lg flex items-center gap-2 text-xs font-bold uppercase tracking-wider transition-all z-[100]">
+  <button id="openOwnerModal" class="admin-fab admin-fab--label fixed bottom-24 lg:bottom-8 right-5 lg:right-8 h-14 px-5 bg-green-500 hover:bg-green-400 text-white rounded-full shadow-lg flex items-center gap-2 text-xs font-bold uppercase tracking-wider transition-all z-[100]">
     + Add Owner
   </button>
 
@@ -50,8 +50,9 @@ import AdminLayout from "../../layouts/AdminLayout.astro";
 
     <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
       <div>
-        <h1 class="text-xl sm:text-2xl font-bold text-slate-900 tracking-tight">Truck Owners</h1>
-        <p class="text-[11px] text-zinc-500 mt-0.5">Everyone with a fleet owner account on the platform.</p>
+        <span class="text-[9px] font-mono font-bold uppercase tracking-[0.2em] text-amber-700">// Fleet partners</span>
+        <h1 class="mt-1.5 text-2xl sm:text-3xl font-bold text-slate-950 tracking-tight">Truck owners</h1>
+        <p class="text-sm text-slate-500 mt-1.5">Everyone with a fleet owner account on the platform.</p>
       </div>
       <a href="/admin/grapple-saw-trucks" class="text-[10px] font-bold uppercase tracking-[0.2em] text-zinc-500 hover:text-slate-900 border border-zinc-200 px-4 py-2.5 rounded-lg hover:bg-zinc-100 transition-colors whitespace-nowrap">
         View Trucks →

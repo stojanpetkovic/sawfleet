@@ -30,7 +30,8 @@ const { data: territories } = await supabase
           poster="/videos/hero-contractors-poster.webp"
           class="h-full w-full object-cover"
         >
-          <source src="/videos/hero-contractors.mp4" type="video/mp4" />
+          <source src="/videos/hero-optimized.webm" type="video/webm" media="(min-width: 640px) and (prefers-reduced-motion: no-preference)" />
+          <source src="/videos/hero-optimized.mp4" type="video/mp4" media="(min-width: 640px) and (prefers-reduced-motion: no-preference)" />
         </video>
       </div>
       <div class="absolute inset-0 -z-10 bg-slate-950/45"></div>
@@ -187,27 +188,28 @@ const { data: territories } = await supabase
     <!-- ============================================== -->
     <!-- 2. GROWTH ACCELERATORS (BENEFITS) -->
     <!-- ============================================== -->
-    <section id="benefits" class="py-16 lg:py-24 bg-white border-t border-slate-200">
-      <div class="mx-auto max-w-[1320px] px-4 sm:px-8">
+    <section id="benefits" class="py-12 sm:py-16 lg:py-20 bg-white border-t border-slate-200">
+      <div class="mx-auto max-w-[1200px] px-4 sm:px-8">
         
         <!-- Naslov -->
-        <div class="mb-12">
+        <div class="mb-8 max-w-2xl sm:mb-10">
           <span class="text-[10px] font-mono font-bold uppercase tracking-[0.2em] text-green-700">// Growth Accelerators</span>
-          <h2 class="mt-3 text-2xl sm:text-4xl font-bold text-slate-900 tracking-tighter">Why join SF Tree Removal?</h2>
+          <h2 class="mt-3 text-2xl sm:text-3xl font-bold text-slate-950 tracking-tighter">More relevant opportunities. Less time chasing noise.</h2>
+          <p class="mt-3 text-sm leading-relaxed text-slate-600">Your profile and territory help determine which homeowner requests reach you, so the dashboard stays focused on work you can realistically serve.</p>
         </div>
 
         <!-- Benefits Grid u Slate Bojama -->
-        <div class="grid gap-6 grid-cols-1 sm:grid-cols-2 lg:grid-cols-4">
+        <div class="grid gap-3 grid-cols-1 sm:grid-cols-2 lg:grid-cols-4">
           {[
-            { title: "Direct Dispatch", desc: "Skip lead marketplaces. Get high-intent requests ready to book." },
-            { title: "Market Control", desc: "Set your service radius by zip or county. You operate where you want." },
-            { title: "Smart Matching", desc: "Engine matches requests based on your current capacity and gear." },
-            { title: "Transparent Fees", desc: "Per-request pricing. No monthly retainers or long-term lock-ins." }
+            { title: "Territory Matching", desc: "See homeowner requests routed to the service area attached to your approved profile." },
+            { title: "Fast Claiming", desc: "Review the location and project summary before deciding whether to claim an opportunity." },
+            { title: "Direct Contact", desc: "Once claimed, the homeowner's available contact details are unlocked for follow-up." },
+            { title: "Simple Account", desc: "Keep company, contact and territory information current from one focused dashboard." }
           ].map((item, index) => (
-            <div class="group rounded-2xl border border-slate-300 bg-slate-100 p-6 hover:border-slate-400 transition-colors">
-              <div class="flex items-center gap-3 mb-4">
-                <span class="text-[10px] font-mono font-bold text-green-700">0{index + 1}</span>
-                <h3 class="text-sm font-bold text-slate-900 uppercase tracking-wide">{item.title}</h3>
+            <div class="group rounded-2xl border border-slate-200 bg-white p-5 shadow-soft hover:-translate-y-0.5 hover:border-slate-300 hover:shadow-soft-lg transition-all">
+              <div class="flex items-center gap-3 mb-3">
+                <span class="flex h-7 w-7 items-center justify-center rounded-lg bg-green-50 text-[10px] font-mono font-bold text-green-700">0{index + 1}</span>
+                <h3 class="text-xs font-bold text-slate-900 uppercase tracking-wide">{item.title}</h3>
               </div>
               <p class="text-[12px] text-slate-600 leading-relaxed">{item.desc}</p>
             </div>
@@ -220,36 +222,36 @@ const { data: territories } = await supabase
     <!-- ============================================== -->
     <!-- 3. WORKFLOW ARCHITECTURE (HOW IT WORKS) -->
     <!-- ============================================== -->
-    <section id="how-it-works" class="relative overflow-hidden bg-white py-16 lg:py-24 border-t border-slate-200 font-sans selection:bg-green-500/30 selection:text-slate-900">
+    <section id="how-it-works" class="relative overflow-hidden bg-slate-50 py-12 sm:py-16 lg:py-20 border-t border-slate-200 font-sans selection:bg-green-500/30 selection:text-slate-900">
       
-      <div class="relative z-10 mx-auto max-w-[1320px] px-4 sm:px-8">
+      <div class="relative z-10 mx-auto max-w-[1200px] px-4 sm:px-8">
         
         <!-- Header -->
-        <div class="mb-16 max-w-2xl">
+        <div class="mb-8 max-w-2xl sm:mb-10">
           <span class="inline-flex items-center gap-2 text-[10px] font-bold uppercase tracking-[0.2em] text-green-700">
             // Workflow architecture
           </span>
-          <h2 class="mt-4 text-3xl sm:text-5xl font-bold tracking-tighter text-slate-900">
-            Engineered for simplicity.
+          <h2 class="mt-3 text-2xl sm:text-3xl font-bold tracking-tighter text-slate-950">
+            From application to first opportunity.
           </h2>
-          <p class="mt-6 text-sm sm:text-base leading-relaxed text-slate-600">
-            Every request moves through a strictly optimized, deterministic pipeline. No friction, no black boxes—just a seamless transition from intake to match.
+          <p class="mt-3 text-sm leading-relaxed text-slate-600">
+            The process is intentionally straightforward: complete your profile, wait for approval, then review matched requests from your dashboard.
           </p>
         </div>
 
         <!-- Mreža faza (Optimizovana za Pro Slate izgled) -->
-        <div class="grid gap-6 lg:grid-cols-3">
+        <div class="grid gap-4 lg:grid-cols-3">
           
           <!-- FAZA 1 -->
-          <div class="rounded-2xl border border-slate-300 bg-slate-100 p-6 sm:p-8">
+          <div class="rounded-2xl border border-slate-200 bg-white p-5 sm:p-6 shadow-soft">
             <div class="flex items-center justify-between border-b border-slate-200 pb-4 mb-6">
               <span class="text-[9px] font-bold tracking-[0.2em] text-slate-500 uppercase">Phase 01</span>
               <span class="text-[9px] font-mono text-green-700">Intake</span>
             </div>
             <div class="space-y-6">
               {[
-                { n: "01", t: "Homeowner Submits", d: "Project details and location are captured instantly." },
-                { n: "02", t: "System Validation", d: "Service type and regional bounds are verified." }
+                { n: "01", t: "Apply", d: "Submit accurate company, contact and territory information." },
+                { n: "02", t: "Account Review", d: "An administrator reviews the application before activation." }
               ].map(step => (
                 <div>
                   <div class="flex items-baseline gap-3">
@@ -263,7 +265,7 @@ const { data: territories } = await supabase
           </div>
 
           <!-- FAZA 2: Istaknuta -->
-          <div class="rounded-2xl border border-green-500/30 bg-green-50 p-6 sm:p-8 relative overflow-hidden">
+          <div class="rounded-2xl border border-green-200 bg-green-50 p-5 sm:p-6 relative overflow-hidden shadow-soft">
             <div class="absolute top-0 right-0 w-40 h-40 bg-green-500/5 blur-[50px] rounded-full"></div>
             <div class="flex items-center justify-between border-b border-green-500/20 pb-4 mb-6 relative">
               <span class="text-[9px] font-bold tracking-[0.2em] text-green-700 uppercase">Phase 02</span>
@@ -271,23 +273,23 @@ const { data: territories } = await supabase
             </div>
             <div class="flex items-baseline gap-3 relative">
               <span class="font-mono text-[10px] font-bold text-green-700">03 //</span>
-              <h3 class="text-sm font-bold text-slate-900 uppercase tracking-wider">Smart Matching</h3>
+              <h3 class="text-sm font-bold text-slate-900 uppercase tracking-wider">Review Matches</h3>
             </div>
             <p class="mt-4 text-[12px] leading-relaxed text-slate-700 pl-8 relative">
-              Proprietary routing algorithm cross-references availability, rating metrics, and proximity to match qualified contractors in the micro-market.
+              Active accounts see available requests associated with their configured territory and can review the project summary before claiming.
             </p>
           </div>
 
           <!-- FAZA 3 -->
-          <div class="rounded-2xl border border-slate-300 bg-slate-100 p-6 sm:p-8">
+          <div class="rounded-2xl border border-slate-200 bg-white p-5 sm:p-6 shadow-soft">
             <div class="flex items-center justify-between border-b border-slate-200 pb-4 mb-6">
               <span class="text-[9px] font-bold tracking-[0.2em] text-slate-500 uppercase">Phase 03</span>
               <span class="text-[9px] font-mono text-slate-600">Handshake</span>
             </div>
             <div class="space-y-6">
               {[
-                { n: "04", t: "Contractor Alert", d: "Instant access to project specifications and metadata." },
-                { n: "05", t: "Direct Connection", d: "Seamless scheduling and estimate finalization." }
+                { n: "04", t: "Claim", d: "Secure the opportunity when it fits your service capacity." },
+                { n: "05", t: "Contact", d: "Use the unlocked details to discuss scope, timing and estimate." }
               ].map(step => (
                 <div>
                   <div class="flex items-baseline gap-3">
@@ -300,6 +302,10 @@ const { data: territories } = await supabase
             </div>
           </div>
 
+        </div>
+        <div class="mt-6 flex flex-col items-start justify-between gap-4 rounded-2xl border border-slate-200 bg-white p-5 sm:flex-row sm:items-center sm:p-6">
+          <div><h3 class="text-sm font-bold text-slate-950">Ready to join the network?</h3><p class="mt-1 text-xs text-slate-500">Complete the application above with your current business information.</p></div>
+          <a href="#contractorForm" class="inline-flex h-11 w-full items-center justify-center rounded-xl bg-green-700 px-5 text-[10px] font-bold uppercase tracking-[0.15em] text-white hover:bg-green-800 sm:w-auto">Back to application ↑</a>
         </div>
       </div>
     </section>

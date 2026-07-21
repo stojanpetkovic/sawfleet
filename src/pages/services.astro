@@ -1,0 +1,51 @@
+---
+import MainLayout from "../layouts/MainLayout.astro";
+import Header from "../components/layout/Header.astro";
+import Footer from "../components/layout/Footer.astro";
+import MobileNav from "../components/layout/MobileNav.astro";
+import { Trees, Scissors, CircleDotDashed, LandPlot, CloudLightning, ShieldCheck } from "lucide-astro";
+
+const services = [
+  { icon: Trees, title: "Tree Removal", text: "Safe removal planning for dead, damaged, hazardous or unwanted trees, including projects near structures and access constraints." },
+  { icon: Scissors, title: "Trimming & Pruning", text: "Canopy maintenance, clearance trimming and selective pruning to improve safety, health and storm readiness." },
+  { icon: CircleDotDashed, title: "Stump Grinding", text: "Below-grade stump grinding to reclaim usable space and prepare the area for landscaping or construction." },
+  { icon: LandPlot, title: "Lot & Land Clearing", text: "Vegetation and tree clearing for residential improvements, access preparation and property cleanup." },
+  { icon: CloudLightning, title: "Storm-Damage Response", text: "Routing for urgent fallen-tree, blocked-access and hazardous-limb requests following severe weather." },
+  { icon: ShieldCheck, title: "Hazard Assessment", text: "Connection with qualified local professionals who can evaluate visible risk and recommend appropriate next steps." },
+];
+---
+
+<MainLayout title="Tree Services | SF Tree Removal" description="Request tree removal, trimming, stump grinding, land clearing and storm-damage services across South Florida.">
+  <Header />
+  <main class="bg-white pt-28 lg:pt-32">
+    <section class="border-b border-slate-200 px-4 py-16 sm:px-8 lg:py-24">
+      <div class="mx-auto max-w-[1200px]">
+        <span class="text-[10px] font-mono font-bold uppercase tracking-[0.22em] text-green-700">// Residential tree services</span>
+        <div class="mt-4 grid gap-8 lg:grid-cols-[1fr_420px] lg:items-end">
+          <h1 class="max-w-3xl text-4xl font-bold leading-[1.05] tracking-tighter text-slate-950 sm:text-5xl lg:text-6xl">The right local crew for the work your property needs.</h1>
+          <div><p class="text-sm leading-relaxed text-slate-600">Describe the project once. Our dispatch process routes your request to qualified professionals serving your area.</p><a href="/#quote" class="mt-6 inline-flex h-12 items-center justify-center rounded-xl bg-green-700 px-6 text-xs font-bold uppercase tracking-[0.15em] text-white hover:bg-green-800">Request Free Estimate →</a></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="px-4 py-16 sm:px-8 lg:py-24">
+      <div class="mx-auto max-w-[1200px]">
+        <div class="grid gap-5 md:grid-cols-2 lg:grid-cols-3">
+          {services.map(({ icon: Icon, title, text }, index) => (
+            <article class="rounded-2xl border border-slate-200 bg-white p-6 shadow-soft transition-all hover:-translate-y-0.5 hover:border-slate-300 hover:shadow-soft-lg">
+              <div class="flex items-start justify-between"><span class="flex h-11 w-11 items-center justify-center rounded-xl bg-green-50 text-green-700"><Icon size={21} strokeWidth={1.7} /></span><span class="font-mono text-[9px] text-slate-400">0{index + 1}</span></div>
+              <h2 class="mt-6 text-lg font-bold text-slate-950">{title}</h2><p class="mt-3 text-sm leading-relaxed text-slate-600">{text}</p>
+            </article>
+          ))}
+        </div>
+      </div>
+    </section>
+
+    <section class="border-y border-slate-200 bg-slate-50 px-4 py-16 sm:px-8">
+      <div class="mx-auto grid max-w-[1200px] gap-8 lg:grid-cols-3">
+        {[['01', 'Send one request', 'Tell us where the property is and what needs attention.'], ['02', 'We route the project', 'Your request is matched with professionals serving that territory.'], ['03', 'Discuss the work', 'A contractor contacts you to review scope, timing and pricing.']].map(([n, title, text]) => <div><span class="font-mono text-[10px] font-bold text-green-700">// {n}</span><h3 class="mt-3 text-lg font-bold text-slate-950">{title}</h3><p class="mt-2 text-sm leading-relaxed text-slate-600">{text}</p></div>)}
+      </div>
+    </section>
+  </main>
+  <Footer /><MobileNav />
+</MainLayout>

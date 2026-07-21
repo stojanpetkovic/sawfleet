@@ -8,7 +8,7 @@ const { data: territories } = await supabase.from('service_territories').select(
 ---
 
 <AdminLayout>
-  <button id="openModal" class="fixed bottom-24 lg:bottom-8 right-5 lg:right-8 w-14 h-14 bg-green-500 hover:bg-green-400 text-slate-900 rounded-full shadow-lg flex items-center justify-center text-3xl font-bold transition-all z-[100]">
+  <button id="openModal" aria-label="Add contractor" title="Add contractor" class="admin-fab admin-fab--icon fixed bottom-24 lg:bottom-8 right-5 lg:right-8 w-14 h-14 bg-green-500 hover:bg-green-400 text-white rounded-full shadow-lg flex items-center justify-center text-2xl font-bold transition-all z-[100]">
     +
   </button>
 
@@ -41,8 +41,9 @@ const { data: territories } = await supabase.from('service_territories').select(
     <div class="flex-1 space-y-5 min-w-0 w-full">
 
       <div>
-        <h1 class="text-xl sm:text-2xl font-bold text-slate-900 tracking-tight">Contractors</h1>
-        <p class="text-[11px] text-zinc-500 mt-0.5">Everyone registered in your contractor network.</p>
+        <span class="text-[9px] font-mono font-bold uppercase tracking-[0.2em] text-blue-700">// Service network</span>
+        <h1 class="mt-1.5 text-2xl sm:text-3xl font-bold text-slate-950 tracking-tight">Contractors</h1>
+        <p class="text-sm text-slate-500 mt-1.5">Everyone registered in your contractor network.</p>
       </div>
 
       <div class="flex sm:grid sm:grid-cols-4 gap-3 overflow-x-auto no-scrollbar -mx-4 px-4 sm:mx-0 sm:px-0 pb-1">

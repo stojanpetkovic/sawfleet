@@ -106,8 +106,9 @@ if (truck.owner_user_id) {
       <!-- HEADER SA AKCIJAMA -->
       <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
         <div>
-          <h1 class="text-xl font-bold text-slate-900 tracking-wide">Truck Details</h1>
-          <p class="text-[10px] font-mono text-zinc-500 mt-1 uppercase">ID: {truck.id.split('-')[0]}</p>
+          <span class="text-[9px] font-mono font-bold uppercase tracking-[0.2em] text-violet-700">// Fleet asset</span>
+          <h1 class="mt-1.5 text-2xl font-bold text-slate-950 tracking-tight">Truck details</h1>
+          <p class="text-[10px] font-mono text-slate-400 mt-1 uppercase">ID: {truck.id.split('-')[0]}</p>
         </div>
         <div class="flex flex-wrap gap-3 w-full sm:w-auto">
           {truck.owner_phone && (

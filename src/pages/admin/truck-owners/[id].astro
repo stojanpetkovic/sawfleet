@@ -115,8 +115,8 @@ const status = owner.status || 'pending';
       <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
         <div>
           <a href="/admin/truck-owners" class="text-[10px] font-bold uppercase tracking-[0.2em] text-zinc-400 hover:text-slate-900 transition-colors">← Truck Owners</a>
-          <h1 class="mt-1 text-xl font-bold text-slate-900 tracking-wide">Truck Owner Management</h1>
-          <p class="text-[10px] font-mono text-zinc-500 mt-1 uppercase">ID: {owner.id.split('-')[0]}</p>
+          <h1 class="mt-2 text-2xl font-bold text-slate-950 tracking-tight">Truck owner management</h1>
+          <p class="text-[10px] font-mono text-slate-400 mt-1 uppercase">ID: {owner.id.split('-')[0]}</p>
         </div>
         <div class="flex flex-wrap gap-3 w-full sm:w-auto">
           {owner.phone && (

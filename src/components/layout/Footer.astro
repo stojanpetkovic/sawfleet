@@ -8,8 +8,8 @@ const links = {
     { title: "Request Estimate", href: "/#quote" }
   ],
   contractors: [
-    { title: "Join Network", href: "/contractors#contractor-join" },
-    { title: "How It Works", href: "/contractors#how-it-works" },
+    { title: "Join Network", href: "/contractors-registration" },
+    { title: "How It Works", href: "/contractors-registration#how-it-works" },
     { title: "Partner Portal", href: "/login" }
   ],
   legal: [
@@ -20,18 +20,29 @@ const links = {
 };
 ---
 
-<footer class="bg-slate-50 border-t border-slate-200 font-sans pb-28 lg:pb-12 pt-16 selection:bg-green-200 selection:text-slate-900">
+<footer class="relative overflow-hidden bg-slate-950 font-sans pb-28 lg:pb-10 pt-10 sm:pt-12 selection:bg-green-400 selection:text-slate-950">
+  <div class="pointer-events-none absolute -right-32 -top-40 h-96 w-96 rounded-full bg-green-500/[0.06] blur-[100px]"></div>
   <div class="mx-auto max-w-7xl px-6 lg:px-8">
-    <div class="xl:grid xl:grid-cols-3 xl:gap-8">
+    <div class="mb-12 flex flex-col justify-between gap-6 rounded-2xl border border-white/10 bg-white/[0.04] p-5 sm:flex-row sm:items-center sm:p-7">
+      <div>
+        <span class="text-[9px] font-mono font-bold uppercase tracking-[0.22em] text-green-400">// Start your request</span>
+        <h2 class="mt-2 text-xl font-bold tracking-tight text-white sm:text-2xl">Need help with a tree project?</h2>
+        <p class="mt-2 max-w-xl text-xs leading-relaxed text-slate-400">Share the location and project details once. We'll route the request to relevant professionals serving your area.</p>
+      </div>
+      <a href="/#quote" class="inline-flex h-11 w-full shrink-0 items-center justify-center rounded-xl bg-green-600 px-5 text-[10px] font-bold uppercase tracking-[0.16em] text-white shadow-[0_12px_30px_-14px_rgba(34,197,94,0.8)] transition hover:bg-green-500 sm:w-auto">Request Free Estimate →</a>
+    </div>
+
+    <div class="xl:grid xl:grid-cols-3 xl:gap-12">
 
       <!-- Leva strana -->
-      <div class="space-y-4">
-        <a href="/" class="flex items-center shrink-0">
-          <img src="/logo/logo.svg" alt="SF Tree Removal" class="h-24 w-auto" loading="eager" />
+      <div class="space-y-5">
+        <a href="/" class="inline-flex items-center shrink-0 rounded-xl bg-white px-4 py-3">
+          <img src="/logo/logo.svg" alt="SF Tree Removal" class="h-auto w-full max-w-[165px]" loading="lazy" />
         </a>
-        <p class="text-xs text-slate-500 max-w-sm leading-relaxed">
-          The premium tree service dispatch pipeline across South Florida. Connecting high-intent property owners with vetted, compliant contractors.
+        <p class="text-xs text-slate-400 max-w-sm leading-relaxed">
+          A South Florida dispatch platform connecting property owners with independent tree-service professionals and fleet operators.
         </p>
+        <div class="inline-flex items-center gap-2 rounded-full border border-green-400/20 bg-green-400/10 px-3 py-1.5 text-[9px] font-mono font-bold uppercase tracking-[0.14em] text-green-300"><span class="h-1.5 w-1.5 rounded-full bg-green-400"></span> Tri-county network active</div>
       </div>
 
       <!-- Desna strana -->
@@ -39,13 +50,13 @@ const links = {
 
         {Object.entries(links).map(([key, category]) => (
           <div>
-            <h3 class="text-[10px] font-mono font-bold uppercase tracking-[0.2em] text-slate-400">
+            <h3 class="text-[10px] font-mono font-bold uppercase tracking-[0.2em] text-slate-500">
               // {key.charAt(0).toUpperCase() + key.slice(1)}
             </h3>
             <ul class="mt-4 space-y-2">
               {category.map((link) => (
                 <li>
-                  <a href={link.href} class="text-xs text-slate-500 hover:text-green-700 transition-colors">
+                  <a href={link.href} class="text-xs text-slate-400 hover:text-white transition-colors">
                     {link.title}
                   </a>
                 </li>
@@ -58,13 +69,14 @@ const links = {
     </div>
 
     <!-- Bottom Bar -->
-    <div class="mt-16 border-t border-slate-200 pt-8 flex flex-col sm:flex-row items-center justify-between gap-4">
-      <p class="text-[10px] font-mono uppercase tracking-[0.1em] text-slate-400">
+    <div class="mt-12 border-t border-white/10 pt-6 flex flex-col sm:flex-row items-center justify-between gap-4">
+      <p class="text-[9px] font-mono uppercase tracking-[0.12em] text-slate-500">
         &copy; {currentYear} SF Tree Removal. All rights reserved.
       </p>
-      <div class="flex items-center gap-2 text-[10px] font-mono uppercase tracking-[0.1em] text-slate-400">
-        <span class="h-1.5 w-1.5 rounded-full bg-green-600 animate-pulse"></span>
-        Tri-County Network Active
+      <div class="flex items-center gap-4 text-[9px] font-mono uppercase tracking-[0.12em] text-slate-500">
+        <a href="/privacy" class="hover:text-slate-300 transition-colors">Privacy</a>
+        <a href="/terms" class="hover:text-slate-300 transition-colors">Terms</a>
+        <a href="/support" class="hover:text-slate-300 transition-colors">Support</a>
       </div>
     </div>
   </div>

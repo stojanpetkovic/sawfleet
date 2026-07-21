@@ -9,7 +9,7 @@ const { data: territories } = await supabase.from('service_territories').select(
 <AdminLayout>
   <!-- Modal za detalje / promenu statusa -->
   <div id="detailModal" class="hidden fixed inset-0 bg-slate-900/40 backdrop-blur-sm z-[200] flex items-center justify-center p-4 overflow-y-auto">
-    <div class="bg-white border border-zinc-200 shadow-2xl p-6 sm:p-8 rounded-2xl max-w-lg w-full my-8">
+    <div class="bg-white border border-zinc-200 shadow-2xl p-6 sm:p-8 rounded-2xl max-w-lg w-full my-8 max-h-[85vh] overflow-y-auto">
       <div class="flex items-center justify-between mb-6">
         <div>
           <span id="detailFormType" class="text-[10px] font-mono font-bold uppercase tracking-[0.2em] text-green-700">// External Lead</span>
@@ -94,14 +94,22 @@ const { data: territories } = await supabase.from('service_territories').select(
             </div>
           </div>
         </div>
+
+        <div class="pt-4 border-t border-zinc-100">
+          <p class="text-[10px] font-bold uppercase tracking-[0.2em] text-red-500 mb-3">Danger Zone</p>
+          <button type="button" id="deleteLeadBtn" class="w-full h-11 rounded-lg bg-red-50 border border-red-200 text-red-600 font-bold uppercase tracking-[0.15em] text-[10px] hover:bg-red-500 hover:text-white transition-all">
+            🗑️ Delete Lead
+          </button>
+        </div>
       </div>
     </div>
   </div>
 
   <div class="space-y-5 w-full">
     <div>
-      <h1 class="text-xl sm:text-2xl font-bold text-slate-900 tracking-tight">External Leads</h1>
-      <p class="text-[11px] text-zinc-500 mt-0.5">Submissions from forms on other domains/sites.</p>
+      <span class="text-[9px] font-mono font-bold uppercase tracking-[0.2em] text-teal-700">// Cross-site pipeline</span>
+      <h1 class="mt-1.5 text-2xl sm:text-3xl font-bold text-slate-950 tracking-tight">External leads</h1>
+      <p class="text-sm text-slate-500 mt-1.5">Submissions from forms on other domains/sites.</p>
     </div>
 
     <!-- Stats -->
@@ -495,6 +503,28 @@ const { data: territories } = await supabase.from('service_territories').select(
     document.getElementById('moveCountyPicker')?.classList.add('hidden');
     btn.disabled = false;
     btn.textContent = 'Confirm Move';
+    await loadLeads();
+  });
+
+  // -- DELETE LEAD --
+  document.getElementById('deleteLeadBtn')?.addEventListener('click', async () => {
+    if (!confirm('Permanently delete this lead? This cannot be undone.')) return;
+    const delBtn = document.getElementById('deleteLeadBtn') as HTMLButtonElement;
+    delBtn.disabled = true;
+    delBtn.textContent = 'Deleting...';
+
+    const { error } = await supabase.from('external_leads').delete().eq('id', activeId);
+
+    if (error) {
+      alert('Could not delete lead: ' + error.message);
+      delBtn.disabled = false;
+      delBtn.textContent = '🗑️ Delete Lead';
+      return;
+    }
+
+    document.getElementById('detailModal')?.classList.add('hidden');
+    delBtn.disabled = false;
+    delBtn.textContent = '🗑️ Delete Lead';
     await loadLeads();
   });
 </script>

@@ -9,7 +9,7 @@ const { data: territories } = await supabase.from('service_territories').select(
 
 <AdminLayout>
   <!-- Floating Plus Dugme -->
-  <button id="openModal" class="fixed bottom-24 lg:bottom-8 right-5 lg:right-8 w-14 h-14 bg-green-500 hover:bg-green-400 text-slate-900 rounded-full shadow-lg flex items-center justify-center text-3xl font-bold transition-all z-[100]">
+  <button id="openModal" aria-label="Add service lead" title="Add service lead" class="admin-fab admin-fab--icon fixed bottom-24 lg:bottom-8 right-5 lg:right-8 w-14 h-14 bg-green-500 hover:bg-green-400 text-white rounded-full shadow-lg flex items-center justify-center text-2xl font-bold transition-all z-[100]">
     +
   </button>
 
@@ -44,8 +44,9 @@ const { data: territories } = await supabase.from('service_territories').select(
       <!-- HEADER -->
       <div class="flex items-center justify-between">
         <div>
-          <h1 class="text-xl sm:text-2xl font-bold text-slate-900 tracking-tight">Service Leads</h1>
-          <p class="text-[11px] text-zinc-500 mt-0.5">Every homeowner request that's come through the platform.</p>
+          <span class="text-[9px] font-mono font-bold uppercase tracking-[0.2em] text-green-700">// Demand pipeline</span>
+          <h1 class="mt-1.5 text-2xl sm:text-3xl font-bold text-slate-950 tracking-tight">Service leads</h1>
+          <p class="text-sm text-slate-500 mt-1.5">Every homeowner request that's come through the platform.</p>
         </div>
       </div>
 

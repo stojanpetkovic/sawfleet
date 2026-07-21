@@ -74,8 +74,9 @@ if (!contractor) return Astro.redirect('/admin/contractors');
     <div class="xl:col-span-8 space-y-6">
       <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
         <div>
-          <h1 class="text-xl font-bold text-slate-900 tracking-wide">Contractor Management</h1>
-          <p class="text-[10px] font-mono text-zinc-500 mt-1 uppercase">ID: {contractor.id.split('-')[0]}</p>
+          <span class="text-[9px] font-mono font-bold uppercase tracking-[0.2em] text-blue-700">// Network partner</span>
+          <h1 class="mt-1.5 text-2xl font-bold text-slate-950 tracking-tight">Contractor management</h1>
+          <p class="text-[10px] font-mono text-slate-400 mt-1 uppercase">ID: {contractor.id.split('-')[0]}</p>
         </div>
         <div class="flex flex-wrap gap-3 w-full sm:w-auto">
           {contractor.phone && (

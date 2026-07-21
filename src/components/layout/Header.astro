@@ -2,10 +2,14 @@
 // Možeš dodati props ako želiš da menjaš linkove po stranici
 const navigation = [
   { title: "Home", href: "/" },
+  { title: "Services", href: "/services" },
   { title: "For Contractors", href: "/contractors-registration" },
   { title: "Fleet Ops", href: "/truck-registration" },
   { title: "Service Areas", href: "/service-areas" }
 ];
+
+const currentPath = Astro.url.pathname;
+const isActive = (href: string) => href === '/' ? currentPath === '/' : currentPath.startsWith(href);
 ---
 
 <header class="fixed inset-x-0 top-0 z-50 bg-white/80 backdrop-blur-md border-b border-slate-200/80 font-sans">
@@ -13,19 +17,19 @@ const navigation = [
 
     <!-- Logo -->
     <a href="/" class="flex items-center shrink-0">
-      <img src="/logo/logo.svg" alt="SF Tree Removal" class="h-11 lg:h-24 w-auto" loading="eager" />
+      <img src="/logo/logo.svg" alt="SF Tree Removal" class="h-11 lg:h-12 w-auto" loading="eager" />
     </a>
 
   <!-- Desktop Nav -->
-    <nav class="hidden items-center gap-8 lg:flex">
+    <nav class="hidden items-center gap-6 lg:flex">
       {navigation.map((item) => (
-        <a href={item.href} class="text-[11px] font-mono font-bold uppercase tracking-[0.2em] text-slate-500 hover:text-slate-900 transition-colors">
+        <a href={item.href} aria-current={isActive(item.href) ? 'page' : undefined} class={`relative py-2 text-[10px] font-mono font-bold uppercase tracking-[0.16em] transition-colors ${isActive(item.href) ? 'text-green-700 after:absolute after:inset-x-0 after:-bottom-1 after:h-0.5 after:rounded-full after:bg-green-600' : 'text-slate-500 hover:text-slate-900'}`}>
           {item.title}
         </a>
       ))}
-      <!-- Istaknuto Portal dugme -->
-      <a href="/portal" class="h-9 px-4 flex items-center justify-center rounded-lg border border-green-600/20 bg-green-50 text-[11px] font-mono font-bold uppercase tracking-[0.2em] text-green-700 hover:bg-green-100 hover:border-green-600/30 transition-all">
-        Portal
+      <a href="/portal" class="text-[10px] font-mono font-bold uppercase tracking-[0.16em] text-slate-500 hover:text-slate-900 transition-colors">Portal</a>
+      <a href="/#quote" class="h-10 px-5 flex items-center justify-center rounded-xl bg-green-700 text-[10px] font-mono font-bold uppercase tracking-[0.16em] text-white shadow-[0_8px_20px_-10px_rgba(21,128,61,0.7)] hover:bg-green-800 transition-all">
+        Free Estimate
       </a>
     </nav>
 
@@ -51,11 +55,12 @@ const navigation = [
 
     <nav class="mt-16 flex flex-col gap-6">
       {navigation.map((item) => (
-        <a href={item.href} class="text-sm font-bold uppercase tracking-[0.2em] text-slate-900 hover:text-green-700 transition-colors">
+        <a href={item.href} aria-current={isActive(item.href) ? 'page' : undefined} class={`text-sm font-bold uppercase tracking-[0.18em] transition-colors ${isActive(item.href) ? 'text-green-700' : 'text-slate-900 hover:text-green-700'}`}>
           {item.title}
         </a>
       ))}
       <a href="/portal" class="text-sm font-bold uppercase tracking-[0.2em] text-slate-500 hover:text-green-700 transition-colors">Portal</a>
+      <a href="/#quote" class="mt-2 flex h-12 items-center justify-center rounded-xl bg-green-700 px-5 text-xs font-bold uppercase tracking-[0.16em] text-white">Get Free Estimate</a>
     </nav>
   </div>
 </div>

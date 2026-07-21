@@ -33,7 +33,8 @@ const { data: territories } = await supabase
           poster="/videos/hero-tree-service-poster.webp"
           class="h-full w-full object-cover"
         >
-          <source src="/videos/hero-tree-service.mp4" type="video/mp4" />
+          <source src="/videos/hero-optimized.webm" type="video/webm" media="(min-width: 640px) and (prefers-reduced-motion: no-preference)" />
+          <source src="/videos/hero-optimized.mp4" type="video/mp4" media="(min-width: 640px) and (prefers-reduced-motion: no-preference)" />
         </video>
       </div>
       <!-- Ravnomeran tamni sloj radi čitljivosti teksta preko blurovanog videa -->
@@ -179,17 +180,23 @@ const { data: territories } = await supabase
     <!-- 2. CAPABILITIES & REGIONAL BOUNDS -->
     <!-- ============================================== -->
     <!-- Svetla pozadina -->
-    <section id="how-it-works" class="border-t border-slate-200 bg-white py-16 lg:py-24 px-4 sm:px-8 font-sans selection:bg-green-500/30 selection:text-slate-900">
-      <div class="mx-auto max-w-[1320px]">
+    <section id="how-it-works" class="border-t border-slate-200 bg-white px-4 py-12 sm:px-8 sm:py-16 lg:py-20 font-sans selection:bg-green-500/30 selection:text-slate-900">
+      <div class="mx-auto max-w-[1200px]">
         
-        <div class="grid gap-12 lg:gap-16 lg:grid-cols-2">
+        <div class="mb-8 max-w-2xl sm:mb-10">
+          <span class="text-[10px] font-mono font-bold uppercase tracking-[0.2em] text-green-700">// One request, local response</span>
+          <h2 class="mt-3 text-2xl font-bold tracking-tight text-slate-950 sm:text-3xl">Everything starts with the right project details.</h2>
+          <p class="mt-3 text-sm leading-relaxed text-slate-600">We route your request by location and service need so you spend less time calling around and more time comparing the right options.</p>
+        </div>
+
+        <div class="grid gap-8 lg:grid-cols-2 lg:gap-12">
           
           <!-- LEVO: Obim Usluga -->
           <div>
-            <span class="text-[10px] font-mono font-bold uppercase tracking-[0.2em] text-green-700">// Capabilities</span>
-            <h3 class="mt-3 text-2xl font-bold tracking-tight text-slate-900 sm:text-3xl">Professional Tree Services.</h3>
+            <span class="text-[10px] font-mono font-bold uppercase tracking-[0.2em] text-slate-400">Services we route</span>
+            <h3 class="mt-2 text-xl font-bold tracking-tight text-slate-900 sm:text-2xl">Projects large and small.</h3>
             
-            <div class="mt-8 grid gap-4 sm:grid-cols-2">
+            <div class="mt-6 grid gap-3 sm:grid-cols-2">
               {[
                 { t: "Tree Removal", d: "Safe extraction of dead, dying, or hazardous trees near foundations." },
                 { t: "Trimming & Pruning", d: "Precision cutting for canopy health, aesthetics, and storm mitigation prep." },
@@ -197,7 +204,7 @@ const { data: territories } = await supabase
                 { t: "Lot Clearing", d: "Full-scale vegetative removal and site preparation for residential projects." }
               ].map((item) => (
                 // SLATE KARTICE
-                <div class="rounded-xl border border-slate-200 bg-white p-5 shadow-soft hover:shadow-soft-lg hover:border-slate-300 transition-all">
+                <div class="rounded-xl border border-slate-200 bg-white p-4 shadow-soft hover:shadow-soft-lg hover:border-slate-300 transition-all">
                   <div class="text-xs font-bold text-slate-900 uppercase tracking-wider">{item.t}</div>
                   <p class="text-[11px] text-slate-600 mt-2 leading-relaxed">{item.d}</p>
                 </div>
@@ -206,18 +213,18 @@ const { data: territories } = await supabase
           </div>
 
           <!-- DESNO: Regional Bounds -->
-          <div class="flex flex-col justify-center">
+          <div class="flex flex-col justify-center rounded-2xl border border-slate-200 bg-slate-50 p-5 sm:p-7">
             <div>
-              <span class="text-[10px] font-mono font-bold uppercase tracking-[0.2em] text-green-700">// Regional Bounds</span>
-              <h3 class="mt-3 text-2xl font-bold tracking-tight text-slate-900 sm:text-3xl">Active South Florida Dispatch.</h3>
-              <p class="mt-4 text-sm leading-relaxed text-slate-600">
-                Our dispatch logistics span the entire tri-county area. Verified crews are stationed locally for rapid deployment.
+              <span class="text-[10px] font-mono font-bold uppercase tracking-[0.2em] text-green-700">// Local coverage</span>
+              <h3 class="mt-2 text-xl font-bold tracking-tight text-slate-900 sm:text-2xl">Built around South Florida.</h3>
+              <p class="mt-3 text-sm leading-relaxed text-slate-600">
+                Requests are matched by active territory, helping local professionals respond with realistic availability and travel time.
               </p>
               
               <!-- Gradovi -->
-              <div class="mt-6 flex flex-wrap gap-2.5">
+              <div class="mt-5 flex flex-wrap gap-2">
                 {['Miami', 'Fort Lauderdale', 'West Palm Beach', 'Boca Raton', 'Hollywood', 'Coral Gables'].map(city => (
-                  <span class="rounded-full bg-white border border-slate-200 px-3 py-1.5 text-[11px] font-mono text-slate-600 shadow-soft hover:border-slate-300 transition-colors">
+                  <span class="rounded-full bg-white border border-slate-200 px-3 py-1.5 text-[10px] font-mono text-slate-600 hover:border-slate-300 transition-colors">
                     {city}
                   </span>
                 ))}
@@ -225,10 +232,10 @@ const { data: territories } = await supabase
             </div>
 
             <!-- Protokol -->
-            <div class="mt-10 rounded-xl border border-green-600/15 bg-green-50/60 p-5 text-[11px] leading-relaxed text-slate-700 relative overflow-hidden">
+            <div class="mt-6 rounded-xl border border-green-200 bg-green-50 p-4 text-[11px] leading-relaxed text-slate-700 relative overflow-hidden">
               <div class="absolute top-0 right-0 w-32 h-32 bg-green-500/5 blur-[40px] rounded-full pointer-events-none"></div>
-              <strong class="text-green-700 block mb-1 uppercase tracking-wider">🔒 Anti-Spam Guarantee:</strong>
-              Secure routing queue. We match your project with a maximum of 3 highly qualified local specialists. No infinite calls, no sold leads.
+              <strong class="text-green-700 block mb-1 uppercase tracking-wider">Respectful matching</strong>
+              Your request is shared with a limited number of relevant local professionals—not an endless list of callers.
             </div>
           </div>
 
@@ -240,43 +247,44 @@ const { data: territories } = await supabase
     <!-- 3. TRUST & COMPLIANCE -->
     <!-- ============================================== -->
     <!-- Svetla pozadina -->
-    <section class="relative overflow-hidden bg-white py-16 lg:py-24 px-4 sm:px-8 border-t border-slate-200 font-sans selection:bg-green-500/30 selection:text-slate-900">
+    <section class="relative overflow-hidden bg-slate-50 py-12 sm:py-16 lg:py-20 px-4 sm:px-8 border-t border-slate-200 font-sans selection:bg-green-500/30 selection:text-slate-900">
       
       <!-- Suptilan Glow centar -->
       <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 h-[400px] w-[400px] rounded-full bg-green-500/[0.03] blur-[120px] pointer-events-none" aria-hidden="true"></div>
 
-      <div class="relative z-10 mx-auto max-w-[1320px]">
+      <div class="relative z-10 mx-auto max-w-[1200px]">
         
-        <div class="text-center mb-12">
+        <div class="max-w-2xl mb-8 sm:mb-10">
           <span class="text-[10px] font-mono font-bold uppercase tracking-[0.2em] text-green-700">// Trust & Compliance</span>
-          <h2 class="mt-3 text-2xl font-bold tracking-tight text-slate-900 sm:text-3xl">Zero Risk. Complete Coverage.</h2>
+          <h2 class="mt-3 text-2xl font-bold tracking-tight text-slate-900 sm:text-3xl">Clear expectations before work begins.</h2>
+          <p class="mt-3 text-sm leading-relaxed text-slate-600">The platform supports better matching and account review. Always confirm current project-specific credentials directly with the provider.</p>
         </div>
 
-        <div class="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+        <div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
           <!-- Guard 1 (SLATE KARTICE) -->
-          <div class="rounded-2xl border border-slate-200 bg-white p-6 shadow-soft hover:shadow-soft-lg hover:border-slate-300 transition-all">
+          <div class="rounded-2xl border border-slate-200 bg-white p-5 shadow-soft hover:shadow-soft-lg hover:border-slate-300 transition-all">
             <div class="text-xs font-mono text-green-700 font-bold mb-3">// 01</div>
             <h4 class="text-sm font-bold text-slate-900 uppercase tracking-wider">Verified Liability</h4>
             <p class="mt-2 text-[11px] leading-relaxed text-slate-600">
-              Every contractor on our platform undergoes active screening for up-to-date insurance coverage.
+              Provider information is reviewed during account approval; homeowners should confirm current project-specific coverage.
             </p>
           </div>
 
           <!-- Guard 2 -->
-          <div class="rounded-2xl border border-slate-200 bg-white p-6 shadow-soft hover:shadow-soft-lg hover:border-slate-300 transition-all">
+          <div class="rounded-2xl border border-slate-200 bg-white p-5 shadow-soft hover:shadow-soft-lg hover:border-slate-300 transition-all">
             <div class="text-xs font-mono text-green-700 font-bold mb-3">// 02</div>
             <h4 class="text-sm font-bold text-slate-900 uppercase tracking-wider">Workers' Comp</h4>
             <p class="mt-2 text-[11px] leading-relaxed text-slate-600">
-              Zero homeowner liability. We filter networks to ensure crew members are fully covered on-site.
+              Ask the selected contractor which crew and workplace protections apply to your specific job before scheduling.
             </p>
           </div>
 
           <!-- Guard 3 -->
-          <div class="rounded-2xl border border-slate-200 bg-white p-6 sm:col-span-2 lg:col-span-1 shadow-soft hover:shadow-soft-lg hover:border-slate-300 transition-all">
+          <div class="rounded-2xl border border-slate-200 bg-white p-5 sm:col-span-2 lg:col-span-1 shadow-soft hover:shadow-soft-lg hover:border-slate-300 transition-all">
             <div class="text-xs font-mono text-green-700 font-bold mb-3">// 03</div>
             <h4 class="text-sm font-bold text-slate-900 uppercase tracking-wider">County Compliance</h4>
             <p class="mt-2 text-[11px] leading-relaxed text-slate-600">
-              All partners hold arboricultural licenses matching South Florida's municipal safety laws.
+              Local permit and licensing needs vary by property and municipality and should be confirmed before work starts.
             </p>
           </div>
         </div>

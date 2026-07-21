@@ -5,7 +5,17 @@ import AdminLayout from "../../layouts/AdminLayout.astro";
 
 <AdminLayout>
   <!-- GLAVNI WRAPPER -->
-  <div class="w-full flex flex-col xl:flex-row gap-8">
+  <div class="w-full flex flex-col gap-8">
+    <div class="flex flex-col justify-between gap-4 border-b border-slate-200 pb-7 sm:flex-row sm:items-end">
+      <div>
+        <span class="text-[10px] font-mono font-bold uppercase tracking-[0.22em] text-green-700">// Command center</span>
+        <h1 class="mt-2 text-2xl font-bold tracking-tight text-slate-950 sm:text-3xl">Platform overview</h1>
+        <p class="mt-2 text-sm text-slate-500">Live operational snapshot across leads, contractors and fleet inventory.</p>
+      </div>
+      <a href="/admin/analytics" class="inline-flex h-11 items-center justify-center rounded-xl border border-slate-200 bg-white px-4 text-[10px] font-bold uppercase tracking-[0.16em] text-slate-600 shadow-sm transition hover:border-slate-300 hover:text-slate-950">View analytics →</a>
+    </div>
+
+    <div class="w-full flex flex-col xl:flex-row gap-8">
     
     <!-- LEVA STRANA: Glavni sadržaj -->
     <div class="flex-1 space-y-8 min-w-0 w-full">
@@ -30,7 +40,7 @@ import AdminLayout from "../../layouts/AdminLayout.astro";
       <div class="grid grid-cols-1 md:grid-cols-3 gap-6 w-full">
         
         <!-- Karta 1: Leads Summary -->
-        <div class="bg-white border border-zinc-100 rounded-2xl p-6 flex flex-col justify-between w-full">
+        <div class="bg-white border border-slate-200 rounded-2xl p-6 flex flex-col justify-between w-full shadow-sm transition hover:-translate-y-0.5 hover:shadow-md">
           <div class="flex justify-between items-start mb-6">
             <div>
               <p class="text-[9px] font-bold uppercase tracking-[0.2em] text-zinc-500">Total Leads</p>
@@ -60,7 +70,7 @@ import AdminLayout from "../../layouts/AdminLayout.astro";
         </div>
 
         <!-- Karta 2: Contractors Summary -->
-        <div class="bg-white border border-zinc-100 rounded-2xl p-6 flex flex-col justify-between w-full">
+        <div class="bg-white border border-slate-200 rounded-2xl p-6 flex flex-col justify-between w-full shadow-sm transition hover:-translate-y-0.5 hover:shadow-md">
           <div class="flex justify-between items-start mb-6">
             <div>
               <p class="text-[9px] font-bold uppercase tracking-[0.2em] text-zinc-500">Contractors</p>
@@ -86,7 +96,7 @@ import AdminLayout from "../../layouts/AdminLayout.astro";
         </div>
 
         <!-- Karta 3: Trucks Summary -->
-        <div class="bg-white border border-zinc-100 rounded-2xl p-6 flex flex-col justify-between w-full">
+        <div class="bg-white border border-slate-200 rounded-2xl p-6 flex flex-col justify-between w-full shadow-sm transition hover:-translate-y-0.5 hover:shadow-md">
           <div class="flex justify-between items-start mb-6">
             <div>
               <p class="text-[9px] font-bold uppercase tracking-[0.2em] text-zinc-500">Trucks</p>
@@ -119,6 +129,20 @@ import AdminLayout from "../../layouts/AdminLayout.astro";
           <a href="/admin/service-leads" class="text-[9px] uppercase tracking-widest text-zinc-400 hover:text-slate-900 transition-colors">View all →</a>
         </div>
         <div id="leadsTable" class="p-3 space-y-2">
+          <div class="p-6 text-center text-zinc-400 text-sm">Loading...</div>
+        </div>
+      </div>
+
+      <!-- SEKCIJA: EXTERNAL LEADS LISTA -->
+      <div class="bg-white border border-zinc-100 rounded-2xl overflow-hidden">
+        <div class="p-5 border-b border-zinc-100 flex items-center justify-between">
+          <div>
+            <h3 class="text-[10px] font-bold uppercase tracking-[0.2em] text-slate-900">Recent External Leads</h3>
+            <p class="mt-1 text-[10px] text-slate-400">Latest submissions from connected websites</p>
+          </div>
+          <a href="/admin/external-leads" class="text-[9px] uppercase tracking-widest text-zinc-400 hover:text-slate-900 transition-colors">View all →</a>
+        </div>
+        <div id="externalLeadsTable" class="p-3 space-y-2">
           <div class="p-6 text-center text-zinc-400 text-sm">Loading...</div>
         </div>
       </div>
@@ -182,6 +206,8 @@ import AdminLayout from "../../layouts/AdminLayout.astro";
       </div>
     </div>
 
+    </div>
+
   </div>
 </AdminLayout>
 
@@ -211,6 +237,12 @@ import AdminLayout from "../../layouts/AdminLayout.astro";
         </div>
       </div>
     `;
+  }
+
+  function escapeHtml(value: unknown) {
+    return String(value ?? '').replace(/[&<>'"]/g, (char) => ({
+      '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;'
+    })[char]!);
   }
 
   async function loadData() {
@@ -244,7 +276,45 @@ import AdminLayout from "../../layouts/AdminLayout.astro";
       `}).join('');
     }
 
-    // === 2. KONTRAKTORI ===
+    // === 2. POSLEDNJI EXTERNAL LEADOVI ===
+    const { data: externalLeads } = await supabase
+      .from('external_leads')
+      .select('id, full_name, email, phone, source_domain, form_type, status, created_at')
+      .order('created_at', { ascending: false })
+      .limit(5);
+
+    const externalContainer = document.getElementById('externalLeadsTable');
+    if (externalContainer) {
+      const statusStyles: Record<string, string> = {
+        new: 'bg-amber-500/10 text-amber-700 border-amber-500/20',
+        approved: 'bg-green-500/10 text-green-700 border-green-500/20',
+        rejected: 'bg-red-500/10 text-red-600 border-red-500/20',
+        contacted: 'bg-blue-500/10 text-blue-600 border-blue-500/20',
+        closed: 'bg-slate-100 text-slate-600 border-slate-200',
+      };
+
+      externalContainer.innerHTML = externalLeads?.length ? externalLeads.map((lead) => {
+        const status = lead.status || 'new';
+        const contact = [lead.email, lead.phone].filter(Boolean).join(' · ') || 'No contact info';
+        return `
+          <a href="/admin/external-leads" class="group flex items-center gap-3 rounded-xl p-3 transition-colors hover:bg-slate-50">
+            <div class="flex h-9 w-9 shrink-0 items-center justify-center rounded-full border border-teal-200 bg-teal-50 text-[10px] font-bold text-teal-700">${escapeHtml((lead.full_name || '?').charAt(0).toUpperCase())}</div>
+            <div class="min-w-0 flex-1">
+              <div class="flex items-center gap-2">
+                <p class="truncate text-[13px] font-bold text-slate-900">${escapeHtml(lead.full_name || 'Unnamed')}</p>
+                <span class="hidden rounded-full border border-slate-200 bg-slate-50 px-2 py-0.5 text-[8px] font-bold uppercase tracking-wide text-slate-500 sm:inline">${escapeHtml(lead.form_type || 'lead')}</span>
+              </div>
+              <p class="truncate font-mono text-[10px] text-slate-500">${escapeHtml(contact)}</p>
+              <p class="mt-0.5 truncate text-[10px] text-slate-400">${escapeHtml(lead.source_domain || 'Unknown domain')} · ${timeAgo(lead.created_at)}</p>
+            </div>
+            <span class="shrink-0 rounded-full border px-2 py-0.5 text-[9px] font-bold uppercase tracking-wide ${statusStyles[status] || statusStyles.new}">${escapeHtml(status)}</span>
+            <span class="hidden text-slate-300 transition-colors group-hover:text-slate-600 sm:block">→</span>
+          </a>
+        `;
+      }).join('') : '<div class="p-8 text-center text-sm text-slate-400">No external leads received yet.</div>';
+    }
+
+    // === 3. KONTRAKTORI ===
     const { data: contractors } = await supabase.from('contractors').select('*').order('created_at', { ascending: false });
     if (contractors) {
       document.getElementById('count-c-total')!.textContent = contractors.length.toString();
@@ -271,7 +341,7 @@ import AdminLayout from "../../layouts/AdminLayout.astro";
       `}).join('');
     }
 
-    // === 3. KAMIONI ===
+    // === 4. KAMIONI ===
     const { data: trucks } = await supabase.from('grapple_saw_trucks').select('*').order('created_at', { ascending: false });
     if (trucks) {
       document.getElementById('count-t-total')!.textContent = trucks.length.toString();

@@ -9,10 +9,10 @@ const { data: territories } = await supabase.from('service_territories').select(
 
 <AdminLayout>
   <!-- Floating Dugmad -->
-  <button id="openOwnerModal" class="fixed bottom-24 lg:bottom-8 right-24 lg:right-28 h-14 px-5 bg-white border border-zinc-200 hover:border-zinc-300 text-slate-900 rounded-full shadow-lg flex items-center gap-2 text-xs font-bold uppercase tracking-wider transition-all z-[100]">
+  <button id="openOwnerModal" class="admin-fab admin-fab--label admin-fab--secondary fixed bottom-24 lg:bottom-8 right-24 lg:right-28 h-14 px-5 bg-white border border-zinc-200 hover:border-zinc-300 text-slate-900 rounded-full shadow-lg flex items-center gap-2 text-xs font-bold uppercase tracking-wider transition-all z-[100]">
     + Owner
   </button>
-  <button id="openModal" class="fixed bottom-24 lg:bottom-8 right-5 lg:right-8 w-14 h-14 bg-green-500 hover:bg-green-400 text-slate-900 rounded-full shadow-lg flex items-center justify-center text-3xl font-bold transition-all z-[100]">
+  <button id="openModal" aria-label="Add truck" title="Add truck" class="admin-fab admin-fab--icon fixed bottom-24 lg:bottom-8 right-5 lg:right-8 w-14 h-14 bg-green-500 hover:bg-green-400 text-white rounded-full shadow-lg flex items-center justify-center text-2xl font-bold transition-all z-[100]">
     +
   </button>
 
@@ -90,8 +90,9 @@ const { data: territories } = await supabase.from('service_territories').select(
 
       <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
-          <h1 class="text-xl sm:text-2xl font-bold text-slate-900 tracking-tight">Grapple Saw Trucks</h1>
-          <p class="text-[11px] text-zinc-500 mt-0.5">Equipment listed for rent or sale on the platform.</p>
+          <span class="text-[9px] font-mono font-bold uppercase tracking-[0.2em] text-violet-700">// Fleet inventory</span>
+          <h1 class="mt-1.5 text-2xl sm:text-3xl font-bold text-slate-950 tracking-tight">Grapple saw trucks</h1>
+          <p class="text-sm text-slate-500 mt-1.5">Equipment listed for rent or sale on the platform.</p>
         </div>
         <a href="/admin/truck-owners" class="text-[10px] font-bold uppercase tracking-[0.2em] text-zinc-500 hover:text-slate-900 border border-zinc-200 px-4 py-2.5 rounded-lg hover:bg-zinc-100 transition-colors whitespace-nowrap">
           View Owners →

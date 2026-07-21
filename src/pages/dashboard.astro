@@ -40,10 +40,23 @@ const navItems = [
   <!-- STATE: ACTIVE DASHBOARD -->
   <div id="stateActive" class="hidden flex-col space-y-6 w-full">
 
-    <div>
+    <div class="border-b border-slate-200 pb-7">
       <span class="text-[10px] font-mono font-bold uppercase tracking-[0.2em] text-green-700">// Quick Claim Pipeline</span>
-      <h1 class="mt-2 text-2xl font-bold tracking-tight text-slate-900 sm:text-3xl">Leads</h1>
-      <p class="mt-2 text-sm text-slate-600">The first contractor to claim a lead gains exclusive access. Others will see it as taken.</p>
+      <h1 class="mt-2 text-2xl font-bold tracking-tight text-slate-950 sm:text-3xl">Lead workspace</h1>
+      <p class="mt-2 max-w-2xl text-sm text-slate-500">The first contractor to claim a lead gains exclusive access. Others will see it as taken.</p>
+    </div>
+
+    <div class="grid grid-cols-2 gap-4">
+      <div class="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
+        <p class="text-[9px] font-bold uppercase tracking-[0.18em] text-slate-400">Available now</p>
+        <p id="overviewAvailable" class="mt-3 text-3xl font-bold tabular-nums text-slate-950">-</p>
+        <p class="mt-1 text-xs text-slate-500">Matched to your territory</p>
+      </div>
+      <div class="rounded-2xl border border-green-200 bg-gradient-to-br from-white to-green-50/70 p-5 shadow-sm">
+        <p class="text-[9px] font-bold uppercase tracking-[0.18em] text-green-700">Claimed</p>
+        <p id="overviewClaimed" class="mt-3 text-3xl font-bold tabular-nums text-slate-950">-</p>
+        <p class="mt-1 text-xs text-slate-500">Total secured opportunities</p>
+      </div>
     </div>
 
     <section id="panelAvailable">
@@ -234,7 +247,7 @@ const navItems = [
     const isClaimed = lead.status === 'claimed';
     const wrapper = document.createElement('div');
     wrapper.id = `avail-${lead.id}`;
-    wrapper.className = `relative p-4 md:p-6 bg-slate-100 border ${isClaimed ? 'border-zinc-200/50' : 'border-slate-200'} rounded-2xl overflow-hidden group ${!isClaimed ? 'hover:border-green-500/50' : ''} transition-all`;
+    wrapper.className = `relative p-4 md:p-6 bg-white border ${isClaimed ? 'border-slate-200 opacity-70' : 'border-slate-200 shadow-sm'} rounded-2xl overflow-hidden group ${!isClaimed ? 'hover:-translate-y-0.5 hover:border-green-300 hover:shadow-md' : ''} transition-all`;
     
     // Prilagođeno za mobilne (flex-col na malim ekranima, flex-row na velikim)
     wrapper.innerHTML = `
@@ -275,7 +288,7 @@ const navItems = [
 
   function renderClaimedLead(lead: ClaimedLead) {
     const wrapper = document.createElement('div');
-    wrapper.className = 'p-4 md:p-6 bg-white border border-green-200 rounded-2xl';
+    wrapper.className = 'p-4 md:p-6 bg-gradient-to-br from-white to-green-50/50 border border-green-200 rounded-2xl shadow-sm';
     wrapper.innerHTML = `
       <div class="flex flex-col md:flex-row md:items-center justify-between gap-2">
         <span class="text-[9px] font-mono text-green-700 uppercase tracking-widest">${lead.county}</span>
@@ -336,6 +349,7 @@ const navItems = [
 
     const statAvailable = document.getElementById('statAvailable');
     if (statAvailable) statAvailable.textContent = leads.length.toString();
+    document.getElementById('overviewAvailable')!.textContent = leads.length.toString();
   }
 
   async function loadClaimedLeads() {
@@ -352,6 +366,7 @@ const navItems = [
 
     const statClaimed = document.getElementById('statClaimed');
     if (statClaimed) statClaimed.textContent = leads.length.toString();
+    document.getElementById('overviewClaimed')!.textContent = leads.length.toString();
   }
 
   async function claimLead(leadId: string, btn: HTMLButtonElement) {

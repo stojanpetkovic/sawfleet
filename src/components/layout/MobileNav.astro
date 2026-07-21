@@ -6,6 +6,7 @@ import {
   MapPinned,
   MessageSquareWarning
 } from "lucide-astro";
+const currentPath = Astro.url.pathname;
 ---
 
 <nav class="fixed bottom-0 left-0 right-0 z-50 border-t border-slate-200 bg-white/90 backdrop-blur-md lg:hidden safe-bottom-nav selection:bg-green-200 selection:text-slate-900">
@@ -13,7 +14,7 @@ import {
   <div class="mx-auto flex h-16 max-w-md items-center justify-between px-6 relative">
 
     <!-- Home -->
-    <a href="/" class="flex flex-col items-center justify-center w-12 h-full text-slate-400 transition-colors duration-200 hover:text-green-700 group relative">
+    <a href="/" aria-current={currentPath === '/' ? 'page' : undefined} class={`flex flex-col items-center justify-center w-12 h-full transition-colors duration-200 group relative ${currentPath === '/' ? 'text-green-700' : 'text-slate-400 hover:text-green-700'}`}>
       <House size={20} strokeWidth={1.75} />
       <span class="mt-1 text-[9px] font-mono uppercase tracking-wider">
         Home
@@ -21,7 +22,7 @@ import {
     </a>
 
     <!-- Services -->
-    <a href="/services" class="flex flex-col items-center justify-center w-12 h-full text-slate-400 transition-colors duration-200 hover:text-slate-900 group">
+    <a href="/services" aria-current={currentPath === '/services' ? 'page' : undefined} class={`flex flex-col items-center justify-center w-12 h-full transition-colors duration-200 group ${currentPath === '/services' ? 'text-green-700' : 'text-slate-400 hover:text-slate-900'}`}>
       <Trees size={20} strokeWidth={1.75} />
       <span class="mt-1 text-[9px] font-mono uppercase tracking-wider">
         Services
@@ -46,7 +47,7 @@ import {
     <div class="w-14 h-full pointer-events-none" aria-hidden="true"></div>
 
     <!-- Areas -->
-    <a href="/service-areas" class="flex flex-col items-center justify-center w-12 h-full text-slate-400 transition-colors duration-200 hover:text-slate-900 group">
+    <a href="/service-areas" aria-current={currentPath === '/service-areas' ? 'page' : undefined} class={`flex flex-col items-center justify-center w-12 h-full transition-colors duration-200 group ${currentPath === '/service-areas' ? 'text-green-700' : 'text-slate-400 hover:text-slate-900'}`}>
       <MapPinned size={20} strokeWidth={1.75} />
       <span class="mt-1 text-[9px] font-mono uppercase tracking-wider">
         Areas
@@ -54,7 +55,7 @@ import {
     </a>
 
     <!-- Support / Žalbe -->
-    <a href="/support" class="flex flex-col items-center justify-center w-12 h-full text-slate-400 transition-colors duration-200 hover:text-slate-900 group">
+    <a href="/support" aria-current={currentPath === '/support' ? 'page' : undefined} class={`flex flex-col items-center justify-center w-12 h-full transition-colors duration-200 group ${currentPath === '/support' ? 'text-green-700' : 'text-slate-400 hover:text-slate-900'}`}>
       <MessageSquareWarning size={20} strokeWidth={1.75} />
       <span class="mt-1 text-[9px] font-mono uppercase tracking-wider">
         Support

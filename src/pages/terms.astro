@@ -1,0 +1,18 @@
+---
+import MainLayout from "../layouts/MainLayout.astro";
+import Header from "../components/layout/Header.astro";
+import Footer from "../components/layout/Footer.astro";
+import MobileNav from "../components/layout/MobileNav.astro";
+const sections = [
+  ["Platform role", "SF Tree Removal provides a dispatch and marketplace platform that connects property owners with independent contractors and fleet operators. Unless expressly stated otherwise, SF Tree Removal is not the contractor performing the tree service."],
+  ["Requests and estimates", "Submitting a request does not create a service contract or guarantee availability, response time, price or project acceptance. Scope, pricing, permits, scheduling and payment are agreed directly with the selected service provider."],
+  ["Independent providers", "Contractors and fleet operators are independent businesses responsible for their personnel, equipment, licenses, insurance, work quality, safety practices and compliance with applicable law."],
+  ["Account responsibilities", "Account users must provide accurate information, protect login credentials and promptly update account and listing information. You may not impersonate another person, misuse contact information or interfere with platform operation."],
+  ["Acceptable use", "You may not submit fraudulent requests, scrape platform data, distribute malware, bypass access controls, harass users or use the platform for unlawful purposes."],
+  ["Content and listings", "You retain ownership of information and media you submit, while granting the platform permission to host, process and display that content as needed to provide the service. You represent that submitted content is accurate and that you have the right to provide it."],
+  ["Disclaimers", "The platform is provided on an as-available basis. To the extent permitted by law, we disclaim implied warranties and do not guarantee the conduct, availability or performance of independent providers."],
+  ["Limitation of liability", "To the extent permitted by law, SF Tree Removal will not be liable for indirect, incidental, special or consequential damages arising from platform use or work performed by independent providers."],
+  ["Changes and termination", "We may modify, suspend or discontinue platform features and may restrict accounts that violate these terms. Continued use after an update constitutes acceptance of the revised terms."],
+];
+---
+<MainLayout title="Terms of Service | SF Tree Removal" description="Terms governing use of the SF Tree Removal dispatch platform."><Header /><main class="bg-white pt-28 lg:pt-32"><section class="px-4 py-16 sm:px-8 lg:py-20"><div class="mx-auto max-w-3xl"><span class="text-[10px] font-mono font-bold uppercase tracking-[0.22em] text-green-700">// Legal</span><h1 class="mt-4 text-4xl font-bold tracking-tighter text-slate-950 sm:text-5xl">Terms of Service</h1><p class="mt-4 text-sm text-slate-500">Effective July 21, 2026</p><p class="mt-8 text-base leading-relaxed text-slate-600">These terms govern access to the SF Tree Removal website, dispatch workflows, portals and related services.</p><div class="mt-12 space-y-10">{sections.map(([title, text]) => <section><h2 class="text-lg font-bold text-slate-950">{title}</h2><p class="mt-3 text-sm leading-7 text-slate-600">{text}</p></section>)}</div><div class="mt-12 rounded-2xl border border-amber-200 bg-amber-50 p-6 text-xs leading-relaxed text-amber-900">Tree work can involve serious risk. Do not use the website for an immediate life-safety emergency. Contact local emergency services when people, utilities or public access are in immediate danger.</div></div></section></main><Footer /><MobileNav /></MainLayout>
