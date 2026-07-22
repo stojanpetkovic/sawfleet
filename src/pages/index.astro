@@ -334,7 +334,7 @@ const { data: territories } = await supabase
         email: formData.get('email'),
         details: formData.get('details'),
         status: 'new',
-        source: trafficSource // Upisujemo izvor u bazu
+        source: trafficSource || 'website' // Oznaka da je lead došao sa sajta
       },
     ]);
 

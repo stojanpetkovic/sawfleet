@@ -41,120 +41,124 @@ import AdminLayout from "../../layouts/AdminLayout.astro";
       </div>
       
       <!-- STATISTIKA: KONSOLIDOVANA -->
-      <div class="grid grid-cols-1 md:grid-cols-2 2xl:grid-cols-4 gap-6 w-full">
+      <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-6 w-full">
         
         <!-- Karta 1: Leads Summary -->
-        <div class="bg-white border border-slate-200 rounded-2xl p-6 flex flex-col justify-between w-full shadow-sm transition hover:-translate-y-0.5 hover:shadow-md">
-          <div class="flex justify-between items-start mb-6">
-            <div>
-              <p class="text-[9px] font-bold uppercase tracking-[0.2em] text-zinc-500">Total Leads</p>
-              <h2 id="count-total" class="text-4xl font-mono font-bold text-slate-900 mt-2">-</h2>
-            </div>
-            <a href="/admin/service-leads" class="text-[9px] uppercase tracking-[0.2em] text-zinc-400 hover:text-slate-900 border border-zinc-200 px-3 py-1.5 rounded-lg transition-colors whitespace-nowrap">Manage →</a>
+        <div class="bg-white border border-slate-200 rounded-2xl p-6 flex flex-col w-full shadow-sm transition hover:-translate-y-0.5 hover:shadow-md">
+          <div class="flex items-center justify-between pb-4 border-b border-zinc-100">
+            <p class="text-[9px] font-bold uppercase tracking-[0.2em] text-zinc-500">Total Leads</p>
+            <a href="/admin/service-leads" class="rounded-full border border-zinc-200 px-2.5 py-1 text-[9px] uppercase tracking-[0.1em] text-zinc-500 hover:text-slate-900 hover:border-zinc-300 transition-colors">Manage →</a>
           </div>
           
-          <div class="grid grid-cols-4 gap-4 pt-4 border-t border-zinc-100/50">
-            <div>
-              <p class="text-[9px] text-zinc-400 uppercase font-bold tracking-[0.1em]">New</p>
-              <p id="count-new" class="text-sm font-mono text-zinc-700 mt-1">-</p>
+          <div class="py-5 text-center border-b border-zinc-100">
+            <h2 id="count-total" class="text-4xl font-mono font-bold text-slate-900">-</h2>
+          </div>
+          
+          <div class="grid grid-cols-4 gap-2 pt-4">
+            <div class="text-center">
+              <p class="text-[7px] text-zinc-400 uppercase font-bold tracking-widest mb-2">New</p>
+              <p id="count-new" class="text-xl font-mono font-bold text-zinc-700">-</p>
             </div>
-            <div>
-              <p class="text-[9px] text-zinc-400 uppercase font-bold tracking-[0.1em]">Apprv.</p>
-              <p id="count-approved" class="text-sm font-mono text-green-700 mt-1">-</p>
+            <div class="text-center">
+              <p class="text-[7px] text-zinc-400 uppercase font-bold tracking-widest mb-2">Approved</p>
+              <p id="count-approved" class="text-xl font-mono font-bold text-green-700">-</p>
             </div>
-            <div>
-              <p class="text-[9px] text-zinc-400 uppercase font-bold tracking-[0.1em]">Claimed</p>
-              <p id="count-claimed" class="text-sm font-mono text-blue-600 mt-1">-</p>
+            <div class="text-center">
+              <p class="text-[7px] text-zinc-400 uppercase font-bold tracking-widest mb-2">Claimed</p>
+              <p id="count-claimed" class="text-xl font-mono font-bold text-blue-600">-</p>
             </div>
-            <div>
-              <p class="text-[9px] text-zinc-400 uppercase font-bold tracking-[0.1em]">Rejct.</p>
-              <p id="count-rejected" class="text-sm font-mono text-red-600 mt-1">-</p>
+            <div class="text-center">
+              <p class="text-[7px] text-zinc-400 uppercase font-bold tracking-widest mb-2">Rejected</p>
+              <p id="count-rejected" class="text-xl font-mono font-bold text-red-600">-</p>
             </div>
           </div>
         </div>
 
         <!-- Karta 2: External Leads Summary -->
-        <div class="bg-white border border-slate-200 rounded-2xl p-6 flex flex-col justify-between w-full shadow-sm transition hover:-translate-y-0.5 hover:shadow-md">
-          <div class="flex justify-between items-start mb-6">
-            <div>
-              <p class="text-[9px] font-bold uppercase tracking-[0.2em] text-zinc-500">External Leads</p>
-              <h2 id="count-e-total" class="text-4xl font-mono font-bold text-slate-900 mt-2">-</h2>
-            </div>
-            <a href="/admin/external-leads" class="text-[9px] uppercase tracking-[0.2em] text-zinc-400 hover:text-slate-900 border border-zinc-200 px-3 py-1.5 rounded-lg transition-colors whitespace-nowrap">Manage →</a>
+        <div class="bg-white border border-slate-200 rounded-2xl p-6 flex flex-col w-full shadow-sm transition hover:-translate-y-0.5 hover:shadow-md">
+          <div class="flex items-center justify-between pb-4 border-b border-zinc-100">
+            <p class="text-[9px] font-bold uppercase tracking-[0.2em] text-zinc-500">External Leads</p>
+            <a href="/admin/external-leads" class="rounded-full border border-zinc-200 px-2.5 py-1 text-[9px] uppercase tracking-[0.1em] text-zinc-500 hover:text-slate-900 hover:border-zinc-300 transition-colors">Manage →</a>
           </div>
-
-          <div class="grid grid-cols-5 gap-2 pt-4 border-t border-zinc-100/50">
-            <div>
-              <p class="text-[9px] text-zinc-400 uppercase font-bold tracking-[0.1em]">New</p>
-              <p id="count-e-new" class="text-sm font-mono text-amber-600 mt-1">-</p>
+          
+          <div class="py-5 text-center border-b border-zinc-100">
+            <h2 id="count-e-total" class="text-4xl font-mono font-bold text-slate-900">-</h2>
+          </div>
+          
+          <div class="grid grid-cols-5 gap-1.5 pt-4">
+            <div class="text-center">
+              <p class="text-[6px] text-zinc-400 uppercase font-bold tracking-widest mb-2">New</p>
+              <p id="count-e-new" class="text-lg font-mono font-bold text-amber-600">-</p>
             </div>
-            <div>
-              <p class="text-[9px] text-zinc-400 uppercase font-bold tracking-[0.1em]">Apprv.</p>
-              <p id="count-e-approved" class="text-sm font-mono text-green-700 mt-1">-</p>
+            <div class="text-center">
+              <p class="text-[6px] text-zinc-400 uppercase font-bold tracking-widest mb-2">Approved</p>
+              <p id="count-e-approved" class="text-lg font-mono font-bold text-green-700">-</p>
             </div>
-            <div>
-              <p class="text-[9px] text-zinc-400 uppercase font-bold tracking-[0.1em]">Rejct.</p>
-              <p id="count-e-rejected" class="text-sm font-mono text-red-600 mt-1">-</p>
+            <div class="text-center">
+              <p class="text-[6px] text-zinc-400 uppercase font-bold tracking-widest mb-2">Rejected</p>
+              <p id="count-e-rejected" class="text-lg font-mono font-bold text-red-600">-</p>
             </div>
-            <div>
-              <p class="text-[9px] text-zinc-400 uppercase font-bold tracking-[0.1em]">Cont.</p>
-              <p id="count-e-contacted" class="text-sm font-mono text-blue-600 mt-1">-</p>
+            <div class="text-center">
+              <p class="text-[6px] text-zinc-400 uppercase font-bold tracking-widest mb-2">Contacted</p>
+              <p id="count-e-contacted" class="text-lg font-mono font-bold text-blue-600">-</p>
             </div>
-            <div>
-              <p class="text-[9px] text-zinc-400 uppercase font-bold tracking-[0.1em]">Closed</p>
-              <p id="count-e-closed" class="text-sm font-mono text-slate-600 mt-1">-</p>
+            <div class="text-center">
+              <p class="text-[6px] text-zinc-400 uppercase font-bold tracking-widest mb-2">Closed</p>
+              <p id="count-e-closed" class="text-lg font-mono font-bold text-slate-600">-</p>
             </div>
           </div>
         </div>
 
         <!-- Karta 3: Contractors Summary -->
-        <div class="bg-white border border-slate-200 rounded-2xl p-6 flex flex-col justify-between w-full shadow-sm transition hover:-translate-y-0.5 hover:shadow-md">
-          <div class="flex justify-between items-start mb-6">
-            <div>
-              <p class="text-[9px] font-bold uppercase tracking-[0.2em] text-zinc-500">Contractors</p>
-              <h2 id="count-c-total" class="text-4xl font-mono font-bold text-slate-900 mt-2">-</h2>
-            </div>
-            <a href="/admin/contractors" class="text-[9px] uppercase tracking-[0.2em] text-zinc-400 hover:text-slate-900 border border-zinc-200 px-3 py-1.5 rounded-lg transition-colors whitespace-nowrap">Manage →</a>
+        <div class="bg-white border border-slate-200 rounded-2xl p-6 flex flex-col w-full shadow-sm transition hover:-translate-y-0.5 hover:shadow-md">
+          <div class="flex items-center justify-between pb-4 border-b border-zinc-100">
+            <p class="text-[9px] font-bold uppercase tracking-[0.2em] text-zinc-500">Contractors</p>
+            <a href="/admin/contractors" class="rounded-full border border-zinc-200 px-2.5 py-1 text-[9px] uppercase tracking-[0.1em] text-zinc-500 hover:text-slate-900 hover:border-zinc-300 transition-colors">Manage →</a>
           </div>
           
-          <div class="grid grid-cols-3 gap-4 pt-4 border-t border-zinc-100/50">
-            <div>
-              <p class="text-[9px] text-zinc-400 uppercase font-bold tracking-[0.1em]">Pending</p>
-              <p id="count-c-pending" class="text-sm font-mono text-zinc-700 mt-1">-</p>
+          <div class="py-5 text-center border-b border-zinc-100">
+            <h2 id="count-c-total" class="text-4xl font-mono font-bold text-slate-900">-</h2>
+          </div>
+          
+          <div class="grid grid-cols-3 gap-2 pt-4">
+            <div class="text-center">
+              <p class="text-[7px] text-zinc-400 uppercase font-bold tracking-widest mb-2">Pending</p>
+              <p id="count-c-pending" class="text-xl font-mono font-bold text-zinc-700">-</p>
             </div>
-            <div>
-              <p class="text-[9px] text-zinc-400 uppercase font-bold tracking-[0.1em]">Active</p>
-              <p id="count-c-active" class="text-sm font-mono text-green-700 mt-1">-</p>
+            <div class="text-center">
+              <p class="text-[7px] text-zinc-400 uppercase font-bold tracking-widest mb-2">Active</p>
+              <p id="count-c-active" class="text-xl font-mono font-bold text-green-700">-</p>
             </div>
-            <div>
-              <p class="text-[9px] text-zinc-400 uppercase font-bold tracking-[0.1em]">Rejected</p>
-              <p id="count-c-rejected" class="text-sm font-mono text-red-600 mt-1">-</p>
+            <div class="text-center">
+              <p class="text-[7px] text-zinc-400 uppercase font-bold tracking-widest mb-2">Rejected</p>
+              <p id="count-c-rejected" class="text-xl font-mono font-bold text-red-600">-</p>
             </div>
           </div>
         </div>
 
         <!-- Karta 4: Trucks Summary -->
-        <div class="bg-white border border-slate-200 rounded-2xl p-6 flex flex-col justify-between w-full shadow-sm transition hover:-translate-y-0.5 hover:shadow-md">
-          <div class="flex justify-between items-start mb-6">
-            <div>
-              <p class="text-[9px] font-bold uppercase tracking-[0.2em] text-zinc-500">Trucks</p>
-              <h2 id="count-t-total" class="text-4xl font-mono font-bold text-slate-900 mt-2">-</h2>
-            </div>
-            <a href="/admin/grapple-saw-trucks" class="text-[9px] uppercase tracking-[0.2em] text-zinc-400 hover:text-slate-900 border border-zinc-200 px-3 py-1.5 rounded-lg transition-colors whitespace-nowrap">Manage →</a>
+        <div class="bg-white border border-slate-200 rounded-2xl p-6 flex flex-col w-full shadow-sm transition hover:-translate-y-0.5 hover:shadow-md">
+          <div class="flex items-center justify-between pb-4 border-b border-zinc-100">
+            <p class="text-[9px] font-bold uppercase tracking-[0.2em] text-zinc-500">Trucks</p>
+            <a href="/admin/grapple-saw-trucks" class="rounded-full border border-zinc-200 px-2.5 py-1 text-[9px] uppercase tracking-[0.1em] text-zinc-500 hover:text-slate-900 hover:border-zinc-300 transition-colors">Manage →</a>
           </div>
           
-          <div class="grid grid-cols-3 gap-4 pt-4 border-t border-zinc-100/50">
-            <div>
-              <p class="text-[9px] text-zinc-400 uppercase font-bold tracking-[0.1em]">Pending</p>
-              <p id="count-t-pending" class="text-sm font-mono text-zinc-700 mt-1">-</p>
+          <div class="py-5 text-center border-b border-zinc-100">
+            <h2 id="count-t-total" class="text-4xl font-mono font-bold text-slate-900">-</h2>
+          </div>
+          
+          <div class="grid grid-cols-3 gap-2 pt-4">
+            <div class="text-center">
+              <p class="text-[7px] text-zinc-400 uppercase font-bold tracking-widest mb-2">Pending</p>
+              <p id="count-t-pending" class="text-xl font-mono font-bold text-zinc-700">-</p>
             </div>
-            <div>
-              <p class="text-[9px] text-zinc-400 uppercase font-bold tracking-[0.1em]">Approved</p>
-              <p id="count-t-approved" class="text-sm font-mono text-green-700 mt-1">-</p>
+            <div class="text-center">
+              <p class="text-[7px] text-zinc-400 uppercase font-bold tracking-widest mb-2">Approved</p>
+              <p id="count-t-approved" class="text-xl font-mono font-bold text-green-700">-</p>
             </div>
-            <div>
-              <p class="text-[9px] text-zinc-400 uppercase font-bold tracking-[0.1em]">Rejected</p>
-              <p id="count-t-rejected" class="text-sm font-mono text-red-600 mt-1">-</p>
+            <div class="text-center">
+              <p class="text-[7px] text-zinc-400 uppercase font-bold tracking-widest mb-2">Rejected</p>
+              <p id="count-t-rejected" class="text-xl font-mono font-bold text-red-600">-</p>
             </div>
           </div>
         </div>
@@ -167,6 +171,17 @@ import AdminLayout from "../../layouts/AdminLayout.astro";
           <a href="/admin/service-leads" class="text-[9px] uppercase tracking-widest text-zinc-400 hover:text-slate-900 transition-colors">View all →</a>
         </div>
         <div id="leadsTable" class="p-3 space-y-2">
+          <div class="p-6 text-center text-zinc-400 text-sm">Loading...</div>
+        </div>
+      </div>
+
+      <!-- SEKCIJA: PERMIT ACTIVITY -->
+      <div class="bg-white border border-zinc-100 rounded-2xl overflow-hidden">
+        <div class="p-5 border-b border-zinc-100 flex items-center justify-between">
+          <h3 class="text-[10px] font-bold uppercase tracking-[0.2em] text-slate-900">Recent Permit Activity</h3>
+          <a href="/admin/permit-leads" class="text-[9px] uppercase tracking-widest text-zinc-400 hover:text-slate-900 transition-colors">Manage →</a>
+        </div>
+        <div id="permitActivityTable" class="p-3 space-y-2">
           <div class="p-6 text-center text-zinc-400 text-sm">Loading...</div>
         </div>
       </div>
@@ -221,6 +236,14 @@ import AdminLayout from "../../layouts/AdminLayout.astro";
           <div class="w-full">
             <h4 class="text-[9px] uppercase tracking-[0.2em] text-zinc-400 mb-6 border-b border-zinc-100/50 pb-2">Leads Log</h4>
             <div id="leadLogsContainer" class="space-y-6">
+              <div class="text-[11px] font-mono text-zinc-500">Loading logs...</div>
+            </div>
+          </div>
+
+          <!-- Permit Activity -->
+          <div class="w-full">
+            <h4 class="text-[9px] uppercase tracking-[0.2em] text-zinc-400 mb-6 border-b border-zinc-100/50 pb-2">Permit Log</h4>
+            <div id="permitLogsContainer" class="space-y-6">
               <div class="text-[11px] font-mono text-zinc-500">Loading logs...</div>
             </div>
           </div>
@@ -285,10 +308,10 @@ import AdminLayout from "../../layouts/AdminLayout.astro";
 
   async function loadData() {
     // === 1. LIDOVI ===
-    const { data: leads } = await supabase.from('leads').select('*').order('created_at', { ascending: false });
+    const { data: leads } = await supabase.from('leads').select('*').in('source', ['website', 'google', 'facebook', 'bing', 'organic', 'website_form']).order('created_at', { ascending: false });
     if (leads) {
       const newCount = leads.filter(l => !l.status || l.status === 'new').length;
-      document.getElementById('count-total')!.textContent = leads.length.toString();
+      document.getElementById('count-total')!.textContent = (leads?.length || 0).toString();
       document.getElementById('count-new')!.textContent = newCount.toString();
       document.getElementById('count-approved')!.textContent = leads.filter(l => l.status === 'approved').length.toString();
       document.getElementById('count-claimed')!.textContent = leads.filter(l => l.status === 'claimed').length.toString();
@@ -314,7 +337,30 @@ import AdminLayout from "../../layouts/AdminLayout.astro";
       `}).join('');
     }
 
-    // === 2. POSLEDNJI EXTERNAL LEADOVI ===
+    // === 2. PERMIT ACTIVITY (for separate section below) ===
+    const { data: permitAudit } = await supabase.from('tracking_settings').select('global_scripts').eq('id', 1).maybeSingle();
+    const permitSettings = permitAudit?.global_scripts ? permitAudit.global_scripts : '';
+    const permitAuditEntries = permitSettings.match(/<!--\s*PERMIT_SETTINGS_JSON:(.*?)\s*-->/s)?.[1];
+    let permitAuditData: Array<any> = [];
+    if (permitAuditEntries) {
+      try { permitAuditData = JSON.parse(permitAuditEntries).audit || []; } catch {}
+    }
+
+    const permitActivityTable = document.getElementById('permitActivityTable');
+    if (permitActivityTable) {
+      permitActivityTable.innerHTML = permitAuditData.length ? permitAuditData.slice(0, 3).map((item: any) => `
+        <div class="flex items-start gap-3 p-3 rounded-lg hover:bg-zinc-50 transition-colors">
+          <div class="w-8 h-8 rounded-full bg-emerald-50 border border-emerald-200 flex items-center justify-center shrink-0 text-[10px] font-bold text-emerald-700">P</div>
+          <div class="min-w-0 flex-1">
+            <p class="text-[11px] font-bold text-slate-900">${item.status || 'Permit Run'}</p>
+            <p class="text-[10px] text-zinc-500 truncate">${item.details || ''}</p>
+            <p class="text-[9px] text-zinc-400 mt-0.5">${new Date(item.timestamp).toLocaleString()}</p>
+          </div>
+        </div>
+      `).join('') : '<div class="p-6 text-center text-sm text-slate-400">No permit runs recorded yet.</div>';
+    }
+
+    // === 3. POSLEDNJI EXTERNAL LEADOVI ===
     const { data: externalLeads } = await supabase
       .from('external_leads')
       .select('id, full_name, email, phone, source_domain, form_type, status, created_at')
@@ -362,7 +408,7 @@ import AdminLayout from "../../layouts/AdminLayout.astro";
       }).join('') : '<div class="p-8 text-center text-sm text-slate-400">No external leads received yet.</div>';
     }
 
-    // === 3. KONTRAKTORI ===
+    // === 4. KONTRAKTORI ===
     const { data: contractors } = await supabase.from('contractors').select('*').order('created_at', { ascending: false });
     if (contractors) {
       document.getElementById('count-c-total')!.textContent = contractors.length.toString();
@@ -389,7 +435,7 @@ import AdminLayout from "../../layouts/AdminLayout.astro";
       `}).join('');
     }
 
-    // === 4. KAMIONI ===
+    // === 5. KAMIONI ===
     const { data: trucks } = await supabase.from('grapple_saw_trucks').select('*').order('created_at', { ascending: false });
     if (trucks) {
       document.getElementById('count-t-total')!.textContent = trucks.length.toString();
@@ -433,6 +479,13 @@ import AdminLayout from "../../layouts/AdminLayout.astro";
     const llContainer = document.getElementById('leadLogsContainer');
     if (llContainer && leadLogs) {
       llContainer.innerHTML = leadLogs.length > 0 ? leadLogs.map(log => generateProLogHtml(log.leads?.email || 'Unknown Lead', log.action || log.status || 'Updated', log.user_email || log.changed_by || 'Stojan M.', log.created_at)).join('') : '<div class="text-[10px] text-zinc-500 italic">No recent activity.</div>';
+    }
+
+    const { data: permitLogs } = await supabase.from('lead_logs').select('*, leads(email)').order('created_at', { ascending: false }).limit(limitLogs);
+    const permitLogContainer = document.getElementById('permitLogsContainer');
+    if (permitLogContainer && permitLogs) {
+      const permitOnlyLogs = permitLogs.filter((log: any) => (log.action || '').toLowerCase().includes('permit'));
+      permitLogContainer.innerHTML = permitOnlyLogs.length > 0 ? permitOnlyLogs.map(log => generateProLogHtml(log.leads?.email || 'Permit Lead', log.action || 'Permit activity', log.user_email || log.changed_by || 'Permit automation', log.created_at)).join('') : '<div class="text-[10px] text-zinc-500 italic">No permit activity yet.</div>';
     }
 
     const { data: contractorLogs } = await supabase.from('contractor_logs').select('*, contractors(company_name)').order('created_at', { ascending: false }).limit(limitLogs);

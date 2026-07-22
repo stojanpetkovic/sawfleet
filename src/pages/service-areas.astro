@@ -10,11 +10,23 @@ const { data: territories } = await supabase
   .select('*')
   .order('name', { ascending: true });
 
-// Helper mapa za koordinate
+// Helper mapa za koordinate - sve 15 teritorija
 const coordsMap: Record<string, [number, number]> = {
-  "Miami-Dade County": [25.7617, -80.1918],
   "Broward County": [26.1224, -80.1373],
-  "Palm Beach County": [26.7153, -80.0534]
+  "City of Boca Raton": [26.3583, -80.0833],
+  "City of Coral Gables": [25.7459, -80.2732],
+  "City of Doral": [25.8158, -80.3437],
+  "City of Fort Lauderdale": [26.1223, -80.1434],
+  "City of Hallandale Beach": [26.0176, -80.1456],
+  "City of Miami": [25.7617, -80.1918],
+  "City of Miami Gardens": [25.9500, -80.2000],
+  "City of Naples": [26.1406, -81.7934],
+  "City of Oakland Park": [26.1667, -80.1167],
+  "Collier County": [26.2000, -81.5000],
+  "Miami-Dade County": [25.7617, -80.1918],
+  "Palm Beach County": [26.7153, -80.0534],
+  "Town of Jupiter": [26.9483, -80.0534],
+  "Village of Wellington": [26.6228, -80.2347]
 };
 ---
 

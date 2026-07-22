@@ -2,6 +2,7 @@
 export const prerender = false;
 import AdminLayout from "../../layouts/AdminLayout.astro";
 import { supabase } from "../../lib/supabase";
+import { parsePermitSettings } from "../../lib/permitData";
 
 // Dohvatamo teritorije
 const { data: territories } = await supabase
@@ -15,6 +16,8 @@ const { data: tracking } = await supabase
   .select('*')
   .eq('id', 1)
   .single();
+
+const permitSettings = parsePermitSettings(tracking?.global_scripts);
 ---
 
 <AdminLayout>
@@ -43,6 +46,10 @@ const { data: tracking } = await supabase
         <button id="tabBtn-notifications" class="tab-btn flex-shrink-0 lg:w-full text-left px-4 py-3 text-zinc-500 hover:bg-zinc-100/50 hover:text-slate-900 rounded-lg text-[11px] font-bold uppercase tracking-wider transition-all border border-transparent flex items-center gap-3">
           <span class="indicator w-2 h-2 rounded-full bg-zinc-200"></span>
           Notifications
+        </button>
+        <button id="tabBtn-permit" class="tab-btn flex-shrink-0 lg:w-full text-left px-4 py-3 text-zinc-500 hover:bg-zinc-100/50 hover:text-slate-900 rounded-lg text-[11px] font-bold uppercase tracking-wider transition-all border border-transparent flex items-center gap-3">
+          <span class="indicator w-2 h-2 rounded-full bg-zinc-200"></span>
+          Permit Automation
         </button>
       </div>
 
@@ -163,6 +170,80 @@ const { data: tracking } = await supabase
           </form>
         </div>
 
+        <div id="section-permit" class="tab-section hidden bg-white border border-slate-200 p-6 md:p-8 rounded-2xl shadow-sm">
+          <div class="border-b border-zinc-100 pb-5 mb-6">
+            <h2 class="text-sm font-bold text-slate-900 uppercase tracking-wider mb-2">Permit Automation</h2>
+            <p class="text-[11px] text-zinc-500">Control whether permit outreach is active, which permit-fit score threshold is required, whether emails are sent, and whether new permits are auto-approved.</p>
+          </div>
+
+          <form id="permitAutomationForm" class="space-y-6">
+            <label class="flex items-center justify-between rounded-xl border border-zinc-200 p-4">
+              <span>
+                <span class="block text-xs font-bold text-slate-900">Enable permit outreach automation</span>
+                <span class="block text-[11px] text-zinc-500">Allow the permit pipeline to create outreach opportunities from the public feed.</span>
+              </span>
+              <input type="checkbox" id="permitEnabled" class="h-5 w-5 accent-green-600" checked={permitSettings.enabled} />
+            </label>
+
+            <label class="flex items-center justify-between rounded-xl border border-zinc-200 p-4">
+              <span>
+                <span class="block text-xs font-bold text-slate-900">Send outreach emails</span>
+                <span class="block text-[11px] text-zinc-500">Send the customized permit email when a new permit opportunity passes the score threshold.</span>
+              </span>
+              <input type="checkbox" id="permitAutoSend" class="h-5 w-5 accent-green-600" checked={permitSettings.autoSend} />
+            </label>
+
+            <label class="flex items-center justify-between rounded-xl border border-zinc-200 p-4">
+              <span>
+                <span class="block text-xs font-bold text-slate-900">Auto-approve created opportunities</span>
+                <span class="block text-[11px] text-zinc-500">Mark permit-derived opportunities as approved immediately.</span>
+              </span>
+              <input type="checkbox" id="permitAutoApprove" class="h-5 w-5 accent-green-600" checked={permitSettings.autoApprove} />
+            </label>
+
+            <div>
+              <label class="text-[10px] uppercase tracking-[0.2em] text-zinc-600 font-bold block mb-2">Minimum permit score threshold</label>
+              <input id="permitMinScore" type="number" min="0" step="1" value={permitSettings.minScore} class="w-full rounded-xl border border-zinc-200 bg-white p-3 text-sm text-slate-900" />
+              <p class="mt-2 text-[11px] text-zinc-500">The public permit feed provides a permit-fit score. Only permits at or above this threshold are processed.</p>
+            </div>
+
+            <div>
+              <label class="text-[10px] uppercase tracking-[0.2em] text-zinc-600 font-bold block mb-2">Target territories</label>
+              <p class="text-[11px] text-zinc-500 mb-3">Only permits from the selected territories will be processed by the automation.</p>
+              <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                {territories && territories.length > 0 ? territories.map((t) => (
+                  <label class="flex items-center gap-3 rounded-xl border border-zinc-200 p-3 text-sm text-slate-700">
+                    <input type="checkbox" name="permitTerritory" value={t.name} checked={permitSettings.allowedTerritories.includes(t.name)} class="h-4 w-4 accent-green-600" />
+                    <span>{t.name}</span>
+                  </label>
+                )) : (
+                  <div class="rounded-xl border border-dashed border-zinc-200 p-3 text-[11px] text-zinc-500">Add service territories first to enable territory filtering.</div>
+                )}
+              </div>
+            </div>
+
+            <div>
+              <label class="text-[10px] uppercase tracking-[0.2em] text-zinc-600 font-bold block mb-2">Email subject</label>
+              <input id="permitEmailSubject" type="text" value={permitSettings.emailSubject} class="w-full rounded-xl border border-zinc-200 bg-white p-3 text-sm text-slate-900" />
+            </div>
+
+            <div>
+              <label class="text-[10px] uppercase tracking-[0.2em] text-zinc-600 font-bold block mb-2">Email template</label>
+              <textarea id="permitEmailTemplate" rows="10" class="w-full rounded-xl border border-zinc-200 bg-white p-4 text-xs font-mono text-zinc-700" placeholder="Use {{fullName}}, {{permitDetails}}, {{siteUrl}} placeholders">{permitSettings.emailTemplate}</textarea>
+            </div>
+
+            <div>
+              <label class="text-[10px] uppercase tracking-[0.2em] text-zinc-600 font-bold block mb-2">Archive leads after (days)</label>
+              <input id="permitArchiveDays" type="number" min="7" max="365" value={permitSettings.archiveDays || 60} class="w-full rounded-xl border border-zinc-200 bg-white p-3 text-sm text-slate-900" />
+              <p class="mt-2 text-[11px] text-zinc-500">Leads in "new" status older than this many days will be automatically archived. Range: 7-365 days.</p>
+            </div>
+
+            <button type="submit" id="savePermitAutomationBtn" class="flex h-12 w-full sm:w-auto px-8 items-center justify-center rounded-xl bg-green-500 text-sm font-bold text-slate-900 transition-all hover:bg-green-400 active:scale-[0.98]">
+              Save Permit Automation
+            </button>
+          </form>
+        </div>
+
       </div>
     </div>
   </div>
@@ -180,12 +261,14 @@ const { data: tracking } = await supabase
   const tabTerritories = document.getElementById('tabBtn-territories');
   const tabTracking = document.getElementById('tabBtn-tracking');
   const tabNotifications = document.getElementById('tabBtn-notifications');
+  const tabPermit = document.getElementById('tabBtn-permit');
   const secTerritories = document.getElementById('section-territories');
   const secTracking = document.getElementById('section-tracking');
   const secNotifications = document.getElementById('section-notifications');
+  const secPermit = document.getElementById('section-permit');
 
-  const allTabs = [tabTerritories, tabTracking, tabNotifications] as HTMLElement[];
-  const allSections = [secTerritories, secTracking, secNotifications] as HTMLElement[];
+  const allTabs = [tabTerritories, tabTracking, tabNotifications, tabPermit] as HTMLElement[];
+  const allSections = [secTerritories, secTracking, secNotifications, secPermit] as HTMLElement[];
 
   function switchTab(activeTab: HTMLElement, showSec: HTMLElement) {
     allTabs.forEach((tab) => {
@@ -207,6 +290,7 @@ const { data: tracking } = await supabase
   tabTerritories?.addEventListener('click', () => switchTab(tabTerritories, secTerritories!));
   tabTracking?.addEventListener('click', () => switchTab(tabTracking, secTracking!));
   tabNotifications?.addEventListener('click', () => switchTab(tabNotifications, secNotifications!));
+  tabPermit?.addEventListener('click', () => switchTab(tabPermit, secPermit!));
 
   // --- ČUVANJE NOTIFIKACIONIH EMAIL ADRESA ---
   document.getElementById('notificationsForm')?.addEventListener('submit', async (e) => {
@@ -262,6 +346,51 @@ const { data: tracking } = await supabase
         window.location.reload();
       }
     });
+  });
+
+  // --- ČUVANJE PERMIT AUTOMATIZACIJE ---
+  document.getElementById('permitAutomationForm')?.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const savePermitBtn = document.getElementById('savePermitAutomationBtn') as HTMLButtonElement;
+    savePermitBtn.innerText = 'Saving...';
+    savePermitBtn.disabled = true;
+
+    const selectedTerritories = Array.from(document.querySelectorAll('input[name="permitTerritory"]:checked')).map((el) => (el as HTMLInputElement).value);
+
+    const payload = {
+      enabled: (document.getElementById('permitEnabled') as HTMLInputElement).checked,
+      autoSend: (document.getElementById('permitAutoSend') as HTMLInputElement).checked,
+      autoApprove: (document.getElementById('permitAutoApprove') as HTMLInputElement).checked,
+      minScore: Number((document.getElementById('permitMinScore') as HTMLInputElement).value || 0),
+      emailSubject: (document.getElementById('permitEmailSubject') as HTMLInputElement).value,
+      emailTemplate: (document.getElementById('permitEmailTemplate') as HTMLTextAreaElement).value,
+      allowedTerritories: selectedTerritories,
+      archiveDays: Number((document.getElementById('permitArchiveDays') as HTMLInputElement).value || 60),
+    };
+
+    const res = await fetch('/api/permit-settings', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload),
+    });
+    const result = await res.json().catch(() => ({}));
+
+    if (!res.ok || !result.ok) {
+      alert('Error saving permit automation settings!');
+      savePermitBtn.innerText = 'Save Permit Automation';
+      savePermitBtn.disabled = false;
+      return;
+    }
+
+    savePermitBtn.innerText = 'Saved Successfully ✓';
+    savePermitBtn.classList.replace('bg-green-500', 'bg-zinc-300');
+    savePermitBtn.classList.replace('text-slate-900', 'text-green-700');
+    setTimeout(() => {
+      savePermitBtn.innerText = 'Save Permit Automation';
+      savePermitBtn.classList.replace('bg-zinc-300', 'bg-green-500');
+      savePermitBtn.classList.replace('text-green-700', 'text-slate-900');
+      savePermitBtn.disabled = false;
+    }, 2000);
   });
 
   // --- ČUVANJE SKRIPTI ---

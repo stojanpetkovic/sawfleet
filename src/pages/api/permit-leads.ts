@@ -1,11 +1,31 @@
 export const prerender = false;
 
-import { syncPermitLeads } from "../../lib/permitData";
+import { supabaseAdmin } from "../../lib/supabaseAdmin";
 
 export async function GET() {
   try {
-    const result = await syncPermitLeads(100, { sendOutreach: false });
-    return new Response(JSON.stringify({ ok: true, leads: result.leads, created: result.created.length }), {
+    // Fetch all permit leads from permit_leads table (including archived)
+    const { data: leads, error } = await supabaseAdmin
+      .from('permit_leads')
+      .select('*')
+      .order('created_at', { ascending: false })
+      .limit(2000);
+
+    if (error) {
+      console.error('Database error:', error);
+      throw error;
+    }
+
+    // Normalize field names
+    const normalizedLeads = (leads || [])
+      .map((lead: any) => ({
+        ...lead,
+        owner_email: lead.owner_email || lead.email || null,
+        owner_phone: lead.owner_phone || lead.phone || null,
+        archived_at: lead.archived_at || null,
+      }));
+
+    return new Response(JSON.stringify({ ok: true, leads: normalizedLeads, created: 0 }), {
       status: 200,
       headers: { "Content-Type": "application/json" },
     });
