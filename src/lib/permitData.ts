@@ -51,8 +51,8 @@ export async function getPermitLeads(limit = 100): Promise<PermitLead[]> {
 
   const params = new URLSearchParams({
     select: "id,source_name,jurisdiction,address,permit_type,permit_description,permit_date,permit_number,lead_score,source_url,discovered_at,owner_name,owner_email,owner_phone,owner_mailing_address,raw_payload_json",
-    "lead_type=eq": "permit",
-    "lead_status=eq": "new",
+    lead_type: "eq.permit",
+    lead_status: "eq.new",
     order: "discovered_at.desc",
     limit: String(limit),
   });
