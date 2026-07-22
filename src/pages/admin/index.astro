@@ -21,10 +21,14 @@ import AdminLayout from "../../layouts/AdminLayout.astro";
     <div class="flex-1 space-y-8 min-w-0 w-full">
 
       <!-- NEEDS ATTENTION — uvek vidljivo, ne zavisi od hover-a (bitno za mobilne) -->
-      <div id="attentionBar" class="hidden grid-cols-3 gap-3">
+      <div id="attentionBar" class="hidden grid-cols-2 lg:grid-cols-4 gap-3">
         <a href="/admin/service-leads?status=new" class="flex flex-col items-center justify-center gap-1 p-4 rounded-2xl border border-green-200 bg-green-50 hover:bg-green-100 transition-colors">
           <span id="attn-leads" class="text-2xl font-mono font-bold text-green-700">0</span>
           <span class="text-[9px] font-bold uppercase tracking-[0.15em] text-green-700/70 text-center">New Leads</span>
+        </a>
+        <a href="/admin/external-leads?status=new" class="flex flex-col items-center justify-center gap-1 p-4 rounded-2xl border border-teal-200 bg-teal-50 hover:bg-teal-100 transition-colors">
+          <span id="attn-external" class="text-2xl font-mono font-bold text-teal-700">0</span>
+          <span class="text-[9px] font-bold uppercase tracking-[0.15em] text-teal-700/70 text-center">New External Leads</span>
         </a>
         <a href="/admin/contractors" class="flex flex-col items-center justify-center gap-1 p-4 rounded-2xl border border-blue-200 bg-blue-50 hover:bg-blue-100 transition-colors">
           <span id="attn-contractors" class="text-2xl font-mono font-bold text-blue-600">0</span>
@@ -37,7 +41,7 @@ import AdminLayout from "../../layouts/AdminLayout.astro";
       </div>
       
       <!-- STATISTIKA: KONSOLIDOVANA -->
-      <div class="grid grid-cols-1 md:grid-cols-3 gap-6 w-full">
+      <div class="grid grid-cols-1 md:grid-cols-2 2xl:grid-cols-4 gap-6 w-full">
         
         <!-- Karta 1: Leads Summary -->
         <div class="bg-white border border-slate-200 rounded-2xl p-6 flex flex-col justify-between w-full shadow-sm transition hover:-translate-y-0.5 hover:shadow-md">
@@ -69,7 +73,41 @@ import AdminLayout from "../../layouts/AdminLayout.astro";
           </div>
         </div>
 
-        <!-- Karta 2: Contractors Summary -->
+        <!-- Karta 2: External Leads Summary -->
+        <div class="bg-white border border-slate-200 rounded-2xl p-6 flex flex-col justify-between w-full shadow-sm transition hover:-translate-y-0.5 hover:shadow-md">
+          <div class="flex justify-between items-start mb-6">
+            <div>
+              <p class="text-[9px] font-bold uppercase tracking-[0.2em] text-zinc-500">External Leads</p>
+              <h2 id="count-e-total" class="text-4xl font-mono font-bold text-slate-900 mt-2">-</h2>
+            </div>
+            <a href="/admin/external-leads" class="text-[9px] uppercase tracking-[0.2em] text-zinc-400 hover:text-slate-900 border border-zinc-200 px-3 py-1.5 rounded-lg transition-colors whitespace-nowrap">Manage →</a>
+          </div>
+
+          <div class="grid grid-cols-5 gap-2 pt-4 border-t border-zinc-100/50">
+            <div>
+              <p class="text-[9px] text-zinc-400 uppercase font-bold tracking-[0.1em]">New</p>
+              <p id="count-e-new" class="text-sm font-mono text-amber-600 mt-1">-</p>
+            </div>
+            <div>
+              <p class="text-[9px] text-zinc-400 uppercase font-bold tracking-[0.1em]">Apprv.</p>
+              <p id="count-e-approved" class="text-sm font-mono text-green-700 mt-1">-</p>
+            </div>
+            <div>
+              <p class="text-[9px] text-zinc-400 uppercase font-bold tracking-[0.1em]">Rejct.</p>
+              <p id="count-e-rejected" class="text-sm font-mono text-red-600 mt-1">-</p>
+            </div>
+            <div>
+              <p class="text-[9px] text-zinc-400 uppercase font-bold tracking-[0.1em]">Cont.</p>
+              <p id="count-e-contacted" class="text-sm font-mono text-blue-600 mt-1">-</p>
+            </div>
+            <div>
+              <p class="text-[9px] text-zinc-400 uppercase font-bold tracking-[0.1em]">Closed</p>
+              <p id="count-e-closed" class="text-sm font-mono text-slate-600 mt-1">-</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Karta 3: Contractors Summary -->
         <div class="bg-white border border-slate-200 rounded-2xl p-6 flex flex-col justify-between w-full shadow-sm transition hover:-translate-y-0.5 hover:shadow-md">
           <div class="flex justify-between items-start mb-6">
             <div>
@@ -95,7 +133,7 @@ import AdminLayout from "../../layouts/AdminLayout.astro";
           </div>
         </div>
 
-        <!-- Karta 3: Trucks Summary -->
+        <!-- Karta 4: Trucks Summary -->
         <div class="bg-white border border-slate-200 rounded-2xl p-6 flex flex-col justify-between w-full shadow-sm transition hover:-translate-y-0.5 hover:shadow-md">
           <div class="flex justify-between items-start mb-6">
             <div>
@@ -280,8 +318,18 @@ import AdminLayout from "../../layouts/AdminLayout.astro";
     const { data: externalLeads } = await supabase
       .from('external_leads')
       .select('id, full_name, email, phone, source_domain, form_type, status, created_at')
-      .order('created_at', { ascending: false })
-      .limit(5);
+      .order('created_at', { ascending: false });
+
+    if (externalLeads) {
+      const externalNewCount = externalLeads.filter((lead) => lead.status === 'new').length;
+      document.getElementById('count-e-total')!.textContent = externalLeads.length.toString();
+      document.getElementById('count-e-new')!.textContent = externalNewCount.toString();
+      document.getElementById('count-e-approved')!.textContent = externalLeads.filter((lead) => lead.status === 'approved').length.toString();
+      document.getElementById('count-e-rejected')!.textContent = externalLeads.filter((lead) => lead.status === 'rejected').length.toString();
+      document.getElementById('count-e-contacted')!.textContent = externalLeads.filter((lead) => lead.status === 'contacted').length.toString();
+      document.getElementById('count-e-closed')!.textContent = externalLeads.filter((lead) => lead.status === 'closed').length.toString();
+      document.getElementById('attn-external')!.textContent = externalNewCount.toString();
+    }
 
     const externalContainer = document.getElementById('externalLeadsTable');
     if (externalContainer) {
@@ -293,7 +341,7 @@ import AdminLayout from "../../layouts/AdminLayout.astro";
         closed: 'bg-slate-100 text-slate-600 border-slate-200',
       };
 
-      externalContainer.innerHTML = externalLeads?.length ? externalLeads.map((lead) => {
+      externalContainer.innerHTML = externalLeads?.length ? externalLeads.slice(0, 5).map((lead) => {
         const status = lead.status || 'new';
         const contact = [lead.email, lead.phone].filter(Boolean).join(' · ') || 'No contact info';
         return `
@@ -371,6 +419,7 @@ import AdminLayout from "../../layouts/AdminLayout.astro";
 
     // === PRIKAŽI "NEEDS ATTENTION" SAMO AKO IMA NEČEG DA SE ODOBRI ===
     const attnTotal = (leads?.filter(l => !l.status || l.status === 'new').length || 0)
+      + (externalLeads?.filter(lead => lead.status === 'new').length || 0)
       + (contractors?.filter(c => c.status === 'pending').length || 0)
       + (trucks?.filter(t => t.approval_status === 'pending' || !t.approval_status).length || 0);
     const attentionBar = document.getElementById('attentionBar')!;

@@ -1,0 +1,14 @@
+name: Permit automation
+
+on:
+  schedule:
+    - cron: '0 */3 * * *'
+  workflow_dispatch:
+
+jobs:
+  run-permit-automation:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Trigger permit automation endpoint
+        run: |
+          curl -fsS "https://sawfleet2026-eng.github.io/Tree-Permit-Lead-Dashboard/api/permit-automation" || true

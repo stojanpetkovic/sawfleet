@@ -58,6 +58,18 @@ export function newLeadEmailHtml({ companyName, county, details, dashboardUrl })
   </div>`;
 }
 
+export function permitLeadOutreachEmailHtml({ fullName, permitDetails, siteUrl }) {
+  return `
+  <div style="font-family: -apple-system, sans-serif; max-width: 560px; margin: 0 auto; background:#FFFFFF; color:#0F172A; padding:32px; border-radius:16px; border:1px solid #E7EAE8;">
+    <p style="font-size:10px; letter-spacing:2px; text-transform:uppercase; color:#16803C; font-weight:bold; margin:0 0 12px;">// Permit Outreach</p>
+    <h1 style="font-size:22px; margin:0 0 16px;">We can help with your permit project</h1>
+    <p style="color:#475569; font-size:14px; line-height:1.6;">Hi${fullName ? " " + fullName : ""}, we noticed a recent permit opportunity that may be relevant to your project.</p>
+    <p style="color:#64748B; font-size:13px; line-height:1.6; border-left:2px solid #E2E8F0; padding-left:12px;">${permitDetails ? permitDetails.slice(0, 240) : "We can review the work scope and help you get the right contractor or next steps."}</p>
+    <p style="color:#D97706; font-size:12px; margin:20px 0;">If you want, we can help you evaluate the opportunity, confirm the scope, and connect you with the right service provider.</p>
+    <a href="${siteUrl}" style="display:inline-block; margin-top:8px; background:#22C55E; color:#FFFFFF; text-decoration:none; font-weight:bold; font-size:13px; padding:12px 24px; border-radius:10px;">View our service options →</a>
+  </div>`;
+}
+
 export function contractorStatusEmailHtml({ companyName, status, loginUrl }) {
   const approved = status === "active";
   return `

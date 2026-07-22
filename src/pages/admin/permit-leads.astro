@@ -1,0 +1,293 @@
+---
+export const prerender = false;
+import AdminLayout from "../../layouts/AdminLayout.astro";
+import { supabase } from "../../lib/supabase";
+import { getPermitLeads, buildPermitOutreachUrl } from "../../lib/permitData";
+
+const { data: territories } = await supabase.from('service_territories').select('*').order('name');
+---
+
+<AdminLayout>
+  <div class="space-y-5 w-full">
+    <div>
+      <span class="text-[9px] font-mono font-bold uppercase tracking-[0.2em] text-green-700">// Permit outreach</span>
+      <h1 class="mt-1.5 text-2xl sm:text-3xl font-bold text-slate-950 tracking-tight">Permit leads</h1>
+      <p class="text-sm text-slate-500 mt-1.5">Live permit openings pulled from the public permit dashboard and ready to be contacted through your site funnel.</p>
+    </div>
+
+    <div class="flex flex-wrap items-center gap-2 mb-4">
+      <select id="permitTerritoryFilter" class="rounded-full border border-zinc-200 bg-zinc-50 px-3 py-2 text-[11px] font-bold uppercase tracking-wider text-zinc-700">
+        <option value="all">All territories</option>
+        {territories?.map((t) => <option value={t.name}>{t.name}</option>)}
+      </select>
+      <select id="permitStatusFilter" class="rounded-full border border-zinc-200 bg-zinc-50 px-3 py-2 text-[11px] font-bold uppercase tracking-wider text-zinc-700">
+        <option value="all">All statuses</option>
+        <option value="new">New</option>
+        <option value="contacted">Contacted</option>
+        <option value="converted">Converted</option>
+      </select>
+      <button id="refreshPermitLeadsBtn" class="rounded-lg border border-zinc-200 px-3 py-2 text-[10px] font-bold uppercase tracking-wider text-zinc-600 hover:bg-zinc-50">Refresh</button>
+    </div>
+
+    <div class="grid lg:grid-cols-[1.3fr_0.7fr] gap-4">
+      <div class="bg-white border border-zinc-100 rounded-2xl p-4 sm:p-5">
+        <div class="flex items-center justify-between mb-4">
+          <div>
+            <p class="text-[9px] font-bold uppercase tracking-[0.15em] text-zinc-400">Permit contacts</p>
+            <h2 class="text-lg font-bold text-slate-900">Pending outreach</h2>
+          </div>
+          <div id="permitSummary" class="text-[11px] font-mono text-zinc-500">0 permits</div>
+        </div>
+        <div id="permitLeadsTable" class="space-y-2">
+          <div class="p-8 text-center text-zinc-400 text-sm">Loading...</div>
+        </div>
+      </div>
+
+      <div class="space-y-4">
+        <div class="bg-white border border-zinc-100 rounded-2xl p-4 sm:p-5">
+          <p class="text-[9px] font-bold uppercase tracking-[0.15em] text-zinc-400 mb-3">Quick compose</p>
+          <div class="space-y-3">
+            <input id="composeName" class="w-full rounded-lg border border-zinc-200 bg-zinc-50 p-3 text-sm text-slate-900" placeholder="Contact name" />
+            <input id="composeEmail" class="w-full rounded-lg border border-zinc-200 bg-zinc-50 p-3 text-sm text-slate-900" placeholder="Email address" />
+            <select id="composeTerritory" class="w-full rounded-lg border border-zinc-200 bg-zinc-50 p-3 text-sm text-slate-900">
+              <option value="">Select territory</option>
+              {territories?.map((t) => <option value={t.name}>{t.name}</option>)}
+            </select>
+            <textarea id="composeDetails" rows="6" class="w-full rounded-lg border border-zinc-200 bg-zinc-50 p-3 text-sm text-slate-900" placeholder="Permit details or project context"></textarea>
+            <button id="sendOutreachBtn" class="w-full rounded-lg bg-green-600 px-4 py-3 text-sm font-bold text-white hover:bg-green-500">Send outreach email</button>
+          </div>
+        </div>
+
+        <div class="bg-white border border-zinc-100 rounded-2xl p-4 sm:p-5">
+          <div class="flex items-center justify-between mb-3">
+            <p class="text-[9px] font-bold uppercase tracking-[0.15em] text-zinc-400">Recent permit activity</p>
+            <span class="text-[10px] font-mono text-zinc-500">Live log</span>
+          </div>
+          <div id="permitActivityLog" class="space-y-3 text-sm text-zinc-600">
+            <div class="text-[11px] text-zinc-400">Loading activity...</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</AdminLayout>
+
+<script>
+  import { supabase } from "../../lib/supabase";
+
+  type PermitLead = {
+    id: string;
+    source_name: string | null;
+    jurisdiction: string | null;
+    address: string | null;
+    permit_type: string | null;
+    permit_description: string | null;
+    permit_date: string | null;
+    permit_number: string | null;
+    lead_score: number | null;
+    source_url: string | null;
+    discovered_at: string | null;
+    owner_name: string | null;
+    owner_email: string | null;
+    owner_phone: string | null;
+    owner_mailing_address: string | null;
+    raw_payload_json?: string | null;
+    status?: string | null;
+  };
+
+  let allPermitLeads: PermitLead[] = [];
+
+  function getFilteredLeads() {
+    const territory = (document.getElementById('permitTerritoryFilter') as HTMLSelectElement | null)?.value || 'all';
+    const status = (document.getElementById('permitStatusFilter') as HTMLSelectElement | null)?.value || 'all';
+    return allPermitLeads.filter((lead) => {
+      const matchesTerritory = territory === 'all' || !lead.jurisdiction || lead.jurisdiction.toLowerCase().includes(territory.toLowerCase());
+      const leadStatus = lead.status || 'new';
+      const matchesStatus = status === 'all' || leadStatus === status;
+      return matchesTerritory && matchesStatus;
+    });
+  }
+
+  async function loadPermitLeads() {
+    const el = document.getElementById('permitLeadsTable');
+    if (el) el.innerHTML = '<div class="p-8 text-center text-zinc-400 text-sm">Loading live permits...</div>';
+
+    try {
+      const permits = await (window as any).fetchPermitLeads?.() || [];
+      allPermitLeads = permits;
+    } catch (error) {
+      console.error(error);
+      allPermitLeads = [];
+    }
+    renderList();
+  }
+
+  function renderList() {
+    const el = document.getElementById('permitLeadsTable');
+    if (!el) return;
+
+    const filteredLeads = getFilteredLeads();
+    const summary = document.getElementById('permitSummary');
+    if (summary) summary.textContent = `${filteredLeads.length} permits`;
+
+    if (filteredLeads.length === 0) {
+      el.innerHTML = '<div class="p-8 text-center text-zinc-400 text-sm border border-dashed border-zinc-200 rounded-2xl">No permit contacts match these filters.</div>';
+      return;
+    }
+
+    el.innerHTML = filteredLeads.map((lead) => `
+      <div class="flex items-start justify-between gap-3 rounded-2xl border border-zinc-100 bg-white p-3">
+        <div class="min-w-0 flex-1">
+          <div class="flex items-center gap-2 flex-wrap">
+            <p class="text-sm font-bold text-slate-900">${lead.address || 'Unnamed permit'}</p>
+            <span class="rounded-full border border-zinc-200 bg-zinc-100 px-2 py-0.5 text-[9px] font-bold uppercase tracking-wide text-zinc-600">${lead.lead_score ?? 0}</span>
+            <span class="rounded-full border border-emerald-200 bg-emerald-50 px-2 py-0.5 text-[9px] font-bold uppercase tracking-wide text-emerald-700">${(lead.status || 'new').toUpperCase()}</span>
+          </div>
+          <p class="mt-1 text-[11px] text-zinc-500 font-mono truncate">${lead.jurisdiction || 'Unknown jurisdiction'} · ${lead.permit_type || 'Permit'}</p>
+          <p class="mt-1 text-[10px] text-zinc-400 truncate">${lead.permit_number || 'No permit number'} · ${lead.permit_date || 'No date'}</p>
+          <p class="mt-2 text-[11px] text-slate-600 line-clamp-3">${lead.permit_description || 'No description provided'}</p>
+        </div>
+        <div class="flex shrink-0 flex-col gap-2">
+          <button data-send-id="${lead.id}" class="rounded-lg border border-green-200 bg-green-50 px-3 py-2 text-[10px] font-bold uppercase tracking-wider text-green-700 hover:bg-green-100">Email</button>
+          <button data-convert-id="${lead.id}" class="rounded-lg border border-blue-200 bg-blue-50 px-3 py-2 text-[10px] font-bold uppercase tracking-wider text-blue-700 hover:bg-blue-100">Convert</button>
+          <a href="${lead.source_url || '#'}" target="_blank" rel="noopener" class="rounded-lg border border-zinc-200 bg-zinc-50 px-3 py-2 text-center text-[10px] font-bold uppercase tracking-wider text-zinc-700 hover:bg-zinc-100">Open</a>
+        </div>
+      </div>
+    `).join('');
+
+    el.querySelectorAll('[data-send-id]').forEach((btn) => {
+      btn.addEventListener('click', async () => {
+        const id = (btn as HTMLElement).dataset.sendId!;
+            const lead = allPermitLeads.find((item) => item.id === id);
+        if (!lead) return;
+        const details = lead.permit_description || `Permit opportunity from ${lead.jurisdiction || 'public permit feed'}`;
+        const name = lead.owner_name || 'there';
+        const email = lead.owner_email || '';
+
+        if (!email) {
+          alert('This permit record does not have an email address.');
+          return;
+        }
+
+        (btn as HTMLButtonElement).disabled = true;
+        (btn as HTMLButtonElement).textContent = 'Sending...';
+
+        const outreachUrl = new URL(window.location.origin);
+        outreachUrl.pathname = '/';
+        outreachUrl.searchParams.set('utm_source', 'permit_outreach');
+        outreachUrl.searchParams.set('utm_medium', 'email');
+        outreachUrl.searchParams.set('permit_number', lead.permit_number || '');
+        outreachUrl.searchParams.set('permit_type', lead.permit_type || '');
+        outreachUrl.searchParams.set('permit_address', lead.address || '');
+
+        const res = await fetch('/api/notify-permit-lead', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ leadId: id, fullName: name, email, permitDetails: details, siteUrl: outreachUrl.toString() }),
+        });
+        const payload = await res.json().catch(() => ({}));
+        (btn as HTMLButtonElement).disabled = false;
+        (btn as HTMLButtonElement).textContent = 'Email';
+        if (payload.ok) {
+          alert('Outreach email sent.');
+          await loadPermitLeads();
+        } else {
+          alert('Email failed: ' + (payload.error || 'unknown'));
+        }
+      });
+    });
+
+    el.querySelectorAll('[data-convert-id]').forEach((btn) => {
+      btn.addEventListener('click', async () => {
+        const id = (btn as HTMLElement).dataset.convertId!;
+        const lead = allPermitLeads.find((item) => item.id === id);
+        if (!lead) return;
+        if (!confirm('Create a service lead from this permit?')) return;
+
+        const { data: inserted, error } = await supabase.from('leads').insert([{
+          email: lead.owner_email,
+          phone: lead.owner_phone,
+          county: lead.jurisdiction || '',
+          details: `${lead.permit_type || 'Permit'} • ${lead.address || ''} • ${lead.permit_description || ''} • Permit ${lead.permit_number || ''}`,
+          status: 'new',
+          source: 'permit_automation',
+          created_at: new Date().toISOString(),
+        }]).select().single();
+
+        if (error) {
+          alert('Could not convert: ' + error.message);
+          return;
+        }
+
+        await supabase.from('lead_logs').insert([{
+          lead_id: inserted.id,
+          action: `Permit converted to lead from ${lead.permit_number || 'permit feed'}`,
+          changed_by: 'permit_admin',
+        }]);
+
+        alert('Converted into a service lead.');
+        await loadPermitLeads();
+      });
+    });
+  }
+
+  async function loadActivityLog() {
+    const el = document.getElementById('permitActivityLog');
+    if (!el) return;
+    try {
+      const { data } = await supabase.from('lead_logs').select('*, leads(email, county)').order('created_at', { ascending: false }).limit(8);
+      const logs = (data || []).filter((log: any) => (log.action || '').toLowerCase().includes('permit'));
+      if (!logs.length) {
+        el.innerHTML = '<div class="text-[11px] text-zinc-400">No permit activity yet.</div>';
+        return;
+      }
+      el.innerHTML = logs.map((log: any) => `
+        <div class="rounded-xl border border-zinc-100 bg-zinc-50 p-3">
+          <p class="text-[11px] font-semibold text-slate-900">${log.action}</p>
+          <p class="mt-1 text-[10px] text-zinc-500">${log.leads?.email || 'Lead'} · ${log.leads?.county || 'No territory'}</p>
+          <p class="mt-1 text-[9px] uppercase tracking-[0.2em] text-zinc-400">${new Date(log.created_at).toLocaleString()}</p>
+        </div>
+      `).join('');
+    } catch (error) {
+      console.error(error);
+      el.innerHTML = '<div class="text-[11px] text-zinc-400">Activity unavailable.</div>';
+    }
+  }
+
+  document.getElementById('refreshPermitLeadsBtn')?.addEventListener('click', async () => {
+    await loadPermitLeads();
+    await loadActivityLog();
+  });
+  document.getElementById('permitTerritoryFilter')?.addEventListener('change', renderList);
+  document.getElementById('permitStatusFilter')?.addEventListener('change', renderList);
+
+  document.getElementById('sendOutreachBtn')?.addEventListener('click', async () => {
+    const name = (document.getElementById('composeName') as HTMLInputElement).value.trim();
+    const email = (document.getElementById('composeEmail') as HTMLInputElement).value.trim();
+    const territory = (document.getElementById('composeTerritory') as HTMLSelectElement).value;
+    const details = (document.getElementById('composeDetails') as HTMLTextAreaElement).value.trim();
+    if (!email) {
+      alert('Please enter an email address.');
+      return;
+    }
+    const res = await fetch('/api/notify-permit-lead', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ fullName: name || 'there', email, permitDetails: details || `Permit opportunity for ${territory || 'your area'}`, siteUrl: window.location.origin }),
+    });
+    const payload = await res.json().catch(() => ({}));
+    if (payload.ok) alert('Outreach email sent.'); else alert('Email failed: ' + (payload.error || 'unknown'));
+  });
+
+  (window as any).fetchPermitLeads = async () => {
+    const response = await fetch('/api/permit-leads');
+    const payload = await response.json().catch(() => ({}));
+    if (!response.ok || !payload.ok) {
+      throw new Error(payload.error || 'Failed to load permit leads');
+    }
+    return payload.leads || [];
+  };
+
+  loadPermitLeads();
+  loadActivityLog();
+</script>
