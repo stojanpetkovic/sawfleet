@@ -1,0 +1,67 @@
+---
+export const prerender = false;
+import MainLayout from "../../../layouts/MainLayout.astro";
+import Header from "../../../components/layout/Header.astro";
+import Footer from "../../../components/layout/Footer.astro";
+import MobileNav from "../../../components/layout/MobileNav.astro";
+import { supabase } from "../../../lib/supabase";
+import { directoryLocationSlug, directoryProfileUrl } from "../../../lib/truckDirectory";
+import { MapPin, Truck } from "lucide-astro";
+
+const parts = String(Astro.params.location || "").split("/").filter(Boolean);
+if (!parts.length || parts.length > 2) return Astro.redirect("/404");
+const [stateSlug, citySlug] = parts;
+const { data: allProfiles } = await supabase
+  .from("unclaimed_truck_directory")
+  .select("slug,company_name,equipment_name,lift_capacity_tons,working_height_ft,location_city,location_state,service_radius_miles,listing_type")
+  .eq("is_published", true)
+  .neq("profile_status", "hidden")
+  .order("company_name");
+const stateProfiles = (allProfiles || []).filter((profile: any) => directoryLocationSlug(profile.location_state) === stateSlug);
+const profiles = citySlug
+  ? stateProfiles.filter((profile: any) => directoryLocationSlug(profile.location_city) === citySlug)
+  : stateProfiles;
+if (!profiles.length) return Astro.redirect("/404");
+const state = profiles[0].location_state;
+const city = citySlug ? profiles[0].location_city : null;
+const place = city ? `${city}, ${state}` : state;
+const title = `Grapple Saw Trucks in ${place} | Equipment Directory`;
+const description = `Find ${profiles.length} grapple saw truck${profiles.length === 1 ? "" : "s"} and heavy tree removal equipment operator${profiles.length === 1 ? "" : "s"} serving ${place}. Compare capacity, working height and public contact information.`;
+const schema = {
+  "@context": "https://schema.org",
+  "@type": "ItemList",
+  name: `Grapple saw trucks in ${place}`,
+  numberOfItems: profiles.length,
+  itemListElement: profiles.map((profile: any, index: number) => ({
+    "@type": "ListItem",
+    position: index + 1,
+    url: `https://sftreeremoval.com${directoryProfileUrl(profile)}`,
+    name: `${profile.company_name} — ${profile.equipment_name}`,
+  })),
+};
+---
+
+<MainLayout title={title} description={description} structuredData={schema}>
+  <Header />
+  <main class="min-h-screen bg-slate-50 pb-24 pt-28 md:pt-36">
+    <section class="mx-auto w-full max-w-7xl px-5 md:px-8">
+      <nav class="text-[10px] font-bold uppercase tracking-wider text-slate-400"><a href="/truck-directory" class="hover:text-green-700">Truck directory</a><span class="px-2">/</span>{city && <><a href={`/truck-directory/locations/${stateSlug}`} class="hover:text-green-700">{state}</a><span class="px-2">/</span></>}<span class="text-slate-600">{city || state}</span></nav>
+      <div class="mt-7 max-w-3xl"><p class="text-[10px] font-bold uppercase tracking-[0.22em] text-green-700">Local equipment network</p><h1 class="mt-3 text-3xl font-bold tracking-tight text-slate-950 md:text-5xl">Grapple Saw Trucks in {place}</h1><p class="mt-4 text-sm leading-6 text-slate-600 md:text-base">{description}</p></div>
+      <div class="mt-8 grid grid-cols-1 gap-5 md:grid-cols-2 xl:grid-cols-3">
+        {profiles.map((profile: any) => (
+          <article class="flex flex-col rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
+            <div class="flex items-start justify-between gap-3"><span class="flex h-10 w-10 items-center justify-center rounded-xl bg-slate-950 text-white"><Truck size={19} /></span><span class="rounded-full bg-amber-50 px-2 py-1 text-[8px] font-bold uppercase text-amber-700">Unverified</span></div>
+            <h2 class="mt-5 text-lg font-bold text-slate-950"><a href={directoryProfileUrl(profile)} class="hover:text-green-700">{profile.company_name}</a></h2>
+            <p class="mt-1 text-sm font-medium text-green-700">{profile.equipment_name}</p>
+            <p class="mt-3 flex items-center gap-1.5 text-xs text-slate-500"><MapPin size={13} /> {[profile.location_city, profile.location_state].filter(Boolean).join(", ")}</p>
+            <div class="mt-4 flex flex-wrap gap-2 text-[10px] text-slate-600">{profile.lift_capacity_tons && <span class="rounded-full bg-slate-100 px-2.5 py-1.5">{profile.lift_capacity_tons} ton</span>}{profile.working_height_ft && <span class="rounded-full bg-slate-100 px-2.5 py-1.5">{profile.working_height_ft} ft</span>}{profile.service_radius_miles && <span class="rounded-full bg-slate-100 px-2.5 py-1.5">{profile.service_radius_miles} mi radius</span>}</div>
+            <a href={directoryProfileUrl(profile)} class="mt-5 flex h-11 items-center justify-center rounded-xl bg-slate-950 text-[10px] font-bold uppercase tracking-wider text-white hover:bg-green-700">View profile</a>
+          </article>
+        ))}
+      </div>
+      {!city && <section class="mt-10 rounded-2xl border border-slate-200 bg-white p-6"><h2 class="text-lg font-bold text-slate-950">Browse cities in {state}</h2><div class="mt-4 flex flex-wrap gap-2">{[...new Set(stateProfiles.map((profile: any) => profile.location_city).filter(Boolean))].sort().map((item) => <a href={`/truck-directory/locations/${stateSlug}/${directoryLocationSlug(item)}`} class="rounded-full border border-slate-200 px-3 py-2 text-xs text-slate-600 hover:border-green-300 hover:text-green-700">{item}</a>)}</div></section>}
+    </section>
+  </main>
+  <Footer />
+  <MobileNav />
+</MainLayout>

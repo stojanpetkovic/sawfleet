@@ -1,0 +1,252 @@
+---
+export const prerender = false;
+import MainLayout from "../layouts/MainLayout.astro";
+import Footer from "../components/layout/Footer.astro";
+import MobileNav from "../components/layout/MobileNav.astro";
+import Header from "../components/layout/Header.astro";
+import { supabase } from "../lib/supabase";
+import { parsePermitSettings } from "../lib/permitData";
+import { directoryLocationUrl, directoryProfileUrl } from "../lib/truckDirectory";
+import { ArrowLeft, ArrowRight, BadgeCheck, CheckCircle2, MapPin, Ruler, Search, ShieldCheck, Truck, UserCheck } from "lucide-astro";
+
+const { data: profiles } = await supabase
+  .from("unclaimed_truck_directory")
+  .select("slug,company_name,contact_name,equipment_name,manufacturer,model,lift_capacity_tons,working_height_ft,location_city,location_state,service_radius_miles,storm_radius_miles,access_notes,availability_notes,rate_notes,insurance_claim,operator_experience,description,listing_type,profile_status,verification_status,source_payload")
+  .eq("is_published", true)
+  .neq("profile_status", "hidden")
+  .order("location_state")
+  .order("company_name");
+
+const [{ data: tracking }, { data: serviceTerritories }] = await Promise.all([
+  supabase.from("tracking_settings").select("global_scripts").eq("id", 1).maybeSingle(),
+  supabase.from("service_territories").select("name").order("name")
+]);
+const permitSettings = parsePermitSettings(tracking?.global_scripts);
+const configuredPermitCoverage = permitSettings.allowedTerritories.length > 0
+  ? permitSettings.allowedTerritories
+  : (serviceTerritories || []).map((territory: any) => territory.name);
+const permitCoverage = [...new Set(configuredPermitCoverage.filter(Boolean))].sort();
+const profileCount = profiles?.length || 0;
+const stateCount = new Set((profiles || []).map((profile: any) => profile.location_state).filter(Boolean)).size;
+const states = [...new Set((profiles || []).map((profile: any) => profile.location_state).filter(Boolean))].sort();
+---
+
+<MainLayout title="Grapple Saw Truck & Equipment Directory | SF Tree Removal" description="Find grapple saw trucks, cranes and equipment operators by location. Own a listed company? Claim your free profile and connect with contractors who need heavy equipment.">
+  <Header />
+  <main class="min-h-screen bg-white pt-16 lg:pt-20">
+    <section class="relative overflow-hidden border-b border-slate-200 bg-slate-950 px-5 py-16 text-white md:px-8 lg:py-24">
+      <div class="pointer-events-none absolute -right-24 -top-36 h-[420px] w-[420px] rounded-full bg-green-500/10 blur-[110px]"></div>
+      <div class="pointer-events-none absolute -bottom-40 left-1/4 h-80 w-80 rounded-full bg-green-500/[0.06] blur-[100px]"></div>
+      <div class="relative mx-auto grid w-full max-w-7xl gap-12 lg:grid-cols-[1fr_390px] lg:items-center">
+        <div>
+          <p class="font-mono text-[10px] font-bold uppercase tracking-[0.24em] text-green-400">// Heavy equipment network</p>
+          <h1 class="mt-5 max-w-4xl text-4xl font-bold leading-[1.04] tracking-tight sm:text-5xl lg:text-6xl">Find the equipment that helps you take on bigger tree jobs.</h1>
+          <p class="mt-6 max-w-2xl text-sm leading-7 text-slate-300 md:text-base">Search grapple saw trucks, cranes and experienced operators by location. Compare capabilities, find nearby fleet support and connect with the right equipment partner for demanding work.</p>
+          <div class="mt-8 flex flex-col gap-3 sm:flex-row">
+            <a href="#browse-directory" class="inline-flex h-12 items-center justify-center gap-2 rounded-xl bg-green-600 px-6 text-xs font-bold uppercase tracking-[0.14em] text-white transition hover:bg-green-500"><Search size={16} /> Find equipment</a>
+            <a href="#claim-profile" class="inline-flex h-12 items-center justify-center gap-2 rounded-xl border border-white/15 bg-white/[0.06] px-6 text-xs font-bold uppercase tracking-[0.14em] text-white transition hover:border-green-400/40 hover:bg-green-400/10">Own a truck? Claim profile <ArrowRight size={15} /></a>
+          </div>
+        </div>
+        <div class="grid grid-cols-2 gap-3">
+          <div class="rounded-2xl border border-white/10 bg-white/[0.05] p-5 backdrop-blur"><strong class="block text-3xl font-bold text-white">{profileCount}</strong><span class="mt-1 block text-[10px] font-bold uppercase tracking-[0.16em] text-slate-400">Equipment profiles</span></div>
+          <div class="rounded-2xl border border-white/10 bg-white/[0.05] p-5 backdrop-blur"><strong class="block text-3xl font-bold text-white">{stateCount}</strong><span class="mt-1 block text-[10px] font-bold uppercase tracking-[0.16em] text-slate-400">States covered</span></div>
+          <div class="col-span-2 rounded-2xl border border-green-400/20 bg-green-400/10 p-5">
+            <div class="flex items-center gap-3"><span class="flex h-10 w-10 items-center justify-center rounded-xl bg-green-400/15 text-green-300"><ShieldCheck size={20} /></span><div><strong class="block text-sm text-white">Free profile ownership</strong><span class="text-xs text-green-100/70">Verify your business and unlock lead access.</span></div></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="claim-profile" class="border-b border-slate-200 bg-slate-50 px-5 py-16 md:px-8 lg:py-20">
+      <div class="mx-auto w-full max-w-7xl">
+        <div class="grid gap-10 lg:grid-cols-[380px_1fr] lg:items-start">
+          <div>
+            <p class="font-mono text-[10px] font-bold uppercase tracking-[0.22em] text-green-700">// Is this your company?</p>
+            <h2 class="mt-4 text-3xl font-bold tracking-tight text-slate-950 md:text-4xl">Turn your listing into a source of new work.</h2>
+            <p class="mt-4 text-sm leading-6 text-slate-600">Claiming is free. Once your ownership is confirmed, you can correct your equipment details, receive relevant job notifications and apply for leads from contractors who need fleet support.</p>
+            <a href="/truck-registration" class="mt-7 inline-flex h-12 items-center justify-center gap-2 rounded-xl bg-slate-950 px-6 text-xs font-bold uppercase tracking-[0.14em] text-white transition hover:bg-green-700">Claim your free profile <ArrowRight size={15} /></a>
+          </div>
+          <div class="grid gap-4 md:grid-cols-3">
+            {[
+              { icon: Search, number: "01", title: "Find your listing", text: "Search by company, equipment or location and open your existing profile." },
+              { icon: UserCheck, number: "02", title: "Submit your claim", text: "Select Claim Profile and register using accurate business contact information." },
+              { icon: BadgeCheck, number: "03", title: "Get verified", text: "We review ownership details. After approval, manage the profile and access matched opportunities." }
+            ].map(({ icon: Icon, number, title, text }) => (
+              <article class="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
+                <div class="flex items-center justify-between"><span class="flex h-11 w-11 items-center justify-center rounded-xl bg-green-50 text-green-700"><Icon size={20} /></span><span class="font-mono text-[10px] font-bold text-slate-300">{number}</span></div>
+                <h3 class="mt-5 text-base font-bold text-slate-950">{title}</h3>
+                <p class="mt-2 text-xs leading-5 text-slate-600">{text}</p>
+              </article>
+            ))}
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="browse-directory" class="bg-white px-5 py-16 md:px-8 lg:py-20">
+      <div class="mx-auto w-full max-w-7xl">
+        <div class="flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
+          <div><p class="font-mono text-[10px] font-bold uppercase tracking-[0.22em] text-green-700">// Browse directory</p><h2 class="mt-3 text-3xl font-bold tracking-tight text-slate-950">Find equipment near your next job.</h2></div>
+          <p class="max-w-md text-xs leading-5 text-slate-500">Profile information is sourced from publicly available business data. Details marked unverified should be confirmed directly with the operator.</p>
+        </div>
+
+      {permitCoverage.length > 0 && (
+        <aside class="mt-8 overflow-hidden rounded-2xl border border-green-200 bg-green-50/70" aria-label="Current service coverage">
+          <div class="flex flex-col gap-5 p-5 md:flex-row md:items-start md:p-6">
+            <span class="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-green-700 text-white"><MapPin size={20} /></span>
+            <div class="min-w-0 flex-1">
+              <div class="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
+                <div><p class="text-[10px] font-bold uppercase tracking-[0.18em] text-green-700">Current permit lead coverage</p><h3 class="mt-1 text-base font-bold text-slate-950">We currently monitor and serve {permitCoverage.length} active {permitCoverage.length === 1 ? "area" : "areas"}.</h3></div>
+                <a href="/service-areas" class="shrink-0 text-[10px] font-bold uppercase tracking-[0.14em] text-green-800 hover:text-green-600">View service areas →</a>
+              </div>
+              <p class="mt-2 text-xs leading-5 text-slate-600">These territories come directly from the active Permit Leads automation settings.</p>
+              <div class="mt-4 flex flex-wrap gap-2">
+                {permitCoverage.map((area) => <span class="rounded-full border border-green-200 bg-white px-3 py-1.5 text-[10px] font-bold text-green-800">{area}</span>)}
+              </div>
+            </div>
+          </div>
+        </aside>
+      )}
+
+      <div class="mt-8 flex flex-col gap-3 rounded-2xl border border-slate-200 bg-slate-50 p-3 shadow-sm sm:flex-row">
+        <label class="relative flex-1"><span class="sr-only">Search directory</span><Search size={16} class="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 text-slate-400" /><input id="directorySearch" type="search" placeholder="Search company, equipment or city…" class="h-12 w-full rounded-xl border border-slate-200 bg-white pl-11 pr-4 text-sm outline-none transition focus:border-green-500 focus:ring-4 focus:ring-green-500/10" /></label>
+        <select id="stateFilter" aria-label="Filter by state" class="h-12 rounded-xl border border-slate-200 bg-white px-4 text-xs font-bold uppercase tracking-wider text-slate-600 outline-none focus:border-green-500">
+          <option value="">All states</option>
+          {states.map((state) => <option value={state}>{state}</option>)}
+        </select>
+      </div>
+
+      <div id="directoryGrid" class="mt-6 grid grid-cols-1 gap-5 md:grid-cols-2 xl:grid-cols-3">
+        {(profiles || []).map((profile: any) => (
+          <article class="directory-card group flex flex-col rounded-2xl border border-slate-200 bg-white p-5 shadow-sm transition duration-300 hover:-translate-y-0.5 hover:border-slate-300 hover:shadow-lg" data-search={`${profile.company_name} ${profile.equipment_name} ${profile.location_city} ${profile.location_state}`.toLowerCase()} data-state={profile.location_state || ""}>
+            <div class="flex items-start justify-between gap-4">
+              <span class="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-slate-950 text-white"><Truck size={20} /></span>
+              <span class="rounded-full border border-amber-200 bg-amber-50 px-2.5 py-1 text-[9px] font-bold uppercase tracking-wider text-amber-700">Unclaimed · Unverified</span>
+            </div>
+            <h3 class="mt-5 text-lg font-bold text-slate-950"><a href={directoryProfileUrl(profile)} class="transition group-hover:text-green-700">{profile.company_name}</a></h3>
+            <p class="mt-1 text-sm font-medium text-green-700"><a href={directoryProfileUrl(profile)}>{profile.equipment_name}</a></p>
+            <div class="mt-4 flex flex-wrap gap-2 text-[10px] text-slate-600">
+              {(profile.location_city || profile.location_state) && <a href={directoryLocationUrl(profile)} class="inline-flex items-center gap-1.5 rounded-full bg-slate-100 px-2.5 py-1.5 hover:bg-green-50 hover:text-green-700"><MapPin size={12} /> {[profile.location_city, profile.location_state].filter(Boolean).join(", ")}</a>}
+              {profile.lift_capacity_tons && <span class="rounded-full bg-slate-100 px-2.5 py-1.5">{profile.lift_capacity_tons} ton</span>}
+              {profile.working_height_ft && <span class="inline-flex items-center gap-1.5 rounded-full bg-slate-100 px-2.5 py-1.5"><Ruler size={12} /> {profile.working_height_ft} ft</span>}
+            </div>
+            <dl class="mt-5 space-y-2 border-t border-slate-100 pt-4 text-xs">
+              {profile.service_radius_miles && <div class="flex justify-between gap-4"><dt class="text-slate-400">Service radius</dt><dd class="font-medium text-slate-700">{profile.service_radius_miles} miles</dd></div>}
+              {profile.storm_radius_miles && <div class="flex justify-between gap-4"><dt class="text-slate-400">Storm radius</dt><dd class="font-medium text-slate-700">{profile.storm_radius_miles} miles</dd></div>}
+              {profile.insurance_claim && <div class="flex justify-between gap-4"><dt class="text-slate-400">Insurance</dt><dd class="font-medium text-slate-700">{profile.insurance_claim} (unverified)</dd></div>}
+            </dl>
+            {(profile.description || profile.availability_notes || profile.access_notes) && <p class="mt-4 line-clamp-3 text-xs leading-5 text-slate-500">{profile.description || profile.availability_notes || profile.access_notes}</p>}
+            <div class="mt-auto pt-5">
+              <div class="grid grid-cols-2 gap-2"><a href={directoryProfileUrl(profile)} class="flex h-11 items-center justify-center rounded-xl border border-slate-200 px-3 text-[10px] font-bold uppercase tracking-[0.12em] text-slate-700 hover:border-green-300 hover:text-green-700">View details</a><a href={`/truck-registration?claim=${profile.slug}`} class="flex h-11 items-center justify-center gap-2 rounded-xl bg-slate-950 px-3 text-[10px] font-bold uppercase tracking-[0.12em] text-white transition hover:bg-green-700"><BadgeCheck size={14} /> Claim profile</a></div>
+            </div>
+          </article>
+        ))}
+      </div>
+      <div id="emptyDirectory" class="hidden mt-6 rounded-2xl border border-dashed border-slate-300 bg-white p-10 text-center text-sm text-slate-400">No matching equipment profiles.</div>
+      <nav id="directoryPagination" class="mt-10 flex flex-col items-center justify-between gap-4 border-t border-slate-200 pt-6 sm:flex-row" aria-label="Truck directory pagination">
+        <p id="directoryResults" class="text-xs text-slate-500" aria-live="polite"></p>
+        <div class="flex items-center gap-2">
+          <button id="previousPage" type="button" class="inline-flex h-10 items-center justify-center gap-1.5 rounded-xl border border-slate-200 bg-white px-3 text-[10px] font-bold uppercase tracking-[0.12em] text-slate-600 transition hover:border-green-300 hover:text-green-700 disabled:cursor-not-allowed disabled:opacity-40"><ArrowLeft size={14} /> Previous</button>
+          <div id="pageNumbers" class="flex items-center gap-1"></div>
+          <button id="nextPage" type="button" class="inline-flex h-10 items-center justify-center gap-1.5 rounded-xl border border-slate-200 bg-white px-3 text-[10px] font-bold uppercase tracking-[0.12em] text-slate-600 transition hover:border-green-300 hover:text-green-700 disabled:cursor-not-allowed disabled:opacity-40">Next <ArrowRight size={14} /></button>
+        </div>
+      </nav>
+      </div>
+    </section>
+
+    <section class="border-t border-slate-200 bg-slate-950 px-5 py-14 text-white md:px-8">
+      <div class="mx-auto flex w-full max-w-7xl flex-col gap-6 rounded-2xl border border-white/10 bg-white/[0.04] p-7 md:flex-row md:items-center md:justify-between lg:p-9">
+        <div><div class="flex items-center gap-2 text-green-400"><CheckCircle2 size={17} /><span class="text-[10px] font-bold uppercase tracking-[0.18em]">Free to join</span></div><h2 class="mt-3 text-2xl font-bold">Put your equipment in front of contractors who need it.</h2><p class="mt-2 text-sm text-slate-400">Create or claim your fleet profile and start receiving relevant opportunities.</p></div>
+        <a href="/truck-registration" class="inline-flex h-12 shrink-0 items-center justify-center gap-2 rounded-xl bg-green-600 px-6 text-xs font-bold uppercase tracking-[0.14em] text-white hover:bg-green-500">Register fleet <ArrowRight size={15} /></a>
+      </div>
+    </section>
+  </main>
+  <Footer />
+  <MobileNav />
+</MainLayout>
+
+<script>
+  const search = document.getElementById("directorySearch") as HTMLInputElement;
+  const state = document.getElementById("stateFilter") as HTMLSelectElement;
+  const cards = Array.from(document.querySelectorAll(".directory-card")) as HTMLElement[];
+  const previous = document.getElementById("previousPage") as HTMLButtonElement;
+  const next = document.getElementById("nextPage") as HTMLButtonElement;
+  const pageNumbers = document.getElementById("pageNumbers") as HTMLElement;
+  const results = document.getElementById("directoryResults") as HTMLElement;
+  const pagination = document.getElementById("directoryPagination") as HTMLElement;
+  const pageSize = 18;
+  let currentPage = 1;
+
+  const visiblePageNumbers = (page: number, total: number) => {
+    if (total <= 5) return Array.from({ length: total }, (_, index) => index + 1);
+    const values = new Set([1, total, page - 1, page, page + 1]);
+    return [...values].filter((value) => value > 0 && value <= total).sort((a, b) => a - b);
+  };
+
+  const render = (resetPage = false) => {
+    if (resetPage) currentPage = 1;
+    const query = search.value.trim().toLowerCase();
+    const matchingCards = cards.filter((card) =>
+      (!query || (card.dataset.search || "").includes(query)) &&
+      (!state.value || card.dataset.state === state.value)
+    );
+    const pageCount = Math.max(1, Math.ceil(matchingCards.length / pageSize));
+    currentPage = Math.min(currentPage, pageCount);
+    const firstIndex = (currentPage - 1) * pageSize;
+    const pageCards = new Set(matchingCards.slice(firstIndex, firstIndex + pageSize));
+
+    cards.forEach((card) => {
+      card.classList.toggle("hidden", !pageCards.has(card));
+    });
+
+    const hasResults = matchingCards.length > 0;
+    document.getElementById("emptyDirectory")?.classList.toggle("hidden", hasResults);
+    pagination.classList.toggle("hidden", !hasResults);
+    previous.disabled = currentPage === 1;
+    next.disabled = currentPage === pageCount;
+    const firstResult = hasResults ? firstIndex + 1 : 0;
+    const lastResult = Math.min(firstIndex + pageSize, matchingCards.length);
+    results.textContent = `Showing ${firstResult}–${lastResult} of ${matchingCards.length} profiles`;
+
+    const pageValues = visiblePageNumbers(currentPage, pageCount);
+    pageNumbers.innerHTML = "";
+    pageValues.forEach((page, index) => {
+      if (index > 0 && page - pageValues[index - 1] > 1) {
+        const ellipsis = document.createElement("span");
+        ellipsis.className = "px-1 text-xs text-slate-400";
+        ellipsis.textContent = "…";
+        pageNumbers.appendChild(ellipsis);
+      }
+      const button = document.createElement("button");
+      button.type = "button";
+      button.textContent = String(page);
+      button.setAttribute("aria-label", `Go to page ${page}`);
+      if (page === currentPage) button.setAttribute("aria-current", "page");
+      button.className = page === currentPage
+        ? "h-10 min-w-10 rounded-xl bg-slate-950 px-3 text-xs font-bold text-white"
+        : "h-10 min-w-10 rounded-xl border border-slate-200 bg-white px-3 text-xs font-bold text-slate-600 hover:border-green-300 hover:text-green-700";
+      button.addEventListener("click", () => {
+        currentPage = page;
+        render();
+        document.getElementById("browse-directory")?.scrollIntoView({ behavior: "smooth" });
+      });
+      pageNumbers.appendChild(button);
+    });
+  };
+
+  search?.addEventListener("input", () => render(true));
+  state?.addEventListener("change", () => render(true));
+  previous?.addEventListener("click", () => {
+    if (currentPage > 1) {
+      currentPage--;
+      render();
+      document.getElementById("browse-directory")?.scrollIntoView({ behavior: "smooth" });
+    }
+  });
+  next?.addEventListener("click", () => {
+    currentPage++;
+    render();
+    document.getElementById("browse-directory")?.scrollIntoView({ behavior: "smooth" });
+  });
+  render();
+</script>

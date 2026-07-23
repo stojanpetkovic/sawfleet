@@ -11,6 +11,8 @@
     "build": "astro build",
     "start": "node dist/server/entry.mjs",
     "preview": "astro preview",
+    "import:sawfleet": "node scripts/import-sawfleet-directory.mjs",
+    "import:sawfleet:cdp": "node scripts/import-sawfleet-cdp.mjs",
     "astro": "astro"
   },
   "dependencies": {

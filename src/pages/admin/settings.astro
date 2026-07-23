@@ -49,7 +49,7 @@ const permitSettings = parsePermitSettings(tracking?.global_scripts);
         </button>
         <button id="tabBtn-permit" class="tab-btn flex-shrink-0 lg:w-full text-left px-4 py-3 text-zinc-500 hover:bg-zinc-100/50 hover:text-slate-900 rounded-lg text-[11px] font-bold uppercase tracking-wider transition-all border border-transparent flex items-center gap-3">
           <span class="indicator w-2 h-2 rounded-full bg-zinc-200"></span>
-          Permit Automation
+          Workflow Automation
         </button>
       </div>
 
@@ -172,11 +172,77 @@ const permitSettings = parsePermitSettings(tracking?.global_scripts);
 
         <div id="section-permit" class="tab-section hidden bg-white border border-slate-200 p-6 md:p-8 rounded-2xl shadow-sm">
           <div class="border-b border-zinc-100 pb-5 mb-6">
-            <h2 class="text-sm font-bold text-slate-900 uppercase tracking-wider mb-2">Permit Automation</h2>
-            <p class="text-[11px] text-zinc-500">Control whether permit outreach is active, which permit-fit score threshold is required, whether emails are sent, and whether new permits are auto-approved.</p>
+            <h2 class="text-sm font-bold text-slate-900 uppercase tracking-wider mb-2">Lead Workflow Automation</h2>
+            <p class="text-[11px] text-zinc-500">Control publishing into Website Leads, contractor notifications, external source rules and permit outreach.</p>
           </div>
 
           <form id="permitAutomationForm" class="space-y-6">
+            <div class="rounded-2xl border border-slate-200 bg-slate-50 p-5 space-y-4">
+              <div>
+                <p class="text-[10px] font-bold uppercase tracking-[0.2em] text-slate-700">Website Lead Publishing</p>
+                <p class="mt-1 text-[11px] text-slate-500">Website Leads are the only opportunities visible to registered contractors.</p>
+              </div>
+              <label class="flex items-center justify-between rounded-xl border border-zinc-200 bg-white p-4">
+                <span>
+                  <span class="block text-xs font-bold text-slate-900">Publish frontend requests automatically</span>
+                  <span class="block text-[11px] text-zinc-500">Make customer-submitted requests immediately available to matching contractors.</span>
+                </span>
+                <input type="checkbox" id="frontendAutoPublish" class="h-5 w-5 accent-green-600" checked={permitSettings.frontendAutoPublish} />
+              </label>
+              <label class="flex items-center justify-between rounded-xl border border-zinc-200 bg-white p-4">
+                <span>
+                  <span class="block text-xs font-bold text-slate-900">Notify contractors when published</span>
+                  <span class="block text-[11px] text-zinc-500">Email active contractors whose territory matches the Website Lead.</span>
+                </span>
+                <input type="checkbox" id="notifyContractorsOnPublish" class="h-5 w-5 accent-green-600" checked={permitSettings.notifyContractorsOnPublish} />
+              </label>
+              <label class="flex items-center justify-between rounded-xl border border-zinc-200 bg-white p-4">
+                <span>
+                  <span class="block text-xs font-bold text-slate-900">Notify truck owners when published</span>
+                  <span class="block text-[11px] text-zinc-500">Email approved fleet owners with available equipment in the lead territory.</span>
+                </span>
+                <input type="checkbox" id="notifyTruckOwnersOnPublish" class="h-5 w-5 accent-blue-600" checked={permitSettings.notifyTruckOwnersOnPublish} />
+              </label>
+            </div>
+
+            <div class="rounded-2xl border border-teal-200 bg-teal-50/40 p-5 space-y-4">
+              <div>
+                <p class="text-[10px] font-bold uppercase tracking-[0.2em] text-teal-800">External Lead Automation</p>
+                <p class="mt-1 text-[11px] text-teal-700/70">External submissions remain in External Leads unless they pass these rules or a dispatcher publishes them.</p>
+              </div>
+              <label class="flex items-center justify-between rounded-xl border border-teal-200 bg-white p-4">
+                <span>
+                  <span class="block text-xs font-bold text-slate-900">Auto-publish qualified external leads</span>
+                  <span class="block text-[11px] text-zinc-500">Requires a territory, trusted domain and minimum quality score.</span>
+                </span>
+                <input type="checkbox" id="externalAutoPublish" class="h-5 w-5 accent-teal-600" checked={permitSettings.externalAutoPublish} />
+              </label>
+              <div>
+                <label class="text-[10px] uppercase tracking-[0.2em] text-zinc-600 font-bold block mb-2">Trusted external domains</label>
+                <textarea id="externalAutoPublishDomains" rows="3" class="w-full rounded-xl border border-teal-200 bg-white p-3 text-xs font-mono text-slate-700" placeholder="treejaws.com, partner-site.com">{permitSettings.externalAutoPublishDomains.join(', ')}</textarea>
+                <p class="mt-2 text-[11px] text-zinc-500">Comma-separated. Empty means every external domain is trusted when auto-publish is enabled.</p>
+              </div>
+              <div>
+                <label class="text-[10px] uppercase tracking-[0.2em] text-zinc-600 font-bold block mb-2">Minimum quality score</label>
+                <input id="externalMinQualityScore" type="number" min="0" max="100" value={permitSettings.externalMinQualityScore} class="w-full rounded-xl border border-teal-200 bg-white p-3 text-sm text-slate-900" />
+              </div>
+            </div>
+
+            <div class="rounded-2xl border border-amber-200 bg-amber-50/50 p-5">
+              <label class="flex items-center justify-between gap-4">
+                <span>
+                  <span class="block text-xs font-bold text-slate-900">Confirm manual permit publishing</span>
+                  <span class="block text-[11px] text-zinc-500">Require an explicit warning because a permit owner has not requested service.</span>
+                </span>
+                <input type="checkbox" id="permitManualPublishRequiresConfirmation" class="h-5 w-5 accent-amber-600" checked={permitSettings.permitManualPublishRequiresConfirmation} />
+              </label>
+            </div>
+
+            <div class="border-t border-slate-200 pt-6">
+              <p class="text-[10px] font-bold uppercase tracking-[0.2em] text-slate-700">Permit Outreach</p>
+              <p class="mt-1 text-[11px] text-slate-500">Permits are opportunities, not leads. Outreach sends owners to the frontend where they can submit a real request.</p>
+            </div>
+
             <label class="flex items-center justify-between rounded-xl border border-zinc-200 p-4">
               <span>
                 <span class="block text-xs font-bold text-slate-900">Enable permit outreach automation</span>
@@ -195,8 +261,8 @@ const permitSettings = parsePermitSettings(tracking?.global_scripts);
 
             <label class="flex items-center justify-between rounded-xl border border-zinc-200 p-4">
               <span>
-                <span class="block text-xs font-bold text-slate-900">Auto-approve created opportunities</span>
-                <span class="block text-[11px] text-zinc-500">Mark permit-derived opportunities as approved immediately.</span>
+                <span class="block text-xs font-bold text-slate-900">Auto-qualify matching permits</span>
+                <span class="block text-[11px] text-zinc-500">Mark imported permits as qualified after territory and score rules pass. This does not create a Website Lead.</span>
               </span>
               <input type="checkbox" id="permitAutoApprove" class="h-5 w-5 accent-green-600" checked={permitSettings.autoApprove} />
             </label>
@@ -236,6 +302,12 @@ const permitSettings = parsePermitSettings(tracking?.global_scripts);
               <label class="text-[10px] uppercase tracking-[0.2em] text-zinc-600 font-bold block mb-2">Archive leads after (days)</label>
               <input id="permitArchiveDays" type="number" min="7" max="365" value={permitSettings.archiveDays || 60} class="w-full rounded-xl border border-zinc-200 bg-white p-3 text-sm text-slate-900" />
               <p class="mt-2 text-[11px] text-zinc-500">Leads in "new" status older than this many days will be automatically archived. Range: 7-365 days.</p>
+            </div>
+
+            <div>
+              <label class="text-[10px] uppercase tracking-[0.2em] text-zinc-600 font-bold block mb-2">Maximum outreach attempts</label>
+              <input id="permitMaxEmailAttempts" type="number" min="1" max="10" value={permitSettings.permitMaxEmailAttempts} class="w-full rounded-xl border border-zinc-200 bg-white p-3 text-sm text-slate-900" />
+              <p class="mt-2 text-[11px] text-zinc-500">Failed automated emails are retried on the next sync until this limit is reached.</p>
             </div>
 
             <button type="submit" id="savePermitAutomationBtn" class="flex h-12 w-full sm:w-auto px-8 items-center justify-center rounded-xl bg-green-500 text-sm font-bold text-slate-900 transition-all hover:bg-green-400 active:scale-[0.98]">
@@ -361,6 +433,14 @@ const permitSettings = parsePermitSettings(tracking?.global_scripts);
       enabled: (document.getElementById('permitEnabled') as HTMLInputElement).checked,
       autoSend: (document.getElementById('permitAutoSend') as HTMLInputElement).checked,
       autoApprove: (document.getElementById('permitAutoApprove') as HTMLInputElement).checked,
+      frontendAutoPublish: (document.getElementById('frontendAutoPublish') as HTMLInputElement).checked,
+      externalAutoPublish: (document.getElementById('externalAutoPublish') as HTMLInputElement).checked,
+      externalAutoPublishDomains: (document.getElementById('externalAutoPublishDomains') as HTMLTextAreaElement).value.split(',').map((value) => value.trim()).filter(Boolean),
+      externalMinQualityScore: Number((document.getElementById('externalMinQualityScore') as HTMLInputElement).value || 70),
+      notifyContractorsOnPublish: (document.getElementById('notifyContractorsOnPublish') as HTMLInputElement).checked,
+      notifyTruckOwnersOnPublish: (document.getElementById('notifyTruckOwnersOnPublish') as HTMLInputElement).checked,
+      permitManualPublishRequiresConfirmation: (document.getElementById('permitManualPublishRequiresConfirmation') as HTMLInputElement).checked,
+      permitMaxEmailAttempts: Number((document.getElementById('permitMaxEmailAttempts') as HTMLInputElement).value || 3),
       minScore: Number((document.getElementById('permitMinScore') as HTMLInputElement).value || 0),
       emailSubject: (document.getElementById('permitEmailSubject') as HTMLInputElement).value,
       emailTemplate: (document.getElementById('permitEmailTemplate') as HTMLTextAreaElement).value,

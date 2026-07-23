@@ -196,6 +196,25 @@ import Footer from "../components/layout/Footer.astro";
   const form = document.getElementById('ownerForm') as HTMLFormElement;
   const btn = document.getElementById('submitBtn') as HTMLButtonElement;
   const btnLabel = document.getElementById('submitBtnLabel') as HTMLElement;
+  const claimSlug = new URLSearchParams(window.location.search).get('claim');
+
+  async function prefillClaimedProfile() {
+    if (!claimSlug) return;
+    const { data: profile } = await supabase
+      .from('unclaimed_truck_directory')
+      .select('company_name,contact_name,equipment_name,location_city,location_state')
+      .eq('slug', claimSlug)
+      .maybeSingle();
+    if (!profile) return;
+    (document.getElementById('companyName') as HTMLInputElement).value = profile.company_name || '';
+    (document.getElementById('contactName') as HTMLInputElement).value = profile.contact_name || '';
+    const header = form.previousElementSibling;
+    const heading = header?.querySelector('h2');
+    const intro = header?.querySelector('p');
+    if (heading) heading.textContent = 'Claim Your Fleet Profile';
+    if (intro) intro.textContent = `${profile.equipment_name} · ${[profile.location_city, profile.location_state].filter(Boolean).join(', ')}. Create an account to submit ownership verification.`;
+  }
+  prefillClaimedProfile();
 
   // Ako je neko VEĆ ulogovan kao fleet owner, ova stranica više nije za
   // njega — registracija je jednokratna, dodavanje kamiona se radi u
@@ -268,6 +287,7 @@ import Footer from "../components/layout/Footer.astro";
             companyName: fd.get('companyName') || null,
             contactName: fd.get('contactName'),
             phone: fd.get('phone'),
+            claimSlug,
           }),
         });
         const result = await res.json();

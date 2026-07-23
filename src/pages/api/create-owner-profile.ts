@@ -12,7 +12,7 @@ export async function POST({ request }: { request: Request }) {
       return json({ error: "service_role_not_configured", message: "SUPABASE_SERVICE_ROLE_KEY is not set in .env" }, 500);
     }
 
-    const { ownerId, email, companyName, contactName, phone } = await request.json();
+    const { ownerId, email, companyName, contactName, phone, claimSlug } = await request.json();
     if (!ownerId || !email) {
       return json({ error: "invalid_input", message: "ownerId and email are required." }, 400);
     }
@@ -55,7 +55,25 @@ export async function POST({ request }: { request: Request }) {
       return json({ error: "insert_failed", message: insertError.message }, 500);
     }
 
-    return json({ ok: true }, 200);
+    let claimSubmitted = false;
+    if (claimSlug) {
+      const { data: claimedProfile, error: claimError } = await supabaseAdmin
+        .from("unclaimed_truck_directory")
+        .update({
+          profile_status: "claim_pending",
+          verification_status: "pending",
+          claimed_owner_id: ownerId,
+          updated_at: new Date().toISOString(),
+        })
+        .eq("slug", String(claimSlug))
+        .eq("profile_status", "unclaimed")
+        .select("id")
+        .maybeSingle();
+      if (claimError) console.error("Unable to mark directory claim:", claimError);
+      claimSubmitted = Boolean(claimedProfile);
+    }
+
+    return json({ ok: true, claimSubmitted }, 200);
   } catch (err) {
     console.error(err);
     return json({ error: "unexpected_error", message: String(err) }, 500);

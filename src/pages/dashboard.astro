@@ -1,7 +1,7 @@
 ---
 import ContractorLayout from "../layouts/ContractorLayout.astro";
 import { supabase } from "../lib/supabase";
-import { Inbox, CheckCircle2, UserCircle } from "lucide-astro";
+import { Inbox, CheckCircle2, Truck, UserCircle } from "lucide-astro";
 
 const { data: territories } = await supabase
   .from('service_territories')
@@ -11,6 +11,7 @@ const { data: territories } = await supabase
 const navItems = [
   { label: 'Available', tab: 'available', icon: Inbox },
   { label: 'Claimed', tab: 'claimed', icon: CheckCircle2 },
+  { label: 'Truck network', tab: 'trucks', icon: Truck },
   { label: 'Profile', tab: 'profile', icon: UserCircle },
 ];
 ---
@@ -69,6 +70,16 @@ const navItems = [
     <section id="panelClaimed" class="hidden">
       <div id="claimedLeadsContainer" class="space-y-4"></div>
       <p id="noClaimedLeads" class="hidden text-slate-400 text-xs italic p-8 text-center border border-slate-200 border-dashed rounded-2xl">You haven't claimed any leads yet.</p>
+    </section>
+
+    <section id="panelTrucks" class="hidden">
+      <div class="mb-5">
+        <span class="text-[10px] font-mono font-bold uppercase tracking-[0.2em] text-blue-700">// Heavy job support</span>
+        <h2 class="mt-2 text-xl font-bold text-slate-950">Available truck partners</h2>
+        <p class="mt-1 text-sm text-slate-500">Approved equipment owners serving your territory. Contact them when a claimed job needs heavy equipment.</p>
+      </div>
+      <div id="recommendedTrucksContainer" class="grid gap-4 lg:grid-cols-2"></div>
+      <div id="noRecommendedTrucks" class="hidden p-8 border border-slate-200 border-dashed rounded-2xl text-center text-sm text-slate-400">No approved truck partners are currently available in your territory.</div>
     </section>
 
     <section id="panelProfile" class="hidden">
@@ -159,6 +170,7 @@ const navItems = [
 
   type AvailableLead = { id: string; county: string; details: string; created_at: string; status: string; contractor_id: string | null };
   type ClaimedLead = { id: string; county: string; phone: string; email: string | null; details: string; claimed_at: string | null; created_at: string };
+  type RecommendedTruck = { truck_id: string; company_name: string | null; contact_name: string | null; phone: string | null; email: string | null; equipment_type: string; lift_capacity_tons: number | null; working_height_ft: number | null; access_type: string | null; listing_type: string | null; location: string };
 
   let contractorId: string | null = null;
   let pollTimer: ReturnType<typeof setInterval> | null = null;
@@ -167,10 +179,11 @@ const navItems = [
   // Menja koji panel je vidljiv. NE dispatch-uje event — samo reaguje na
   // 'layout:tab-change' (koji šalje ContractorLayout na klik, ili mi sami
   // kad treba programski da promenimo tab, npr. iz notifikacije).
-  function setActiveTab(tab: 'available' | 'claimed' | 'profile') {
+  function setActiveTab(tab: 'available' | 'claimed' | 'trucks' | 'profile') {
     const panels: Record<string, HTMLElement> = {
       available: document.getElementById('panelAvailable')!,
       claimed: document.getElementById('panelClaimed')!,
+      trucks: document.getElementById('panelTrucks')!,
       profile: document.getElementById('panelProfile')!,
     };
     Object.entries(panels).forEach(([key, panel]) => {
@@ -178,7 +191,7 @@ const navItems = [
     });
   }
 
-  function goToTab(tab: 'available' | 'claimed' | 'profile') {
+  function goToTab(tab: 'available' | 'claimed' | 'trucks' | 'profile') {
     document.dispatchEvent(new CustomEvent('layout:tab-change', { detail: { tab } }));
   }
 
@@ -369,6 +382,37 @@ const navItems = [
     document.getElementById('overviewClaimed')!.textContent = leads.length.toString();
   }
 
+  async function loadRecommendedTrucks() {
+    const { data, error } = await supabase.rpc('get_recommended_trucks');
+    if (error) return;
+    const trucks: RecommendedTruck[] = data || [];
+    const container = document.getElementById('recommendedTrucksContainer')!;
+    const empty = document.getElementById('noRecommendedTrucks')!;
+    container.innerHTML = trucks.map((truck) => `
+      <article class="rounded-2xl border border-blue-200 bg-gradient-to-br from-white to-blue-50/40 p-5 shadow-sm">
+        <div class="flex items-start justify-between gap-3">
+          <div>
+            <p class="text-[9px] font-bold uppercase tracking-[0.18em] text-blue-700">${truck.location}</p>
+            <h3 class="mt-1 text-base font-bold text-slate-950">${truck.company_name || truck.contact_name || 'Truck partner'}</h3>
+            <p class="mt-1 text-xs text-slate-500">${truck.equipment_type || 'Heavy equipment'}</p>
+          </div>
+          <span class="rounded-full border border-green-200 bg-green-50 px-2.5 py-1 text-[9px] font-bold uppercase text-green-700">Available</span>
+        </div>
+        <div class="mt-4 flex flex-wrap gap-2 text-[10px] text-slate-600">
+          ${truck.lift_capacity_tons ? `<span class="rounded-lg bg-white border border-slate-200 px-2.5 py-1.5">${truck.lift_capacity_tons} ton lift</span>` : ''}
+          ${truck.working_height_ft ? `<span class="rounded-lg bg-white border border-slate-200 px-2.5 py-1.5">${truck.working_height_ft} ft reach</span>` : ''}
+          ${truck.access_type ? `<span class="rounded-lg bg-white border border-slate-200 px-2.5 py-1.5">${truck.access_type}</span>` : ''}
+          ${truck.listing_type ? `<span class="rounded-lg bg-white border border-slate-200 px-2.5 py-1.5">${truck.listing_type}</span>` : ''}
+        </div>
+        <div class="mt-5 flex flex-wrap gap-2 border-t border-blue-100 pt-4">
+          ${truck.phone ? `<a href="tel:${truck.phone}" class="inline-flex h-9 items-center rounded-lg bg-blue-600 px-4 text-[10px] font-bold uppercase text-white hover:bg-blue-700">Call owner</a>` : ''}
+          ${truck.email ? `<a href="mailto:${truck.email}" class="inline-flex h-9 items-center rounded-lg border border-blue-200 bg-white px-4 text-[10px] font-bold uppercase text-blue-700 hover:bg-blue-50">Email</a>` : ''}
+        </div>
+      </article>
+    `).join('');
+    empty.classList.toggle('hidden', trucks.length > 0);
+  }
+
   async function claimLead(leadId: string, btn: HTMLButtonElement) {
     btn.disabled = true;
     const originalText = btn.textContent;
@@ -433,7 +477,7 @@ const navItems = [
 
     show('stateActive');
     goToTab('available');
-    await Promise.all([loadAvailableLeads(), loadClaimedLeads()]);
+    await Promise.all([loadAvailableLeads(), loadClaimedLeads(), loadRecommendedTrucks()]);
 
     pollTimer = setInterval(loadAvailableLeads, 8000); // Proverava svakih 8 sekundi
   }

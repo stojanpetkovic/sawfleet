@@ -3,8 +3,9 @@ export const prerender = false;
 import { supabase } from "../../lib/supabase";
 import { supabaseAdmin } from "../../lib/supabaseAdmin";
 import { sendEmail, newLeadEmailHtml } from "../../lib/resend";
+import { getPermitAutomationSettings } from "../../lib/permitData";
 
-async function runNotify(county: string, details: string, origin: string) {
+export async function runNotify(county: string, details: string, origin: string, options: { notifyContractors?: boolean; notifyTruckOwners?: boolean } = {}) {
   if (!county) {
     return { status: 400, body: { error: "county is required" } };
   }
@@ -37,7 +38,7 @@ async function runNotify(county: string, details: string, origin: string) {
 
   const dashboardUrl = `${origin}/dashboard`;
 
-  const results = await Promise.all(
+  const results = options.notifyContractors === false ? [] : await Promise.all(
     (contractors || []).map(async (c) => {
       const r = await sendEmail({
         to: c.email,
@@ -45,6 +46,42 @@ async function runNotify(county: string, details: string, origin: string) {
         html: newLeadEmailHtml({ companyName: c.company_name, county, details, dashboardUrl }),
       });
       return { email: c.email, ok: r.ok, error: r.ok ? undefined : r.error };
+    })
+  );
+
+  const { data: matchingTrucks } = await db
+    .from("grapple_saw_trucks")
+    .select("owner_user_id")
+    .eq("location", county)
+    .eq("approval_status", "approved")
+    .ilike("availability_status", "available")
+    .not("owner_user_id", "is", null);
+
+  const ownerIds = Array.from(new Set((matchingTrucks || []).map((truck: any) => truck.owner_user_id).filter(Boolean)));
+  let truckOwners: any[] = [];
+  if (ownerIds.length > 0) {
+    const { data } = await db
+      .from("truck_owners")
+      .select("id,company_name,email")
+      .in("id", ownerIds)
+      .eq("status", "approved")
+      .not("email", "is", null);
+    truckOwners = data || [];
+  }
+  const truckDashboardUrl = `${origin}/truck-dashboard`;
+  const truckOwnerResults = options.notifyTruckOwners === false ? [] : await Promise.all(
+    truckOwners.map(async (owner) => {
+      const result = await sendEmail({
+        to: owner.email,
+        subject: `Equipment opportunity in ${county} — SF Tree Removal`,
+        html: newLeadEmailHtml({
+          companyName: owner.company_name || "Fleet partner",
+          county,
+          details: "A matching job is available for an equipment support application.",
+          dashboardUrl: truckDashboardUrl,
+        }),
+      });
+      return { email: owner.email, ok: result.ok, error: result.ok ? undefined : result.error };
     })
   );
 
@@ -60,8 +97,10 @@ async function runNotify(county: string, details: string, origin: string) {
         status: c.status,
         has_email: !!c.email,
       })),
-      contractors_matched_active_with_email: contractors?.length || 0,
+      contractors_matched_active_with_email: options.notifyContractors === false ? 0 : contractors?.length || 0,
+      truck_owners_matched_approved_with_email: options.notifyTruckOwners === false ? 0 : truckOwners.length,
       send_results: results,
+      truck_owner_send_results: truckOwnerResults,
     },
   };
 }
@@ -70,7 +109,11 @@ export async function POST({ request }: { request: Request }) {
   try {
     const { county, details } = await request.json();
     const origin = import.meta.env.PUBLIC_SITE_URL || new URL(request.url).origin;
-    const { status, body } = await runNotify(county, details, origin);
+    const settings = await getPermitAutomationSettings();
+    const { status, body } = await runNotify(county, details, origin, {
+      notifyContractors: settings.notifyContractorsOnPublish,
+      notifyTruckOwners: settings.notifyTruckOwnersOnPublish,
+    });
     return new Response(JSON.stringify(body), { status, headers: { "Content-Type": "application/json" } });
   } catch (err) {
     console.error(err);

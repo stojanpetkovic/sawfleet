@@ -89,6 +89,175 @@ body {
   background-color: #16A34A; /* green-600 */
 }
 
+/* ============================================================
+   UNIFIED ADMIN DASHBOARD SYSTEM
+   One shared visual language for every lead/list page: page
+   header, stat counters, filter bar, list rows and pagination.
+   Also implements the "no page scroll" app shell: each list
+   page is a fixed-height column (header/stats/filters frozen,
+   only the record list scrolls internally) on every screen size.
+   ============================================================ */
+
+/* --- Fixed-height, no-outer-scroll page shell ---
+   Used by DashPageShell.astro. main content itself no longer
+   scrolls (see AdminLayout); this fills that fixed height and
+   only lets the record list region (.dash-scroll) scroll. */
+.dash-shell {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  min-height: 0;
+  gap: 0.875rem;
+}
+.dash-shell__frozen { flex: 0 0 auto; display: flex; flex-direction: column; gap: 0.875rem; }
+.dash-scroll {
+  flex: 1 1 auto;
+  min-height: 0;
+}
+
+/* --- Page header (eyebrow / title / description) --- */
+.dash-eyebrow {
+  font-size: 9px;
+  font-family: var(--font-mono, ui-monospace, monospace);
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.2em;
+}
+.dash-title { margin-top: 0.375rem; font-size: 1.5rem; line-height: 1.2; font-weight: 700; color: #020617; letter-spacing: -0.01em; }
+@media (min-width: 640px) { .dash-title { font-size: 1.875rem; } }
+.dash-subtitle { font-size: 0.8125rem; color: #64748B; margin-top: 0.375rem; }
+
+/* --- Stat counter cards --- */
+.stat-row {
+  display: flex;
+  gap: 0.75rem;
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+.stat-row::-webkit-scrollbar { display: none; }
+@media (min-width: 640px) { .stat-row { display: grid; overflow: visible; } }
+.stat-card {
+  flex-shrink: 0;
+  width: 108px;
+  background: #fff;
+  border: 1px solid #F4F4F5;
+  border-radius: 1rem;
+  padding: 1rem;
+}
+@media (min-width: 640px) { .stat-card { width: auto; } }
+.stat-card__label { font-size: 9px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.15em; color: #A1A1AA; }
+.stat-card__value { font-family: var(--font-mono, ui-monospace, monospace); font-size: 1.5rem; font-weight: 700; margin-top: 0.375rem; color: #0F172A; }
+
+/* --- Filter bar (horizontal pill selects, scrolls on mobile) --- */
+.filter-bar {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  overflow-x: auto;
+  scrollbar-width: none;
+  padding-bottom: 2px;
+}
+.filter-bar::-webkit-scrollbar { display: none; }
+.filter-select {
+  flex-shrink: 0;
+  height: 2.5rem;
+  padding: 0 1.75rem 0 1rem;
+  border-radius: 9999px;
+  background: #F4F4F5;
+  border: 1px solid #E4E4E7;
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: #3F3F46;
+  outline: none;
+  appearance: none;
+  background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="%2371717a"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>');
+  background-repeat: no-repeat;
+  background-position: right 0.65rem center;
+  background-size: 12px;
+}
+.filter-select:focus { border-color: rgba(34,197,94,0.5); }
+
+/* Card-style filter row variant (search input + selects inside a bordered panel) */
+.filter-input {
+  height: 2.75rem;
+  padding: 0 1rem;
+  border-radius: 0.5rem;
+  border: 1px solid #E4E4E7;
+  background: #FAFAFA;
+  font-size: 0.875rem;
+  color: #0F172A;
+  outline: none;
+}
+.filter-input:focus { border-color: #22C55E; }
+
+/* --- Record list rows --- */
+.list-row {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.75rem;
+  border-radius: 1rem;
+  border: 1px solid #F4F4F5;
+  background: #fff;
+  cursor: pointer;
+  transition: border-color .15s ease, background-color .15s ease;
+}
+@media (min-width: 640px) { .list-row { gap: 1rem; padding: 1rem; } }
+.list-row:hover { border-color: #D4D4D8; background: rgba(244,244,245,0.6); }
+.list-row__avatar {
+  width: 2.5rem; height: 2.5rem; border-radius: 9999px; flex-shrink: 0;
+  background: #F4F4F5; border: 1px solid #E4E4E7;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 0.75rem; font-weight: 700; color: #52525B;
+}
+.list-row__title { font-size: 0.875rem; font-weight: 700; color: #0F172A; }
+.list-row__meta { font-size: 11px; color: #71717A; font-family: var(--font-mono, ui-monospace, monospace); }
+.pill {
+  padding: 0.3rem 0.65rem; border-radius: 9999px; font-size: 9px; font-weight: 700;
+  text-transform: uppercase; letter-spacing: 0.05em; border: 1px solid transparent; white-space: nowrap;
+}
+
+/* --- Pagination bar (frozen footer inside a list panel) --- */
+.dash-pagination {
+  flex: 0 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  padding-top: 0.75rem;
+}
+
+/* --- Detail page sidebar: Status / Actions / Manage / Activity Log --- */
+.detail-sidebar { display: flex; flex-direction: column; gap: 0.75rem; }
+.detail-card { background: #fff; border: 1px solid #F4F4F5; border-radius: 1rem; padding: 1.25rem; }
+.detail-card--danger { background: #FEF2F2; border-color: #FECACA; }
+.detail-card__title { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; color: #71717A; margin-bottom: 0.75rem; }
+.detail-card__title--danger { color: #B91C1C; }
+.detail-btn {
+  display: block; width: 100%; border-radius: 9999px; padding: 0.75rem 1rem;
+  font-size: 0.8125rem; font-weight: 700; text-align: center; border: 1px solid transparent;
+  transition: background-color .15s ease, opacity .15s ease; cursor: pointer;
+}
+.detail-btn--primary { background: #16A34A; color: #fff; }
+.detail-btn--primary:hover { background: #15803D; }
+.detail-btn--ghost { background: #F4F4F5; border-color: #E4E4E7; color: #3F3F46; }
+.detail-btn--ghost:hover { background: #E4E4E7; }
+.detail-btn--warn { background: #FFF7ED; border-color: #FED7AA; color: #C2410C; }
+.detail-btn--warn:hover { background: #FFEDD5; }
+.detail-btn--danger { background: #FEF2F2; border-color: #FECACA; color: #B91C1C; }
+.detail-btn--danger:hover { background: #FEE2E2; }
+.detail-log { display: flex; flex-direction: column; gap: 0.5rem; max-height: 260px; overflow-y: auto; }
+.detail-log__entry { display: flex; align-items: flex-start; gap: 0.75rem; padding: 0.75rem; border-radius: 0.75rem; background: #FAFAFA; border: 1px solid #F4F4F5; }
+.detail-log__dot { width: 6px; height: 6px; border-radius: 9999px; background: #22C55E; margin-top: 0.375rem; flex-shrink: 0; }
+
+/* --- Compact "recent activity across everything" panel used on listing pages --- */
+.recent-feed { display: flex; flex-direction: column; gap: 0.5rem; }
+.recent-feed__row { display: flex; align-items: flex-start; gap: 0.625rem; padding: 0.625rem 0; border-bottom: 1px solid #F4F4F5; }
+.recent-feed__row:last-child { border-bottom: none; }
+.recent-feed__dot { width: 6px; height: 6px; border-radius: 9999px; background: #A1A1AA; margin-top: 0.4rem; flex-shrink: 0; }
+
 /* Skeleton loading shimmer for async content */
 @keyframes shimmer { 100% { transform: translateX(100%); } }
 .skeleton { position: relative; overflow: hidden; background: #F1F3F2; }

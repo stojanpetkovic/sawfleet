@@ -300,13 +300,26 @@ const { data: territories } = await supabase
 </MainLayout>
 
 <script>
-  import { supabase } from "../lib/supabase";
-
   // FUNKCIJA ZA HVATANJE IZVORA SAOBRAĆAJA
-  function getTrafficSource() {
+  function getAttribution() {
     const params = new URLSearchParams(window.location.search);
-    const utmSource = params.get('utm_source');
-    if (utmSource) return utmSource.toLowerCase();
+    return {
+      utm_source: params.get('utm_source'),
+      utm_medium: params.get('utm_medium'),
+      utm_campaign: params.get('utm_campaign'),
+      utm_content: params.get('utm_content'),
+      utm_term: params.get('utm_term'),
+      gclid: params.get('gclid'),
+      fbclid: params.get('fbclid'),
+      referrer: document.referrer || null,
+      landing_page: `${window.location.pathname}${window.location.search}`,
+    };
+  }
+
+  function getTrafficSource(attribution: ReturnType<typeof getAttribution>) {
+    if (attribution.utm_source) return attribution.utm_source.toLowerCase();
+    if (attribution.gclid) return 'google';
+    if (attribution.fbclid) return 'meta';
 
     const referrer = document.referrer.toLowerCase();
     if (referrer.includes('google')) return 'google';
@@ -325,21 +338,27 @@ const { data: territories } = await supabase
     btn.innerText = "Sending...";
 
     const formData = new FormData(form);
-    const trafficSource = getTrafficSource(); // Hvatamo izvor
+    const attribution = getAttribution();
+    const trafficSource = getTrafficSource(attribution); // Hvatamo izvor
     
-    const { error } = await supabase.from('leads').insert([
-      { 
+    const params = new URLSearchParams(window.location.search);
+    const response = await fetch('/api/website-lead', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
         county: formData.get('county'),
         phone: formData.get('phone'),
         email: formData.get('email'),
         details: formData.get('details'),
-        status: 'new',
-        source: trafficSource || 'website' // Oznaka da je lead došao sa sajta
-      },
-    ]);
+        source: trafficSource || 'website',
+        permitRef: params.get('permit_ref'),
+        attribution,
+      }),
+    });
+    const result = await response.json().catch(() => ({}));
 
-    if (error) {
-      alert("Error: " + error.message);
+    if (!response.ok || !result.ok) {
+      alert("Error: " + (result.error || "Unable to submit request"));
       btn.disabled = false;
       btn.innerText = "Request Free Estimate →";
     } else {

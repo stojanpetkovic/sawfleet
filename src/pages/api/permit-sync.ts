@@ -1,15 +1,24 @@
 export const prerender = false;
 
 import { supabaseAdmin } from "../../lib/supabaseAdmin";
-import { getPermitLeads, getPermitAutomationSettings } from "../../lib/permitData";
+import { buildPermitOutreachEmail, getPermitLeads, getPermitAutomationSettings, savePermitAutomationSettings } from "../../lib/permitData";
+import { sendEmail } from "../../lib/resend";
+import { authorizeAutomationRequest } from "../../lib/automationAuth";
 
 /**
  * Autonomous permit lead scraping and sync to external_leads table.
  * This is the primary data source for the permit leads dashboard.
  * Called by: cron jobs, manual triggers, or automated systems
  */
-export async function POST() {
+export async function POST({ request }: { request: Request }) {
   try {
+    const authorization = await authorizeAutomationRequest(request);
+    if (!authorization.authorized) {
+      return new Response(JSON.stringify({ ok: false, error: "unauthorized" }), {
+        status: 401,
+        headers: { "Content-Type": "application/json" },
+      });
+    }
     console.log(`[PERMIT SYNC] Starting permit lead synchronization at ${new Date().toISOString()}`);
 
     // Get automation settings
@@ -27,6 +36,14 @@ export async function POST() {
         { status: 200, headers: { "Content-Type": "application/json" } }
       );
     }
+
+    const archiveBefore = new Date(Date.now() - settings.archiveDays * 24 * 60 * 60 * 1000).toISOString();
+    await supabaseAdmin
+      .from("permit_leads")
+      .update({ archived_at: new Date().toISOString(), archive_reason: `No conversion after ${settings.archiveDays} days` })
+      .in("permit_status", ["new", "qualified"])
+      .is("archived_at", null)
+      .lt("created_at", archiveBefore);
 
     // Fetch new permits from scraping source (all available, not just 'new' status)
     console.log("[PERMIT SYNC] Fetching permits from scraping source...");
@@ -91,15 +108,9 @@ export async function POST() {
         return !isDuplicate;
       })
       .map((permit) => {
-        // Generate placeholder email if no email or phone exists
-        let email = permit.owner_email || null;
-        if (!email && !permit.owner_phone) {
-          // Use permit number as unique identifier for placeholder email
-          email = `permit-${permit.permit_number || Math.random().toString(36).substring(7)}@permit.local`;
-        }
         return {
           owner_name: permit.owner_name || null,
-          owner_email: email,
+          owner_email: permit.owner_email || null,
           owner_phone: permit.owner_phone || null,
           owner_mailing_address: permit.owner_mailing_address || null,
           permit_type: permit.permit_type || null,
@@ -112,7 +123,7 @@ export async function POST() {
           source_name: permit.source_name || "scraped",
           source_url: permit.source_url || null,
           discovered_at: permit.discovered_at || new Date().toISOString(),
-          permit_status: settings.autoApprove ? "converted" : "new",
+          permit_status: settings.autoApprove ? "qualified" : "new",
           assigned_to: null,
           created_at: new Date().toISOString(),
           updated_at: new Date().toISOString(),
@@ -123,31 +134,22 @@ export async function POST() {
       `[PERMIT SYNC] Ready to insert ${toInsert.length} new permits (${permits.length - toInsert.length} duplicates)`
     );
 
-    if (toInsert.length === 0) {
-      return new Response(
-        JSON.stringify({
-          ok: true,
-          message: "No new permits to sync",
-          synced: 0,
-          created: 0,
-        }),
-        { status: 200, headers: { "Content-Type": "application/json" } }
-      );
-    }
-
-    // Insert new permits
-    const { error: insertError, data: inserted } = await supabaseAdmin
-      .from('permit_leads')
-      .insert(toInsert)
-      .select();
-
-    if (insertError) {
-      console.error("[PERMIT SYNC] Insert failed:", insertError);
-      throw insertError;
+    let inserted: any[] = [];
+    if (toInsert.length > 0) {
+      const { error: insertError, data } = await supabaseAdmin
+        .from('permit_leads')
+        .insert(toInsert)
+        .select();
+      if (insertError) {
+        console.error("[PERMIT SYNC] Insert failed:", insertError);
+        throw insertError;
+      }
+      inserted = data || [];
     }
 
     // Log activity
     const insertedCount = inserted?.length || 0;
+    let sentCount = 0;
     console.log(
       `[PERMIT SYNC] Successfully inserted ${insertedCount} permits`
     );
@@ -163,6 +165,71 @@ export async function POST() {
 
       await supabaseAdmin.from('permit_lead_logs').insert(logs);
     }
+
+    if (settings.autoSend) {
+        const baseUrl = import.meta.env.PUBLIC_SITE_URL || "http://localhost:4321";
+        const { data: outreachQueue } = await supabaseAdmin
+          .from("permit_leads")
+          .select("*")
+          .in("permit_status", ["new", "qualified"])
+          .is("outreach_sent_at", null)
+          .not("owner_email", "is", null)
+          .lt("outreach_attempts", settings.permitMaxEmailAttempts)
+          .order("created_at", { ascending: true })
+          .limit(100);
+        for (const permit of outreachQueue || []) {
+          if (!permit.owner_email || !permit.outreach_token) continue;
+          const outreachUrl = new URL("/api/permit-click", baseUrl);
+          outreachUrl.searchParams.set("token", permit.outreach_token);
+          const details = [permit.permit_type, permit.address, permit.permit_description, permit.permit_number ? `Permit ${permit.permit_number}` : null].filter(Boolean).join(" • ");
+          const message = buildPermitOutreachEmail({
+            fullName: permit.owner_name || "there",
+            permitDetails: details,
+            siteUrl: outreachUrl.toString(),
+            settings,
+          });
+          const sent = await sendEmail({ to: permit.owner_email, subject: message.subject, html: message.html });
+          if (sent.ok) {
+            sentCount += 1;
+            const sentAt = new Date().toISOString();
+            await supabaseAdmin.from("permit_leads").update({
+              permit_status: "invited",
+              outreach_sent_at: sentAt,
+              outreach_attempts: Number(permit.outreach_attempts || 0) + 1,
+              outreach_last_error: null,
+            }).eq("id", permit.id);
+            await supabaseAdmin.from("permit_lead_logs").insert([{
+              permit_lead_id: permit.id,
+              action: `Automated outreach email sent to ${permit.owner_email}`,
+              changed_by: "permit_automation",
+              created_at: sentAt,
+            }]);
+          } else {
+            await supabaseAdmin.from("permit_leads").update({
+              outreach_attempts: Number(permit.outreach_attempts || 0) + 1,
+              outreach_last_error: String(sent.error || "Email delivery failed"),
+            }).eq("id", permit.id);
+            await supabaseAdmin.from("permit_lead_logs").insert([{
+              permit_lead_id: permit.id,
+              action: `Automated outreach failed: ${String(sent.error || "Unknown error")}`,
+              changed_by: "permit_automation",
+            }]);
+          }
+        }
+    }
+
+    const auditEntry = {
+      id: `${Date.now()}`,
+      timestamp: new Date().toISOString(),
+      status: insertedCount > 0 ? "success" as const : "skipped" as const,
+      processed: permits.length,
+      created: insertedCount,
+      skipped: permits.length - insertedCount,
+      sent: sentCount,
+      details: `${insertedCount} opportunities created, ${permits.length - insertedCount} skipped, ${sentCount} outreach emails sent`,
+      territoryFilter: settings.allowedTerritories,
+    };
+    await savePermitAutomationSettings({ ...settings, audit: [auditEntry, ...(settings.audit || []).slice(0, 19)] });
 
     return new Response(
       JSON.stringify({

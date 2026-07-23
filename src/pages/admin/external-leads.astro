@@ -105,32 +105,58 @@ const { data: territories } = await supabase.from('service_territories').select(
     </div>
   </div>
 
-  <div class="space-y-5 w-full">
+  <div class="dash-shell flex-1">
+  <div class="dash-shell__frozen">
     <div>
-      <span class="text-[9px] font-mono font-bold uppercase tracking-[0.2em] text-teal-700">// Cross-site pipeline</span>
-      <h1 class="mt-1.5 text-2xl sm:text-3xl font-bold text-slate-950 tracking-tight">External leads</h1>
-      <p class="text-sm text-slate-500 mt-1.5">Submissions from forms on other domains/sites.</p>
+      <span class="dash-eyebrow text-teal-700">// Cross-site pipeline</span>
+      <h1 class="dash-title">External leads</h1>
+      <p class="dash-subtitle">Submissions from forms on other domains/sites.</p>
     </div>
 
     <!-- Stats -->
-    <div class="flex sm:grid sm:grid-cols-6 gap-3 overflow-x-auto no-scrollbar -mx-4 px-4 sm:mx-0 sm:px-0 pb-1">
+    <div class="stat-row sm:grid-cols-6">
       {[
-        { id: 'total', label: 'Total', color: 'text-slate-900' },
+        { id: 'total', label: 'Total', color: '' },
         { id: 'new', label: 'New', color: 'text-amber-600' },
         { id: 'approved', label: 'Approved', color: 'text-green-700' },
         { id: 'rejected', label: 'Rejected', color: 'text-red-600' },
         { id: 'contacted', label: 'Contacted', color: 'text-blue-600' },
         { id: 'closed', label: 'Closed', color: 'text-zinc-500' },
       ].map(stat => (
-        <div class="shrink-0 w-[100px] sm:w-auto bg-white border border-zinc-100 p-4 rounded-2xl">
-          <p class="text-[9px] font-bold uppercase tracking-[0.15em] text-zinc-400">{stat.label}</p>
-          <h2 id={`count-${stat.id}`} class={`text-2xl font-mono font-bold mt-1.5 ${stat.color}`}>0</h2>
+        <div class="stat-card">
+          <p class="stat-card__label">{stat.label}</p>
+          <h2 id={`count-${stat.id}`} class={`stat-card__value ${stat.color}`}>0</h2>
         </div>
       ))}
     </div>
 
+    <!-- Filteri -->
+    <div class="bg-white border border-zinc-100 rounded-2xl p-4 flex flex-col md:flex-row gap-3">
+      <input id="searchInput" type="text" placeholder="Search name, email, phone, or message…" class="flex-1 filter-input" />
+      <select id="formTypeFilter" class="filter-input">
+        <option value="all">All form types</option>
+        <option value="lead">Lead</option>
+        <option value="job">Free Job</option>
+      </select>
+      <select id="domainFilter" class="filter-input">
+        <option value="all">All domains</option>
+      </select>
+      <select id="statusFilter" class="filter-input">
+        <option value="all">All statuses</option>
+        <option value="new">New</option>
+        <option value="approved">Approved</option>
+        <option value="rejected">Rejected</option>
+        <option value="contacted">Contacted</option>
+        <option value="published">Published</option>
+        <option value="closed">Closed</option>
+      </select>
+      <button id="clearFiltersBtn" type="button" class="h-11 px-4 rounded-lg border border-zinc-200 text-zinc-500 text-xs font-bold uppercase tracking-wider hover:bg-zinc-100 hover:text-slate-900 transition-colors whitespace-nowrap">Clear</button>
+    </div>
+  </div>
+
+  <div class="dash-scroll">
     <!-- Raščlamba po sajtu i po tipu forme -->
-    <div class="grid sm:grid-cols-2 gap-3">
+    <div class="grid sm:grid-cols-2 gap-3 mb-3">
       <div class="bg-white border border-zinc-100 rounded-2xl p-5">
         <p class="text-[9px] font-bold uppercase tracking-[0.15em] text-zinc-400 mb-3">By Site</p>
         <div id="breakdownBySite" class="space-y-2.5"></div>
@@ -141,32 +167,22 @@ const { data: territories } = await supabase.from('service_territories').select(
       </div>
     </div>
 
-    <!-- Filteri -->
-    <div class="bg-white border border-zinc-100 rounded-2xl p-4 flex flex-col md:flex-row gap-3">
-      <input id="searchInput" type="text" placeholder="Search name, email, phone, or message…" class="flex-1 h-11 px-4 rounded-lg border border-zinc-200 bg-zinc-50 text-sm text-slate-900 outline-none focus:border-green-500" />
-      <select id="formTypeFilter" class="h-11 px-4 rounded-lg border border-zinc-200 bg-zinc-50 text-sm text-slate-900 outline-none focus:border-green-500">
-        <option value="all">All form types</option>
-        <option value="lead">Lead</option>
-        <option value="job">Free Job</option>
-      </select>
-      <select id="domainFilter" class="h-11 px-4 rounded-lg border border-zinc-200 bg-zinc-50 text-sm text-slate-900 outline-none focus:border-green-500">
-        <option value="all">All domains</option>
-      </select>
-      <select id="statusFilter" class="h-11 px-4 rounded-lg border border-zinc-200 bg-zinc-50 text-sm text-slate-900 outline-none focus:border-green-500">
-        <option value="all">All statuses</option>
-        <option value="new">New</option>
-        <option value="approved">Approved</option>
-        <option value="rejected">Rejected</option>
-        <option value="contacted">Contacted</option>
-        <option value="closed">Closed</option>
-      </select>
-      <button id="clearFiltersBtn" type="button" class="h-11 px-4 rounded-lg border border-zinc-200 text-zinc-500 text-xs font-bold uppercase tracking-wider hover:bg-zinc-100 hover:text-slate-900 transition-colors whitespace-nowrap">Clear</button>
-    </div>
+    <!-- Lista + Activity Log -->
+    <div class="grid gap-6 xl:grid-cols-[1fr_380px]">
+      <!-- Lista -->
+      <div id="leadsTable" class="space-y-2">
+        <div class="p-8 text-center text-zinc-400 text-sm">Loading...</div>
+      </div>
 
-    <!-- Lista -->
-    <div id="leadsTable" class="space-y-2">
-      <div class="p-8 text-center text-zinc-400 text-sm">Loading...</div>
+      <!-- Activity Log -->
+      <div class="bg-white border border-zinc-100 rounded-2xl p-5 hidden xl:block" id="activityLogPanel">
+        <p class="text-[9px] font-bold uppercase tracking-[0.15em] text-zinc-400 mb-4">Activity Log</p>
+        <div id="globalActivityLog" class="space-y-2 text-[11px]">
+          <p class="text-zinc-400 italic">No activity yet.</p>
+        </div>
+      </div>
     </div>
+  </div>
   </div>
 </AdminLayout>
 
@@ -219,7 +235,40 @@ const { data: territories } = await supabase.from('service_territories').select(
     domainSelect.value = domains.includes(currentValue) ? currentValue : 'all';
 
     renderBreakdowns();
+    renderActivityLog();
     applyFilters();
+  }
+
+  function renderActivityLog() {
+    const allActivities: { action: string; at: string; leadName: string; leadId: string }[] = [];
+    
+    allLeads.forEach((lead) => {
+      const log = (lead.extra as any)?.activity_log || [];
+      log.forEach((entry: any) => {
+        allActivities.push({
+          action: entry.action,
+          at: entry.at,
+          leadName: lead.full_name || 'Unnamed',
+          leadId: lead.id,
+        });
+      });
+    });
+
+    const sorted = allActivities.sort((a, b) => new Date(b.at).getTime() - new Date(a.at).getTime()).slice(0, 10);
+
+    const el = document.getElementById('globalActivityLog')!;
+    if (sorted.length === 0) {
+      el.innerHTML = '<p class="text-zinc-400 italic">No activity yet.</p>';
+      return;
+    }
+
+    el.innerHTML = sorted.map((entry) => `
+      <div class="border-l-2 border-teal-400 pl-3 py-1.5">
+        <p class="text-zinc-700 font-medium truncate"><a href="/admin/external-leads/${entry.leadId}" class="hover:text-teal-700 hover:underline">${entry.leadName}</a></p>
+        <p class="text-[10px] text-zinc-500 truncate">${entry.action}</p>
+        <p class="text-[9px] text-zinc-400 mt-0.5">${timeAgo(entry.at)}</p>
+      </div>
+    `).join('');
   }
 
   function renderBreakdowns() {
@@ -328,11 +377,12 @@ const { data: territories } = await supabase.from('service_territories').select(
       approved: 'bg-green-500/10 text-green-700 border-green-500/20',
       rejected: 'bg-red-500/10 text-red-600 border-red-500/20',
       contacted: 'bg-blue-500/10 text-blue-600 border-blue-500/20',
+      published: 'bg-teal-500/10 text-teal-700 border-teal-500/20',
       closed: 'bg-zinc-200/60 text-zinc-600 border-zinc-300',
     };
 
     el.innerHTML = list.map((l) => `
-      <div class="group flex items-center gap-3 sm:gap-4 p-3 sm:p-4 rounded-2xl border border-zinc-100 bg-white hover:border-zinc-300 hover:bg-zinc-100/40 transition-all cursor-pointer" data-open-id="${l.id}">
+      <div class="group flex items-center gap-3 sm:gap-4 p-3 sm:p-4 rounded-2xl border border-zinc-100 bg-white hover:border-zinc-300 hover:bg-zinc-100/40 transition-all cursor-pointer" onclick="window.location.href='/admin/external-leads/${l.id}'">
         <div class="w-10 h-10 rounded-full bg-zinc-100 border border-zinc-200 flex items-center justify-center shrink-0 text-[11px] font-bold text-zinc-500">
           ${(l.full_name || '?').charAt(0).toUpperCase()}
         </div>
@@ -350,181 +400,7 @@ const { data: territories } = await supabase.from('service_territories').select(
         <svg class="hidden sm:block w-4 h-4 text-zinc-300 group-hover:text-zinc-600 transition-colors shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
       </div>
     `).join('');
-
-    el.querySelectorAll('[data-open-id]').forEach((row) => {
-      row.addEventListener('click', () => openDetail((row as HTMLElement).dataset.openId!));
-    });
   }
-
-  function openDetail(id: string) {
-    const lead = allLeads.find((l) => l.id === id);
-    if (!lead) return;
-    activeId = id;
-
-    document.getElementById('detailFormType')!.textContent = `// ${lead.form_type === 'job' ? 'Free Job' : 'External Lead'}`;
-    document.getElementById('detailName')!.textContent = lead.full_name || 'Unnamed';
-    document.getElementById('detailEmail')!.textContent = lead.email || 'N/A';
-    document.getElementById('detailPhone')!.textContent = lead.phone || 'N/A';
-    document.getElementById('detailDomain')!.textContent = lead.source_domain || 'N/A';
-    document.getElementById('detailDate')!.textContent = new Date(lead.created_at).toLocaleString();
-    document.getElementById('detailMessage')!.textContent = lead.message || 'No message provided.';
-
-    const photoUrls: string[] = (lead.extra as any)?.photoUrls || [];
-    const photosWrap = document.getElementById('detailPhotosWrap')!;
-    const photosEl = document.getElementById('detailPhotos')!;
-    if (photoUrls.length > 0) {
-      photosWrap.classList.remove('hidden');
-      photosEl.innerHTML = photoUrls.map((url) => `
-        <a href="${url}" target="_blank" rel="noopener">
-          <img src="${url}" class="w-20 h-20 object-cover rounded-lg border border-zinc-200 hover:border-green-500 transition-colors" />
-        </a>
-      `).join('');
-    } else {
-      photosWrap.classList.add('hidden');
-      photosEl.innerHTML = '';
-    }
-
-    document.getElementById('detailSmsConsent')!.textContent = lead.sms_consent ? '✅ Consented' : '❌ Not given';
-    document.getElementById('detailSmsConsent')!.className = `text-sm font-bold ${lead.sms_consent ? 'text-green-700' : 'text-zinc-500'}`;
-    document.getElementById('detailSmsText')!.textContent = lead.sms_consent_text || '';
-
-    const extraWrap = document.getElementById('detailExtraWrap')!;
-    if (lead.extra && Object.keys(lead.extra).length > 0) {
-      extraWrap.classList.remove('hidden');
-      document.getElementById('detailExtra')!.textContent = JSON.stringify(lead.extra, null, 2);
-    } else {
-      extraWrap.classList.add('hidden');
-    }
-
-    document.querySelectorAll('.status-btn').forEach((btn) => {
-      const isActive = (btn as HTMLElement).dataset.status === lead.status;
-      btn.classList.toggle('ring-2', isActive);
-      btn.classList.toggle('ring-offset-1', isActive);
-    });
-
-    document.getElementById('detailModal')?.classList.remove('hidden');
-    document.getElementById('moveCountyPicker')?.classList.add('hidden');
-    (document.getElementById('moveCountySelect') as HTMLSelectElement).value = '';
-  }
-
-  document.getElementById('closeDetailModal')?.addEventListener('click', () => {
-    document.getElementById('detailModal')?.classList.add('hidden');
-  });
-
-  document.querySelectorAll('.status-btn').forEach((btn) => {
-    btn.addEventListener('click', async () => {
-      const newStatus = (btn as HTMLElement).dataset.status!;
-      await supabase.from('external_leads').update({ status: newStatus }).eq('id', activeId);
-
-      // Ako je Settings -> Notifications podešen na "Only after it's
-      // approved", tek OVDE (na klik Approve) šaljemo mejl.
-      if (newStatus === 'approved') {
-        const { data: settings } = await supabase.from('tracking_settings').select('external_lead_notify_on_approval_only').eq('id', 1).single();
-        if (settings?.external_lead_notify_on_approval_only) {
-          const lead = allLeads.find((l) => l.id === activeId);
-          if (lead) {
-            fetch('/api/notify-new-external-lead', {
-              method: 'POST',
-              headers: { 'Content-Type': 'application/json' },
-              body: JSON.stringify({
-                fullName: lead.full_name,
-                email: lead.email,
-                phone: lead.phone,
-                message: lead.message,
-                sourceDomain: lead.source_domain,
-                formType: lead.form_type,
-                photoUrls: (lead.extra as any)?.photoUrls || [],
-              }),
-            }).catch((err) => console.error('notify-new-external-lead failed:', err));
-          }
-        }
-      }
-
-      document.getElementById('detailModal')?.classList.add('hidden');
-      await loadLeads();
-    });
-  });
 
   loadLeads();
-
-  // -- MOVE TO SERVICE LEADS --
-  document.getElementById('moveToServiceLeadsBtn')?.addEventListener('click', () => {
-    document.getElementById('moveCountyPicker')?.classList.remove('hidden');
-  });
-  document.getElementById('cancelMoveBtn')?.addEventListener('click', () => {
-    document.getElementById('moveCountyPicker')?.classList.add('hidden');
-  });
-
-  document.getElementById('confirmMoveBtn')?.addEventListener('click', async () => {
-    const county = (document.getElementById('moveCountySelect') as HTMLSelectElement).value;
-    if (!county) {
-      alert('Please select a territory first.');
-      return;
-    }
-
-    const lead = allLeads.find((l) => l.id === activeId);
-    if (!lead) return;
-
-    if (!confirm('Move this lead into Service Leads? It will be removed from External Leads.')) return;
-
-    const btn = document.getElementById('confirmMoveBtn') as HTMLButtonElement;
-    btn.disabled = true;
-    btn.textContent = 'Moving...';
-
-    // Ide direktno kao 'approved' — admin ga svesno prebacuje kao
-    // pravi service lid, ne treba dupli krug odobravanja.
-    const { error: insertError } = await supabase.from('leads').insert([{
-      county,
-      phone: lead.phone,
-      email: lead.email,
-      details: lead.message,
-      status: 'approved',
-      source: lead.source_domain || 'external-lead',
-    }]);
-
-    if (insertError) {
-      alert('Could not move lead: ' + insertError.message);
-      btn.disabled = false;
-      btn.textContent = 'Confirm Move';
-      return;
-    }
-
-    // Ovo je taj isti mehanizam koji obaveštava kontraktore u
-    // teritoriji — potpuno isti tok kao kad se service lid odobri.
-    fetch('/api/notify-new-lead', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ county, details: lead.message }),
-    }).catch((err) => console.error('notify-new-lead failed:', err));
-
-    await supabase.from('external_leads').delete().eq('id', activeId);
-
-    document.getElementById('detailModal')?.classList.add('hidden');
-    document.getElementById('moveCountyPicker')?.classList.add('hidden');
-    btn.disabled = false;
-    btn.textContent = 'Confirm Move';
-    await loadLeads();
-  });
-
-  // -- DELETE LEAD --
-  document.getElementById('deleteLeadBtn')?.addEventListener('click', async () => {
-    if (!confirm('Permanently delete this lead? This cannot be undone.')) return;
-    const delBtn = document.getElementById('deleteLeadBtn') as HTMLButtonElement;
-    delBtn.disabled = true;
-    delBtn.textContent = 'Deleting...';
-
-    const { error } = await supabase.from('external_leads').delete().eq('id', activeId);
-
-    if (error) {
-      alert('Could not delete lead: ' + error.message);
-      delBtn.disabled = false;
-      delBtn.textContent = '🗑️ Delete Lead';
-      return;
-    }
-
-    document.getElementById('detailModal')?.classList.add('hidden');
-    delBtn.disabled = false;
-    delBtn.textContent = '🗑️ Delete Lead';
-    await loadLeads();
-  });
 </script>

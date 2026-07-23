@@ -37,52 +37,51 @@ const { data: territories } = await supabase.from('service_territories').select(
     </div>
   </div>
 
-  <div class="flex flex-col xl:flex-row gap-6 lg:gap-8 w-full">
-    <div class="flex-1 space-y-5 min-w-0 w-full">
-
+  <div class="dash-shell flex-1">
+  <div class="dash-shell__frozen">
       <div>
-        <span class="text-[9px] font-mono font-bold uppercase tracking-[0.2em] text-blue-700">// Service network</span>
-        <h1 class="mt-1.5 text-2xl sm:text-3xl font-bold text-slate-950 tracking-tight">Contractors</h1>
-        <p class="text-sm text-slate-500 mt-1.5">Everyone registered in your contractor network.</p>
+        <span class="dash-eyebrow text-blue-700">// Service network</span>
+        <h1 class="dash-title">Contractors</h1>
+        <p class="dash-subtitle">Everyone registered in your contractor network.</p>
       </div>
 
-      <div class="flex sm:grid sm:grid-cols-4 gap-3 overflow-x-auto no-scrollbar -mx-4 px-4 sm:mx-0 sm:px-0 pb-1">
+      <div class="stat-row grid-cols-4">
         {[
-          { id: 'total', label: 'Total', color: 'text-slate-900' },
+          { id: 'total', label: 'Total', color: '' },
           { id: 'active', label: 'Active', color: 'text-green-700' },
           { id: 'pending', label: 'Pending', color: 'text-amber-600' },
           { id: 'rejected', label: 'Rejected', color: 'text-red-600' },
         ].map(stat => (
-          <div class="shrink-0 w-[110px] sm:w-auto bg-white border border-zinc-100 p-4 rounded-2xl">
-            <p class="text-[9px] font-bold uppercase tracking-[0.15em] text-zinc-400">{stat.label}</p>
-            <h2 id={`count-${stat.id}`} class={`text-2xl font-mono font-bold mt-1.5 ${stat.color}`}>0</h2>
+          <div class="stat-card">
+            <p class="stat-card__label">{stat.label}</p>
+            <h2 id={`count-${stat.id}`} class={`stat-card__value ${stat.color}`}>0</h2>
           </div>
         ))}
       </div>
 
-      <div class="flex items-center gap-2 overflow-x-auto no-scrollbar -mx-4 px-4 sm:mx-0 sm:px-0 pb-1">
-        <select id="statusFilter" class="shrink-0 h-10 pl-4 pr-8 rounded-full bg-zinc-100 border border-zinc-200 text-[11px] font-bold uppercase tracking-wider text-zinc-700 outline-none focus:border-green-500/50 appearance-none bg-[url('data:image/svg+xml;utf8,<svg xmlns=%22http://www.w3.org/2000/svg%22 fill=%22none%22 viewBox=%220 0 24 24%22 stroke=%22%2371717a%22><path stroke-linecap=%22round%22 stroke-linejoin=%22round%22 stroke-width=%222%22 d=%22M19 9l-7 7-7-7%22/></svg>')] bg-no-repeat bg-[right_0.6rem_center] bg-[length:12px]">
+      <div class="filter-bar">
+        <select id="statusFilter" class="filter-select">
           <option value="all">All Statuses</option>
           <option value="active">Active</option>
           <option value="pending">Pending</option>
           <option value="rejected">Rejected</option>
         </select>
 
-        <select id="countyFilter" class="shrink-0 h-10 pl-4 pr-8 rounded-full bg-zinc-100 border border-zinc-200 text-[11px] font-bold uppercase tracking-wider text-zinc-700 outline-none focus:border-green-500/50 appearance-none bg-[url('data:image/svg+xml;utf8,<svg xmlns=%22http://www.w3.org/2000/svg%22 fill=%22none%22 viewBox=%220 0 24 24%22 stroke=%22%2371717a%22><path stroke-linecap=%22round%22 stroke-linejoin=%22round%22 stroke-width=%222%22 d=%22M19 9l-7 7-7-7%22/></svg>')] bg-no-repeat bg-[right_0.6rem_center] bg-[length:12px]">
+        <select id="countyFilter" class="filter-select">
           <option value="all">All Territories</option>
           {territories?.map(t => (
             <option value={t.name}>{t.name}</option>
           ))}
         </select>
 
-        <select id="timeFilter" class="shrink-0 h-10 pl-4 pr-8 rounded-full bg-zinc-100 border border-zinc-200 text-[11px] font-bold uppercase tracking-wider text-zinc-700 outline-none focus:border-green-500/50 appearance-none bg-[url('data:image/svg+xml;utf8,<svg xmlns=%22http://www.w3.org/2000/svg%22 fill=%22none%22 viewBox=%220 0 24 24%22 stroke=%22%2371717a%22><path stroke-linecap=%22round%22 stroke-linejoin=%22round%22 stroke-width=%222%22 d=%22M19 9l-7 7-7-7%22/></svg>')] bg-no-repeat bg-[right_0.6rem_center] bg-[length:12px]">
+        <select id="timeFilter" class="filter-select">
           <option value="all">All Time</option>
           <option value="7">Last 7 Days</option>
           <option value="30">Last 30 Days</option>
           <option value="custom">Custom Range</option>
         </select>
 
-        <select id="perPage" class="shrink-0 h-10 pl-4 pr-8 rounded-full bg-zinc-100 border border-zinc-200 text-[11px] font-bold uppercase tracking-wider text-zinc-700 outline-none focus:border-green-500/50 appearance-none bg-[url('data:image/svg+xml;utf8,<svg xmlns=%22http://www.w3.org/2000/svg%22 fill=%22none%22 viewBox=%220 0 24 24%22 stroke=%22%2371717a%22><path stroke-linecap=%22round%22 stroke-linejoin=%22round%22 stroke-width=%222%22 d=%22M19 9l-7 7-7-7%22/></svg>')] bg-no-repeat bg-[right_0.6rem_center] bg-[length:12px]">
+        <select id="perPage" class="filter-select">
           <option value="10">10 / page</option>
           <option value="50">50 / page</option>
         </select>
@@ -94,12 +93,16 @@ const { data: territories } = await supabase.from('service_territories').select(
         <input type="date" id="dateTo" class="bg-transparent text-[11px] text-zinc-700 outline-none h-6" />
         <button id="applyDateBtn" class="ml-auto bg-green-500 text-slate-900 px-3 py-1.5 rounded-lg text-[9px] font-bold uppercase hover:bg-green-400">Apply</button>
       </div>
+  </div>
 
+  <div class="dash-scroll">
+    <div class="flex flex-col xl:flex-row gap-6 lg:gap-8 w-full">
+      <div class="flex-1 space-y-3 min-w-0 w-full">
       <div id="allContractorsTable" class="space-y-2">
         <div class="p-8 text-center text-zinc-400 text-sm">Loading...</div>
       </div>
 
-      <div class="flex items-center justify-between pt-2">
+      <div class="dash-pagination">
         <button id="prevPage" class="h-10 px-4 rounded-full bg-zinc-100 border border-zinc-200 text-[11px] font-bold text-zinc-700 hover:text-slate-900 hover:border-zinc-300 transition-colors">← Prev</button>
         <span id="pageInfo" class="text-[11px] text-zinc-500 font-mono">Page 1</span>
         <button id="nextPage" class="h-10 px-4 rounded-full bg-zinc-100 border border-zinc-200 text-[11px] font-bold text-zinc-700 hover:text-slate-900 hover:border-zinc-300 transition-colors">Next →</button>
@@ -108,7 +111,7 @@ const { data: territories } = await supabase.from('service_territories').select(
 
     <!-- Sidebar za logove -->
     <div class="w-full xl:w-[400px] shrink-0">
-      <div class="bg-white border border-zinc-100 rounded-2xl sticky top-8 w-full">
+      <div class="bg-white border border-zinc-100 rounded-2xl w-full">
         <div class="p-6 border-b border-zinc-100">
           <h3 class="text-[10px] font-bold uppercase tracking-[0.2em] text-slate-900">Activity Timeline</h3>
         </div>
@@ -119,6 +122,8 @@ const { data: territories } = await supabase.from('service_territories').select(
         </div>
       </div>
     </div>
+  </div>
+  </div>
   </div>
 </AdminLayout>
 

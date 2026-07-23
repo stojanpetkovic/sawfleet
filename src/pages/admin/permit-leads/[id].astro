@@ -20,22 +20,29 @@ if (!lead) {
 }
 
 const { data: territories } = await supabase.from('service_territories').select('*').order('name');
+
+// Get activity log from extra column (if exists)
+const activityLog: { action: string; at: string; by?: string }[] =
+  (lead.extra as any)?.activity_log || [];
 ---
 
 <AdminLayout>
-  <div class="space-y-5 w-full">
+  <div class="dash-shell flex-1">
+  <div class="dash-shell__frozen">
     <!-- Back Button -->
     <div class="flex items-center gap-3">
       <a href="/admin/permit-leads" class="inline-flex items-center gap-2 px-3 py-2 rounded-lg border border-zinc-200 text-[11px] font-bold uppercase tracking-wider text-zinc-600 hover:bg-zinc-50">
         ← Back
       </a>
       <div>
-        <span class="text-[9px] font-mono font-bold uppercase tracking-[0.2em] text-green-700">// Permit details</span>
+        <span class="dash-eyebrow text-green-700">// Permit details</span>
         <h1 class="mt-1.5 text-2xl sm:text-3xl font-bold text-slate-950 tracking-tight">{lead.address || 'Permit opportunity'}</h1>
       </div>
     </div>
+  </div>
 
-    <div class="grid gap-6 xl:grid-cols-[1fr_400px]">
+  <div class="dash-scroll">
+    <div class="grid gap-6 lg:grid-cols-[1fr_380px]">
       <!-- Main Content -->
       <div class="space-y-4">
         <!-- Property & Permit Info -->
@@ -132,67 +139,117 @@ const { data: territories } = await supabase.from('service_territories').select(
         </div>
       </div>
 
-      <!-- Sidebar -->
-      <div class="space-y-4">
-        <!-- Status Card -->
-        <div class="bg-white border border-zinc-100 rounded-2xl p-6 shadow-sm sticky top-8">
-          <h3 class="text-[10px] font-bold uppercase tracking-[0.2em] text-zinc-700 mb-3">Current Status</h3>
-          <div class="mb-4 inline-block px-3 py-2 rounded-full text-[11px] font-bold uppercase tracking-wide border {
+      <!-- Sidebar: Status / Actions / Manage / Activity Log -->
+      <div class="detail-sidebar">
+        <!-- Current Status -->
+        <div class="detail-card">
+          <h3 class="detail-card__title">Current Status</h3>
+          <div class={`inline-block px-3 py-2 rounded-full text-[11px] font-bold uppercase tracking-wide border ${
             lead.permit_status === 'converted' ? 'bg-green-500/10 text-green-600 border-green-500/20' :
+            lead.permit_status === 'published' ? 'bg-teal-500/10 text-teal-700 border-teal-500/20' :
+            lead.permit_status === 'qualified' ? 'bg-violet-500/10 text-violet-600 border-violet-500/20' :
             lead.permit_status === 'responded' ? 'bg-amber-500/10 text-amber-600 border-amber-500/20' :
             lead.permit_status === 'invited' ? 'bg-blue-500/10 text-blue-600 border-blue-500/20' :
             'bg-zinc-200/50 text-zinc-600 border-zinc-300'
-          }">
+          }`}>
             {(lead.permit_status || 'new').toUpperCase()}
           </div>
         </div>
 
         <!-- Actions -->
-        <div class="bg-white border border-zinc-100 rounded-2xl p-6 shadow-sm">
-          <h3 class="text-[10px] font-bold uppercase tracking-[0.2em] text-zinc-700 mb-4">Actions</h3>
-          <div class="space-y-3">
+        <div class="detail-card">
+          <h3 class="detail-card__title">Actions</h3>
+          <div class="space-y-2">
             {lead.owner_email && (
-              <button id="emailBtn" class="w-full rounded-lg bg-green-600 px-4 py-3 text-sm font-bold text-white hover:bg-green-500 transition-colors">
+              <button id="emailBtn" class="detail-btn detail-btn--primary">
                 📧 Send Email
               </button>
             )}
             {lead.owner_phone && (
-              <a href={`tel:${lead.owner_phone}`} class="block w-full rounded-lg bg-blue-600 px-4 py-3 text-sm font-bold text-white text-center hover:bg-blue-500 transition-colors">
+              <a href={`tel:${lead.owner_phone}`} class="detail-btn detail-btn--primary block text-center">
                 ☎️ Call Owner
               </a>
             )}
-            <div class="space-y-2">
-              <label class="block text-[9px] font-bold uppercase tracking-[0.15em] text-zinc-600 mb-1">Update Status</label>
-              <select id="statusSelect" class="w-full rounded-lg border border-zinc-200 bg-white px-3 py-2 text-sm font-bold text-slate-900 hover:border-zinc-300">
-                <option value="">Select status...</option>
-                <option value="new">New</option>
-                <option value="invited">Invited</option>
-                <option value="responded">Responded</option>
-                <option value="converted">Converted</option>
-              </select>
-            </div>
+            <p class="text-[9px] font-bold uppercase tracking-[0.15em] text-zinc-400 pt-2">Update status</p>
+            <select id="statusSelect" class="w-full rounded-lg border border-zinc-200 bg-white px-3 py-2 text-[11px] font-bold text-slate-900 hover:border-zinc-300">
+              <option value="">Select status…</option>
+              <option value="new">New</option>
+              <option value="qualified">Qualified</option>
+              <option value="invited">Invited</option>
+              <option value="responded">Responded</option>
+              <option value="published">Published by dispatcher</option>
+              <option value="converted">Converted</option>
+              <option value="skipped">Skipped</option>
+              <option value="expired">Expired</option>
+            </select>
             {lead.source_url && (
-              <a href={lead.source_url} target="_blank" rel="noopener" class="block w-full rounded-lg border border-zinc-200 bg-white px-4 py-3 text-sm font-bold text-slate-700 text-center hover:bg-zinc-50 transition-colors">
+              <a href={lead.source_url} target="_blank" rel="noopener" class="detail-btn detail-btn--ghost block text-center">
                 🔗 Open Source
               </a>
             )}
           </div>
         </div>
 
-        <!-- Danger Zone -->
-        <div class="bg-red-50 border border-red-200 rounded-2xl p-6 shadow-sm">
-          <h3 class="text-[10px] font-bold uppercase tracking-[0.2em] text-red-700 mb-4">Manage Lead</h3>
-          <div class="space-y-3">
-            <button id="transferBtn" class="w-full rounded-lg border border-orange-300 bg-orange-50 px-4 py-3 text-sm font-bold text-orange-700 hover:bg-orange-100 transition-colors">
-              ↗️ Transfer Lead
+        <!-- Manage Lead -->
+        <div class="detail-card detail-card--danger">
+          <h3 class="detail-card__title detail-card__title--danger">Manage Lead</h3>
+          <div class="space-y-2">
+            {!lead.website_lead_id ? (
+              <>
+                <button id="publishPermitBtn" class="detail-btn detail-btn--warn">
+                  🌳 Publish to Website Leads
+                </button>
+                <div id="publishPermitPicker" class="hidden space-y-2 rounded-xl border border-amber-200 bg-amber-50 p-3">
+                  <p class="text-[10px] leading-4 text-amber-800">The homeowner has not submitted a request. This will create an unconfirmed dispatcher lead.</p>
+                  <select id="publishPermitCounty" class="h-10 w-full rounded-lg border border-amber-200 bg-white px-3 text-[11px] text-slate-900">
+                    <option value="" selected disabled>Territory…</option>
+                    {territories?.map((t) => <option value={t.name}>{t.name}</option>)}
+                  </select>
+                  <div class="flex gap-2">
+                    <button id="cancelPermitPublish" class="flex-1 h-9 rounded-lg border border-zinc-200 bg-white text-[9px] font-bold uppercase text-zinc-600">Cancel</button>
+                    <button id="confirmPermitPublish" class="flex-1 h-9 rounded-lg bg-amber-600 text-[9px] font-bold uppercase text-white">Publish</button>
+                  </div>
+                </div>
+              </>
+            ) : (
+              <a href={`/admin/leads/${lead.website_lead_id}`} class="detail-btn detail-btn--primary block text-center">Open Website Lead →</a>
+            )}
+            <button id="transferBtn" class="detail-btn detail-btn--warn">
+              ↗️ Transfer
             </button>
-            <button id="deleteBtn" class="w-full rounded-lg border border-red-300 bg-red-50 px-4 py-3 text-sm font-bold text-red-700 hover:bg-red-100 transition-colors">
-              🗑️ Delete Lead
+            <button id="deleteBtn" class="detail-btn detail-btn--danger">
+              🗑️ Delete
             </button>
+          </div>
+        </div>
+
+        <!-- Activity Log -->
+        <div class="detail-card">
+          <h3 class="detail-card__title">Activity Log</h3>
+          <div id="activityLog" class="detail-log">
+            {activityLog.length === 0
+              ? <p class="text-[11px] text-zinc-400 italic">No activity yet.</p>
+              : activityLog.slice().reverse().map((entry) => (
+                  <div class="detail-log__entry">
+                    <div class="detail-log__dot"></div>
+                    <div>
+                      <p class="text-sm text-slate-900">{entry.action}</p>
+                      <p class="text-[10px] text-zinc-400 mt-0.5 font-mono">{new Date(entry.at).toLocaleString()}</p>
+                    </div>
+                  </div>
+                ))
+            }
+          </div>
+
+          <!-- Add Note -->
+          <div class="mt-4 pt-4 border-t border-zinc-100">
+            <textarea id="noteInput" rows="2" placeholder="Add a note…" class="w-full rounded-xl border border-zinc-200 bg-zinc-50 p-3 text-sm text-slate-900 outline-none focus:border-green-500 resize-none"></textarea>
+            <button id="addNoteBtn" class="mt-2 px-4 py-2 rounded-lg bg-zinc-100 border border-zinc-200 text-[11px] font-bold uppercase tracking-wider text-zinc-700 hover:bg-zinc-200 transition-colors">Add Note</button>
           </div>
         </div>
       </div>
     </div>
+  </div>
 
     <!-- Transfer Modal -->
     <div id="transferModal" class="hidden fixed inset-0 bg-black/50 flex items-center justify-center z-50">
@@ -216,6 +273,65 @@ const { data: territories } = await supabase.from('service_territories').select(
 </AdminLayout>
 
 <script define:vars={{ leadId: id }}>
+  import { supabase } from "../../../lib/supabase";
+
+  // Add Note functionality
+  async function addLogEntry(action: string) {
+    const { data: lead } = await supabase.from('permit_leads').select('extra').eq('id', leadId).single();
+    const extra = (lead?.extra as any) || {};
+    const log = extra.activity_log || [];
+    log.push({ action, at: new Date().toISOString() });
+    await supabase.from('permit_leads').update({ extra: { ...extra, activity_log: log } }).eq('id', leadId);
+
+    const logEl = document.getElementById('activityLog')!;
+    const entry = document.createElement('div');
+    entry.className = 'flex items-start gap-3 p-3 rounded-xl bg-zinc-50 border border-zinc-100';
+    entry.innerHTML = `
+      <div class="w-1.5 h-1.5 rounded-full bg-green-500 mt-1.5 shrink-0"></div>
+      <div>
+        <p class="text-sm text-slate-900">${action}</p>
+        <p class="text-[10px] text-zinc-400 mt-0.5 font-mono">${new Date().toLocaleString()}</p>
+      </div>
+    `;
+    logEl.prepend(entry);
+  }
+
+  document.getElementById('addNoteBtn')?.addEventListener('click', async () => {
+    const input = document.getElementById('noteInput') as HTMLTextAreaElement;
+    const text = input.value.trim();
+    if (!text) return;
+    await addLogEntry(`📝 Note: ${text}`);
+    input.value = '';
+  });
+
+  document.getElementById('publishPermitBtn')?.addEventListener('click', () => {
+    document.getElementById('publishPermitPicker')?.classList.remove('hidden');
+  });
+  document.getElementById('cancelPermitPublish')?.addEventListener('click', () => {
+    document.getElementById('publishPermitPicker')?.classList.add('hidden');
+  });
+  document.getElementById('confirmPermitPublish')?.addEventListener('click', async () => {
+    const county = (document.getElementById('publishPermitCounty') as HTMLSelectElement).value;
+    if (!county) { alert('Select a territory first.'); return; }
+    if (!confirm('This person has not submitted a service request. Publish as an unconfirmed dispatcher lead?')) return;
+    const button = document.getElementById('confirmPermitPublish') as HTMLButtonElement;
+    button.disabled = true;
+    button.textContent = 'Publishing…';
+    const response = await fetch('/api/publish-lead', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ originType: 'permit_dispatch', originId: leadId, county, confirmUnrequested: true }),
+    });
+    const result = await response.json().catch(() => ({}));
+    if (!response.ok || !result.ok) {
+      alert('Publish failed: ' + (result.error || 'Unknown error'));
+      button.disabled = false;
+      button.textContent = 'Publish';
+      return;
+    }
+    window.location.href = `/admin/leads/${result.leadId}`;
+  });
+
   // Email Button
   document.getElementById('emailBtn')?.addEventListener('click', async (e) => {
     const confirmed = confirm('Send outreach email to this contact?');
@@ -235,6 +351,7 @@ const { data: territories } = await supabase.from('service_territories').select(
       const result = await response.json();
       if (result.ok) {
         alert('✅ Email sent successfully');
+        await addLogEntry('📧 Email sent');
         btn.textContent = '📧 Email Sent';
         btn.disabled = true;
       } else {
@@ -266,6 +383,7 @@ const { data: territories } = await supabase.from('service_territories').select(
       const result = await response.json();
       if (result.ok) {
         alert('✅ Status updated to: ' + status.toUpperCase());
+        await addLogEntry(`Status changed to ${status}`);
         setTimeout(() => location.reload(), 800);
       } else {
         alert('❌ Error: ' + (result.error || 'Unknown error'));

@@ -1,0 +1,110 @@
+---
+export const prerender = false;
+import MainLayout from "../../../layouts/MainLayout.astro";
+import Header from "../../../components/layout/Header.astro";
+import Footer from "../../../components/layout/Footer.astro";
+import MobileNav from "../../../components/layout/MobileNav.astro";
+import { supabase } from "../../../lib/supabase";
+import { directoryLocation, directoryLocationUrl } from "../../../lib/truckDirectory";
+import { BadgeCheck, Building2, ExternalLink, Mail, MapPin, Phone, Ruler, ShieldCheck, Truck } from "lucide-astro";
+
+const { slug } = Astro.params;
+const { data: profile } = await supabase
+  .from("unclaimed_truck_directory")
+  .select("*")
+  .eq("slug", slug)
+  .eq("is_published", true)
+  .neq("profile_status", "hidden")
+  .maybeSingle();
+
+if (!profile) return Astro.redirect("/404");
+
+const location = directoryLocation(profile);
+const publicEmail = profile.source_payload?.public_email || null;
+const publicPhone = profile.source_payload?.public_phone || null;
+const publicWebsite = profile.source_payload?.public_website || null;
+const title = `${profile.equipment_name} in ${location || "USA"} | ${profile.company_name}`;
+const description = `${profile.company_name} ${profile.equipment_name}${profile.lift_capacity_tons ? `, ${profile.lift_capacity_tons}-ton capacity` : ""}${profile.working_height_ft ? `, ${profile.working_height_ft}-ft working height` : ""} serving ${location || "the United States"}. View public equipment specifications and contact details. Unclaimed and unverified listing.`;
+const canonical = `https://sftreeremoval.com/truck-directory/profile/${profile.slug}`;
+const schema = {
+  "@context": "https://schema.org",
+  "@type": "LocalBusiness",
+  "@id": `${canonical}#business`,
+  name: profile.company_name,
+  url: canonical,
+  description,
+  email: publicEmail || undefined,
+  telephone: publicPhone || undefined,
+  address: {
+    "@type": "PostalAddress",
+    addressLocality: profile.location_city || undefined,
+    addressRegion: profile.location_state || undefined,
+    addressCountry: "US",
+  },
+  makesOffer: {
+    "@type": "Offer",
+    itemOffered: {
+      "@type": "Service",
+      name: `${profile.equipment_name} equipment service`,
+      description: profile.description || `${profile.equipment_name} listed for ${profile.listing_type || "hire"}.`,
+      areaServed: location || "United States",
+    },
+  },
+};
+---
+
+<MainLayout title={title} description={description} structuredData={schema}>
+  <Header />
+  <main class="min-h-screen bg-slate-50 pb-24 pt-28 md:pt-36">
+    <article class="mx-auto w-full max-w-6xl px-5 md:px-8">
+      <nav aria-label="Breadcrumb" class="text-[10px] font-bold uppercase tracking-wider text-slate-400"><a href="/truck-directory" class="hover:text-green-700">Truck directory</a><span class="px-2">/</span>{location && <a href={directoryLocationUrl(profile)} class="hover:text-green-700">{location}</a>}<span class="px-2">/</span><span class="text-slate-600">{profile.company_name}</span></nav>
+
+      <div class="mt-6 grid gap-6 lg:grid-cols-[1fr_360px]">
+        <div class="space-y-6">
+          <section class="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm md:p-9">
+            <div class="flex flex-col justify-between gap-5 sm:flex-row sm:items-start">
+              <div class="flex items-start gap-4"><span class="flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl bg-slate-950 text-white"><Truck size={26} /></span><div><p class="text-[10px] font-bold uppercase tracking-[0.2em] text-green-700">Grapple saw equipment profile</p><h1 class="mt-2 text-2xl font-bold tracking-tight text-slate-950 md:text-4xl">{profile.equipment_name}</h1><p class="mt-2 flex items-center gap-2 text-sm text-slate-500"><Building2 size={15} /> {profile.company_name}</p></div></div>
+              <span class="w-fit rounded-full border border-amber-200 bg-amber-50 px-3 py-1.5 text-[9px] font-bold uppercase tracking-wider text-amber-700">Unclaimed · Unverified</span>
+            </div>
+            {location && <a href={directoryLocationUrl(profile)} class="mt-6 inline-flex items-center gap-2 rounded-full bg-slate-100 px-3 py-2 text-xs font-medium text-slate-700 hover:bg-green-50 hover:text-green-700"><MapPin size={14} /> {location}</a>}
+            <div class="mt-7 grid grid-cols-2 gap-3 md:grid-cols-4">
+              <div class="rounded-xl bg-slate-50 p-4"><span class="text-[9px] uppercase tracking-wider text-slate-400">Capacity</span><strong class="mt-1 block text-lg text-slate-900">{profile.lift_capacity_tons ? `${profile.lift_capacity_tons} ton` : "Not listed"}</strong></div>
+              <div class="rounded-xl bg-slate-50 p-4"><span class="text-[9px] uppercase tracking-wider text-slate-400">Working height</span><strong class="mt-1 block text-lg text-slate-900">{profile.working_height_ft ? `${profile.working_height_ft} ft` : "Not listed"}</strong></div>
+              <div class="rounded-xl bg-slate-50 p-4"><span class="text-[9px] uppercase tracking-wider text-slate-400">Service radius</span><strong class="mt-1 block text-lg text-slate-900">{profile.service_radius_miles ? `${profile.service_radius_miles} mi` : "Ask operator"}</strong></div>
+              <div class="rounded-xl bg-slate-50 p-4"><span class="text-[9px] uppercase tracking-wider text-slate-400">Listing</span><strong class="mt-1 block text-lg text-slate-900">{profile.listing_type || "Rent"}</strong></div>
+            </div>
+          </section>
+
+          <section class="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm md:p-9">
+            <h2 class="text-lg font-bold text-slate-950">Equipment and operator details</h2>
+            <div class="mt-6 grid gap-x-8 gap-y-5 sm:grid-cols-2">
+              {profile.manufacturer && <div><span class="text-[9px] font-bold uppercase tracking-wider text-slate-400">Manufacturer</span><p class="mt-1 text-sm font-medium text-slate-700">{profile.manufacturer}</p></div>}
+              {profile.model && <div><span class="text-[9px] font-bold uppercase tracking-wider text-slate-400">Model</span><p class="mt-1 text-sm font-medium text-slate-700">{profile.model}</p></div>}
+              {profile.access_notes && <div><span class="text-[9px] font-bold uppercase tracking-wider text-slate-400">Access</span><p class="mt-1 text-sm font-medium text-slate-700">{profile.access_notes}</p></div>}
+              {profile.availability_notes && <div><span class="text-[9px] font-bold uppercase tracking-wider text-slate-400">Availability</span><p class="mt-1 text-sm font-medium text-slate-700">{profile.availability_notes}</p></div>}
+              {profile.insurance_claim && <div><span class="text-[9px] font-bold uppercase tracking-wider text-slate-400">Insurance claim</span><p class="mt-1 text-sm font-medium text-slate-700">{profile.insurance_claim} <em class="text-slate-400">(not verified)</em></p></div>}
+              {profile.operator_experience && <div><span class="text-[9px] font-bold uppercase tracking-wider text-slate-400">Operator experience</span><p class="mt-1 text-sm font-medium text-slate-700">{profile.operator_experience}</p></div>}
+            </div>
+            {profile.description && <div class="mt-7 border-t border-slate-100 pt-6"><h2 class="text-sm font-bold text-slate-900">About this listing</h2><p class="mt-2 text-sm leading-7 text-slate-600">{profile.description}</p></div>}
+          </section>
+        </div>
+
+        <aside class="space-y-5">
+          <section class="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm lg:sticky lg:top-28">
+            <h2 class="text-lg font-bold text-slate-950">Public contact information</h2>
+            <p class="mt-2 text-xs leading-5 text-slate-500">Contact details published by the source operator profile. Verify identity, insurance and equipment before engagement.</p>
+            <div class="mt-5 space-y-3">
+              {publicEmail ? <a href={`mailto:${publicEmail}`} class="flex min-h-12 items-center gap-3 rounded-xl border border-slate-200 px-4 text-sm font-medium text-slate-700 hover:border-green-300 hover:text-green-700"><Mail size={17} /> <span class="break-all">{publicEmail}</span></a> : <div class="rounded-xl bg-slate-50 p-4 text-xs text-slate-400">Email is not publicly listed.</div>}
+              {publicPhone && <a href={`tel:${publicPhone}`} class="flex min-h-12 items-center gap-3 rounded-xl border border-slate-200 px-4 text-sm font-medium text-slate-700 hover:border-green-300 hover:text-green-700"><Phone size={17} /> {publicPhone}</a>}
+              {publicWebsite && <a href={publicWebsite} target="_blank" rel="nofollow noopener" class="flex min-h-12 items-center gap-3 rounded-xl border border-slate-200 px-4 text-sm font-medium text-slate-700 hover:border-green-300 hover:text-green-700"><ExternalLink size={17} /> Company website</a>}
+            </div>
+            <a href={`/truck-registration?claim=${profile.slug}`} class="mt-5 flex h-12 items-center justify-center gap-2 rounded-xl bg-green-600 px-4 text-xs font-bold uppercase tracking-wider text-white hover:bg-green-700"><BadgeCheck size={16} /> Claim this profile</a>
+            <div class="mt-5 flex gap-3 rounded-xl border border-amber-100 bg-amber-50 p-3 text-[10px] leading-4 text-amber-800"><ShieldCheck size={16} class="shrink-0" /><span>This profile has not been verified by SF Tree Removal.</span></div>
+          </section>
+        </aside>
+      </div>
+    </article>
+  </main>
+  <Footer />
+  <MobileNav />
+</MainLayout>

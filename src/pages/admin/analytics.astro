@@ -1,7 +1,7 @@
 ---
 export const prerender = false;
 import AdminLayout from "../../layouts/AdminLayout.astro";
-import { Activity, CheckCircle2, Globe2, Printer, Target, Users2 } from "lucide-astro";
+import { Activity, CheckCircle2, CircleGauge, Clock3, Layers3, Printer, Target } from "lucide-astro";
 ---
 
 <AdminLayout>
@@ -12,7 +12,7 @@ import { Activity, CheckCircle2, Globe2, Printer, Target, Users2 } from "lucide-
       <div>
         <div class="mb-3 flex items-center gap-2 text-green-700"><Activity size={15} /><span class="text-[10px] font-mono font-bold uppercase tracking-[0.22em]">Performance intelligence</span></div>
         <h1 class="text-2xl font-bold tracking-tight text-slate-950 sm:text-3xl">Analytics overview</h1>
-        <p class="mt-2 max-w-xl text-sm text-slate-500">Monitor acquisition, conversion and network capacity from one report.</p>
+        <p class="mt-2 max-w-xl text-sm text-slate-500">Decision-ready KPIs for demand, conversion, pipeline health and network capacity.</p>
         <p id="reportDate" class="mt-2 text-[10px] text-slate-400 font-mono"></p>
       </div>
 
@@ -35,22 +35,45 @@ import { Activity, CheckCircle2, Globe2, Printer, Target, Users2 } from "lucide-
     <section class="space-y-6">
       <div class="flex items-end justify-between gap-4"><div><p class="text-[10px] font-bold uppercase tracking-[0.22em] text-green-700">Executive overview</p><h2 class="mt-1 text-lg font-bold text-slate-900">Service lead performance</h2></div><span id="service-period-label" class="text-[10px] font-mono text-slate-400">Selected period</span></div>
 
-      <div class="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4">
-        <div class="group rounded-2xl border border-slate-200 bg-white p-5 shadow-sm transition hover:-translate-y-0.5 hover:shadow-md">
-          <div class="flex items-start justify-between"><span class="flex h-9 w-9 items-center justify-center rounded-xl bg-slate-100 text-slate-600"><Users2 size={17} /></span><span class="text-[9px] font-bold uppercase tracking-[0.16em] text-slate-400">Volume</span></div>
-          <h2 id="stat-total" class="mt-5 text-3xl font-bold tabular-nums text-slate-950">-</h2><p class="mt-1 text-xs font-medium text-slate-600">Total service leads</p><p class="mt-3 text-[10px] text-slate-400">Received in selected period</p>
+      <div class="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-5">
+        <article class="kpi-card kpi-card-primary">
+          <div class="flex items-start justify-between"><span class="kpi-icon bg-slate-900 text-white"><Layers3 size={17} /></span><span class="kpi-label">Demand</span></div>
+          <h2 id="kpi-demand" class="kpi-value">-</h2><p class="kpi-name">Total lead volume</p>
+          <div id="trend-demand" class="kpi-trend">— vs prior period</div>
+        </article>
+        <article class="kpi-card">
+          <div class="flex items-start justify-between"><span class="kpi-icon bg-green-100 text-green-700"><CheckCircle2 size={17} /></span><span class="kpi-label text-green-700">Outcome</span></div>
+          <h2 id="stat-claimed" class="kpi-value">-</h2><p class="kpi-name">Claimed service leads</p>
+          <div id="trend-claimed" class="kpi-trend">— vs prior period</div>
+        </article>
+        <article class="kpi-card">
+          <div class="flex items-start justify-between"><span class="kpi-icon bg-blue-100 text-blue-700"><Target size={17} /></span><span class="kpi-label text-blue-700">Efficiency</span></div>
+          <h2 id="stat-conversion" class="kpi-value">-</h2><p class="kpi-name">Lead claim rate</p>
+          <div id="trend-conversion" class="kpi-trend">— vs prior period</div>
+        </article>
+        <article class="kpi-card">
+          <div class="flex items-start justify-between"><span class="kpi-icon bg-amber-100 text-amber-700"><Clock3 size={17} /></span><span class="kpi-label text-amber-700">Pipeline</span></div>
+          <h2 id="kpi-open" class="kpi-value">-</h2><p class="kpi-name">Open opportunities</p>
+          <div class="kpi-trend text-slate-400">Awaiting a final outcome</div>
+        </article>
+        <article class="kpi-card">
+          <div class="flex items-start justify-between"><span class="kpi-icon bg-violet-100 text-violet-700"><CircleGauge size={17} /></span><span class="kpi-label text-violet-700">Supply</span></div>
+          <h2 id="kpi-readiness" class="kpi-value">-</h2><p class="kpi-name">Network readiness</p>
+          <div class="kpi-trend text-slate-400">Approved resources ÷ roster</div>
+        </article>
+      </div>
+
+      <div class="grid grid-cols-1 gap-4 lg:grid-cols-3">
+        <div class="rounded-2xl border border-slate-200 bg-slate-950 p-5 text-white shadow-sm lg:col-span-2">
+          <div class="flex flex-col justify-between gap-5 sm:flex-row sm:items-center">
+            <div><p class="text-[9px] font-bold uppercase tracking-[0.2em] text-slate-400">Performance signal</p><h3 id="performance-title" class="mt-2 text-lg font-bold">Calculating current performance…</h3><p id="performance-copy" class="mt-1 max-w-xl text-xs leading-5 text-slate-400">Comparing this period with the previous matching period.</p></div>
+            <div class="shrink-0 rounded-xl border border-white/10 bg-white/5 px-5 py-4 text-center"><p class="text-[9px] uppercase tracking-[0.18em] text-slate-400">Avg. daily demand</p><strong id="kpi-daily" class="mt-1 block text-2xl tabular-nums">-</strong></div>
+          </div>
         </div>
-        <div class="group rounded-2xl border border-green-200 bg-gradient-to-br from-white to-green-50/70 p-5 shadow-sm transition hover:-translate-y-0.5 hover:shadow-md">
-          <div class="flex items-start justify-between"><span class="flex h-9 w-9 items-center justify-center rounded-xl bg-green-100 text-green-700"><CheckCircle2 size={17} /></span><span class="text-[9px] font-bold uppercase tracking-[0.16em] text-green-700">Claimed</span></div>
-          <h2 id="stat-claimed" class="mt-5 text-3xl font-bold tabular-nums text-slate-950">-</h2><p class="mt-1 text-xs font-medium text-slate-600">Qualified opportunities</p><p id="claimed-share" class="mt-3 text-[10px] font-medium text-green-700">— of total volume</p>
-        </div>
-        <div class="group rounded-2xl border border-blue-200 bg-gradient-to-br from-white to-blue-50/70 p-5 shadow-sm transition hover:-translate-y-0.5 hover:shadow-md">
-          <div class="flex items-start justify-between"><span class="flex h-9 w-9 items-center justify-center rounded-xl bg-blue-100 text-blue-700"><Target size={17} /></span><span class="text-[9px] font-bold uppercase tracking-[0.16em] text-blue-700">Efficiency</span></div>
-          <h2 id="stat-conversion" class="mt-5 text-3xl font-bold tabular-nums text-slate-950">-</h2><p class="mt-1 text-xs font-medium text-slate-600">Lead claim rate</p><p class="mt-3 text-[10px] text-slate-400">Claimed ÷ total leads</p>
-        </div>
-        <div class="group rounded-2xl border border-teal-200 bg-gradient-to-br from-white to-teal-50/70 p-5 shadow-sm transition hover:-translate-y-0.5 hover:shadow-md">
-          <div class="flex items-start justify-between"><span class="flex h-9 w-9 items-center justify-center rounded-xl bg-teal-100 text-teal-700"><Globe2 size={17} /></span><span class="text-[9px] font-bold uppercase tracking-[0.16em] text-teal-700">External</span></div>
-          <h2 id="summary-ext-total" class="mt-5 text-3xl font-bold tabular-nums text-slate-950">-</h2><p class="mt-1 text-xs font-medium text-slate-600">External leads</p><p class="mt-3 text-[10px] text-slate-400">Across connected websites</p>
+        <div class="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
+          <div class="flex items-center justify-between"><div><p class="text-[9px] font-bold uppercase tracking-[0.2em] text-slate-400">Pipeline mix</p><p class="mt-1 text-xs text-slate-500">Current selected period</p></div><CircleGauge size={20} class="text-slate-300" /></div>
+          <div class="mt-5 h-2 overflow-hidden rounded-full bg-slate-100"><div id="pipeline-progress" class="h-full rounded-full bg-green-500 transition-all duration-500" style="width: 0%"></div></div>
+          <div class="mt-3 flex items-center justify-between text-[10px]"><span class="text-slate-500">Closed / claimed</span><strong id="pipeline-closed-rate" class="tabular-nums text-slate-900">-</strong></div>
         </div>
       </div>
 
@@ -78,8 +101,78 @@ import { Activity, CheckCircle2, Globe2, Printer, Target, Users2 } from "lucide-
       </div>
     </section>
 
+    <section class="space-y-6 border-t border-slate-200 pt-6">
+      <div><p class="text-[10px] font-bold uppercase tracking-[0.22em] text-cyan-700">Website audience</p><h2 class="mt-1 text-lg font-bold text-slate-900">Frontend page performance</h2><p class="mt-1 text-xs text-slate-500">First-party page views recorded directly by the SF Tree Removal website.</p></div>
+      <div class="grid grid-cols-1 gap-4 sm:grid-cols-3">
+        <article class="kpi-card"><span class="kpi-label text-cyan-700">Traffic</span><h3 id="page-total-views" class="kpi-value">-</h3><p class="kpi-name">Total page views</p></article>
+        <article class="kpi-card"><span class="kpi-label text-cyan-700">Audience</span><h3 id="page-unique-visitors" class="kpi-value">-</h3><p class="kpi-name">Unique sessions</p></article>
+        <article class="kpi-card"><span class="kpi-label text-cyan-700">Depth</span><h3 id="page-views-session" class="kpi-value">-</h3><p class="kpi-name">Views per session</p></article>
+      </div>
+      <div class="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm md:p-7">
+        <div class="flex items-start justify-between gap-4"><div><h3 class="text-sm font-bold text-slate-900">Most visited frontend pages</h3><p class="mt-1 text-[10px] text-slate-400">Page views and share of website traffic in the selected period</p></div><span id="page-tracking-status" class="rounded-full bg-slate-100 px-3 py-1 text-[9px] font-bold uppercase tracking-wider text-slate-500">Loading</span></div>
+        <div class="mt-5 overflow-x-auto">
+          <table class="w-full min-w-[520px] text-left">
+            <thead><tr class="border-b border-slate-100 text-[9px] uppercase tracking-[0.16em] text-slate-400"><th class="pb-3 font-bold">Page</th><th class="pb-3 text-right font-bold">Views</th><th class="pb-3 text-right font-bold">Sessions</th><th class="pb-3 text-right font-bold">Traffic share</th></tr></thead>
+            <tbody id="page-performance"></tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
     <!-- ============================================================ -->
-    <!-- SECTION 2: EXTERNAL LEADS (drugi domeni) -->
+    <!-- SECTION 2: MARKETPLACE ENGAGEMENT -->
+    <!-- ============================================================ -->
+    <section class="space-y-6 pt-6 border-t border-slate-200">
+      <div><p class="text-[10px] font-bold uppercase tracking-[0.22em] text-blue-700">Marketplace health</p><h2 class="mt-1 text-lg font-bold text-slate-900">Contractor & truck engagement</h2><p class="mt-1 text-xs text-slate-500">How quickly and consistently the supply network responds to available leads.</p></div>
+
+      <div class="grid grid-cols-2 gap-3 md:grid-cols-4 xl:grid-cols-8">
+        <div class="metric-tile"><span>Claim rate</span><strong id="eng-claim-rate">-</strong><small>contractor outcomes</small></div>
+        <div class="metric-tile"><span>Avg. claim time</span><strong id="eng-claim-time">-</strong><small>publish → claim</small></div>
+        <div class="metric-tile"><span>Active contractors</span><strong id="eng-contractors">-</strong><small>claimed ≥ 1 lead</small></div>
+        <div class="metric-tile metric-alert"><span>Unclaimed 24h+</span><strong id="eng-aged">-</strong><small>requires attention</small></div>
+        <div class="metric-tile"><span>Truck applications</span><strong id="eng-truck-apps">-</strong><small>selected period</small></div>
+        <div class="metric-tile"><span>Acceptance rate</span><strong id="eng-truck-rate">-</strong><small>accepted applications</small></div>
+        <div class="metric-tile"><span>Active owners</span><strong id="eng-owners">-</strong><small>applied ≥ 1 time</small></div>
+        <div class="metric-tile"><span>Apps / lead</span><strong id="eng-apps-lead">-</strong><small>truck competition</small></div>
+      </div>
+
+      <div class="grid grid-cols-1 gap-6 xl:grid-cols-5">
+        <div class="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm xl:col-span-3 md:p-7">
+          <div class="mb-6 flex items-start justify-between gap-4"><div><h3 class="text-sm font-bold text-slate-900">Frontend acquisition performance</h3><p class="mt-1 text-[10px] text-slate-400">UTM source or referring domain, with downstream claim rate</p></div><span id="attribution-coverage" class="rounded-full bg-slate-100 px-3 py-1 text-[9px] font-bold uppercase tracking-wider text-slate-500">- tracked</span></div>
+          <div class="overflow-x-auto">
+            <table class="w-full min-w-[480px] text-left">
+              <thead><tr class="border-b border-slate-100 text-[9px] uppercase tracking-[0.16em] text-slate-400"><th class="pb-3 font-bold">Source</th><th class="pb-3 text-right font-bold">Leads</th><th class="pb-3 text-right font-bold">Claimed</th><th class="pb-3 text-right font-bold">Claim rate</th></tr></thead>
+              <tbody id="source-performance"></tbody>
+            </table>
+          </div>
+        </div>
+        <div class="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm xl:col-span-2 md:p-7">
+          <h3 class="text-sm font-bold text-slate-900">Operational attention</h3>
+          <p class="mt-1 text-[10px] text-slate-400">Current blockers and opportunities</p>
+          <div id="engagement-insights" class="mt-5 space-y-3"></div>
+          <div class="mt-6 border-t border-slate-100 pt-5"><p class="text-[9px] font-bold uppercase tracking-[0.18em] text-slate-400">Top campaigns</p><div id="campaign-list" class="mt-3 space-y-2"></div></div>
+        </div>
+      </div>
+
+      <div class="grid grid-cols-1 gap-4 lg:grid-cols-2">
+        <article class="rounded-2xl border border-blue-200 bg-gradient-to-br from-white to-blue-50 p-5 shadow-sm md:p-6">
+          <div class="flex items-center justify-between"><div><p class="text-[9px] font-bold uppercase tracking-[0.2em] text-blue-700">Google campaign efficiency</p><h3 id="google-efficiency" class="mt-3 text-3xl font-bold tabular-nums text-slate-950">-</h3></div><span class="rounded-xl bg-blue-600 px-3 py-2 text-xs font-bold text-white">Google</span></div>
+          <div class="mt-5 grid grid-cols-3 gap-3 border-t border-blue-100 pt-4 text-center"><div><strong id="google-leads" class="block tabular-nums text-slate-900">-</strong><small class="text-[9px] text-slate-500">Leads</small></div><div><strong id="google-claimed" class="block tabular-nums text-slate-900">-</strong><small class="text-[9px] text-slate-500">Claimed</small></div><div><strong id="google-campaigns" class="block tabular-nums text-slate-900">-</strong><small class="text-[9px] text-slate-500">Campaigns</small></div></div>
+        </article>
+        <article class="rounded-2xl border border-violet-200 bg-gradient-to-br from-white to-violet-50 p-5 shadow-sm md:p-6">
+          <div class="flex items-center justify-between"><div><p class="text-[9px] font-bold uppercase tracking-[0.2em] text-violet-700">Meta campaign efficiency</p><h3 id="meta-efficiency" class="mt-3 text-3xl font-bold tabular-nums text-slate-950">-</h3></div><span class="rounded-xl bg-violet-600 px-3 py-2 text-xs font-bold text-white">Meta</span></div>
+          <div class="mt-5 grid grid-cols-3 gap-3 border-t border-violet-100 pt-4 text-center"><div><strong id="meta-leads" class="block tabular-nums text-slate-900">-</strong><small class="text-[9px] text-slate-500">Leads</small></div><div><strong id="meta-claimed" class="block tabular-nums text-slate-900">-</strong><small class="text-[9px] text-slate-500">Claimed</small></div><div><strong id="meta-campaigns" class="block tabular-nums text-slate-900">-</strong><small class="text-[9px] text-slate-500">Campaigns</small></div></div>
+        </article>
+      </div>
+
+      <div class="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm md:p-7">
+        <div><h3 class="text-sm font-bold text-slate-900">Engagement funnel</h3><p class="mt-1 text-[10px] text-slate-400">Lead availability, contractor claims and truck-owner response</p></div>
+        <div class="mt-5 min-h-[240px]"><canvas id="engagementChart"></canvas></div>
+      </div>
+    </section>
+
+    <!-- ============================================================ -->
+    <!-- SECTION 3: EXTERNAL LEADS (drugi domeni) -->
     <!-- ============================================================ -->
     <section class="space-y-6 pt-6 border-t border-slate-200">
       <div><p class="text-[10px] font-bold uppercase tracking-[0.22em] text-teal-700">Cross-site pipeline</p><h2 class="mt-1 text-lg font-bold text-slate-900">External lead operations</h2><p class="mt-1 text-xs text-slate-500">Status distribution for the selected period.</p></div>
@@ -134,7 +227,7 @@ import { Activity, CheckCircle2, Globe2, Printer, Target, Users2 } from "lucide-
     </section>
 
     <!-- ============================================================ -->
-    <!-- SECTION 3: NETWORK — Contractors / Truck Owners / Trucks -->
+    <!-- SECTION 4: NETWORK — Contractors / Truck Owners / Trucks -->
     <!-- ============================================================ -->
     <section class="space-y-6 pt-6 border-t border-slate-200">
       <div><p class="text-[10px] font-bold uppercase tracking-[0.22em] text-violet-700">Supply health</p><h2 class="mt-1 text-lg font-bold text-slate-900">Network capacity</h2><p class="mt-1 text-xs text-slate-500">Current roster; independent of the date filter.</p></div>
@@ -178,9 +271,31 @@ import { Activity, CheckCircle2, Globe2, Printer, Target, Users2 } from "lucide-
 </AdminLayout>
 
 <style>
+  .kpi-card {
+    min-height: 190px;
+    border: 1px solid rgb(226 232 240);
+    border-radius: 1rem;
+    background: white;
+    padding: 1.25rem;
+    box-shadow: 0 1px 2px rgb(15 23 42 / 0.04);
+    transition: transform 180ms ease, box-shadow 180ms ease, border-color 180ms ease;
+  }
+  .kpi-card:hover { transform: translateY(-2px); border-color: rgb(203 213 225); box-shadow: 0 10px 28px rgb(15 23 42 / 0.08); }
+  .kpi-card-primary { border-color: rgb(203 213 225); background: linear-gradient(145deg, #fff 40%, #f8fafc); }
+  .kpi-icon { display: flex; width: 2.25rem; height: 2.25rem; align-items: center; justify-content: center; border-radius: 0.75rem; }
+  .kpi-label { font-size: 9px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.16em; color: rgb(148 163 184); }
+  .kpi-value { margin-top: 1.25rem; font-size: 1.875rem; line-height: 2.25rem; font-weight: 700; font-variant-numeric: tabular-nums; color: rgb(2 6 23); }
+  .kpi-name { margin-top: 0.25rem; font-size: 0.75rem; line-height: 1rem; font-weight: 500; color: rgb(71 85 105); }
+  .kpi-trend { margin-top: 0.75rem; min-height: 1rem; font-size: 10px; line-height: 1rem; font-weight: 600; color: rgb(100 116 139); }
+  .metric-tile { min-height: 130px; border: 1px solid rgb(226 232 240); border-radius: 0.875rem; background: white; padding: 1rem; box-shadow: 0 1px 2px rgb(15 23 42 / 0.04); }
+  .metric-tile span { display: block; min-height: 1.75rem; font-size: 9px; font-weight: 700; line-height: 0.875rem; text-transform: uppercase; letter-spacing: 0.12em; color: rgb(100 116 139); }
+  .metric-tile strong { display: block; margin-top: 0.75rem; font-size: 1.5rem; line-height: 1.75rem; font-variant-numeric: tabular-nums; color: rgb(15 23 42); }
+  .metric-tile small { display: block; margin-top: 0.25rem; font-size: 9px; color: rgb(148 163 184); }
+  .metric-alert { border-color: rgb(253 230 138); background: rgb(255 251 235); }
   @media print {
     :global(aside), :global(header), :global(nav) { display: none !important; }
     :global(main) { padding: 0 !important; }
+    .kpi-card { break-inside: avoid; box-shadow: none; }
   }
 </style>
 
@@ -214,6 +329,7 @@ import { Activity, CheckCircle2, Globe2, Printer, Target, Users2 } from "lucide-
   let extLineChart: any = null;
   let extSiteChart: any = null;
   let extFormChart: any = null;
+  let engagementChart: any = null;
   let networkChart: any = null;
 
   function dateLabels(days: number) {
@@ -232,24 +348,88 @@ import { Activity, CheckCircle2, Globe2, Printer, Target, Users2 } from "lucide-
     );
   }
 
+  function setText(id: string, value: string) {
+    const element = document.getElementById(id);
+    if (element) element.textContent = value;
+  }
+
+  function rate(part: number, total: number) {
+    return total > 0 ? (part / total) * 100 : 0;
+  }
+
+  function attributionFor(lead: any) {
+    return lead?.extra?.attribution || {};
+  }
+
+  function sourceFor(lead: any) {
+    const attribution = attributionFor(lead);
+    if (attribution.utm_source) return String(attribution.utm_source).trim().toLowerCase();
+    if (attribution.gclid) return 'google';
+    if (attribution.fbclid) return 'meta';
+    const rawSource = String(lead?.source || '').trim().toLowerCase();
+    if (rawSource && !['website', 'organic', 'direct'].includes(rawSource)) return rawSource;
+    if (attribution.referrer) {
+      try {
+        const hostname = new URL(attribution.referrer).hostname.replace(/^www\./, '');
+        if (hostname && !hostname.includes(window.location.hostname.replace(/^www\./, ''))) return hostname;
+      } catch {}
+    }
+    return rawSource || 'direct';
+  }
+
+  function sourceCategory(source: string) {
+    if (source.includes('google') || source.includes('gads')) return 'google';
+    if (source.includes('fb') || source.includes('facebook') || source.includes('meta') || source.includes('instagram') || source === 'ig') return 'meta';
+    if (source.includes('organic') || source.includes('direct') || source.includes('seo') || source === 'website') return 'organic';
+    return 'other';
+  }
+
+  function escapeHtml(value: unknown) {
+    return String(value ?? '').replace(/[&<>"']/g, (char) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#039;' }[char] || char));
+  }
+
+  function setTrend(id: string, current: number, previous: number, percentagePoints = false) {
+    const element = document.getElementById(id);
+    if (!element) return;
+    const delta = percentagePoints
+      ? current - previous
+      : previous > 0 ? ((current - previous) / previous) * 100 : current > 0 ? 100 : 0;
+    const direction = delta > 0.05 ? 'up' : delta < -0.05 ? 'down' : 'flat';
+    const prefix = direction === 'up' ? '↑' : direction === 'down' ? '↓' : '→';
+    const suffix = percentagePoints ? ' pp' : '%';
+    element.textContent = `${prefix} ${Math.abs(delta).toFixed(1)}${suffix} vs prior period`;
+    element.className = `kpi-trend ${direction === 'up' ? 'text-green-700' : direction === 'down' ? 'text-red-600' : 'text-slate-500'}`;
+  }
+
   async function updateAnalytics(daysStr: string) {
     const days = parseInt(daysStr);
     const date = new Date();
     date.setDate(date.getDate() - days);
     const sinceIso = date.toISOString();
+    const previousDate = new Date();
+    previousDate.setDate(previousDate.getDate() - days * 2);
+    const previousIso = previousDate.toISOString();
     const labels = dateLabels(days);
     document.getElementById('service-period-label')!.textContent = `Last ${days} days`;
 
     // ================= SERVICE LEADS =================
-    const { data: leads } = await supabase.from('leads').select('created_at, status, source').gte('created_at', sinceIso);
-    const leadRows = leads || [];
+    const { data: leads, error: leadsError } = await supabase.from('leads').select('id, created_at, status, source, claimed_at, contractor_id, origin_type, published_at').gte('created_at', previousIso);
+    if (leadsError) console.error('Analytics leads query failed:', leadsError.message);
+    const { data: leadAttribution } = await supabase.from('leads').select('id,extra').gte('created_at', previousIso);
+    const attributionByLead = new Map((leadAttribution || []).map((row: any) => [row.id, row.extra]));
+    const allLeadRows = (leads || []).map((row: any) => ({ ...row, extra: attributionByLead.get(row.id) || null }));
+    const leadRows = allLeadRows.filter((row: any) => new Date(row.created_at) >= date);
+    const previousLeadRows = allLeadRows.filter((row: any) => {
+      const createdAt = new Date(row.created_at);
+      return createdAt >= previousDate && createdAt < date;
+    });
 
     let google = 0, meta = 0, organic = 0, other = 0, claimedCount = 0;
     leadRows.forEach((lead: any) => {
-      const src = lead.source ? lead.source.toLowerCase() : 'organic';
-      if (src.includes('google') || src.includes('gads')) google++;
-      else if (src.includes('fb') || src.includes('facebook') || src.includes('meta') || src.includes('ig') || src.includes('instagram')) meta++;
-      else if (src.includes('organic') || src.includes('direct') || src.includes('seo')) organic++;
+      const category = sourceCategory(sourceFor(lead));
+      if (category === 'google') google++;
+      else if (category === 'meta') meta++;
+      else if (category === 'organic') organic++;
       else other++;
       if (lead.status === 'claimed') claimedCount++;
     });
@@ -257,10 +437,8 @@ import { Activity, CheckCircle2, Globe2, Printer, Target, Users2 } from "lucide-
     const totalCount = leadRows.length;
     const conversionRate = totalCount > 0 ? ((claimedCount / totalCount) * 100).toFixed(1) : '0.0';
 
-    document.getElementById('stat-total')!.textContent = totalCount.toString();
-    document.getElementById('stat-claimed')!.textContent = claimedCount.toString();
-    document.getElementById('stat-conversion')!.textContent = `${conversionRate}%`;
-    document.getElementById('claimed-share')!.textContent = `${conversionRate}% of total volume`;
+    setText('stat-claimed', claimedCount.toString());
+    setText('stat-conversion', `${conversionRate}%`);
     document.getElementById('stat-google')!.textContent = google.toString();
     document.getElementById('stat-meta')!.textContent = meta.toString();
     document.getElementById('stat-organic')!.textContent = organic.toString();
@@ -304,18 +482,185 @@ import { Activity, CheckCircle2, Globe2, Printer, Target, Users2 } from "lucide-
       },
     });
 
+    // ================= FRONTEND PAGE ANALYTICS =================
+    const { data: pageViews, error: pageViewsError } = await supabase
+      .from('frontend_page_views')
+      .select('path,session_id,created_at')
+      .gte('created_at', sinceIso)
+      .order('created_at', { ascending: false })
+      .limit(10000);
+    const pageRows = pageViews || [];
+    const uniqueSessions = new Set(pageRows.map((row: any) => row.session_id).filter(Boolean));
+    setText('page-total-views', pageRows.length.toLocaleString());
+    setText('page-unique-visitors', uniqueSessions.size.toLocaleString());
+    setText('page-views-session', uniqueSessions.size ? (pageRows.length / uniqueSessions.size).toFixed(1) : '0.0');
+
+    const pageStatus = document.getElementById('page-tracking-status');
+    const pageBody = document.getElementById('page-performance');
+    if (pageViewsError) {
+      if (pageStatus) {
+        pageStatus.textContent = 'Setup required';
+        pageStatus.className = 'rounded-full bg-amber-50 px-3 py-1 text-[9px] font-bold uppercase tracking-wider text-amber-700';
+      }
+      if (pageBody) pageBody.innerHTML = '<tr><td colspan="4" class="py-8 text-center text-xs text-amber-700">Apply the frontend page analytics migration to begin tracking visits.</td></tr>';
+    } else {
+      if (pageStatus) {
+        pageStatus.textContent = 'Tracking active';
+        pageStatus.className = 'rounded-full bg-green-50 px-3 py-1 text-[9px] font-bold uppercase tracking-wider text-green-700';
+      }
+      const pages = new Map<string, { views: number; sessions: Set<string> }>();
+      pageRows.forEach((row: any) => {
+        const path = String(row.path || '/').split('?')[0] || '/';
+        const entry = pages.get(path) || { views: 0, sessions: new Set<string>() };
+        entry.views++;
+        if (row.session_id) entry.sessions.add(row.session_id);
+        pages.set(path, entry);
+      });
+      const topPages = [...pages.entries()].sort((a, b) => b[1].views - a[1].views).slice(0, 20);
+      if (pageBody) pageBody.innerHTML = topPages.length
+        ? topPages.map(([path, values]) => `<tr class="border-b border-slate-50 text-xs"><td class="py-3"><a href="${escapeHtml(path)}" target="_blank" class="font-medium text-slate-700 hover:text-green-700">${escapeHtml(path)}</a></td><td class="py-3 text-right tabular-nums text-slate-600">${values.views}</td><td class="py-3 text-right tabular-nums text-slate-600">${values.sessions.size}</td><td class="py-3 text-right font-bold tabular-nums text-slate-900">${rate(values.views, pageRows.length).toFixed(1)}%</td></tr>`).join('')
+        : '<tr><td colspan="4" class="py-8 text-center text-xs text-slate-400">No page views recorded for this period yet.</td></tr>';
+    }
+
+    // ================= MARKETPLACE ENGAGEMENT =================
+    const { data: truckApplications } = await supabase
+      .from('truck_lead_applications')
+      .select('lead_id, truck_owner_id, status, created_at, updated_at')
+      .gte('created_at', previousIso);
+    const allTruckApplications = truckApplications || [];
+    const truckApps = allTruckApplications.filter((row: any) => new Date(row.created_at) >= date);
+    const eligibleLeads = leadRows.filter((lead: any) => ['approved', 'claimed'].includes(lead.status));
+    const claimedLeads = leadRows.filter((lead: any) => lead.status === 'claimed');
+    const claimDurations = claimedLeads
+      .filter((lead: any) => lead.claimed_at)
+      .map((lead: any) => (new Date(lead.claimed_at).getTime() - new Date(lead.published_at || lead.created_at).getTime()) / 3600000)
+      .filter((hours: number) => Number.isFinite(hours) && hours >= 0);
+    const averageClaimHours = claimDurations.length ? claimDurations.reduce((sum: number, value: number) => sum + value, 0) / claimDurations.length : 0;
+    const agedUnclaimed = leadRows.filter((lead: any) =>
+      lead.status === 'approved' && Date.now() - new Date(lead.published_at || lead.created_at).getTime() >= 24 * 3600000
+    );
+    const activeContractors = new Set(claimedLeads.map((lead: any) => lead.contractor_id).filter(Boolean)).size;
+    const activeOwners = new Set(truckApps.map((application: any) => application.truck_owner_id).filter(Boolean)).size;
+    const acceptedTruckApps = truckApps.filter((application: any) => application.status === 'accepted').length;
+    const consideredTruckApps = truckApps.filter((application: any) => application.status !== 'withdrawn').length;
+    const leadsWithTruckApps = new Set(truckApps.map((application: any) => application.lead_id).filter(Boolean));
+    const truckEligibleWithoutApps = eligibleLeads.filter((lead: any) => !leadsWithTruckApps.has(lead.id));
+
+    setText('eng-claim-rate', `${rate(claimedLeads.length, eligibleLeads.length).toFixed(1)}%`);
+    setText('eng-claim-time', claimDurations.length ? (averageClaimHours < 24 ? `${averageClaimHours.toFixed(1)}h` : `${(averageClaimHours / 24).toFixed(1)}d`) : '—');
+    setText('eng-contractors', activeContractors.toString());
+    setText('eng-aged', agedUnclaimed.length.toString());
+    setText('eng-truck-apps', truckApps.length.toString());
+    setText('eng-truck-rate', `${rate(acceptedTruckApps, consideredTruckApps).toFixed(1)}%`);
+    setText('eng-owners', activeOwners.toString());
+    setText('eng-apps-lead', leadsWithTruckApps.size ? (truckApps.length / leadsWithTruckApps.size).toFixed(1) : '0.0');
+
+    const websiteLeads = leadRows.filter((lead: any) => lead.origin_type === 'website' || lead.source === 'website');
+    const attributedWebsiteLeads = websiteLeads.filter((lead: any) => {
+      const attribution = attributionFor(lead);
+      return attribution.utm_source || attribution.referrer || attribution.landing_page;
+    });
+    setText('attribution-coverage', `${rate(attributedWebsiteLeads.length, websiteLeads.length).toFixed(0)}% tracked`);
+
+    const sourcePerformance = new Map<string, { total: number; claimed: number }>();
+    leadRows.forEach((lead: any) => {
+      const source = sourceFor(lead);
+      const entry = sourcePerformance.get(source) || { total: 0, claimed: 0 };
+      entry.total++;
+      if (lead.status === 'claimed') entry.claimed++;
+      sourcePerformance.set(source, entry);
+    });
+    const sourceRows = Array.from(sourcePerformance.entries()).sort((a, b) => b[1].total - a[1].total).slice(0, 8);
+    const sourceBody = document.getElementById('source-performance');
+    if (sourceBody) {
+      sourceBody.innerHTML = sourceRows.length
+        ? sourceRows.map(([source, values]) => `<tr class="border-b border-slate-50 text-xs"><td class="py-3 font-medium text-slate-700">${escapeHtml(source)}</td><td class="py-3 text-right tabular-nums text-slate-600">${values.total}</td><td class="py-3 text-right tabular-nums text-slate-600">${values.claimed}</td><td class="py-3 text-right font-bold tabular-nums text-slate-900">${rate(values.claimed, values.total).toFixed(1)}%</td></tr>`).join('')
+        : '<tr><td colspan="4" class="py-8 text-center text-xs text-slate-400">No acquisition data for this period.</td></tr>';
+    }
+
+    const campaigns = new Map<string, { platform: string; total: number; claimed: number }>();
+    websiteLeads.forEach((lead: any) => {
+      const campaign = attributionFor(lead).utm_campaign;
+      if (!campaign) return;
+      const category = sourceCategory(sourceFor(lead));
+      const platform = category === 'google' ? 'Google' : category === 'meta' ? 'Meta' : 'Other';
+      const key = `${platform}:${campaign}`;
+      const entry = campaigns.get(key) || { platform, total: 0, claimed: 0 };
+      entry.total++;
+      if (lead.status === 'claimed') entry.claimed++;
+      campaigns.set(key, entry);
+    });
+    const campaignList = document.getElementById('campaign-list');
+    const campaignRows = Array.from(campaigns.entries()).sort((a, b) => b[1].total - a[1].total).slice(0, 5);
+    if (campaignList) campaignList.innerHTML = campaignRows.length
+      ? campaignRows.map(([key, values]) => {
+          const name = key.slice(key.indexOf(':') + 1);
+          const badge = values.platform === 'Google' ? 'bg-blue-50 text-blue-700' : values.platform === 'Meta' ? 'bg-violet-50 text-violet-700' : 'bg-slate-100 text-slate-600';
+          return `<div class="rounded-lg border border-slate-100 p-2.5"><div class="flex items-center justify-between gap-2"><span class="truncate text-xs font-medium text-slate-700">${escapeHtml(name)}</span><span class="rounded-full px-2 py-0.5 text-[8px] font-bold uppercase ${badge}">${values.platform}</span></div><div class="mt-1.5 flex justify-between text-[9px] text-slate-400"><span>${values.total} leads · ${values.claimed} claimed</span><strong class="text-slate-700">${rate(values.claimed, values.total).toFixed(1)}%</strong></div></div>`;
+        }).join('')
+      : '<p class="text-xs text-slate-400">Campaign parameters have not been recorded yet.</p>';
+
+    const paidStats = (platform: 'google' | 'meta') => {
+      const rows = websiteLeads.filter((lead: any) => sourceCategory(sourceFor(lead)) === platform);
+      const claimed = rows.filter((lead: any) => lead.status === 'claimed').length;
+      const campaignCount = new Set(rows.map((lead: any) => attributionFor(lead).utm_campaign).filter(Boolean)).size;
+      return { total: rows.length, claimed, campaignCount, efficiency: rate(claimed, rows.length) };
+    };
+    const googleStats = paidStats('google');
+    const metaStats = paidStats('meta');
+    setText('google-efficiency', `${googleStats.efficiency.toFixed(1)}%`);
+    setText('google-leads', googleStats.total.toString());
+    setText('google-claimed', googleStats.claimed.toString());
+    setText('google-campaigns', googleStats.campaignCount.toString());
+    setText('meta-efficiency', `${metaStats.efficiency.toFixed(1)}%`);
+    setText('meta-leads', metaStats.total.toString());
+    setText('meta-claimed', metaStats.claimed.toString());
+    setText('meta-campaigns', metaStats.campaignCount.toString());
+
+    const insights = [
+      { count: agedUnclaimed.length, label: 'leads have been available for more than 24 hours', tone: agedUnclaimed.length ? 'amber' : 'green' },
+      { count: truckEligibleWithoutApps.length, label: 'available leads have no truck-owner application', tone: truckEligibleWithoutApps.length ? 'amber' : 'green' },
+      { count: eligibleLeads.length - claimedLeads.length, label: 'available leads remain unclaimed by contractors', tone: eligibleLeads.length > claimedLeads.length ? 'blue' : 'green' },
+    ];
+    const insightsElement = document.getElementById('engagement-insights');
+    if (insightsElement) insightsElement.innerHTML = insights.map((item) => {
+      const colors: Record<string, string> = { amber: 'bg-amber-50 text-amber-700 border-amber-100', blue: 'bg-blue-50 text-blue-700 border-blue-100', green: 'bg-green-50 text-green-700 border-green-100' };
+      return `<div class="flex items-start gap-3 rounded-xl border p-3 ${colors[item.tone]}"><strong class="text-lg tabular-nums">${item.count}</strong><span class="pt-0.5 text-[10px] leading-4">${item.label}</span></div>`;
+    }).join('');
+
+    const engagementCtx = document.getElementById('engagementChart') as HTMLCanvasElement;
+    if (engagementChart) engagementChart.destroy();
+    engagementChart = new Chart(engagementCtx, {
+      type: 'bar',
+      data: {
+        labels: ['Available leads', 'Contractor claims', 'Truck applications', 'Accepted truck apps'],
+        datasets: [{ label: 'Activity', data: [eligibleLeads.length, claimedLeads.length, truckApps.length, acceptedTruckApps], backgroundColor: ['#2563EB', '#16A34A', '#7C3AED', '#0D9488'], borderRadius: 7, maxBarThickness: 72 }],
+      },
+      options: {
+        responsive: true, maintainAspectRatio: false,
+        plugins: { legend: { display: false }, tooltip: TOOLTIP },
+        scales: {
+          y: { beginAtZero: true, ticks: { color: AXIS_TEXT, stepSize: 1, font: { family: 'monospace', size: 10 } }, grid: { color: GRID_COLOR }, border: { display: false } },
+          x: { ticks: { color: '#475569', font: { family: 'monospace', size: 10 } }, grid: { display: false }, border: { display: false } },
+        },
+      },
+    });
+
     // ================= EXTERNAL LEADS =================
-    const { data: extAll } = await supabase.from('external_leads').select('created_at, status, source_domain, form_type, extra');
+    const { data: extAll } = await supabase.from('external_leads').select('created_at, status, source_domain, form_type, extra, website_lead_id').gte('created_at', previousIso);
     const extAllRows = extAll || [];
     const extRows = extAllRows.filter((r: any) => new Date(r.created_at) >= date);
+    const previousExtRows = extAllRows.filter((row: any) => {
+      const createdAt = new Date(row.created_at);
+      return createdAt >= previousDate && createdAt < date;
+    });
 
-    document.getElementById('summary-ext-total')!.textContent = extRows.length.toString();
     document.getElementById('ext-total')!.textContent = extRows.length.toString();
     document.getElementById('ext-new')!.textContent = extRows.filter((r: any) => r.status === 'new').length.toString();
     document.getElementById('ext-approved')!.textContent = extRows.filter((r: any) => r.status === 'approved').length.toString();
     document.getElementById('ext-rejected')!.textContent = extRows.filter((r: any) => r.status === 'rejected').length.toString();
     document.getElementById('ext-contacted')!.textContent = extRows.filter((r: any) => r.status === 'contacted').length.toString();
-    document.getElementById('ext-migrated')!.textContent = extRows.filter((r: any) => r.extra && (r.extra as any).migrated_from_lead_id).length.toString();
+    document.getElementById('ext-migrated')!.textContent = extRows.filter((r: any) => r.status === 'published' || r.website_lead_id).length.toString();
 
     const extCountsArray = countByDay(extRows, labels);
     const extLineCtx = document.getElementById('extLineChart') as HTMLCanvasElement;
@@ -379,6 +724,53 @@ import { Activity, CheckCircle2, Globe2, Printer, Target, Users2 } from "lucide-
     const tApproved = truckRows.filter((t: any) => t.approval_status === 'approved').length;
     const tPending = truckRows.filter((t: any) => !t.approval_status || t.approval_status === 'pending').length;
     const tRejected = truckRows.filter((t: any) => t.approval_status === 'rejected').length;
+
+    // ================= EXECUTIVE KPI LAYER =================
+    const previousClaimed = previousLeadRows.filter((lead: any) => lead.status === 'claimed').length;
+    const previousConversion = rate(previousClaimed, previousLeadRows.length);
+    const currentDemand = leadRows.length + extRows.length;
+    const previousDemand = previousLeadRows.length + previousExtRows.length;
+    const openService = leadRows.filter((lead: any) => !lead.status || ['new', 'approved', 'pending'].includes(lead.status)).length;
+    const openExternal = extRows.filter((lead: any) => !lead.status || ['new', 'contacted', 'pending'].includes(lead.status)).length;
+    const openPipeline = openService + openExternal;
+    const closedPipeline = claimedCount + extRows.filter((lead: any) => ['approved', 'published', 'rejected'].includes(lead.status)).length;
+    const closedRate = rate(closedPipeline, currentDemand);
+    const networkTotal = contractorRows.length + ownerRows.length + truckRows.length;
+    const networkApproved = cActive + oApproved + tApproved;
+    const readiness = rate(networkApproved, networkTotal);
+
+    setText('kpi-demand', currentDemand.toString());
+    setText('kpi-open', openPipeline.toString());
+    setText('kpi-readiness', `${readiness.toFixed(1)}%`);
+    setText('kpi-daily', (currentDemand / days).toFixed(1));
+    setText('pipeline-closed-rate', `${closedRate.toFixed(1)}%`);
+    const pipelineProgress = document.getElementById('pipeline-progress');
+    if (pipelineProgress) pipelineProgress.style.width = `${Math.min(closedRate, 100)}%`;
+    setTrend('trend-demand', currentDemand, previousDemand);
+    setTrend('trend-claimed', claimedCount, previousClaimed);
+    setTrend('trend-conversion', Number(conversionRate), previousConversion, true);
+
+    const demandDelta = previousDemand > 0 ? ((currentDemand - previousDemand) / previousDemand) * 100 : currentDemand > 0 ? 100 : 0;
+    const performanceTitle = document.getElementById('performance-title');
+    const performanceCopy = document.getElementById('performance-copy');
+    if (performanceTitle && performanceCopy) {
+      if (currentDemand === 0) {
+        performanceTitle.textContent = 'No lead activity in this period';
+        performanceCopy.textContent = 'Widen the reporting period or review acquisition channels for delivery issues.';
+      } else if (demandDelta >= 10 && Number(conversionRate) >= previousConversion) {
+        performanceTitle.textContent = 'Demand and conversion are moving in the right direction';
+        performanceCopy.textContent = `Lead volume is up ${demandDelta.toFixed(1)}% while claim efficiency is holding or improving.`;
+      } else if (demandDelta >= 10) {
+        performanceTitle.textContent = 'Demand is growing, but conversion needs attention';
+        performanceCopy.textContent = `Volume increased ${demandDelta.toFixed(1)}%, while claim rate trails the previous period by ${(previousConversion - Number(conversionRate)).toFixed(1)} points.`;
+      } else if (openPipeline > closedPipeline) {
+        performanceTitle.textContent = 'Pipeline follow-up is the immediate priority';
+        performanceCopy.textContent = `${openPipeline} opportunities are still open versus ${closedPipeline} with a final outcome in this period.`;
+      } else {
+        performanceTitle.textContent = 'Performance is stable across the selected period';
+        performanceCopy.textContent = `Demand is ${Math.abs(demandDelta).toFixed(1)}% ${demandDelta >= 0 ? 'above' : 'below'} the previous matching period.`;
+      }
+    }
 
     document.getElementById('net-contractors-total')!.textContent = contractorRows.length.toString();
     document.getElementById('net-contractors-active')!.textContent = cActive.toString();

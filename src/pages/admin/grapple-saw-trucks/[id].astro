@@ -98,34 +98,21 @@ if (truck.owner_user_id) {
     </div>
   </div>
 
+  <div class="dash-shell flex-1"><div class="dash-scroll">
   <div class="w-full grid grid-cols-1 xl:grid-cols-12 gap-8">
     
     <!-- Podaci o kamionu -->
     <div class="xl:col-span-8 space-y-6">
       
-      <!-- HEADER SA AKCIJAMA -->
-      <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+      <!-- HEADER -->
+      <div class="flex items-center gap-3">
+        <a href="/admin/grapple-saw-trucks" class="inline-flex items-center gap-2 px-3 py-2 rounded-lg border border-zinc-200 text-[11px] font-bold uppercase tracking-wider text-zinc-600 hover:bg-zinc-50">
+          ← Back
+        </a>
         <div>
-          <span class="text-[9px] font-mono font-bold uppercase tracking-[0.2em] text-violet-700">// Fleet asset</span>
+          <span class="dash-eyebrow text-violet-700">// Fleet asset</span>
           <h1 class="mt-1.5 text-2xl font-bold text-slate-950 tracking-tight">Truck details</h1>
           <p class="text-[10px] font-mono text-slate-400 mt-1 uppercase">ID: {truck.id.split('-')[0]}</p>
-        </div>
-        <div class="flex flex-wrap gap-3 w-full sm:w-auto">
-          {truck.owner_phone && (
-            <a href={`tel:${truck.owner_phone}`} class="flex-1 sm:flex-none text-center text-[10px] text-green-700 uppercase font-bold tracking-[0.2em] transition-colors border border-green-200 bg-green-50 px-4 py-2.5 rounded-lg hover:bg-green-500 hover:text-slate-50">📞 Call</a>
-          )}
-          {truck.owner_email && (
-            <a href={`mailto:${truck.owner_email}`} class="flex-1 sm:flex-none text-center text-[10px] text-blue-600 uppercase font-bold tracking-[0.2em] transition-colors border border-blue-200 bg-blue-50 px-4 py-2.5 rounded-lg hover:bg-blue-500 hover:text-slate-50">✉️ Email</a>
-          )}
-          <button id="editBtn" class="text-[10px] text-zinc-600 hover:text-slate-900 uppercase font-bold tracking-[0.2em] transition-colors border border-zinc-200 px-4 py-2.5 rounded-lg hover:bg-zinc-100">
-            Edit
-          </button>
-          <button id="deleteBtn" class="text-[10px] text-red-600/70 hover:text-red-600 uppercase font-bold tracking-[0.2em] transition-colors border border-red-200 px-4 py-2.5 rounded-lg hover:bg-red-50">
-            Delete
-          </button>
-          <a href="/admin/grapple-saw-trucks" class="text-[10px] text-zinc-500 hover:text-slate-900 uppercase font-bold tracking-[0.2em] transition-colors border border-zinc-200 px-4 py-2.5 rounded-lg hover:bg-zinc-100">
-            ← Back
-          </a>
         </div>
       </div>
       
@@ -280,24 +267,62 @@ if (truck.owner_user_id) {
       </div>
     </div>
 
-    <!-- Desna Kolona: Logovi -->
-    <div class="xl:col-span-4 bg-white border border-zinc-100 p-6 rounded-xl self-start sticky top-8 shadow-2xl">
-      <h3 class="text-[10px] font-bold uppercase tracking-[0.2em] text-slate-900 mb-8 border-b border-zinc-100 pb-4">Activity Timeline</h3>
-      <div class="space-y-6">
-        {logs?.map(log => (
-          <div class="relative pl-6 before:content-[''] before:absolute before:left-0 before:top-1.5 before:w-2 before:h-2 before:bg-zinc-200 before:border-2 before:border-slate-200 before:rounded-full after:content-[''] after:absolute after:left-[3px] after:top-4 after:bottom-[-20px] after:w-[2px] after:bg-zinc-100 last:after:hidden">
-            <p class="text-[11px] text-slate-900 font-bold leading-tight">{log.action}</p>
-            <div class="flex items-center gap-2 mt-1.5">
-              <span class="text-[9px] text-zinc-500 font-mono">by <span class="text-zinc-700 font-bold tracking-wider uppercase">{log.changed_by || 'Stojan M.'}</span></span>
-              <span class="text-[7px] text-zinc-300">●</span>
-              <span class="text-[9px] text-zinc-400">{new Date(log.created_at).toLocaleDateString()} {new Date(log.created_at).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}</span>
+    <!-- Sidebar: Status / Actions / Manage / Activity Log -->
+    <div class="xl:col-span-4 detail-sidebar">
+      <!-- Current Status -->
+      <div class="detail-card">
+        <h3 class="detail-card__title">Current Status</h3>
+        <div class="flex flex-wrap gap-2">
+          <span class={`inline-block px-3 py-2 rounded-full text-[11px] font-bold uppercase tracking-wide border ${appStatus === 'approved' ? 'border-green-700/50 text-green-700 bg-green-500/10' : appStatus === 'rejected' ? 'border-red-700/50 text-red-600 bg-red-500/10' : 'border-zinc-300 text-zinc-600 bg-zinc-200/50'}`}>
+            {appStatus}
+          </span>
+          <span class={`inline-block px-3 py-2 rounded-full text-[11px] font-bold uppercase tracking-wide border ${availStatus === 'Available' ? 'border-green-700/50 text-green-700 bg-green-500/10' : 'border-amber-400/50 text-amber-600 bg-amber-500/10'}`}>
+            {appStatus === 'approved' ? availStatus : 'Pending'}
+          </span>
+        </div>
+      </div>
+
+      <!-- Actions -->
+      <div class="detail-card">
+        <h3 class="detail-card__title">Actions</h3>
+        <div class="space-y-2">
+          {truck.owner_phone && (
+            <a href={`tel:${truck.owner_phone}`} class="detail-btn detail-btn--primary">📞 Call Owner</a>
+          )}
+          {truck.owner_email && (
+            <a href={`mailto:${truck.owner_email}`} class="detail-btn detail-btn--ghost">✉️ Email Owner</a>
+          )}
+          <button id="editBtn" class="detail-btn detail-btn--ghost">✏️ Edit details</button>
+        </div>
+      </div>
+
+      <!-- Manage -->
+      <div class="detail-card detail-card--danger">
+        <h3 class="detail-card__title detail-card__title--danger">Manage</h3>
+        <button id="deleteBtn" class="detail-btn detail-btn--danger">
+          🗑️ Delete Truck
+        </button>
+      </div>
+
+      <!-- Activity Log -->
+      <div class="detail-card">
+        <h3 class="detail-card__title">Activity Log</h3>
+        <div class="detail-log">
+          {logs?.map(log => (
+            <div class="detail-log__entry">
+              <div class="detail-log__dot" style="background:#8b5cf6"></div>
+              <div>
+                <p class="text-sm text-slate-900">{log.action}</p>
+                <p class="text-[10px] text-zinc-400 mt-0.5 font-mono">by {log.changed_by || 'Stojan M.'} · {new Date(log.created_at).toLocaleDateString()} {new Date(log.created_at).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}</p>
+              </div>
             </div>
-          </div>
-        ))}
-        {(!logs || logs.length === 0) && <p class="text-[10px] text-zinc-400 italic">No activity recorded yet.</p>}
+          ))}
+          {(!logs || logs.length === 0) && <p class="text-[11px] text-zinc-400 italic">No activity recorded yet.</p>}
+        </div>
       </div>
     </div>
   </div>
+  </div></div>
 </AdminLayout>
 
 <script>

@@ -6,12 +6,14 @@ interface Props {
   title?: string;
   description?: string;
   image?: string;
+  structuredData?: Record<string, unknown> | Record<string, unknown>[];
 }
 
 const {
   title = "SF Tree Removal | Premium Tree Service Dispatch Network",
   description = "Connect homeowners with trusted local tree service professionals and grapple saw truck operators across South Florida.",
-  image = "/og-image.jpg" // Putanja do slike koja će se prikazati kada neko podeli link na Viberu/WhatsAppu/FB-u
+  image = "/og-image.jpg", // Putanja do slike koja će se prikazati kada neko podeli link na Viberu/WhatsAppu/FB-u
+  structuredData,
 } = Astro.props;
 
 // Generisanje kanoničnog URL-a za SEO (sprečava duplicate content penale)
@@ -96,6 +98,7 @@ const { data: tracking } = await supabase
   <meta property="twitter:title" content={title} />
   <meta property="twitter:description" content={description} />
   <meta property="twitter:image" content={new URL(image, Astro.url)} />
+  {structuredData && <script type="application/ld+json" set:html={JSON.stringify(structuredData)} />}
 
   <!-- ============================================== -->
   <!-- STRUCTURED DATA (schema.org) -->
@@ -135,5 +138,34 @@ const { data: tracking } = await supabase
   <!-- GLAVNI SADRŽAJ STRANICE -->
   <slot />
 
+  <script>
+    (() => {
+      const storageKey = "sftr_analytics_session";
+      let sessionId = "";
+      try {
+        sessionId = localStorage.getItem(storageKey) || crypto.randomUUID();
+        localStorage.setItem(storageKey, sessionId);
+      } catch {
+        sessionId = crypto.randomUUID();
+      }
+
+      const url = new URL(window.location.href);
+      const payload = {
+        path: `${url.pathname}${url.search}`,
+        title: document.title,
+        sessionId,
+        referrer: document.referrer || null,
+        utmSource: url.searchParams.get("utm_source"),
+        utmMedium: url.searchParams.get("utm_medium"),
+        utmCampaign: url.searchParams.get("utm_campaign"),
+      };
+      fetch("/api/page-view", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload),
+        keepalive: true,
+      }).catch(() => {});
+    })();
+  </script>
 </body>
 </html>

@@ -5,6 +5,7 @@ const navigation = [
   { title: "Services", href: "/services" },
   { title: "For Contractors", href: "/contractors-registration" },
   { title: "Fleet Ops", href: "/truck-registration" },
+  { title: "Truck Directory", href: "/truck-directory" },
   { title: "Service Areas", href: "/service-areas" }
 ];
 
@@ -21,7 +22,7 @@ const isActive = (href: string) => href === '/' ? currentPath === '/' : currentP
     </a>
 
   <!-- Desktop Nav -->
-    <nav class="hidden items-center gap-6 lg:flex">
+    <nav class="hidden items-center gap-5 lg:flex">
       {navigation.map((item) => (
         <a href={item.href} aria-current={isActive(item.href) ? 'page' : undefined} class={`relative py-2 text-[10px] font-mono font-bold uppercase tracking-[0.16em] transition-colors ${isActive(item.href) ? 'text-green-700 after:absolute after:inset-x-0 after:-bottom-1 after:h-0.5 after:rounded-full after:bg-green-600' : 'text-slate-500 hover:text-slate-900'}`}>
           {item.title}

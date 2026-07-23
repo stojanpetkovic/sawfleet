@@ -46,13 +46,13 @@ import AdminLayout from "../../layouts/AdminLayout.astro";
     + Add Owner
   </button>
 
-  <div class="space-y-5 w-full">
-
+  <div class="dash-shell flex-1">
+  <div class="dash-shell__frozen">
     <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
       <div>
-        <span class="text-[9px] font-mono font-bold uppercase tracking-[0.2em] text-amber-700">// Fleet partners</span>
-        <h1 class="mt-1.5 text-2xl sm:text-3xl font-bold text-slate-950 tracking-tight">Truck owners</h1>
-        <p class="text-sm text-slate-500 mt-1.5">Everyone with a fleet owner account on the platform.</p>
+        <span class="dash-eyebrow text-amber-700">// Fleet partners</span>
+        <h1 class="dash-title">Truck owners</h1>
+        <p class="dash-subtitle">Everyone with a fleet owner account on the platform.</p>
       </div>
       <a href="/admin/grapple-saw-trucks" class="text-[10px] font-bold uppercase tracking-[0.2em] text-zinc-500 hover:text-slate-900 border border-zinc-200 px-4 py-2.5 rounded-lg hover:bg-zinc-100 transition-colors whitespace-nowrap">
         View Trucks →
@@ -60,46 +60,63 @@ import AdminLayout from "../../layouts/AdminLayout.astro";
     </div>
 
     <!-- Stats -->
-    <div class="flex sm:grid sm:grid-cols-4 gap-3 overflow-x-auto no-scrollbar -mx-4 px-4 sm:mx-0 sm:px-0 pb-1">
+    <div class="stat-row grid-cols-4">
       {[
-        { id: 'total', label: 'Total Owners', color: 'text-slate-900' },
+        { id: 'total', label: 'Total Owners', color: '' },
         { id: 'pending', label: 'Pending Approval', color: 'text-amber-600' },
         { id: 'approved', label: 'Approved', color: 'text-green-700' },
         { id: 'totalTrucks', label: 'Trucks Managed', color: 'text-blue-600' },
       ].map(stat => (
-        <div class="shrink-0 w-[130px] sm:w-auto bg-white border border-zinc-100 p-4 rounded-2xl">
-          <p class="text-[9px] font-bold uppercase tracking-[0.15em] text-zinc-400">{stat.label}</p>
-          <h2 id={`count-${stat.id}`} class={`text-2xl font-mono font-bold mt-1.5 ${stat.color}`}>0</h2>
+        <div class="stat-card">
+          <p class="stat-card__label">{stat.label}</p>
+          <h2 id={`count-${stat.id}`} class={`stat-card__value ${stat.color}`}>0</h2>
         </div>
       ))}
     </div>
 
     <!-- FILTERI -->
     <div class="bg-white border border-zinc-100 rounded-2xl p-4 flex flex-col md:flex-row gap-3">
-      <input id="searchInput" type="text" placeholder="Search name, email, or phone…" class="flex-1 h-11 px-4 rounded-lg border border-zinc-200 bg-zinc-50 text-sm text-slate-900 outline-none focus:border-green-500" />
-      <select id="truckFilter" class="h-11 px-4 rounded-lg border border-zinc-200 bg-zinc-50 text-sm text-slate-900 outline-none focus:border-green-500">
+      <input id="searchInput" type="text" placeholder="Search name, email, or phone…" class="flex-1 filter-input" />
+      <select id="truckFilter" class="filter-input">
         <option value="all">All owners</option>
         <option value="withTrucks">Has trucks</option>
         <option value="noTrucks">No trucks yet</option>
       </select>
-      <select id="statusFilter" class="h-11 px-4 rounded-lg border border-zinc-200 bg-zinc-50 text-sm text-slate-900 outline-none focus:border-green-500">
+      <select id="statusFilter" class="filter-input">
         <option value="all">All statuses</option>
         <option value="pending">Pending</option>
         <option value="approved">Approved</option>
         <option value="rejected">Rejected</option>
       </select>
-      <select id="sortFilter" class="h-11 px-4 rounded-lg border border-zinc-200 bg-zinc-50 text-sm text-slate-900 outline-none focus:border-green-500">
+      <select id="sortFilter" class="filter-input">
         <option value="newest">Newest first</option>
         <option value="oldest">Oldest first</option>
         <option value="name">Name A–Z</option>
         <option value="trucks">Most trucks</option>
       </select>
     </div>
+  </div>
 
-    <!-- LISTA -->
-    <div id="ownersTable" class="space-y-2">
-      <div class="p-8 text-center text-zinc-400 text-sm">Loading...</div>
+  <div class="dash-scroll">
+    <div class="flex flex-col xl:flex-row gap-6 lg:gap-8 w-full">
+      <div class="flex-1 min-w-0">
+        <!-- LISTA -->
+        <div id="ownersTable" class="space-y-2">
+          <div class="p-8 text-center text-zinc-400 text-sm">Loading...</div>
+        </div>
+      </div>
+
+      <!-- Recent Activity -->
+      <div class="w-full xl:w-[380px] shrink-0">
+        <div class="bg-white border border-zinc-100 rounded-2xl p-5">
+          <p class="text-[9px] font-bold uppercase tracking-[0.15em] text-zinc-400 mb-3">Recent Activity</p>
+          <div id="ownerLogsContainer" class="recent-feed">
+            <div class="text-[11px] font-mono text-zinc-500">Loading...</div>
+          </div>
+        </div>
+      </div>
     </div>
+  </div>
   </div>
 </AdminLayout>
 
@@ -386,5 +403,32 @@ import AdminLayout from "../../layouts/AdminLayout.astro";
     }
   });
 
+  async function loadRecentActivity() {
+    const container = document.getElementById('ownerLogsContainer');
+    if (!container) return;
+    const { data: logs } = await supabase
+      .from('truck_owner_logs')
+      .select('*, truck_owners(company_name, contact_name)')
+      .order('created_at', { ascending: false })
+      .limit(10);
+
+    if (!logs || logs.length === 0) {
+      container.innerHTML = '<p class="text-[11px] text-zinc-400 italic">No activity yet.</p>';
+      return;
+    }
+
+    container.innerHTML = logs.map((log: any) => `
+      <div class="recent-feed__row">
+        <div class="recent-feed__dot"></div>
+        <div class="min-w-0">
+          <p class="text-xs font-bold text-slate-900 truncate">${log.truck_owners?.company_name || log.truck_owners?.contact_name || 'Owner'}</p>
+          <p class="text-[11px] text-zinc-500 truncate">${log.action}</p>
+          <p class="text-[10px] text-zinc-400 font-mono mt-0.5">${timeAgo(log.created_at)}</p>
+        </div>
+      </div>
+    `).join('');
+  }
+
   loadOwners();
+  loadRecentActivity();
 </script>

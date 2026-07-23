@@ -1,43 +1,16 @@
 export const prerender = false;
 
-import { initPermitSyncCron } from "../../lib/permitCron";
-
-let cronInitialized = false;
-
 /**
- * Initializes permit sync cron job on first request
- * Called automatically by admin pages on load
+ * The process-local scheduler has been retired. Production scheduling is
+ * managed by Supabase Cron so restarts and horizontal scaling cannot create
+ * missed or duplicate intervals.
  */
 export async function POST() {
-  try {
-    if (!cronInitialized) {
-      initPermitSyncCron();
-      cronInitialized = true;
-      return new Response(
-        JSON.stringify({
-          ok: true,
-          message: "Permit sync cron job initialized",
-        }),
-        { status: 200, headers: { "Content-Type": "application/json" } }
-      );
-    }
-
-    return new Response(
-      JSON.stringify({
-        ok: true,
-        message: "Permit sync cron job already initialized",
-      }),
-      { status: 200, headers: { "Content-Type": "application/json" } }
-    );
-  } catch (error: any) {
-    return new Response(
-      JSON.stringify({
-        ok: false,
-        error: error?.message || "Failed to initialize cron",
-      }),
-      { status: 500, headers: { "Content-Type": "application/json" } }
-    );
-  }
+  return new Response(JSON.stringify({
+    ok: false,
+    error: "process_scheduler_retired",
+    message: "Permit sync is scheduled through Supabase Cron.",
+  }), { status: 410, headers: { "Content-Type": "application/json" } });
 }
 
 export async function GET() {

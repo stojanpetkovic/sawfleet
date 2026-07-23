@@ -1,7 +1,7 @@
 ---
 import ContractorLayout from "../layouts/ContractorLayout.astro";
 import { supabase } from "../lib/supabase";
-import { Truck as TruckIcon, UserCog2 } from "lucide-astro";
+import { ClipboardCheck, Inbox, Truck as TruckIcon, UserCog2 } from "lucide-astro";
 
 const { data: territories } = await supabase
   .from('service_territories')
@@ -9,12 +9,14 @@ const { data: territories } = await supabase
   .order('name', { ascending: true });
 
 const navItems = [
+  { label: 'Leads', tab: 'leads', icon: Inbox },
+  { label: 'Applications', tab: 'applications', icon: ClipboardCheck },
   { label: 'Equipment', tab: 'equipment', icon: TruckIcon },
   { label: 'Profile', tab: 'profile', icon: UserCog2 },
 ];
 ---
 
-<ContractorLayout companyName="Fleet Owner" homeHref="/truck-dashboard" loginHref="/truck-login" navItems={navItems} activeTab="equipment">
+<ContractorLayout companyName="Fleet Owner" homeHref="/truck-dashboard" loginHref="/truck-login" navItems={navItems} activeTab="leads">
   <!-- ADD TRUCK MODAL -->
   <div id="addTruckModal" class="hidden fixed inset-0 bg-slate-900/40 backdrop-blur-sm z-[200] flex items-center justify-center p-4 overflow-y-auto">
     <div class="bg-white border border-slate-200 shadow-2xl p-6 sm:p-8 rounded-2xl max-w-lg w-full my-8">
@@ -166,8 +168,28 @@ const navItems = [
 
   <div id="stateActive" class="hidden flex-col space-y-6 w-full">
 
+    <div id="panelLeads" class="space-y-6">
+      <div class="border-b border-slate-200 pb-7">
+        <span class="text-[10px] font-mono font-bold uppercase tracking-[0.2em] text-blue-700">// Equipment opportunities</span>
+        <h1 class="mt-2 text-2xl font-bold tracking-tight text-slate-950 sm:text-3xl">Lead workspace</h1>
+        <p class="mt-2 max-w-2xl text-sm text-slate-500">Jobs in territories covered by your approved, available trucks. Apply to offer equipment support.</p>
+      </div>
+      <div class="grid grid-cols-2 gap-4">
+        <div class="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm"><p class="text-[9px] font-bold uppercase tracking-[0.18em] text-slate-400">Available</p><p id="truckLeadCount" class="mt-3 text-3xl font-bold tabular-nums text-slate-950">-</p></div>
+        <div class="rounded-2xl border border-blue-200 bg-blue-50/50 p-5 shadow-sm"><p class="text-[9px] font-bold uppercase tracking-[0.18em] text-blue-700">Applied</p><p id="truckApplicationCount" class="mt-3 text-3xl font-bold tabular-nums text-slate-950">-</p></div>
+      </div>
+      <div id="truckLeadsContainer" class="space-y-4"></div>
+      <div id="noTruckLeads" class="hidden rounded-2xl border border-dashed border-slate-300 p-10 text-center text-sm text-slate-400">No matching leads are available right now.</div>
+    </div>
+
+    <div id="panelApplications" class="hidden space-y-6">
+      <div><span class="text-[10px] font-mono font-bold uppercase tracking-[0.2em] text-blue-700">// Your responses</span><h2 class="mt-2 text-2xl font-bold text-slate-950">Lead applications</h2><p class="mt-1 text-sm text-slate-500">Track equipment support offers submitted from this account.</p></div>
+      <div id="truckApplicationsContainer" class="space-y-4"></div>
+      <div id="noTruckApplications" class="hidden rounded-2xl border border-dashed border-slate-300 p-10 text-center text-sm text-slate-400">You have not applied to any leads yet.</div>
+    </div>
+
     <!-- PANEL: EQUIPMENT -->
-    <div id="panelEquipment" class="space-y-6">
+    <div id="panelEquipment" class="hidden space-y-6">
       <div class="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-4 border-b border-slate-200 pb-7">
         <div>
           <span class="text-[10px] font-mono font-bold uppercase tracking-[0.2em] text-blue-700">// Fleet workspace</span>
@@ -246,6 +268,9 @@ const navItems = [
     location: string; approval_status: string; availability_status: string; created_at: string;
     access_type?: string; listing_type?: string; owner_phone?: string;
   };
+  type TruckLead = { id: string; county: string; details: string | null; source: string; created_at: string; application_status: string | null };
+  let ownerTrucks: Truck[] = [];
+  let truckLeadPoll: ReturnType<typeof setInterval> | null = null;
 
   function show(id: string) {
     ['stateLoading', 'stateNoAccess', 'statePending', 'stateRejected', 'stateActive'].forEach((s) => document.getElementById(s)?.classList.add('hidden'));
@@ -254,13 +279,15 @@ const navItems = [
     el?.classList.add('flex');
   }
 
-  function showTab(tab: 'equipment' | 'profile') {
+  function showTab(tab: 'leads' | 'applications' | 'equipment' | 'profile') {
+    document.getElementById('panelLeads')?.classList.toggle('hidden', tab !== 'leads');
+    document.getElementById('panelApplications')?.classList.toggle('hidden', tab !== 'applications');
     document.getElementById('panelEquipment')?.classList.toggle('hidden', tab !== 'equipment');
     document.getElementById('panelProfile')?.classList.toggle('hidden', tab !== 'profile');
   }
   document.addEventListener('layout:tab-change', (e) => {
     const tab = (e as CustomEvent).detail?.tab;
-    if (tab === 'equipment' || tab === 'profile') showTab(tab);
+    if (tab === 'leads' || tab === 'applications' || tab === 'equipment' || tab === 'profile') showTab(tab);
   });
 
   function renderTruck(t: Truck) {
@@ -287,6 +314,86 @@ const navItems = [
     `;
     wrapper.querySelector('.edit-truck-btn')?.addEventListener('click', () => openEditModal(t));
     return wrapper;
+  }
+
+  function renderTruckLead(lead: TruckLead) {
+    const applied = !!lead.application_status && lead.application_status !== 'withdrawn';
+    const eligibleTrucks = ownerTrucks.filter((truck) =>
+      truck.approval_status === 'approved' &&
+      (truck.availability_status || 'Available').toLowerCase() === 'available' &&
+      truck.location?.trim().toLowerCase() === lead.county?.trim().toLowerCase()
+    );
+    const wrapper = document.createElement('article');
+    wrapper.className = 'rounded-2xl border border-slate-200 bg-white p-5 shadow-sm';
+    wrapper.innerHTML = `
+      <div class="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
+        <div class="min-w-0 flex-1">
+          <div class="flex flex-wrap items-center gap-2"><span class="text-[9px] font-bold uppercase tracking-[0.18em] text-blue-700">${lead.county}</span><span class="text-[9px] text-slate-400">${new Date(lead.created_at).toLocaleDateString()}</span></div>
+          <p class="mt-3 max-w-xl select-none text-sm text-slate-600 blur-[5px]">${lead.details || 'Project details available through dispatch.'}</p>
+          <p class="mt-2 text-[10px] text-slate-400">🔒 Homeowner contact remains protected. Applying alerts dispatch that your equipment is available.</p>
+        </div>
+        <div class="w-full shrink-0 space-y-2 sm:w-56">
+          ${applied
+            ? `<div class="rounded-xl border border-blue-200 bg-blue-50 px-4 py-3 text-center text-[10px] font-bold uppercase text-blue-700">Application ${lead.application_status}</div>`
+            : `<select class="truck-choice h-10 w-full rounded-lg border border-slate-200 bg-slate-50 px-3 text-[11px]" aria-label="Select equipment">
+                ${eligibleTrucks.map((truck) => `<option value="${truck.id}">${truck.equipment_type}</option>`).join('')}
+              </select>
+              <button class="apply-truck-lead h-11 w-full rounded-xl bg-blue-600 text-[10px] font-bold uppercase tracking-wider text-white hover:bg-blue-700" data-lead-id="${lead.id}">Apply for job</button>`
+          }
+        </div>
+      </div>
+    `;
+    wrapper.querySelector('.apply-truck-lead')?.addEventListener('click', async (event) => {
+      const button = event.currentTarget as HTMLButtonElement;
+      const truckId = (wrapper.querySelector('.truck-choice') as HTMLSelectElement)?.value || null;
+      button.disabled = true;
+      button.textContent = 'Applying…';
+      const message = window.prompt('Optional note for dispatch about availability or equipment:') || '';
+      const { error } = await supabase.rpc('apply_for_truck_lead', { p_lead_id: lead.id, p_truck_id: truckId, p_message: message });
+      if (error) {
+        alert('Could not apply: ' + error.message);
+        button.disabled = false;
+        button.textContent = 'Apply for job';
+        return;
+      }
+      await loadTruckLeads();
+    });
+    return wrapper;
+  }
+
+  async function loadTruckLeads() {
+    const { data, error } = await supabase.rpc('get_available_truck_leads');
+    if (error) return;
+    const leads: TruckLead[] = data || [];
+    const available = leads.filter((lead) => !lead.application_status || lead.application_status === 'withdrawn');
+    const applied = leads.filter((lead) => !!lead.application_status && lead.application_status !== 'withdrawn');
+    const leadContainer = document.getElementById('truckLeadsContainer')!;
+    const applicationContainer = document.getElementById('truckApplicationsContainer')!;
+    leadContainer.innerHTML = '';
+    available.forEach((lead) => leadContainer.appendChild(renderTruckLead(lead)));
+    applicationContainer.innerHTML = '';
+    applied.forEach((lead) => applicationContainer.appendChild(renderTruckLead(lead)));
+    document.getElementById('noTruckLeads')?.classList.toggle('hidden', available.length > 0);
+    document.getElementById('noTruckApplications')?.classList.toggle('hidden', applied.length > 0);
+    document.getElementById('truckLeadCount')!.textContent = available.length.toString();
+    document.getElementById('truckApplicationCount')!.textContent = applied.length.toString();
+    updateFleetNotifications(available.length);
+  }
+
+  function updateFleetNotifications(leadCount: number) {
+    const pendingCount = ownerTrucks.filter((truck) => truck.approval_status !== 'approved' && truck.approval_status !== 'rejected').length;
+    const total = leadCount + pendingCount;
+    const badge = document.getElementById('notificationBadge');
+    const content = document.getElementById('notifContent');
+    badge?.classList.toggle('hidden', total === 0);
+    if (badge) badge.textContent = total.toString();
+    if (content) {
+      content.innerHTML = `${leadCount ? `<button id="goToTruckLeads" class="w-full rounded-lg px-3 py-2.5 text-left hover:bg-slate-50"><p class="text-xs font-bold text-slate-900">${leadCount} matching lead${leadCount === 1 ? '' : 's'}</p><p class="mt-0.5 text-[10px] text-slate-500">Available for equipment applications.</p></button>` : ''}${pendingCount ? `<div class="px-3 py-2.5"><p class="text-xs font-bold text-slate-900">${pendingCount} listing${pendingCount === 1 ? '' : 's'} pending</p></div>` : ''}` || '<p class="px-3 py-4 text-center text-[11px] text-slate-400">All caught up.</p>';
+      document.getElementById('goToTruckLeads')?.addEventListener('click', () => {
+        document.dispatchEvent(new CustomEvent('layout:tab-change', { detail: { tab: 'leads' } }));
+        document.getElementById('notifDropdown')?.classList.add('hidden');
+      });
+    }
   }
 
   function openEditModal(t: Truck & { access_type?: string; listing_type?: string; owner_phone?: string }) {
@@ -352,22 +459,11 @@ const navItems = [
     }
 
     const list: Truck[] = trucks || [];
+    ownerTrucks = list;
     const pendingCount = list.filter((t) => t.approval_status !== 'approved' && t.approval_status !== 'rejected').length;
     document.getElementById('statTotal')!.textContent = list.length.toString();
     document.getElementById('statApproved')!.textContent = list.filter((t) => t.approval_status === 'approved').length.toString();
     document.getElementById('statPending')!.textContent = pendingCount.toString();
-
-    const badge = document.getElementById('notificationBadge');
-    const notifContent = document.getElementById('notifContent');
-    if (badge) {
-      badge.classList.toggle('hidden', pendingCount === 0);
-      badge.textContent = pendingCount.toString();
-    }
-    if (notifContent) {
-      notifContent.innerHTML = pendingCount > 0
-        ? `<div class="px-3 py-2.5"><p class="text-xs text-slate-900 font-bold">${pendingCount} listing${pendingCount === 1 ? '' : 's'} pending review</p><p class="text-[10px] text-zinc-500 mt-0.5">Waiting for administrator approval.</p></div>`
-        : `<p class="px-3 py-4 text-[11px] text-zinc-400 text-center">All caught up.</p>`;
-    }
 
     const container = document.getElementById('trucksContainer')!;
     container.innerHTML = '';
@@ -384,7 +480,11 @@ const navItems = [
     } else {
       list.forEach((t) => container.appendChild(renderTruck(t)));
     }
+    await loadTruckLeads();
+    showTab('leads');
     show('stateActive');
+    if (truckLeadPoll) clearInterval(truckLeadPoll);
+    truckLeadPoll = setInterval(loadTruckLeads, 8000);
   }
 
   // -- DODAVANJE NOVOG KAMIONA --
@@ -522,4 +622,7 @@ const navItems = [
   });
 
   document.addEventListener('DOMContentLoaded', init);
+  document.addEventListener('astro:before-swap', () => {
+    if (truckLeadPoll) clearInterval(truckLeadPoll);
+  });
 </script>

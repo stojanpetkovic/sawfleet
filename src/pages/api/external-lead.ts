@@ -2,6 +2,8 @@ export const prerender = false;
 
 import { supabaseAdmin } from "../../lib/supabaseAdmin";
 import { notifyNewExternalLead } from "./notify-new-external-lead";
+import { getPermitAutomationSettings } from "../../lib/permitData";
+import { publishWebsiteLead, scoreExternalLead } from "../../lib/leadWorkflow";
 
 // CORS — ovo namerno prima pozive sa DRUGIH domena (spoljni sajtovi
 // šalju svoje forme ovde), pa je Access-Control-Allow-Origin otvoren.
@@ -49,6 +51,8 @@ export async function POST({ request }: { request: Request }) {
       message,
       smsConsent,
       smsConsentText,
+      county,
+      territory,
       extra,          // slobodna torba za polja specifična za formu
       photos,         // niz base64 data-url stringova (npr. "data:image/jpeg;base64,...."), najviše 4
     } = body;
@@ -66,17 +70,23 @@ export async function POST({ request }: { request: Request }) {
     const ip = request.headers.get("x-forwarded-for")?.split(",")[0]?.trim() || null;
     const userAgent = request.headers.get("user-agent") || null;
 
+    const duplicateSince = new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString();
+    let duplicateQuery = supabaseAdmin.from("external_leads").select("id").gte("created_at", duplicateSince).limit(1);
+    duplicateQuery = email ? duplicateQuery.eq("email", String(email).trim().toLowerCase()) : duplicateQuery.eq("phone", phone);
+    const { data: duplicateRows } = await duplicateQuery;
+    if (duplicateRows?.length) return json({ ok: true, duplicate: true, leadId: duplicateRows[0].id }, 200);
+
     const { data: inserted, error } = await supabaseAdmin.from("external_leads").insert([{
       form_type: formType || "lead",
       source_domain: resolvedDomain,
       full_name: fullName,
-      email: email || null,
+      email: email ? String(email).trim().toLowerCase() : null,
       phone: phone || null,
       message: message || null,
       sms_consent: !!smsConsent,
       sms_consent_text: smsConsentText || null,
       status: "new",
-      extra: extra || null,
+      extra: { ...(extra || {}), ...((county || territory) ? { county: county || territory } : {}) },
       ip_address: ip,
       user_agent: userAgent,
     }]).select().single();
@@ -120,8 +130,40 @@ export async function POST({ request }: { request: Request }) {
 
       if (photoUrls.length > 0) {
         await supabaseAdmin.from("external_leads").update({
-          extra: { ...(extra || {}), photoUrls },
+          extra: { ...(extra || {}), ...((county || territory) ? { county: county || territory } : {}), photoUrls },
         }).eq("id", inserted.id);
+      }
+    }
+
+    const qualityScore = scoreExternalLead({ full_name: fullName, email, phone, message, sms_consent: smsConsent, source_domain: resolvedDomain });
+    await supabaseAdmin.from("external_leads").update({ quality_score: qualityScore }).eq("id", inserted.id);
+
+    const automation = await getPermitAutomationSettings();
+    const trustedDomains = automation.externalAutoPublishDomains.map((domain) => domain.trim().toLowerCase()).filter(Boolean);
+    const normalizedDomain = String(resolvedDomain || "").toLowerCase();
+    const trustedSource = trustedDomains.length === 0 || trustedDomains.some((domain) => normalizedDomain === domain || normalizedDomain.endsWith(`.${domain}`));
+    const resolvedCounty = String(county || territory || extra?.county || extra?.territory || "").trim();
+
+    if (automation.externalAutoPublish && trustedSource && qualityScore >= automation.externalMinQualityScore && resolvedCounty) {
+      try {
+        const published = await publishWebsiteLead({
+          originType: "external",
+          originId: inserted.id,
+          county: resolvedCounty,
+          email,
+          phone,
+          details: message,
+          source: resolvedDomain || "external",
+          siteUrl: import.meta.env.PUBLIC_SITE_URL || new URL(request.url).origin,
+          customerSubmitted: true,
+        });
+        await supabaseAdmin.from("external_leads").update({
+          status: "published",
+          website_lead_id: published.lead.id,
+          published_at: new Date().toISOString(),
+        }).eq("id", inserted.id);
+      } catch (publishError) {
+        console.error("External auto-publish failed", publishError);
       }
     }
 

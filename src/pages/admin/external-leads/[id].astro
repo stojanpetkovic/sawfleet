@@ -1,0 +1,354 @@
+---
+export const prerender = false;
+import AdminLayout from "../../../layouts/AdminLayout.astro";
+import { supabaseAdmin } from "../../../lib/supabaseAdmin";
+import { supabase } from "../../../lib/supabase";
+
+const { id } = Astro.params;
+
+const { data: lead } = id
+  ? await supabaseAdmin.from('external_leads').select('*').eq('id', id).single()
+  : { data: null };
+
+if (!lead) return Astro.redirect('/admin/external-leads');
+
+const { data: territories } = await supabase.from('service_territories').select('*').order('name');
+
+const activityLog: { action: string; at: string; by?: string }[] =
+  (lead.extra as any)?.activity_log || [];
+
+const statusBadge: Record<string, string> = {
+  new: 'bg-amber-500/10 text-amber-600 border-amber-500/20',
+  approved: 'bg-green-500/10 text-green-700 border-green-500/20',
+  rejected: 'bg-red-500/10 text-red-600 border-red-500/20',
+  contacted: 'bg-blue-500/10 text-blue-600 border-blue-500/20',
+  published: 'bg-teal-500/10 text-teal-700 border-teal-500/20',
+  closed: 'bg-zinc-200/60 text-zinc-600 border-zinc-300',
+};
+const photoUrls: string[] = (lead.extra as any)?.photoUrls || [];
+const extraFiltered = lead.extra
+  ? Object.fromEntries(Object.entries(lead.extra as Record<string,unknown>).filter(([k]) => k !== 'photoUrls' && k !== 'activity_log'))
+  : {};
+---
+
+<AdminLayout>
+  <div class="dash-shell flex-1">
+  <div class="dash-shell__frozen">
+    <!-- Header -->
+    <div class="flex flex-col sm:flex-row items-start sm:items-center gap-3 sm:gap-4">
+      <a href="/admin/external-leads" class="inline-flex items-center gap-1.5 px-3 py-2 rounded-lg border border-zinc-200 text-[11px] font-bold uppercase tracking-wider text-zinc-600 hover:bg-zinc-50 shrink-0">
+        ← Back
+      </a>
+      <div class="min-w-0 flex-1">
+        <span class="dash-eyebrow text-teal-700">// External Lead</span>
+        <h1 class="mt-1 text-2xl sm:text-3xl font-bold text-slate-950 tracking-tight truncate">{lead.full_name || 'Unnamed'}</h1>
+        <div class="mt-2 flex items-center gap-2 flex-wrap">
+          <span class={`px-2.5 py-1 rounded-full text-[9px] font-bold uppercase border tracking-wide ${statusBadge[lead.status] || statusBadge.new}`} id="statusBadge">
+            {lead.status}
+          </span>
+          <span class="text-[10px] text-zinc-400 font-mono">{lead.form_type}</span>
+          <span class="text-[10px] text-zinc-400">·</span>
+          <span class="text-[10px] text-zinc-400 truncate">{lead.source_domain || 'Unknown'}</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="dash-scroll">
+    <!-- Main Grid: Left Column (Content) + Right Sidebar (Activity Log) -->
+    <div class="grid gap-6 lg:grid-cols-[1fr_380px]">
+      <!-- Left Column: Contact Info, Message, Photos, Extra -->
+      <div class="space-y-4">
+        <!-- Contact Info Card -->
+        <div class="bg-white border border-zinc-100 rounded-2xl p-5 sm:p-6">
+          <h2 class="text-[10px] font-bold uppercase tracking-[0.2em] text-zinc-500 mb-4">Contact Information</h2>
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div>
+              <p class="text-[9px] uppercase tracking-[0.2em] text-zinc-400">Full Name</p>
+              <p class="text-sm font-semibold text-slate-900 mt-1">{lead.full_name || '—'}</p>
+            </div>
+            <div>
+              <p class="text-[9px] uppercase tracking-[0.2em] text-zinc-400">Email</p>
+              {lead.email
+                ? <a href={`mailto:${lead.email}`} class="text-sm font-mono text-blue-600 hover:underline mt-1 block truncate">{lead.email}</a>
+                : <p class="text-sm text-zinc-400 mt-1">—</p>}
+            </div>
+            <div>
+              <p class="text-[9px] uppercase tracking-[0.2em] text-zinc-400">Phone</p>
+              {lead.phone
+                ? <a href={`tel:${lead.phone}`} class="text-sm font-mono text-blue-600 hover:underline mt-1 block">{lead.phone}</a>
+                : <p class="text-sm text-zinc-400 mt-1">—</p>}
+            </div>
+            <div>
+              <p class="text-[9px] uppercase tracking-[0.2em] text-zinc-400">Source Domain</p>
+              <p class="text-sm font-mono text-slate-900 mt-1 truncate">{lead.source_domain || '—'}</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Message -->
+        <div class="bg-white border border-zinc-100 rounded-2xl p-5 sm:p-6">
+          <h2 class="text-[10px] font-bold uppercase tracking-[0.2em] text-zinc-500 mb-3">Message</h2>
+          <p class="text-sm text-slate-700 leading-relaxed whitespace-pre-wrap">{lead.message || 'No message provided.'}</p>
+        </div>
+
+        <!-- Photos + SMS Consent + Extra -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          {photoUrls.length > 0 && (
+            <div class="bg-white border border-zinc-100 rounded-2xl p-5">
+              <h2 class="text-[10px] font-bold uppercase tracking-[0.2em] text-zinc-500 mb-3">Photos ({photoUrls.length})</h2>
+              <div class="flex flex-wrap gap-2">
+                {photoUrls.map((url) => (
+                  <a href={url} target="_blank" rel="noopener">
+                    <img src={url} class="w-20 h-20 object-cover rounded-lg border border-zinc-200 hover:border-teal-500 transition-colors" />
+                  </a>
+                ))}
+              </div>
+            </div>
+          )}
+
+          <!-- SMS Consent -->
+          <div class="bg-white border border-zinc-100 rounded-2xl p-5">
+            <h2 class="text-[10px] font-bold uppercase tracking-[0.2em] text-zinc-500 mb-2">SMS Consent</h2>
+            <p class={`text-sm font-bold ${lead.sms_consent ? 'text-green-700' : 'text-zinc-500'}`}>
+              {lead.sms_consent ? '✅ Yes' : '❌ No'}
+            </p>
+            {lead.sms_consent_text && <p class="text-[11px] text-zinc-500 mt-2 leading-relaxed">{lead.sms_consent_text}</p>}
+          </div>
+        </div>
+
+        {Object.keys(extraFiltered).length > 0 && (
+          <div class="bg-white border border-zinc-100 rounded-2xl p-5 sm:p-6">
+            <h2 class="text-[10px] font-bold uppercase tracking-[0.2em] text-zinc-500 mb-3">Additional Fields</h2>
+            <pre class="text-[11px] text-zinc-700 font-mono whitespace-pre-wrap bg-zinc-50 rounded-xl p-4 overflow-auto">{JSON.stringify(extraFiltered, null, 2)}</pre>
+          </div>
+        )}
+      </div>
+
+      <!-- Right Sidebar: Status / Actions / Manage / Activity Log -->
+      <div class="detail-sidebar">
+        <!-- Current Status -->
+        <div class="detail-card">
+          <h3 class="detail-card__title">Current Status</h3>
+          <span class={`inline-block px-3 py-2 rounded-full text-[11px] font-bold uppercase tracking-wide border ${statusBadge[lead.status] || statusBadge.new}`}>
+            {lead.status}
+          </span>
+        </div>
+
+        <!-- Actions -->
+        <div class="detail-card">
+          <h3 class="detail-card__title">Actions</h3>
+          <p class="text-[9px] font-bold uppercase tracking-[0.15em] text-zinc-400 mb-2">Approval</p>
+          <div class="grid grid-cols-2 gap-2 mb-4">
+            <button class="status-btn h-10 rounded-lg bg-green-500/10 border border-green-500/30 text-green-700 font-bold uppercase tracking-wider text-[9px] hover:bg-green-500 hover:text-white transition-all" data-status="approved">✓ Approve</button>
+            <button class="status-btn h-10 rounded-lg bg-red-50 border border-red-200 text-red-600 font-bold uppercase tracking-wider text-[9px] hover:bg-red-500 hover:text-white transition-all" data-status="rejected">✕ Reject</button>
+          </div>
+          <p class="text-[9px] font-bold uppercase tracking-[0.15em] text-zinc-400 mb-2">Contact</p>
+          <div class="space-y-2">
+            <button class="status-btn w-full h-10 rounded-lg bg-zinc-100 border border-zinc-200 text-zinc-600 font-bold uppercase tracking-wider text-[9px] hover:bg-zinc-200 transition-all" data-status="new">New</button>
+            <button class="status-btn w-full h-10 rounded-lg bg-blue-500/10 border border-blue-500/30 text-blue-600 font-bold uppercase tracking-wider text-[9px] hover:bg-blue-500 hover:text-white transition-all" data-status="contacted">Contacted</button>
+            <button class="status-btn w-full h-10 rounded-lg bg-zinc-100 border border-zinc-200 text-zinc-600 font-bold uppercase tracking-wider text-[9px] hover:bg-zinc-200 transition-all" data-status="closed">Closed</button>
+          </div>
+        </div>
+
+        <!-- Manage Lead -->
+        <div class="detail-card detail-card--danger">
+          <h3 class="detail-card__title detail-card__title--danger">Manage Lead</h3>
+          {lead.website_lead_id ? (
+            <a href={`/admin/leads/${lead.website_lead_id}`} class="detail-btn detail-btn--primary block text-center">Open Website Lead →</a>
+          ) : (
+          <><button id="moveToServiceLeadsBtn" class="detail-btn detail-btn--warn">
+              🌳 Publish to Website Leads
+            </button>
+          <div id="moveCountyPicker" class="hidden mt-2 space-y-2">
+            <select id="moveCountySelect" class="h-10 w-full rounded-lg border border-zinc-200 bg-zinc-50 px-3 text-[11px] text-slate-900 outline-none focus:border-teal-500">
+              <option value="" selected disabled>Territory…</option>
+              {territories?.map((t) => <option value={t.name}>{t.name}</option>)}
+            </select>
+            <div class="flex gap-2">
+              <button id="cancelMoveBtn" class="flex-1 h-9 rounded-lg bg-zinc-100 text-zinc-600 text-[9px] font-bold uppercase tracking-wider hover:bg-zinc-200 transition-colors">Cancel</button>
+              <button id="confirmMoveBtn" class="flex-1 h-9 rounded-lg bg-teal-500 text-white text-[9px] font-bold uppercase tracking-wider hover:bg-teal-600 transition-colors">Confirm</button>
+            </div>
+          </div></>
+          )}
+          <button id="deleteLeadBtn" class="detail-btn detail-btn--danger mt-2">
+            🗑️ Delete
+          </button>
+        </div>
+
+        <!-- Activity Log -->
+        <div class="detail-card">
+          <h3 class="detail-card__title">Activity Log</h3>
+          <div id="activityLog" class="detail-log">
+            {activityLog.length === 0
+              ? <p class="text-[11px] text-zinc-400 italic">No activity yet.</p>
+              : activityLog.slice().reverse().map((entry) => (
+                  <div class="detail-log__entry">
+                    <div class="detail-log__dot" style="background:#14b8a6"></div>
+                    <div>
+                      <p class="text-sm text-slate-900">{entry.action}</p>
+                      <p class="text-[10px] text-zinc-400 mt-0.5 font-mono">{new Date(entry.at).toLocaleString()}</p>
+                    </div>
+                  </div>
+                ))
+            }
+          </div>
+
+          <!-- Add Note -->
+          <div class="mt-4 pt-4 border-t border-zinc-100">
+            <textarea id="noteInput" rows="2" placeholder="Add a note…" class="w-full rounded-xl border border-zinc-200 bg-zinc-50 p-3 text-sm text-slate-900 outline-none focus:border-teal-500 resize-none"></textarea>
+            <button id="addNoteBtn" class="mt-2 px-4 py-2 rounded-lg bg-zinc-100 border border-zinc-200 text-[11px] font-bold uppercase tracking-wider text-zinc-700 hover:bg-zinc-200 transition-colors">Add Note</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+  </div>
+</AdminLayout>
+
+<script>
+  import { supabase } from "../../../lib/supabase";
+
+  const leadId = window.location.pathname.split('/').pop()!;
+  let currentStatus = document.getElementById('statusBadge')?.textContent?.trim() || 'new';
+
+  const statusBadgeClasses: Record<string, string> = {
+    new: 'bg-amber-500/10 text-amber-600 border-amber-500/20',
+    approved: 'bg-green-500/10 text-green-700 border-green-500/20',
+    rejected: 'bg-red-500/10 text-red-600 border-red-500/20',
+    contacted: 'bg-blue-500/10 text-blue-600 border-blue-500/20',
+    published: 'bg-teal-500/10 text-teal-700 border-teal-500/20',
+    closed: 'bg-zinc-200/60 text-zinc-600 border-zinc-300',
+  };
+
+  function highlightActiveStatus(status: string) {
+    document.querySelectorAll<HTMLButtonElement>('.status-btn').forEach((btn) => {
+      const isActive = btn.dataset.status === status;
+      btn.classList.toggle('ring-2', isActive);
+      btn.classList.toggle('ring-offset-1', isActive);
+      btn.classList.toggle('ring-teal-400', isActive);
+    });
+    const badge = document.getElementById('statusBadge')!;
+    badge.textContent = status;
+    badge.className = `px-2.5 py-1 rounded-full text-[9px] font-bold uppercase border tracking-wide ${statusBadgeClasses[status] || statusBadgeClasses.new}`;
+  }
+
+  highlightActiveStatus(currentStatus);
+
+  async function addLogEntry(action: string) {
+    const { data: lead } = await supabase.from('external_leads').select('extra').eq('id', leadId).single();
+    const extra = (lead?.extra as any) || {};
+    const log = extra.activity_log || [];
+    log.push({ action, at: new Date().toISOString() });
+    await supabase.from('external_leads').update({ extra: { ...extra, activity_log: log } }).eq('id', leadId);
+
+    const logEl = document.getElementById('activityLog')!;
+    const entry = document.createElement('div');
+    entry.className = 'flex items-start gap-3 p-3 rounded-xl bg-zinc-50 border border-zinc-100';
+    entry.innerHTML = `
+      <div class="w-1.5 h-1.5 rounded-full bg-teal-500 mt-1.5 shrink-0"></div>
+      <div>
+        <p class="text-sm text-slate-900">${action}</p>
+        <p class="text-[10px] text-zinc-400 mt-0.5 font-mono">${new Date().toLocaleString()}</p>
+      </div>
+    `;
+    const emptyMsg = logEl.querySelector('p.italic');
+    if (emptyMsg) emptyMsg.remove();
+    logEl.insertBefore(entry, logEl.firstChild);
+  }
+
+  // Status dugmad
+  document.querySelectorAll<HTMLButtonElement>('.status-btn').forEach((btn) => {
+    btn.addEventListener('click', async () => {
+      const newStatus = btn.dataset.status!;
+      if (newStatus === currentStatus) return;
+
+      btn.disabled = true;
+      const { error } = await supabase.from('external_leads').update({ status: newStatus }).eq('id', leadId);
+      btn.disabled = false;
+      if (error) { alert('Error: ' + error.message); return; }
+
+      // Notify on approval if needed
+      if (newStatus === 'approved') {
+        const { data: settings } = await supabase.from('tracking_settings').select('external_lead_notify_on_approval_only').eq('id', 1).single();
+        if (settings?.external_lead_notify_on_approval_only) {
+          const { data: lead } = await supabase.from('external_leads').select('*').eq('id', leadId).single();
+          if (lead) {
+            fetch('/api/notify-new-external-lead', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({
+                fullName: lead.full_name,
+                email: lead.email,
+                phone: lead.phone,
+                message: lead.message,
+                sourceDomain: lead.source_domain,
+                formType: lead.form_type,
+                photoUrls: (lead.extra as any)?.photoUrls || [],
+              }),
+            }).catch(console.error);
+          }
+        }
+      }
+
+      await addLogEntry(`Status changed to "${newStatus}"`);
+      currentStatus = newStatus;
+      highlightActiveStatus(newStatus);
+    });
+  });
+
+  // Add Note
+  document.getElementById('addNoteBtn')?.addEventListener('click', async () => {
+    const input = document.getElementById('noteInput') as HTMLTextAreaElement;
+    const note = input.value.trim();
+    if (!note) return;
+    const btn = document.getElementById('addNoteBtn') as HTMLButtonElement;
+    btn.disabled = true;
+    await addLogEntry(`📝 Note: ${note}`);
+    input.value = '';
+    btn.disabled = false;
+  });
+
+  // Move to Service Leads
+  document.getElementById('moveToServiceLeadsBtn')?.addEventListener('click', () => {
+    document.getElementById('moveCountyPicker')?.classList.remove('hidden');
+  });
+  document.getElementById('cancelMoveBtn')?.addEventListener('click', () => {
+    document.getElementById('moveCountyPicker')?.classList.add('hidden');
+  });
+
+  document.getElementById('confirmMoveBtn')?.addEventListener('click', async () => {
+    const county = (document.getElementById('moveCountySelect') as HTMLSelectElement).value;
+    if (!county) { alert('Please select a territory first.'); return; }
+    if (!confirm('Publish this lead to contractors in Website Leads?')) return;
+
+    const btn = document.getElementById('confirmMoveBtn') as HTMLButtonElement;
+    btn.disabled = true;
+    btn.textContent = 'Publishing...';
+    const response = await fetch('/api/publish-lead', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ originType: 'external', originId: leadId, county }),
+    });
+    const result = await response.json().catch(() => ({}));
+    if (!response.ok || !result.ok) {
+      alert('Could not publish lead: ' + (result.error || 'Unknown error'));
+      btn.disabled = false;
+      btn.textContent = 'Confirm';
+      return;
+    }
+    window.location.href = `/admin/leads/${result.leadId}`;
+  });
+
+  // Delete
+  document.getElementById('deleteLeadBtn')?.addEventListener('click', async () => {
+    if (!confirm('Permanently delete this lead? This cannot be undone.')) return;
+    const btn = document.getElementById('deleteLeadBtn') as HTMLButtonElement;
+    btn.disabled = true;
+    btn.textContent = 'Deleting...';
+    const { error } = await supabase.from('external_leads').delete().eq('id', leadId);
+    if (error) { alert('Could not delete: ' + error.message); btn.disabled = false; btn.textContent = '🗑️ Delete Lead'; return; }
+    window.location.href = '/admin/external-leads';
+  });
+</script>

@@ -38,48 +38,42 @@ const { data: territories } = await supabase.from('service_territories').select(
     </div>
   </div>
 
-  <div class="flex flex-col xl:flex-row gap-6 lg:gap-8 w-full">
-    <div class="flex-1 space-y-5 min-w-0 w-full">
+  <div class="dash-shell flex-1">
+  <div class="dash-shell__frozen">
+    <!-- HEADER -->
+    <div>
+      <span class="dash-eyebrow text-green-700">// Demand pipeline</span>
+      <h1 class="dash-title">Website leads</h1>
+      <p class="dash-subtitle">Every homeowner request that came through the website and its traffic sources.</p>
+    </div>
 
-      <!-- HEADER -->
-      <div class="flex items-center justify-between">
-        <div>
-          <span class="text-[9px] font-mono font-bold uppercase tracking-[0.2em] text-green-700">// Demand pipeline</span>
-          <h1 class="mt-1.5 text-2xl sm:text-3xl font-bold text-slate-950 tracking-tight">Website leads</h1>
-          <p class="text-sm text-slate-500 mt-1.5">Every homeowner request that came through the website and its traffic sources.</p>
-        </div>
+    <!-- Website Leads Stats -->
+    <div class="stat-row lg:grid-cols-5">
+      <div class="stat-card">
+        <p class="stat-card__label">Total</p>
+        <h2 id="count-total" class="stat-card__value">0</h2>
       </div>
+      <div class="stat-card">
+        <p class="stat-card__label">New</p>
+        <p id="count-new" class="stat-card__value">-</p>
+      </div>
+      <div class="stat-card">
+        <p class="stat-card__label">Approved</p>
+        <p id="count-approved" class="stat-card__value text-green-700">-</p>
+      </div>
+      <div class="stat-card">
+        <p class="stat-card__label">Claimed</p>
+        <p id="count-claimed" class="stat-card__value text-blue-600">-</p>
+      </div>
+      <div class="stat-card">
+        <p class="stat-card__label">Rejected</p>
+        <p id="count-rejected" class="stat-card__value text-red-600">-</p>
+      </div>
+    </div>
 
-<!-- Website Leads Stats -->
-        <div class="flex flex-col gap-3">
-          <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4">
-            <div class="rounded-xl border border-zinc-100 bg-white p-6 text-center shadow-sm">
-              <p class="text-[9px] font-bold uppercase tracking-[0.15em] text-zinc-400">Total</p>
-              <h2 id="count-total" class="mt-3 text-4xl font-mono font-bold text-slate-900">0</h2>
-            </div>
-            <div class="rounded-xl border border-zinc-100 bg-white p-6 text-center shadow-sm">
-              <p class="text-[9px] font-bold uppercase tracking-[0.15em] text-zinc-400">New</p>
-              <p id="count-new" class="mt-3 text-4xl font-mono font-bold text-zinc-700">-</p>
-            </div>
-            <div class="rounded-xl border border-zinc-100 bg-white p-6 text-center shadow-sm">
-              <p class="text-[9px] font-bold uppercase tracking-[0.15em] text-zinc-400">Approved</p>
-              <p id="count-approved" class="mt-3 text-4xl font-mono font-bold text-green-700">-</p>
-            </div>
-            <div class="rounded-xl border border-zinc-100 bg-white p-6 text-center shadow-sm">
-              <p class="text-[9px] font-bold uppercase tracking-[0.15em] text-zinc-400">Claimed</p>
-              <p id="count-claimed" class="mt-3 text-4xl font-mono font-bold text-blue-600">-</p>
-            </div>
-            <div class="rounded-xl border border-zinc-100 bg-white p-6 text-center shadow-sm">
-              <p class="text-[9px] font-bold uppercase tracking-[0.15em] text-zinc-400">Rejected</p>
-              <p id="count-rejected" class="mt-3 text-4xl font-mono font-bold text-red-600">-</p>
-            </div>
-          </div>
-          <p class="text-[11px] text-zinc-500 px-1">Only real requests that came through the website are counted here.</p>
-        </div>
-
-      <!-- FILTER BAR -->
-      <div class="flex items-center gap-2 overflow-x-auto no-scrollbar -mx-4 px-4 sm:mx-0 sm:px-0 pb-1">
-        <select id="statusFilter" class="shrink-0 h-10 pl-4 pr-8 rounded-full bg-zinc-100 border border-zinc-200 text-[11px] font-bold uppercase tracking-wider text-zinc-700 outline-none focus:border-green-500/50 appearance-none bg-[url('data:image/svg+xml;utf8,<svg xmlns=%22http://www.w3.org/2000/svg%22 fill=%22none%22 viewBox=%220 0 24 24%22 stroke=%22%2371717a%22><path stroke-linecap=%22round%22 stroke-linejoin=%22round%22 stroke-width=%222%22 d=%22M19 9l-7 7-7-7%22/></svg>')] bg-no-repeat bg-[right_0.6rem_center] bg-[length:12px]">
+    <!-- FILTER BAR -->
+    <div class="filter-bar">
+        <select id="statusFilter" class="filter-select">
           <option value="all">All Statuses</option>
           <option value="new">New</option>
           <option value="approved">Approved</option>
@@ -87,28 +81,28 @@ const { data: territories } = await supabase.from('service_territories').select(
           <option value="rejected">Rejected</option>
         </select>
 
-        <select id="countyFilter" class="shrink-0 h-10 pl-4 pr-8 rounded-full bg-zinc-100 border border-zinc-200 text-[11px] font-bold uppercase tracking-wider text-zinc-700 outline-none focus:border-green-500/50 appearance-none bg-[url('data:image/svg+xml;utf8,<svg xmlns=%22http://www.w3.org/2000/svg%22 fill=%22none%22 viewBox=%220 0 24 24%22 stroke=%22%2371717a%22><path stroke-linecap=%22round%22 stroke-linejoin=%22round%22 stroke-width=%222%22 d=%22M19 9l-7 7-7-7%22/></svg>')] bg-no-repeat bg-[right_0.6rem_center] bg-[length:12px]">
+        <select id="countyFilter" class="filter-select">
           <option value="all">All Counties</option>
           {territories?.map(t => (
             <option value={t.name}>{t.name}</option>
           ))}
         </select>
 
-        <select id="timeFilter" class="shrink-0 h-10 pl-4 pr-8 rounded-full bg-zinc-100 border border-zinc-200 text-[11px] font-bold uppercase tracking-wider text-zinc-700 outline-none focus:border-green-500/50 appearance-none bg-[url('data:image/svg+xml;utf8,<svg xmlns=%22http://www.w3.org/2000/svg%22 fill=%22none%22 viewBox=%220 0 24 24%22 stroke=%22%2371717a%22><path stroke-linecap=%22round%22 stroke-linejoin=%22round%22 stroke-width=%222%22 d=%22M19 9l-7 7-7-7%22/></svg>')] bg-no-repeat bg-[right_0.6rem_center] bg-[length:12px]">
+        <select id="timeFilter" class="filter-select">
           <option value="all">All Time</option>
           <option value="7">Last 7 Days</option>
           <option value="30">Last 30 Days</option>
           <option value="custom">Custom Range</option>
         </select>
 
-        <select id="sourceFilter" class="shrink-0 h-10 pl-4 pr-8 rounded-full bg-zinc-100 border border-zinc-200 text-[11px] font-bold uppercase tracking-wider text-zinc-700 outline-none focus:border-green-500/50 appearance-none bg-[url('data:image/svg+xml;utf8,<svg xmlns=%22http://www.w3.org/2000/svg%22 fill=%22none%22 viewBox=%220 0 24 24%22 stroke=%22%2371717a%22><path stroke-linecap=%22round%22 stroke-linejoin=%22round%22 stroke-width=%222%22 d=%22M19 9l-7 7-7-7%22/></svg>')] bg-no-repeat bg-[right_0.6rem_center] bg-[length:12px]">
-          <option value="website">Website</option>
+        <select id="sourceFilter" class="filter-select">
           <option value="all">All Sources</option>
+          <option value="website">Website</option>
           <option value="permit_automation">Permit Automation</option>
           <option value="permit_outreach">Permit Outreach</option>
         </select>
 
-        <select id="perPage" class="shrink-0 h-10 pl-4 pr-8 rounded-full bg-zinc-100 border border-zinc-200 text-[11px] font-bold uppercase tracking-wider text-zinc-700 outline-none focus:border-green-500/50 appearance-none bg-[url('data:image/svg+xml;utf8,<svg xmlns=%22http://www.w3.org/2000/svg%22 fill=%22none%22 viewBox=%220 0 24 24%22 stroke=%22%2371717a%22><path stroke-linecap=%22round%22 stroke-linejoin=%22round%22 stroke-width=%222%22 d=%22M19 9l-7 7-7-7%22/></svg>')] bg-no-repeat bg-[right_0.6rem_center] bg-[length:12px]">
+        <select id="perPage" class="filter-select">
           <option value="10">10 / page</option>
           <option value="50">50 / page</option>
         </select>
@@ -120,33 +114,39 @@ const { data: territories } = await supabase.from('service_territories').select(
         <input type="date" id="dateTo" class="bg-transparent text-[11px] text-zinc-700 outline-none h-6" />
         <button id="applyDateBtn" class="ml-auto bg-green-500 text-slate-900 px-3 py-1.5 rounded-lg text-[9px] font-bold uppercase hover:bg-green-400">Apply</button>
       </div>
+  </div>
 
-      <!-- LIST -->
-      <div id="allLeadsTable" class="space-y-2">
-        <div class="p-8 text-center text-zinc-400 text-sm">Loading...</div>
-      </div>
-
-      <!-- PAGINATION -->
-      <div class="flex items-center justify-between pt-2">
-        <button id="prevPage" class="h-10 px-4 rounded-full bg-zinc-100 border border-zinc-200 text-[11px] font-bold text-zinc-700 hover:text-slate-900 hover:border-zinc-300 transition-colors">← Prev</button>
-        <span id="pageInfo" class="text-[11px] text-zinc-500 font-mono">Page 1</span>
-        <button id="nextPage" class="h-10 px-4 rounded-full bg-zinc-100 border border-zinc-200 text-[11px] font-bold text-zinc-700 hover:text-slate-900 hover:border-zinc-300 transition-colors">Next →</button>
-      </div>
-    </div>
-
-    <!-- Sidebar Logovi -->
-    <div class="w-full xl:w-[400px] shrink-0">
-      <div class="bg-white border border-zinc-100 rounded-2xl sticky top-8 w-full">
-        <div class="p-6 border-b border-zinc-100">
-          <h3 class="text-[10px] font-bold uppercase tracking-[0.2em] text-slate-900">Activity Timeline</h3>
+  <div class="dash-scroll">
+    <div class="flex flex-col xl:flex-row gap-6 lg:gap-8 w-full">
+      <div class="flex-1 space-y-3 min-w-0 w-full">
+        <!-- LIST -->
+        <div id="allLeadsTable" class="space-y-2">
+          <div class="p-8 text-center text-zinc-400 text-sm">Loading...</div>
         </div>
-        <div class="p-6">
-          <div id="leadLogsContainer" class="space-y-6">
-            <div class="text-[11px] font-mono text-zinc-500">Loading logs...</div>
+
+        <!-- PAGINATION -->
+        <div class="dash-pagination">
+          <button id="prevPage" class="h-10 px-4 rounded-full bg-zinc-100 border border-zinc-200 text-[11px] font-bold text-zinc-700 hover:text-slate-900 hover:border-zinc-300 transition-colors">← Prev</button>
+          <span id="pageInfo" class="text-[11px] text-zinc-500 font-mono">Page 1</span>
+          <button id="nextPage" class="h-10 px-4 rounded-full bg-zinc-100 border border-zinc-200 text-[11px] font-bold text-zinc-700 hover:text-slate-900 hover:border-zinc-300 transition-colors">Next →</button>
+        </div>
+      </div>
+
+      <!-- Sidebar Logovi -->
+      <div class="w-full xl:w-[400px] shrink-0">
+        <div class="bg-white border border-zinc-100 rounded-2xl w-full">
+          <div class="p-6 border-b border-zinc-100">
+            <h3 class="text-[10px] font-bold uppercase tracking-[0.2em] text-slate-900">Activity Timeline</h3>
+          </div>
+          <div class="p-6">
+            <div id="leadLogsContainer" class="space-y-6">
+              <div class="text-[11px] font-mono text-zinc-500">Loading logs...</div>
+            </div>
           </div>
         </div>
       </div>
     </div>
+  </div>
   </div>
 </AdminLayout>
 
@@ -166,11 +166,9 @@ const { data: territories } = await supabase.from('service_territories').select(
   }
 
   async function loadLogs() {
-    // ONLY LOAD LOGS FOR WEBSITE LEADS
     const { data: leadLogs } = await supabase
       .from('lead_logs')
       .select('*, leads(email, source)')
-      .in('leads.source', ['website', 'google', 'facebook', 'bing', 'organic', 'website_form'])
       .order('created_at', { ascending: false })
       .limit(10);
     
@@ -202,9 +200,7 @@ const { data: territories } = await supabase.from('service_territories').select(
     const customUI = document.getElementById('customDateRange');
     timeFilter === 'custom' ? customUI?.classList.remove('hidden') : customUI?.classList.add('hidden');
 
-    // COUNT ONLY WEBSITE LEADS
     let countQuery = supabase.from('leads').select('status', { count: 'exact', head: false });
-    countQuery = countQuery.in('source', ['website', 'google', 'facebook', 'bing', 'organic', 'website_form']);
     const { data: allData, count: totalCount } = await countQuery;
     if (allData || totalCount !== null) {
       const countTotalEl = document.getElementById('count-total');
@@ -252,8 +248,8 @@ const { data: territories } = await supabase.from('service_territories').select(
         };
         const statusClass = statusStyles[lead.status] || 'bg-zinc-200/50 text-zinc-600 border-zinc-300';
         const sourceValue = (lead.source || 'website').toString();
-        const sourceLabel = sourceValue.includes('permit') ? 'Permit' : 'Website';
-        const sourceClass = sourceLabel === 'Permit' ? 'bg-emerald-500/10 text-emerald-700 border-emerald-500/20' : 'bg-slate-100 text-slate-700 border-slate-200';
+        const sourceLabel = sourceValue.includes('permit') ? 'Permit dispatch' : sourceValue === 'dispatcher_manual' ? 'Dispatcher' : ['website', 'google', 'facebook', 'bing', 'organic', 'website_form'].includes(sourceValue) ? 'Website' : 'External';
+        const sourceClass = sourceLabel === 'Permit dispatch' ? 'bg-amber-500/10 text-amber-700 border-amber-500/20' : sourceLabel === 'External' ? 'bg-teal-500/10 text-teal-700 border-teal-500/20' : sourceLabel === 'Dispatcher' ? 'bg-violet-500/10 text-violet-700 border-violet-500/20' : 'bg-slate-100 text-slate-700 border-slate-200';
         const initial = (lead.email || '?').charAt(0).toUpperCase();
         return `
         <div class="group flex items-center gap-3 sm:gap-4 p-3 sm:p-4 rounded-2xl border border-zinc-100 bg-white hover:border-zinc-300 hover:bg-zinc-100/40 transition-all cursor-pointer" onclick="window.location.href='/admin/leads/${lead.id}'">
@@ -290,15 +286,23 @@ const { data: territories } = await supabase.from('service_territories').select(
 
     document.getElementById('addLeadForm')?.addEventListener('submit', async (e) => {
       e.preventDefault();
-      await supabase.from('leads').insert([{ 
+      const response = await fetch('/api/website-lead', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
         email: (document.getElementById('newEmail') as HTMLInputElement).value,
         phone: (document.getElementById('newPhone') as HTMLInputElement).value,
         county: (document.getElementById('newCounty') as HTMLSelectElement).value,
         details: (document.getElementById('newDetails') as HTMLTextAreaElement).value,
-        status: 'new',
-        source: 'website',
-        created_at: new Date().toISOString()
-      }]);
+        source: 'dispatcher_manual',
+        customerSubmitted: false,
+        }),
+      });
+      const result = await response.json().catch(() => ({}));
+      if (!response.ok || !result.ok) {
+        alert('Could not publish lead: ' + (result.error || 'Unknown error'));
+        return;
+      }
       modal?.classList.add('hidden');
       (e.target as HTMLFormElement).reset();
       updateDashboard();
