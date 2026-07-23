@@ -47,6 +47,10 @@ export async function POST({ request }: { request: Request }) {
         website_lead_id: result.lead.id,
         converted_at: new Date().toISOString(),
       }).eq("id", permit.id);
+      await supabaseAdmin.from("permit_outreach_events").update({
+        status: "converted",
+        updated_at: new Date().toISOString(),
+      }).eq("permit_lead_id", permit.id).not("status", "in", '("bounced","complained","unsubscribed")');
       await supabaseAdmin.from("permit_lead_logs").insert([{
         permit_lead_id: permit.id,
         action: `Homeowner submitted a request and converted to Website Lead ${result.lead.id}`,

@@ -119,6 +119,29 @@ import { Activity, CheckCircle2, CircleGauge, Clock3, Layers3, Printer, Target }
       </div>
     </section>
 
+    <section class="space-y-6 border-t border-slate-200 pt-6">
+      <div class="flex flex-col justify-between gap-3 sm:flex-row sm:items-end"><div><p class="text-[10px] font-bold uppercase tracking-[0.22em] text-amber-700">Permit outreach</p><h2 class="mt-1 text-lg font-bold text-slate-900">Permit email performance</h2><p class="mt-1 text-xs text-slate-500">Delivery, engagement, conversion and suppression signals for potential permit contacts.</p></div><span id="permit-email-health" class="w-fit rounded-full bg-slate-100 px-3 py-1 text-[9px] font-bold uppercase tracking-wider text-slate-500">Loading</span></div>
+      <div class="grid grid-cols-2 gap-3 md:grid-cols-4 xl:grid-cols-7">
+        <div class="metric-tile"><span>Sent</span><strong id="permit-email-sent">-</strong><small>accepted by provider</small></div>
+        <div class="metric-tile"><span>Delivered</span><strong id="permit-email-delivered">-</strong><small id="permit-delivery-rate">- delivery rate</small></div>
+        <div class="metric-tile"><span>Opened</span><strong id="permit-email-opened">-</strong><small id="permit-open-rate">- open rate</small></div>
+        <div class="metric-tile"><span>Clicked</span><strong id="permit-email-clicked">-</strong><small id="permit-click-rate">- click rate</small></div>
+        <div class="metric-tile"><span>Converted</span><strong id="permit-email-converted">-</strong><small id="permit-conversion-rate">- conversion rate</small></div>
+        <div class="metric-tile metric-alert"><span>Bounced</span><strong id="permit-email-bounced">-</strong><small id="permit-bounce-rate">- bounce rate</small></div>
+        <div class="metric-tile"><span>Unsubscribed</span><strong id="permit-email-unsubscribed">-</strong><small id="permit-unsubscribe-rate">- unsubscribe rate</small></div>
+      </div>
+      <div class="grid gap-6 xl:grid-cols-[1fr_1.35fr]">
+        <div class="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm md:p-7">
+          <h3 class="text-sm font-bold text-slate-900">Outreach funnel</h3><p class="mt-1 text-[10px] text-slate-400">Message progression in the selected period</p>
+          <div class="mt-6 space-y-4" id="permit-email-funnel"></div>
+        </div>
+        <div class="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm md:p-7">
+          <h3 class="text-sm font-bold text-slate-900">Performance by territory</h3><p class="mt-1 text-[10px] text-slate-400">Use conversion and complaint signals to prioritize or pause areas</p>
+          <div class="mt-5 overflow-x-auto"><table class="w-full min-w-[560px] text-left"><thead><tr class="border-b border-slate-100 text-[9px] uppercase tracking-[0.16em] text-slate-400"><th class="pb-3">Territory</th><th class="pb-3 text-right">Sent</th><th class="pb-3 text-right">Delivered</th><th class="pb-3 text-right">Clicked</th><th class="pb-3 text-right">Converted</th><th class="pb-3 text-right">Issues</th></tr></thead><tbody id="permit-territory-performance"></tbody></table></div>
+        </div>
+      </div>
+    </section>
+
     <!-- ============================================================ -->
     <!-- SECTION 2: MARKETPLACE ENGAGEMENT -->
     <!-- ============================================================ -->
@@ -521,6 +544,85 @@ import { Activity, CheckCircle2, CircleGauge, Clock3, Layers3, Printer, Target }
         ? topPages.map(([path, values]) => `<tr class="border-b border-slate-50 text-xs"><td class="py-3"><a href="${escapeHtml(path)}" target="_blank" class="font-medium text-slate-700 hover:text-green-700">${escapeHtml(path)}</a></td><td class="py-3 text-right tabular-nums text-slate-600">${values.views}</td><td class="py-3 text-right tabular-nums text-slate-600">${values.sessions.size}</td><td class="py-3 text-right font-bold tabular-nums text-slate-900">${rate(values.views, pageRows.length).toFixed(1)}%</td></tr>`).join('')
         : '<tr><td colspan="4" class="py-8 text-center text-xs text-slate-400">No page views recorded for this period yet.</td></tr>';
     }
+
+    // ================= PERMIT EMAIL ANALYTICS =================
+    const { data: permitEmailEvents, error: permitEmailError } = await supabase
+      .from('permit_outreach_events')
+      .select('status,sent_at,delivered_at,opened_at,clicked_at,unsubscribed_at,created_at,permit_leads(jurisdiction)')
+      .gte('created_at', sinceIso)
+      .order('created_at', { ascending: false })
+      .limit(10000);
+    const permitEmails = permitEmailEvents || [];
+    const permitSent = permitEmails.filter((row: any) => row.sent_at).length;
+    const permitDelivered = permitEmails.filter((row: any) => row.delivered_at).length;
+    const permitOpened = permitEmails.filter((row: any) => row.opened_at).length;
+    const permitClicked = permitEmails.filter((row: any) => row.clicked_at).length;
+    const permitConverted = permitEmails.filter((row: any) => row.status === 'converted').length;
+    const permitBounced = permitEmails.filter((row: any) => row.status === 'bounced').length;
+    const permitComplained = permitEmails.filter((row: any) => row.status === 'complained').length;
+    const permitUnsubscribed = permitEmails.filter((row: any) => row.status === 'unsubscribed' || row.unsubscribed_at).length;
+    setText('permit-email-sent', permitSent.toString());
+    setText('permit-email-delivered', permitDelivered.toString());
+    setText('permit-email-opened', permitOpened.toString());
+    setText('permit-email-clicked', permitClicked.toString());
+    setText('permit-email-converted', permitConverted.toString());
+    setText('permit-email-bounced', permitBounced.toString());
+    setText('permit-email-unsubscribed', permitUnsubscribed.toString());
+    setText('permit-delivery-rate', `${rate(permitDelivered, permitSent).toFixed(1)}% delivery rate`);
+    setText('permit-open-rate', `${rate(permitOpened, permitDelivered || permitSent).toFixed(1)}% open rate`);
+    setText('permit-click-rate', `${rate(permitClicked, permitDelivered || permitSent).toFixed(1)}% click rate`);
+    setText('permit-conversion-rate', `${rate(permitConverted, permitSent).toFixed(1)}% conversion rate`);
+    setText('permit-bounce-rate', `${rate(permitBounced, permitSent + permitBounced).toFixed(1)}% bounce rate`);
+    setText('permit-unsubscribe-rate', `${rate(permitUnsubscribed, permitSent).toFixed(1)}% unsubscribe rate`);
+
+    const permitHealth = document.getElementById('permit-email-health');
+    if (permitHealth) {
+      if (permitEmailError) {
+        permitHealth.textContent = 'Data unavailable';
+        permitHealth.className = 'w-fit rounded-full bg-red-50 px-3 py-1 text-[9px] font-bold uppercase tracking-wider text-red-700';
+      } else if (!permitSent) {
+        permitHealth.textContent = 'No emails in period';
+      } else {
+        const issueRate = rate(permitBounced + permitComplained + permitUnsubscribed, permitSent + permitBounced);
+        permitHealth.textContent = issueRate > 5 ? 'Needs attention' : issueRate > 2 ? 'Monitor closely' : 'Healthy';
+        permitHealth.className = `w-fit rounded-full px-3 py-1 text-[9px] font-bold uppercase tracking-wider ${issueRate > 5 ? 'bg-red-50 text-red-700' : issueRate > 2 ? 'bg-amber-50 text-amber-700' : 'bg-green-50 text-green-700'}`;
+      }
+    }
+
+    const funnel = document.getElementById('permit-email-funnel');
+    if (funnel) {
+      const stages = [
+        ['Sent', permitSent, 'bg-blue-500'],
+        ['Delivered', permitDelivered, 'bg-cyan-500'],
+        ['Opened', permitOpened, 'bg-violet-500'],
+        ['Clicked', permitClicked, 'bg-amber-500'],
+        ['Converted', permitConverted, 'bg-green-600'],
+      ];
+      funnel.innerHTML = stages.map(([label, value, color]) => {
+        const width = permitSent ? Math.max(Number(value) > 0 ? 3 : 0, rate(Number(value), permitSent)) : 0;
+        return `<div><div class="mb-1.5 flex justify-between text-[10px]"><span class="font-medium text-slate-600">${label}</span><strong class="tabular-nums text-slate-900">${value} · ${rate(Number(value), permitSent).toFixed(1)}%</strong></div><div class="h-2.5 overflow-hidden rounded-full bg-slate-100"><div class="h-full rounded-full ${color}" style="width:${Math.min(width, 100)}%"></div></div></div>`;
+      }).join('');
+    }
+
+    const territories = new Map<string, { sent: number; delivered: number; clicked: number; converted: number; issues: number }>();
+    permitEmails.forEach((row: any) => {
+      const relation = Array.isArray(row.permit_leads) ? row.permit_leads[0] : row.permit_leads;
+      const territory = relation?.jurisdiction || 'Unknown territory';
+      const values = territories.get(territory) || { sent: 0, delivered: 0, clicked: 0, converted: 0, issues: 0 };
+      if (row.sent_at) values.sent++;
+      if (row.delivered_at) values.delivered++;
+      if (row.clicked_at) values.clicked++;
+      if (row.status === 'converted') values.converted++;
+      if (['bounced', 'complained', 'unsubscribed'].includes(row.status)) values.issues++;
+      territories.set(territory, values);
+    });
+    const territoryBody = document.getElementById('permit-territory-performance');
+    const territoryRows = [...territories.entries()].sort((a, b) => b[1].sent - a[1].sent);
+    if (territoryBody) territoryBody.innerHTML = permitEmailError
+      ? '<tr><td colspan="6" class="py-8 text-center text-xs text-red-600">Permit outreach analytics could not be loaded.</td></tr>'
+      : territoryRows.length
+        ? territoryRows.map(([territory, values]) => `<tr class="border-b border-slate-50 text-xs"><td class="py-3 font-medium text-slate-700">${escapeHtml(territory)}</td><td class="py-3 text-right tabular-nums">${values.sent}</td><td class="py-3 text-right tabular-nums">${values.delivered}</td><td class="py-3 text-right tabular-nums">${values.clicked}</td><td class="py-3 text-right font-bold tabular-nums text-green-700">${values.converted}</td><td class="py-3 text-right font-bold tabular-nums ${values.issues ? 'text-red-600' : 'text-slate-400'}">${values.issues}</td></tr>`).join('')
+        : '<tr><td colspan="6" class="py-8 text-center text-xs text-slate-400">No permit outreach data for this period yet.</td></tr>';
 
     // ================= MARKETPLACE ENGAGEMENT =================
     const { data: truckApplications } = await supabase

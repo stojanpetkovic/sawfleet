@@ -5,6 +5,7 @@ import { supabaseAdmin } from "../../lib/supabaseAdmin";
 export async function GET({ request }: { request: Request }) {
   const requestUrl = new URL(request.url);
   const token = requestUrl.searchParams.get("token") || "";
+  const eventToken = requestUrl.searchParams.get("event") || "";
   const destination = new URL("/", import.meta.env.PUBLIC_SITE_URL || requestUrl.origin);
   destination.searchParams.set("utm_source", "permit_outreach");
   destination.searchParams.set("utm_medium", "email");
@@ -23,6 +24,11 @@ export async function GET({ request }: { request: Request }) {
         changed_by: "permit_outreach",
       }]);
     }
+  }
+  if (eventToken && supabaseAdmin) {
+    await supabaseAdmin.from("permit_outreach_events").update({
+      status: "clicked", clicked_at: new Date().toISOString(), updated_at: new Date().toISOString(),
+    }).eq("tracking_token", eventToken).not("status", "in", '("bounced","complained","unsubscribed")');
   }
   return Response.redirect(destination.toString(), 302);
 }

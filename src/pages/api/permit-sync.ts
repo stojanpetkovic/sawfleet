@@ -4,6 +4,7 @@ import { supabaseAdmin } from "../../lib/supabaseAdmin";
 import { buildPermitOutreachEmail, getPermitLeads, getPermitAutomationSettings, savePermitAutomationSettings } from "../../lib/permitData";
 import { sendEmail } from "../../lib/resend";
 import { authorizeAutomationRequest } from "../../lib/automationAuth";
+import { runTruckOutreachBatch } from "../../lib/truckOutreach";
 
 /**
  * Autonomous permit lead scraping and sync to external_leads table.
@@ -20,6 +21,7 @@ export async function POST({ request }: { request: Request }) {
       });
     }
     console.log(`[PERMIT SYNC] Starting permit lead synchronization at ${new Date().toISOString()}`);
+    const truckOutreach = await runTruckOutreachBatch();
 
     // Get automation settings
     const settings = await getPermitAutomationSettings();
@@ -32,6 +34,7 @@ export async function POST({ request }: { request: Request }) {
           message: "Automation disabled",
           synced: 0,
           created: 0,
+          truckOutreach,
         }),
         { status: 200, headers: { "Content-Type": "application/json" } }
       );
@@ -168,19 +171,43 @@ export async function POST({ request }: { request: Request }) {
 
     if (settings.autoSend) {
         const baseUrl = import.meta.env.PUBLIC_SITE_URL || "http://localhost:4321";
+        const startOfDay = new Date();
+        startOfDay.setUTCHours(0, 0, 0, 0);
+        const { count: sentToday } = await supabaseAdmin.from("permit_outreach_events")
+          .select("id", { count: "exact", head: true })
+          .gte("sent_at", startOfDay.toISOString())
+          .in("status", ["sent", "delivered", "opened", "clicked", "converted"]);
+        let remainingDaily = Math.max(0, settings.permitDailyEmailLimit - Number(sentToday || 0));
         const { data: outreachQueue } = await supabaseAdmin
           .from("permit_leads")
           .select("*")
-          .in("permit_status", ["new", "qualified"])
-          .is("outreach_sent_at", null)
+          .in("permit_status", ["new", "qualified", "invited"])
           .not("owner_email", "is", null)
           .lt("outreach_attempts", settings.permitMaxEmailAttempts)
           .order("created_at", { ascending: true })
-          .limit(100);
+          .limit(500);
+        const { data: outreachHistory } = await supabaseAdmin.from("permit_outreach_events")
+          .select("permit_lead_id,email,status,sent_at,created_at")
+          .order("created_at", { ascending: false }).limit(5000);
         for (const permit of outreachQueue || []) {
+          if (remainingDaily <= 0) break;
           if (!permit.owner_email || !permit.outreach_token) continue;
+          const normalizedEmail = String(permit.owner_email).trim().toLowerCase();
+          const emailHistory = (outreachHistory || []).filter((row: any) => String(row.email).toLowerCase() === normalizedEmail);
+          if (emailHistory.some((row: any) => ["bounced", "complained", "unsubscribed"].includes(row.status))) continue;
+          const permitHistory = (outreachHistory || []).filter((row: any) => row.permit_lead_id === permit.id);
+          const lastSent = permitHistory.find((row: any) => row.sent_at);
+          if (lastSent && Date.now() - new Date(lastSent.sent_at).getTime() < settings.permitEmailCooldownDays * 86400000) continue;
+          const { data: event, error: eventError } = await supabaseAdmin.from("permit_outreach_events")
+            .insert([{ permit_lead_id: permit.id, email: normalizedEmail, status: "queued" }]).select().single();
+          if (eventError || !event) continue;
           const outreachUrl = new URL("/api/permit-click", baseUrl);
           outreachUrl.searchParams.set("token", permit.outreach_token);
+          outreachUrl.searchParams.set("event", event.tracking_token);
+          const openUrl = new URL("/api/permit-outreach/open", baseUrl);
+          openUrl.searchParams.set("token", event.tracking_token);
+          const unsubscribeUrl = new URL("/api/permit-outreach/unsubscribe", baseUrl);
+          unsubscribeUrl.searchParams.set("token", event.tracking_token);
           const details = [permit.permit_type, permit.address, permit.permit_description, permit.permit_number ? `Permit ${permit.permit_number}` : null].filter(Boolean).join(" • ");
           const message = buildPermitOutreachEmail({
             fullName: permit.owner_name || "there",
@@ -188,10 +215,19 @@ export async function POST({ request }: { request: Request }) {
             siteUrl: outreachUrl.toString(),
             settings,
           });
-          const sent = await sendEmail({ to: permit.owner_email, subject: message.subject, html: message.html });
+          const trackedHtml = `${message.html}<p style="font:11px Arial;color:#94a3b8;margin-top:24px">This is a one-to-one notice about public permit information. <a href="${unsubscribeUrl}">Do not contact me again</a>.</p><img src="${openUrl}" width="1" height="1" alt="" style="display:none">`;
+          const sent: any = await sendEmail({
+            to: permit.owner_email, subject: message.subject, html: trackedHtml,
+            headers: { "List-Unsubscribe": `<${unsubscribeUrl}>`, "List-Unsubscribe-Post": "List-Unsubscribe=One-Click" },
+            tags: [{ name: "category", value: "permit-outreach" }],
+          });
           if (sent.ok) {
             sentCount += 1;
+            remainingDaily -= 1;
             const sentAt = new Date().toISOString();
+            await supabaseAdmin.from("permit_outreach_events").update({
+              status: "sent", sent_at: sentAt, resend_email_id: sent.data?.id || null, updated_at: sentAt,
+            }).eq("id", event.id);
             await supabaseAdmin.from("permit_leads").update({
               permit_status: "invited",
               outreach_sent_at: sentAt,
@@ -205,6 +241,9 @@ export async function POST({ request }: { request: Request }) {
               created_at: sentAt,
             }]);
           } else {
+            await supabaseAdmin.from("permit_outreach_events").update({
+              status: "failed", error_message: String(sent.error || "Email delivery failed").slice(0, 1000), updated_at: new Date().toISOString(),
+            }).eq("id", event.id);
             await supabaseAdmin.from("permit_leads").update({
               outreach_attempts: Number(permit.outreach_attempts || 0) + 1,
               outreach_last_error: String(sent.error || "Email delivery failed"),
@@ -238,6 +277,7 @@ export async function POST({ request }: { request: Request }) {
         synced: insertedCount,
         created: insertedCount,
         skipped: permits.length - insertedCount,
+        truckOutreach,
       }),
       { status: 200, headers: { "Content-Type": "application/json" } }
     );

@@ -45,6 +45,8 @@ export type PermitAutomationSettings = {
   notifyTruckOwnersOnPublish: boolean;
   permitManualPublishRequiresConfirmation: boolean;
   permitMaxEmailAttempts: number;
+  permitDailyEmailLimit: number;
+  permitEmailCooldownDays: number;
   emailSubject: string;
   emailTemplate: string;
   allowedTerritories: string[];
@@ -68,6 +70,8 @@ const DEFAULT_SETTINGS: PermitAutomationSettings = {
   notifyTruckOwnersOnPublish: true,
   permitManualPublishRequiresConfirmation: true,
   permitMaxEmailAttempts: 3,
+  permitDailyEmailLimit: 10,
+  permitEmailCooldownDays: 14,
   emailSubject: "We can help with your permit project",
   emailTemplate: `<!doctype html><html><body><div style="font-family:Arial,sans-serif;max-width:560px;padding:24px;border:1px solid #e5e7eb;border-radius:16px;margin:0 auto;"><p style="font-size:11px;letter-spacing:2px;text-transform:uppercase;color:#16803C;font-weight:bold;">// Permit outreach</p><h1 style="font-size:24px;margin:12px 0;">We can help with your permit project</h1><p style="color:#475569;line-height:1.6;">Hi {{fullName}}, we noticed a recent permit opportunity that may be relevant to your project.</p><p style="color:#64748b;line-height:1.6;border-left:2px solid #e2e8f0;padding-left:12px;">{{permitDetails}}</p><p style="margin-top:16px;"><a href="{{siteUrl}}" style="display:inline-block;background:#22c55e;color:#fff;text-decoration:none;padding:12px 20px;border-radius:10px;">View our service options →</a></p></div></body></html>`,
   allowedTerritories: [],
@@ -116,6 +120,8 @@ export function parsePermitSettings(raw: string | null | undefined): PermitAutom
       notifyTruckOwnersOnPublish: parsed.notifyTruckOwnersOnPublish ?? DEFAULT_SETTINGS.notifyTruckOwnersOnPublish,
       permitManualPublishRequiresConfirmation: parsed.permitManualPublishRequiresConfirmation ?? DEFAULT_SETTINGS.permitManualPublishRequiresConfirmation,
       permitMaxEmailAttempts: Number(parsed.permitMaxEmailAttempts ?? DEFAULT_SETTINGS.permitMaxEmailAttempts),
+      permitDailyEmailLimit: Number(parsed.permitDailyEmailLimit ?? DEFAULT_SETTINGS.permitDailyEmailLimit),
+      permitEmailCooldownDays: Number(parsed.permitEmailCooldownDays ?? DEFAULT_SETTINGS.permitEmailCooldownDays),
       emailSubject: parsed.emailSubject || DEFAULT_SETTINGS.emailSubject,
       emailTemplate: parsed.emailTemplate || DEFAULT_SETTINGS.emailTemplate,
       archiveDays: Number(parsed.archiveDays ?? DEFAULT_SETTINGS.archiveDays),

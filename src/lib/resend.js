@@ -7,9 +7,9 @@ const RESEND_API_KEY = import.meta.env.RESEND_API_KEY;
 const FROM_EMAIL = import.meta.env.RESEND_FROM_EMAIL || "SF Tree Removal <notifications@sftreeremoval.com>";
 
 /**
- * @param {{ to: string | string[], subject: string, html: string }} params
+ * @param {{ to: string | string[], subject: string, html: string, headers?: Record<string,string>, tags?: {name:string,value:string}[] }} params
  */
-export async function sendEmail({ to, subject, html }) {
+export async function sendEmail({ to, subject, html, headers, tags }) {
   if (!RESEND_API_KEY) {
     console.error("RESEND_API_KEY nije podešen u .env — email nije poslat.");
     return { ok: false, error: "missing_api_key" };
@@ -27,6 +27,8 @@ export async function sendEmail({ to, subject, html }) {
         to: Array.isArray(to) ? to : [to],
         subject,
         html,
+        ...(headers ? { headers } : {}),
+        ...(tags ? { tags } : {}),
       }),
     });
 

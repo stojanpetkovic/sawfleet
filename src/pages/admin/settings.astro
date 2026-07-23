@@ -51,6 +51,10 @@ const permitSettings = parsePermitSettings(tracking?.global_scripts);
           <span class="indicator w-2 h-2 rounded-full bg-zinc-200"></span>
           Workflow Automation
         </button>
+        <button id="tabBtn-truckOutreach" class="tab-btn flex-shrink-0 lg:w-full text-left px-4 py-3 text-zinc-500 hover:bg-zinc-100/50 hover:text-slate-900 rounded-lg text-[11px] font-bold uppercase tracking-wider transition-all border border-transparent flex items-center gap-3">
+          <span class="indicator w-2 h-2 rounded-full bg-zinc-200"></span>
+          Truck Profile Outreach
+        </button>
       </div>
 
       <!-- DESNI SADRŽAJ -->
@@ -307,13 +311,42 @@ const permitSettings = parsePermitSettings(tracking?.global_scripts);
             <div>
               <label class="text-[10px] uppercase tracking-[0.2em] text-zinc-600 font-bold block mb-2">Maximum outreach attempts</label>
               <input id="permitMaxEmailAttempts" type="number" min="1" max="10" value={permitSettings.permitMaxEmailAttempts} class="w-full rounded-xl border border-zinc-200 bg-white p-3 text-sm text-slate-900" />
-              <p class="mt-2 text-[11px] text-zinc-500">Failed automated emails are retried on the next sync until this limit is reached.</p>
+              <p class="mt-2 text-[11px] text-zinc-500">Total messages allowed per permit contact, including carefully spaced follow-ups.</p>
+            </div>
+            <div class="grid gap-4 sm:grid-cols-2">
+              <div><label class="text-[10px] uppercase tracking-[0.2em] text-zinc-600 font-bold block mb-2">Daily permit email limit</label><input id="permitDailyEmailLimit" type="number" min="1" max="100" value={permitSettings.permitDailyEmailLimit} class="w-full rounded-xl border border-zinc-200 bg-white p-3 text-sm text-slate-900" /><p class="mt-2 text-[11px] text-zinc-500">Hard cap across all automated permit outreach in one UTC day.</p></div>
+              <div><label class="text-[10px] uppercase tracking-[0.2em] text-zinc-600 font-bold block mb-2">Days between emails</label><input id="permitEmailCooldownDays" type="number" min="3" max="365" value={permitSettings.permitEmailCooldownDays} class="w-full rounded-xl border border-zinc-200 bg-white p-3 text-sm text-slate-900" /><p class="mt-2 text-[11px] text-zinc-500">Minimum wait before a follow-up can be considered.</p></div>
             </div>
 
             <button type="submit" id="savePermitAutomationBtn" class="flex h-12 w-full sm:w-auto px-8 items-center justify-center rounded-xl bg-green-500 text-sm font-bold text-slate-900 transition-all hover:bg-green-400 active:scale-[0.98]">
               Save Permit Automation
             </button>
           </form>
+        </div>
+
+        <div id="section-truckOutreach" class="tab-section hidden space-y-6">
+          <div class="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm md:p-8">
+            <div class="flex flex-col justify-between gap-4 border-b border-slate-100 pb-5 sm:flex-row sm:items-start">
+              <div><h2 class="text-sm font-bold uppercase tracking-wider text-slate-900">Unclaimed Truck Profile Outreach</h2><p class="mt-2 max-w-2xl text-[11px] leading-5 text-slate-500">Controlled invitations to public business emails. Automation suppresses duplicates, bounces, complaints and unsubscribed addresses.</p></div>
+              <span id="truckOutreachState" class="rounded-full bg-slate-100 px-3 py-1.5 text-[9px] font-bold uppercase tracking-wider text-slate-500">Loading</span>
+            </div>
+            <form id="truckOutreachForm" class="mt-6 space-y-6">
+              <label class="flex items-center justify-between gap-4 rounded-xl border border-amber-200 bg-amber-50/50 p-4"><span><span class="block text-xs font-bold text-slate-900">Enable scheduled outreach</span><span class="mt-1 block text-[11px] text-slate-500">Disabled by default. When enabled, the existing automation cron processes one rate-limited batch.</span></span><input id="truckOutreachEnabled" type="checkbox" class="h-5 w-5 accent-green-600" /></label>
+              <div class="grid gap-4 sm:grid-cols-3">
+                <label><span class="mb-2 block text-[10px] font-bold uppercase tracking-wider text-slate-600">Daily email limit</span><input id="truckOutreachDailyLimit" type="number" min="1" max="100" value="10" class="w-full rounded-xl border border-slate-200 p-3 text-sm" /></label>
+                <label><span class="mb-2 block text-[10px] font-bold uppercase tracking-wider text-slate-600">Days between contacts</span><input id="truckOutreachCooldown" type="number" min="3" max="365" value="14" class="w-full rounded-xl border border-slate-200 p-3 text-sm" /></label>
+                <label><span class="mb-2 block text-[10px] font-bold uppercase tracking-wider text-slate-600">Max attempts / profile</span><input id="truckOutreachAttempts" type="number" min="1" max="5" value="2" class="w-full rounded-xl border border-slate-200 p-3 text-sm" /></label>
+              </div>
+              <label class="block"><span class="mb-2 block text-[10px] font-bold uppercase tracking-wider text-slate-600">Email subject</span><input id="truckOutreachSubject" type="text" class="w-full rounded-xl border border-slate-200 p-3 text-sm" /></label>
+              <label class="block"><span class="mb-2 block text-[10px] font-bold uppercase tracking-wider text-slate-600">Email content</span><textarea id="truckOutreachTemplate" rows="12" class="w-full rounded-xl border border-slate-200 p-4 font-mono text-xs"></textarea><span class="mt-2 block text-[10px] text-slate-400">{'Variables: {{contactName}}, {{companyName}}, {{equipmentName}}, {{location}}, {{claimUrl}}'}</span></label>
+              <div class="rounded-xl border border-blue-100 bg-blue-50 p-4 text-[11px] leading-5 text-blue-800"><strong>Anti-spam protection:</strong> one email address per batch, daily cap, cooldown, maximum attempts, permanent suppression after bounce/complaint/unsubscribe and a one-click unsubscribe link in every message.</div>
+              <div class="flex flex-col gap-3 sm:flex-row"><button id="saveTruckOutreach" type="submit" class="h-12 rounded-xl bg-slate-950 px-7 text-xs font-bold uppercase tracking-wider text-white hover:bg-green-700">Save outreach settings</button><button id="runTruckOutreach" type="button" class="h-12 rounded-xl border border-slate-200 px-7 text-xs font-bold uppercase tracking-wider text-slate-700 hover:border-green-300 hover:text-green-700">Run safe batch now</button></div>
+            </form>
+          </div>
+          <div class="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm md:p-8">
+            <div class="flex items-center justify-between"><div><h3 class="text-sm font-bold text-slate-900">Recent delivery activity</h3><p class="mt-1 text-[10px] text-slate-400">Sent, delivered, opened, clicked and suppression events</p></div><button id="refreshTruckOutreach" class="text-[10px] font-bold uppercase tracking-wider text-green-700">Refresh</button></div>
+            <div id="truckOutreachActivity" class="mt-5 space-y-2"><p class="text-xs text-slate-400">No activity loaded.</p></div>
+          </div>
         </div>
 
       </div>
@@ -334,13 +367,15 @@ const permitSettings = parsePermitSettings(tracking?.global_scripts);
   const tabTracking = document.getElementById('tabBtn-tracking');
   const tabNotifications = document.getElementById('tabBtn-notifications');
   const tabPermit = document.getElementById('tabBtn-permit');
+  const tabTruckOutreach = document.getElementById('tabBtn-truckOutreach');
   const secTerritories = document.getElementById('section-territories');
   const secTracking = document.getElementById('section-tracking');
   const secNotifications = document.getElementById('section-notifications');
   const secPermit = document.getElementById('section-permit');
+  const secTruckOutreach = document.getElementById('section-truckOutreach');
 
-  const allTabs = [tabTerritories, tabTracking, tabNotifications, tabPermit] as HTMLElement[];
-  const allSections = [secTerritories, secTracking, secNotifications, secPermit] as HTMLElement[];
+  const allTabs = [tabTerritories, tabTracking, tabNotifications, tabPermit, tabTruckOutreach] as HTMLElement[];
+  const allSections = [secTerritories, secTracking, secNotifications, secPermit, secTruckOutreach] as HTMLElement[];
 
   function switchTab(activeTab: HTMLElement, showSec: HTMLElement) {
     allTabs.forEach((tab) => {
@@ -363,6 +398,75 @@ const permitSettings = parsePermitSettings(tracking?.global_scripts);
   tabTracking?.addEventListener('click', () => switchTab(tabTracking, secTracking!));
   tabNotifications?.addEventListener('click', () => switchTab(tabNotifications, secNotifications!));
   tabPermit?.addEventListener('click', () => switchTab(tabPermit, secPermit!));
+  tabTruckOutreach?.addEventListener('click', () => {
+    switchTab(tabTruckOutreach, secTruckOutreach!);
+    loadTruckOutreach();
+  });
+
+  function escapeHtml(value: unknown) {
+    return String(value ?? '').replace(/[&<>"']/g, (char) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#039;' }[char] || char));
+  }
+
+  async function adminFetch(url: string, init: RequestInit = {}) {
+    const { data } = await supabase.auth.getSession();
+    const token = data.session?.access_token;
+    return fetch(url, { ...init, headers: { ...(init.headers || {}), ...(token ? { Authorization: `Bearer ${token}` } : {}) } });
+  }
+
+  async function loadTruckOutreach() {
+    const state = document.getElementById('truckOutreachState')!;
+    const response = await adminFetch('/api/truck-outreach/settings');
+    const result = await response.json().catch(() => ({}));
+    if (!response.ok || !result.ok) {
+      state.textContent = 'Migration required';
+      state.className = 'rounded-full bg-amber-50 px-3 py-1.5 text-[9px] font-bold uppercase tracking-wider text-amber-700';
+      return;
+    }
+    const settings = result.settings;
+    (document.getElementById('truckOutreachEnabled') as HTMLInputElement).checked = settings.enabled;
+    (document.getElementById('truckOutreachDailyLimit') as HTMLInputElement).value = settings.daily_limit;
+    (document.getElementById('truckOutreachCooldown') as HTMLInputElement).value = settings.cooldown_days;
+    (document.getElementById('truckOutreachAttempts') as HTMLInputElement).value = settings.max_attempts;
+    (document.getElementById('truckOutreachSubject') as HTMLInputElement).value = settings.subject;
+    (document.getElementById('truckOutreachTemplate') as HTMLTextAreaElement).value = settings.email_template;
+    state.textContent = settings.enabled ? 'Automation enabled' : 'Automation paused';
+    state.className = `rounded-full px-3 py-1.5 text-[9px] font-bold uppercase tracking-wider ${settings.enabled ? 'bg-green-50 text-green-700' : 'bg-slate-100 text-slate-500'}`;
+    const activity = document.getElementById('truckOutreachActivity')!;
+    activity.innerHTML = result.activity?.length ? result.activity.map((row: any) => {
+      const profile = row.unclaimed_truck_directory?.company_name || 'Truck profile';
+      const tone = ['bounced','complained','failed','unsubscribed'].includes(row.status) ? 'text-red-700 bg-red-50' : ['opened','clicked','delivered'].includes(row.status) ? 'text-green-700 bg-green-50' : 'text-blue-700 bg-blue-50';
+      return `<div class="flex flex-col justify-between gap-2 rounded-xl border border-slate-100 p-3 sm:flex-row sm:items-center"><div><strong class="text-xs text-slate-800">${escapeHtml(profile)}</strong><p class="mt-1 text-[10px] text-slate-400">${escapeHtml(row.email)} · ${new Date(row.created_at).toLocaleString()}</p></div><span class="w-fit rounded-full px-2.5 py-1 text-[9px] font-bold uppercase ${tone}">${escapeHtml(row.status)}</span></div>`;
+    }).join('') : '<p class="text-xs text-slate-400">No outreach has been sent yet.</p>';
+  }
+
+  document.getElementById('truckOutreachForm')?.addEventListener('submit', async (event) => {
+    event.preventDefault();
+    const button = document.getElementById('saveTruckOutreach') as HTMLButtonElement;
+    button.disabled = true; button.textContent = 'Saving…';
+    const payload = {
+      enabled: (document.getElementById('truckOutreachEnabled') as HTMLInputElement).checked,
+      daily_limit: Number((document.getElementById('truckOutreachDailyLimit') as HTMLInputElement).value),
+      cooldown_days: Number((document.getElementById('truckOutreachCooldown') as HTMLInputElement).value),
+      max_attempts: Number((document.getElementById('truckOutreachAttempts') as HTMLInputElement).value),
+      subject: (document.getElementById('truckOutreachSubject') as HTMLInputElement).value,
+      email_template: (document.getElementById('truckOutreachTemplate') as HTMLTextAreaElement).value,
+    };
+    const response = await adminFetch('/api/truck-outreach/settings', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) });
+    const result = await response.json().catch(() => ({}));
+    button.textContent = response.ok && result.ok ? 'Saved ✓' : 'Save failed';
+    setTimeout(() => { button.textContent = 'Save outreach settings'; button.disabled = false; }, 1800);
+    if (response.ok) loadTruckOutreach();
+  });
+  document.getElementById('runTruckOutreach')?.addEventListener('click', async () => {
+    if (!confirm('Run one rate-limited outreach batch now? Daily limits and suppression rules still apply.')) return;
+    const button = document.getElementById('runTruckOutreach') as HTMLButtonElement;
+    button.disabled = true; button.textContent = 'Running…';
+    const response = await adminFetch('/api/truck-outreach/run', { method: 'POST' });
+    const result = await response.json().catch(() => ({}));
+    alert(result.ok ? `Batch complete: ${result.sent || 0} sent, ${result.failed || 0} failed.` : `Batch failed: ${result.error || 'Unknown error'}`);
+    button.disabled = false; button.textContent = 'Run safe batch now'; loadTruckOutreach();
+  });
+  document.getElementById('refreshTruckOutreach')?.addEventListener('click', loadTruckOutreach);
 
   // --- ČUVANJE NOTIFIKACIONIH EMAIL ADRESA ---
   document.getElementById('notificationsForm')?.addEventListener('submit', async (e) => {
@@ -441,6 +545,8 @@ const permitSettings = parsePermitSettings(tracking?.global_scripts);
       notifyTruckOwnersOnPublish: (document.getElementById('notifyTruckOwnersOnPublish') as HTMLInputElement).checked,
       permitManualPublishRequiresConfirmation: (document.getElementById('permitManualPublishRequiresConfirmation') as HTMLInputElement).checked,
       permitMaxEmailAttempts: Number((document.getElementById('permitMaxEmailAttempts') as HTMLInputElement).value || 3),
+      permitDailyEmailLimit: Number((document.getElementById('permitDailyEmailLimit') as HTMLInputElement).value || 10),
+      permitEmailCooldownDays: Number((document.getElementById('permitEmailCooldownDays') as HTMLInputElement).value || 14),
       minScore: Number((document.getElementById('permitMinScore') as HTMLInputElement).value || 0),
       emailSubject: (document.getElementById('permitEmailSubject') as HTMLInputElement).value,
       emailTemplate: (document.getElementById('permitEmailTemplate') as HTMLTextAreaElement).value,
