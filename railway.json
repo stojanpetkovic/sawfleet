@@ -1,0 +1,8 @@
+{
+  "$schema": "https://railway.com/railway.schema.json",
+  "deploy": {
+    "startCommand": "node dist/server/entry.mjs",
+    "healthcheckPath": "/api/permit-leads",
+    "healthcheckTimeout": 30
+  }
+}

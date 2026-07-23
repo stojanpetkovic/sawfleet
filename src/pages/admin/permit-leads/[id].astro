@@ -2,23 +2,18 @@
 export const prerender = false;
 import AdminLayout from "../../../layouts/AdminLayout.astro";
 import { supabase } from "../../../lib/supabase";
+import { supabaseAdmin } from "../../../lib/supabaseAdmin";
 
 const { id } = Astro.params;
 
-// Fetch permit lead by ID
-async function getPermitLead(leadId: string) {
-  try {
-    const response = await fetch('http://localhost:4321/api/permit-leads');
-    const payload = await response.json();
-    if (!payload.ok || !payload.leads) return null;
-    return payload.leads.find((l: any) => l.id === leadId);
-  } catch (error) {
-    console.error('Error fetching permit lead:', error);
-    return null;
-  }
-}
-
-const lead = await getPermitLead(id || '');
+// Fetch permit lead directly from DB (not via localhost)
+const { data: lead } = id
+  ? await supabaseAdmin
+      .from('permit_leads')
+      .select('*')
+      .eq('id', id)
+      .single()
+  : { data: null };
 
 if (!lead) {
   return Astro.redirect('/admin/permit-leads');
