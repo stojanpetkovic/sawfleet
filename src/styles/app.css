@@ -308,3 +308,250 @@
     transition-duration: 0.01ms !important;
   }
 }
+
+/* Mobile app hardening shared by admin, contractor and fleet workspaces.
+   Dashboard content must always fit the viewport; vertical scrolling is
+   intentional, horizontal scrolling is not. */
+.admin-dashboard,
+.portal-dashboard {
+  width: 100%;
+  max-width: 100%;
+  overflow-x: hidden;
+}
+
+.admin-dashboard :where(div, main, section, article, header, footer, nav, aside, form, fieldset, ul, li, dl),
+.portal-dashboard :where(div, main, section, article, header, footer, nav, aside, form, fieldset, ul, li, dl) {
+  min-width: 0;
+}
+
+.admin-dashboard img,
+.admin-dashboard svg,
+.admin-dashboard canvas,
+.portal-dashboard img,
+.portal-dashboard svg,
+.portal-dashboard canvas {
+  max-width: 100%;
+}
+
+.admin-dashboard input,
+.admin-dashboard select,
+.admin-dashboard textarea,
+.admin-dashboard button,
+.portal-dashboard input,
+.portal-dashboard select,
+.portal-dashboard textarea,
+.portal-dashboard button {
+  max-width: 100%;
+}
+
+.admin-dashboard p,
+.admin-dashboard h1,
+.admin-dashboard h2,
+.admin-dashboard h3,
+.admin-dashboard td,
+.admin-dashboard dd,
+.portal-dashboard p,
+.portal-dashboard h1,
+.portal-dashboard h2,
+.portal-dashboard h3,
+.portal-dashboard dd {
+  overflow-wrap: anywhere;
+}
+
+@media (max-width: 639px) {
+  .admin-dashboard main,
+  .portal-dashboard main {
+    padding: 0.875rem !important;
+  }
+
+  .admin-dashboard .dash-shell,
+  .admin-dashboard .dash-shell__frozen {
+    gap: 0.75rem;
+  }
+
+  .admin-dashboard .dash-title {
+    font-size: 1.375rem;
+  }
+
+  /* KPI cards and filters wrap into the screen instead of becoming rails. */
+  .admin-dashboard .stat-row {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+    gap: 0.625rem;
+    width: 100%;
+    overflow: visible;
+  }
+
+  .admin-dashboard .stat-card {
+    width: auto;
+    min-height: 5rem;
+    padding: 0.875rem;
+  }
+
+  .admin-dashboard .stat-card__value {
+    font-size: 1.25rem;
+  }
+
+  .admin-dashboard .filter-bar {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    align-items: stretch;
+    width: 100%;
+    overflow: visible;
+    padding-bottom: 0;
+  }
+
+  .admin-dashboard .filter-bar > *,
+  .admin-dashboard .filter-select,
+  .admin-dashboard .filter-input {
+    width: 100% !important;
+    min-width: 0 !important;
+  }
+
+  .admin-dashboard .filter-bar > :only-child,
+  .admin-dashboard .filter-bar > input:first-child {
+    grid-column: 1 / -1;
+  }
+
+  /* Dense desktop tables become compact record cards. This preserves every
+     value and action while removing all sideways table scrolling. */
+  .admin-dashboard .overflow-x-auto:has(> table) {
+    overflow-x: visible !important;
+  }
+
+  .admin-dashboard .hide-scrollbar {
+    flex-wrap: wrap;
+    overflow-x: visible !important;
+  }
+
+  .admin-dashboard table {
+    display: block;
+    width: 100% !important;
+    min-width: 0 !important;
+    table-layout: fixed;
+  }
+
+  .admin-dashboard table thead {
+    display: none;
+  }
+
+  .admin-dashboard table tbody {
+    display: grid;
+    gap: 0.625rem;
+    width: 100%;
+  }
+
+  .admin-dashboard table tbody tr {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0.5rem 0.75rem;
+    width: 100%;
+    padding: 0.875rem;
+    border: 1px solid #e2e8f0;
+    border-radius: 0.875rem;
+    background: #fff;
+    box-shadow: 0 1px 2px rgb(15 23 42 / 0.03);
+  }
+
+  .admin-dashboard table tbody td {
+    display: block;
+    width: auto !important;
+    padding: 0 !important;
+    border: 0 !important;
+    font-size: 0.6875rem;
+    line-height: 1.4;
+    text-align: left !important;
+    white-space: normal !important;
+    overflow-wrap: anywhere;
+  }
+
+  .admin-dashboard table tbody td:first-child,
+  .admin-dashboard table tbody td:last-child {
+    grid-column: 1 / -1;
+  }
+
+  .admin-dashboard table tbody td:last-child {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: flex-start !important;
+    gap: 0.5rem;
+  }
+
+  /* Full-screen, thumb-friendly dialogs on narrow devices. */
+  .admin-dashboard [id*="Modal"],
+  .portal-dashboard [id*="Modal"] {
+    align-items: flex-end !important;
+    padding: 0 !important;
+  }
+
+  .admin-dashboard [id*="Modal"] > [class*="bg-"],
+  .portal-dashboard [id*="Modal"] > [class*="bg-"] {
+    width: 100% !important;
+    max-width: none !important;
+    max-height: calc(100dvh - env(safe-area-inset-top)) !important;
+    margin: 0 !important;
+    padding: 1rem !important;
+    border-radius: 1.25rem 1.25rem 0 0 !important;
+  }
+
+  .admin-dashboard [id*="Modal"] .grid-cols-2,
+  .portal-dashboard [id*="Modal"] .grid-cols-2 {
+    grid-template-columns: minmax(0, 1fr) !important;
+  }
+
+  .admin-dashboard .admin-fab {
+    bottom: calc(5.25rem + env(safe-area-inset-bottom)) !important;
+  }
+
+  .admin-dashboard .admin-fab--icon,
+  .admin-dashboard .admin-fab--label {
+    right: 0.875rem !important;
+  }
+
+  .admin-dashboard .admin-fab--secondary {
+    right: 5rem !important;
+  }
+
+  .admin-dashboard #notifDropdown,
+  .portal-dashboard #notifDropdown {
+    position: fixed;
+    top: 3.75rem;
+    right: 0.75rem;
+    left: 0.75rem;
+    width: auto !important;
+    max-width: none;
+  }
+
+  .portal-dashboard section,
+  .portal-dashboard article,
+  .portal-dashboard form,
+  .admin-dashboard section,
+  .admin-dashboard article,
+  .admin-dashboard form {
+    max-width: 100%;
+  }
+}
+
+@media (max-width: 389px) {
+  .admin-dashboard main,
+  .portal-dashboard main {
+    padding-inline: 0.75rem !important;
+  }
+
+  .admin-dashboard .filter-bar {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .admin-dashboard .filter-bar > * {
+    grid-column: 1;
+  }
+
+  .admin-dashboard [class*="grid-cols-3"]:not(.stat-row),
+  .portal-dashboard [class*="grid-cols-3"] {
+    grid-template-columns: minmax(0, 1fr) !important;
+  }
+
+  .admin-dashboard .list-row {
+    padding: 0.75rem;
+  }
+}
