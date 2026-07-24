@@ -35,6 +35,12 @@ import AdminLayout from "../../layouts/AdminLayout.astro";
 
   <div class="dash-scroll space-y-6">
 
+    <!-- PENDING CREDIT REQUESTS -->
+    <div id="pendingRequestsCard" class="hidden bg-white border border-amber-200 rounded-2xl p-4 sm:p-5">
+      <p class="text-[9px] font-bold uppercase tracking-[0.15em] text-amber-700 mb-3">Pending credit requests</p>
+      <div id="pendingRequestsList" class="space-y-2"></div>
+    </div>
+
     <!-- REVENUE LEDGER -->
     <div class="bg-white border border-zinc-100 rounded-2xl p-4 sm:p-5">
       <div class="flex flex-wrap items-center justify-between gap-3 mb-4">
@@ -309,6 +315,51 @@ import AdminLayout from "../../layouts/AdminLayout.astro";
     }
   });
 
+  // ── Pending credit requests ─────────────────────────────────────────
+  async function loadPendingRequests() {
+    const card = document.getElementById('pendingRequestsCard');
+    const list = document.getElementById('pendingRequestsList');
+    if (!card || !list) return;
+
+    const { data: requests } = await supabase
+      .from('credit_requests')
+      .select('*')
+      .eq('status', 'pending')
+      .order('created_at', { ascending: false });
+
+    if (!requests || requests.length === 0) {
+      card.classList.add('hidden');
+      return;
+    }
+
+    const contractorIds = requests.filter((r) => r.account_type === 'contractor').map((r) => r.account_id);
+    const ownerIds = requests.filter((r) => r.account_type === 'truck_owner').map((r) => r.account_id);
+    const [{ data: contractors }, { data: owners }] = await Promise.all([
+      contractorIds.length ? supabase.from('contractors').select('id, user_id, company_name').in('user_id', contractorIds) : Promise.resolve({ data: [] }),
+      ownerIds.length ? supabase.from('truck_owners').select('id, company_name').in('id', ownerIds) : Promise.resolve({ data: [] }),
+    ]);
+    const contractorByUserId = new Map((contractors || []).map((c: any) => [c.user_id, c]));
+    const ownerById = new Map((owners || []).map((o: any) => [o.id, o]));
+
+    card.classList.remove('hidden');
+    list.innerHTML = requests.map((r: any) => {
+      const account = r.account_type === 'contractor' ? contractorByUserId.get(r.account_id) : ownerById.get(r.account_id);
+      const name = account?.company_name || (r.account_type === 'contractor' ? 'Contractor' : 'Truck owner');
+      const detailUrl = r.account_type === 'contractor' ? `/admin/contractors/${account?.id}` : `/admin/truck-owners/${r.account_id}`;
+      const amountText = r.requested_amount ? `$${r.requested_amount}` : 'Amount not specified';
+      return `
+        <div class="flex items-center justify-between gap-3 rounded-xl border border-amber-100 bg-amber-50/50 p-3">
+          <div class="min-w-0">
+            <p class="text-[12px] font-bold text-slate-900 truncate">${escapeHtml(name)} <span class="font-normal text-zinc-500 capitalize">(${r.account_type.replace('_', ' ')})</span></p>
+            <p class="text-[10px] text-zinc-500">${amountText}${r.note ? ` · "${escapeHtml(r.note)}"` : ''} · ${new Date(r.created_at).toLocaleDateString()}</p>
+          </div>
+          <a href="${detailUrl}" class="shrink-0 text-[10px] font-bold uppercase tracking-wider text-green-700 hover:text-green-800">Review →</a>
+        </div>
+      `;
+    }).join('');
+  }
+
   loadRevenue();
   loadExpenses();
+  loadPendingRequests();
 </script>

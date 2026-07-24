@@ -47,7 +47,7 @@ const navItems = [
       <p class="mt-2 max-w-2xl text-sm text-slate-500">The first contractor to claim a lead gains exclusive access. Others will see it as taken.</p>
     </div>
 
-    <div class="grid grid-cols-2 gap-4">
+    <div id="overviewStatsGrid" class="grid grid-cols-2 gap-4">
       <div class="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
         <p class="text-[9px] font-bold uppercase tracking-[0.18em] text-slate-400">Available now</p>
         <p id="overviewAvailable" class="mt-3 text-3xl font-bold tabular-nums text-slate-950">-</p>
@@ -57,6 +57,11 @@ const navItems = [
         <p class="text-[9px] font-bold uppercase tracking-[0.18em] text-green-700">Claimed</p>
         <p id="overviewClaimed" class="mt-3 text-3xl font-bold tabular-nums text-slate-950">-</p>
         <p class="mt-1 text-xs text-slate-500">Total secured opportunities</p>
+      </div>
+      <div id="overviewCreditsCard" class="hidden rounded-2xl border border-emerald-200 bg-gradient-to-br from-white to-emerald-50/70 p-5 shadow-sm">
+        <p class="text-[9px] font-bold uppercase tracking-[0.18em] text-emerald-700">Credit balance</p>
+        <p id="overviewCredits" class="mt-3 text-3xl font-bold tabular-nums text-slate-950">$-</p>
+        <button id="overviewCreditsLink" class="mt-1 text-xs font-bold text-emerald-700 hover:text-emerald-800">Manage on Profile →</button>
       </div>
     </div>
 
@@ -147,11 +152,30 @@ const navItems = [
                 <span class="text-xs text-slate-600">Total claimed</span>
                 <span id="statClaimed" class="text-sm font-mono font-bold text-slate-900">-</span>
               </div>
-              <div id="statCreditsRow" class="hidden items-center justify-between pt-3 border-t border-slate-100">
-                <span class="text-xs text-slate-600">Credit balance</span>
-                <span id="statCredits" class="text-sm font-mono font-bold text-slate-900">$-</span>
-              </div>
             </div>
+          </div>
+
+          <!-- CREDITS -->
+          <div id="creditsCard" class="hidden rounded-2xl border border-emerald-200 bg-gradient-to-br from-white to-emerald-50/60 p-5 shadow-soft">
+            <div class="flex items-center justify-between">
+              <p class="text-[10px] font-bold uppercase tracking-[0.15em] text-emerald-700">Credit balance</p>
+              <span class="text-[9px] font-bold uppercase tracking-wider text-emerald-600/70">$1 = 1 credit</span>
+            </div>
+            <p id="profileCreditBalance" class="mt-2 text-3xl font-bold tabular-nums text-slate-950">$-</p>
+
+            <div id="creditPendingNotice" class="hidden mt-4 rounded-xl border border-amber-200 bg-amber-50 p-3">
+              <p class="text-[11px] font-bold text-amber-800">Request pending</p>
+              <p id="creditPendingText" class="mt-1 text-[11px] text-amber-700 leading-relaxed"></p>
+            </div>
+
+            <form id="creditRequestForm" class="mt-4 space-y-2">
+              <input id="creditRequestAmount" type="number" min="1" step="1" placeholder="Amount requested ($, optional)" class="h-10 w-full rounded-lg border border-emerald-200 bg-white px-3 text-sm text-slate-900 outline-none focus:border-emerald-500" />
+              <input id="creditRequestNote" type="text" placeholder="Note (optional)" class="h-10 w-full rounded-lg border border-emerald-200 bg-white px-3 text-sm text-slate-900 outline-none focus:border-emerald-500" />
+              <button id="creditRequestBtn" type="submit" class="h-10 w-full rounded-lg bg-emerald-600 text-xs font-bold uppercase tracking-wider text-white hover:bg-emerald-500 transition-all">Request more credit</button>
+            </form>
+            <p id="creditRequestMsg" class="mt-2 text-[11px]"></p>
+
+            <p class="mt-4 border-t border-emerald-100 pt-3 text-[10px] text-emerald-700/70 leading-relaxed">💳 Buying credit online is coming soon — for now, requests are reviewed by the administrator.</p>
           </div>
 
           <div class="rounded-2xl border border-green-200 bg-green-50 p-5">
@@ -227,27 +251,57 @@ const navItems = [
     setTimeout(() => el.classList.add('hidden'), 3500);
   }
 
-  function updateNotificationBell(availableCount: number) {
+  async function updateNotificationBell(availableCount: number) {
     const badge = document.getElementById('notificationBadge');
     const content = document.getElementById('notifContent');
+
+    let creditNotices: { id: string; status: string }[] = [];
+    if (contractorId) {
+      const { data } = await supabase
+        .from('credit_requests')
+        .select('id, status')
+        .eq('account_type', 'contractor')
+        .eq('account_id', contractorId)
+        .in('status', ['fulfilled', 'dismissed'])
+        .eq('seen_by_requester', false);
+      creditNotices = data || [];
+    }
+
+    const total = availableCount + creditNotices.length;
     if (badge) {
-      if (availableCount > 0) {
-        badge.textContent = availableCount.toString();
+      if (total > 0) {
+        badge.textContent = total.toString();
         badge.classList.remove('hidden');
       } else {
         badge.classList.add('hidden');
       }
     }
     if (content) {
-      content.innerHTML = availableCount > 0
+      const leadHtml = availableCount > 0
         ? `<button id="notifGoToAvailable" class="w-full text-left px-3 py-2.5 rounded-lg hover:bg-zinc-100 transition-colors">
              <p class="text-xs text-slate-900 font-bold">${availableCount} lead${availableCount === 1 ? '' : 's'} available</p>
              <p class="text-[10px] text-zinc-500 mt-0.5">In your territory, waiting to be claimed.</p>
            </button>`
-        : `<p class="px-3 py-4 text-[11px] text-zinc-400 text-center">No new leads right now.</p>`;
+        : '';
+      const creditHtml = creditNotices.map((notice) => `
+        <button class="notif-credit-item w-full text-left px-3 py-2.5 rounded-lg hover:bg-zinc-100 transition-colors" data-id="${notice.id}">
+          <p class="text-xs text-slate-900 font-bold">${notice.status === 'fulfilled' ? '✅ Credit request approved' : 'Credit request declined'}</p>
+          <p class="text-[10px] text-zinc-500 mt-0.5">${notice.status === 'fulfilled' ? 'Your balance has been topped up.' : 'Contact the administrator for details.'}</p>
+        </button>
+      `).join('');
+      content.innerHTML = (leadHtml + creditHtml) || `<p class="px-3 py-4 text-[11px] text-zinc-400 text-center">No new leads right now.</p>`;
+
       document.getElementById('notifGoToAvailable')?.addEventListener('click', () => {
         goToTab('available');
         document.getElementById('notifDropdown')?.classList.add('hidden');
+      });
+      content.querySelectorAll<HTMLButtonElement>('.notif-credit-item').forEach((btn) => {
+        btn.addEventListener('click', async () => {
+          document.getElementById('notifDropdown')?.classList.add('hidden');
+          goToTab('profile');
+          await supabase.from('credit_requests').update({ seen_by_requester: true }).eq('id', btn.dataset.id);
+          await refreshCreditBalance();
+        });
       });
     }
   }
@@ -439,16 +493,100 @@ const navItems = [
   }
 
   async function refreshCreditBalance() {
-    const row = document.getElementById('statCreditsRow');
-    const label = document.getElementById('statCredits');
-    if (!row || !label || !contractorId) return;
+    const overviewCard = document.getElementById('overviewCreditsCard');
+    const overviewGrid = document.getElementById('overviewStatsGrid');
+    const overviewLabel = document.getElementById('overviewCredits');
+    const profileCard = document.getElementById('creditsCard');
+    const profileLabel = document.getElementById('profileCreditBalance');
+    if (!contractorId) return;
+
     const { data: enabled } = await supabase.rpc('is_credit_system_enabled');
-    if (!enabled) { row.classList.add('hidden'); return; }
+    if (!enabled) {
+      overviewCard?.classList.add('hidden');
+      overviewGrid?.classList.remove('grid-cols-3');
+      profileCard?.classList.add('hidden');
+      return;
+    }
+
     const { data: c } = await supabase.from('contractors').select('credit_balance').eq('user_id', contractorId).maybeSingle();
-    label.textContent = `$${c?.credit_balance ?? 0}`;
-    row.classList.remove('hidden');
-    row.classList.add('flex');
+    const balanceText = `$${c?.credit_balance ?? 0}`;
+    if (overviewLabel) overviewLabel.textContent = balanceText;
+    if (profileLabel) profileLabel.textContent = balanceText;
+    overviewCard?.classList.remove('hidden');
+    overviewGrid?.classList.add('grid-cols-3');
+    profileCard?.classList.remove('hidden');
+
+    await refreshPendingCreditRequest();
   }
+
+  async function refreshPendingCreditRequest() {
+    const notice = document.getElementById('creditPendingNotice');
+    const noticeText = document.getElementById('creditPendingText');
+    const form = document.getElementById('creditRequestForm');
+    if (!contractorId || !notice || !noticeText || !form) return;
+
+    const { data: pending } = await supabase
+      .from('credit_requests')
+      .select('requested_amount, created_at')
+      .eq('account_type', 'contractor')
+      .eq('account_id', contractorId)
+      .eq('status', 'pending')
+      .order('created_at', { ascending: false })
+      .maybeSingle();
+
+    if (pending) {
+      noticeText.textContent = pending.requested_amount
+        ? `You requested $${pending.requested_amount} on ${new Date(pending.created_at).toLocaleDateString()} — waiting for admin review.`
+        : `Sent on ${new Date(pending.created_at).toLocaleDateString()} — waiting for admin review.`;
+      notice.classList.remove('hidden');
+      form.classList.add('hidden');
+    } else {
+      notice.classList.add('hidden');
+      form.classList.remove('hidden');
+    }
+  }
+
+  document.getElementById('overviewCreditsLink')?.addEventListener('click', () => goToTab('profile'));
+
+  document.getElementById('creditRequestForm')?.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    if (!contractorId) return;
+    const btn = document.getElementById('creditRequestBtn') as HTMLButtonElement;
+    const msg = document.getElementById('creditRequestMsg')!;
+    const amountInput = document.getElementById('creditRequestAmount') as HTMLInputElement;
+    const noteInput = document.getElementById('creditRequestNote') as HTMLInputElement;
+    const requested_amount = amountInput.value ? Number(amountInput.value) : null;
+    const note = noteInput.value.trim() || null;
+
+    btn.disabled = true;
+    btn.textContent = 'Sending...';
+    try {
+      const { data: inserted, error } = await supabase
+        .from('credit_requests')
+        .insert([{ account_type: 'contractor', account_id: contractorId, requested_amount, note, status: 'pending' }])
+        .select('id')
+        .single();
+      if (error || !inserted) throw error || new Error('insert_failed');
+
+      await fetch('/api/notify-credit-request', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ requestId: inserted.id }),
+      }).catch(() => {});
+
+      msg.textContent = '✅ Request sent — the administrator will review it shortly.';
+      msg.className = 'mt-2 text-[11px] text-green-700';
+      amountInput.value = '';
+      noteInput.value = '';
+      await refreshPendingCreditRequest();
+    } catch (err) {
+      msg.textContent = '❌ Could not send request. Please try again.';
+      msg.className = 'mt-2 text-[11px] text-red-600';
+    } finally {
+      btn.disabled = false;
+      btn.textContent = 'Request more credit';
+    }
+  });
 
   async function init() {
     const { data: { session } } = await supabase.auth.getSession();

@@ -25,6 +25,11 @@ const { data: claimedLeads } = contractor?.user_id
   ? await db.from('leads').select('*').eq('contractor_id', contractor.user_id).order('claimed_at', { ascending: false, nullsFirst: false })
   : { data: [] };
 
+// Zahtev za dopunu kredita koji čeka na admina (ako postoji)
+const { data: pendingCreditRequest } = contractor?.user_id
+  ? await db.from('credit_requests').select('*').eq('account_type', 'contractor').eq('account_id', contractor.user_id).eq('status', 'pending').order('created_at', { ascending: false }).maybeSingle()
+  : { data: null };
+
 if (!contractor) return Astro.redirect('/admin/contractors');
 ---
 
@@ -145,6 +150,16 @@ if (!contractor) return Astro.redirect('/admin/contractors');
         <h3 class="detail-card__title">Credits</h3>
         <p class="text-2xl font-bold text-slate-900 font-mono">${contractor.credit_balance ?? 0}</p>
         <p class="text-[10px] text-zinc-400 mb-3">$1 = 1 credit, spent automatically when this contractor claims a lead (if the credit system is enabled in Settings).</p>
+        {pendingCreditRequest && (
+          <div class="mb-3 rounded-xl border border-amber-200 bg-amber-50 p-3">
+            <p class="text-[11px] font-bold text-amber-800">
+              {pendingCreditRequest.requested_amount ? `Requested $${pendingCreditRequest.requested_amount}` : 'Requested a top-up'}
+            </p>
+            {pendingCreditRequest.note && <p class="mt-1 text-[11px] text-amber-700 italic">"{pendingCreditRequest.note}"</p>}
+            <p class="mt-1 text-[10px] text-amber-600">{new Date(pendingCreditRequest.created_at).toLocaleString()}</p>
+            <button id="dismissCreditRequestBtn" data-request-id={pendingCreditRequest.id} class="mt-2 text-[10px] font-bold uppercase tracking-wider text-amber-700 hover:text-amber-900">Dismiss request</button>
+          </div>
+        )}
         {contractor.user_id ? (
           <div class="flex gap-2">
             <input id="creditAdjustAmount" type="number" step="1" placeholder="e.g. 10 or -5 ($)" class="w-full rounded-lg border border-zinc-200 p-2.5 text-sm text-slate-900" />
@@ -364,11 +379,24 @@ if (!contractor) return Astro.redirect('/admin/contractors');
       msg.textContent = `✅ New balance: $${result.balance}`;
       msg.className = 'text-[11px] mt-2 text-green-700';
       input.value = '';
+      const pendingId = (document.getElementById('dismissCreditRequestBtn') as HTMLButtonElement | null)?.dataset.requestId;
+      if (pendingId) {
+        await supabase.from('credit_requests').update({ status: 'fulfilled', resolved_at: new Date().toISOString(), resolved_by: currentUser }).eq('id', pendingId);
+      }
       setTimeout(() => window.location.reload(), 900);
     } else {
       msg.textContent = '❌ ' + (result.error || 'Failed to adjust credits.');
       msg.className = 'text-[11px] mt-2 text-red-600';
     }
+  });
+
+  document.getElementById('dismissCreditRequestBtn')?.addEventListener('click', async (e) => {
+    const btn = e.currentTarget as HTMLButtonElement;
+    const requestId = btn.dataset.requestId;
+    if (!requestId) return;
+    btn.disabled = true;
+    await supabase.from('credit_requests').update({ status: 'dismissed', resolved_at: new Date().toISOString(), resolved_by: currentUser }).eq('id', requestId);
+    window.location.reload();
   });
 
   // --- CLAIMED LEADS PAGINATION (5 per page) ---

@@ -115,6 +115,7 @@ const tabItems = menuItems.slice(0, 4);
                   <a href="/admin/contractors" class="flex items-center justify-between px-3 py-2 rounded-lg hover:bg-slate-50 transition-colors"><span class="text-xs text-slate-600">Pending Contractors</span><span id="badge-contractors" class="text-[10px] font-mono text-blue-600 bg-blue-50 px-2 py-0.5 rounded">0</span></a>
                   <a href="/admin/truck-owners" class="flex items-center justify-between px-3 py-2 rounded-lg hover:bg-slate-50 transition-colors"><span class="text-xs text-slate-600">Pending Owners</span><span id="badge-owners" class="text-[10px] font-mono text-amber-600 bg-amber-50 px-2 py-0.5 rounded">0</span></a>
                   <a href="/admin/grapple-saw-trucks" class="flex items-center justify-between px-3 py-2 rounded-lg hover:bg-slate-50 transition-colors"><span class="text-xs text-slate-600">Pending Assets</span><span id="badge-trucks" class="text-[10px] font-mono text-purple-600 bg-purple-50 px-2 py-0.5 rounded">0</span></a>
+                  <a href="/admin/finances" class="flex items-center justify-between px-3 py-2 rounded-lg hover:bg-slate-50 transition-colors"><span class="text-xs text-slate-600">Credit Requests</span><span id="badge-credits" class="text-[10px] font-mono text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded">0</span></a>
                 </div>
               </div>
             </div>
@@ -202,7 +203,8 @@ const tabItems = menuItems.slice(0, 4);
         const { count: contr } = await supabase.from('contractors').select('*', { count: 'exact', head: true }).eq('status', 'pending');
         const { count: owners } = await supabase.from('truck_owners').select('*', { count: 'exact', head: true }).eq('status', 'pending');
         const { count: trucks } = await supabase.from('grapple_saw_trucks').select('*', { count: 'exact', head: true }).eq('approval_status', 'pending');
-        const total = (leads || 0) + (external || 0) + (contr || 0) + (owners || 0) + (trucks || 0);
+        const { count: creditRequests } = await supabase.from('credit_requests').select('*', { count: 'exact', head: true }).eq('status', 'pending');
+        const total = (leads || 0) + (external || 0) + (contr || 0) + (owners || 0) + (trucks || 0) + (creditRequests || 0);
         const badge = document.getElementById('notificationBadge');
         if (total > 0 && badge) { badge.textContent = total.toString(); badge.classList.remove('hidden'); }
         document.getElementById('badge-leads')!.textContent = (leads || 0).toString();
@@ -210,6 +212,7 @@ const tabItems = menuItems.slice(0, 4);
         document.getElementById('badge-contractors')!.textContent = (contr || 0).toString();
         document.getElementById('badge-owners')!.textContent = (owners || 0).toString();
         document.getElementById('badge-trucks')!.textContent = (trucks || 0).toString();
+        document.getElementById('badge-credits')!.textContent = (creditRequests || 0).toString();
       }
       document.addEventListener('astro:page-load', fetchNotifications);
 
