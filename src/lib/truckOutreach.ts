@@ -32,25 +32,35 @@ function render(template: string, profile: any, claimUrl: string) {
 export async function runTruckOutreachBatch({ force = false }: { force?: boolean } = {}) {
   if (!supabaseAdmin) return { ok: false, error: "service_role_not_configured", sent: 0 };
   const settings = await getTruckOutreachSettings();
-  if (!settings || (!settings.enabled && !force)) return { ok: true, skipped: "disabled", sent: 0 };
+  if (!settings) return { ok: false, error: "outreach_settings_not_available", sent: 0 };
+  if (!settings.enabled && !force) return { ok: true, skipped: "disabled", sent: 0 };
 
   const startOfDay = new Date();
   startOfDay.setUTCHours(0, 0, 0, 0);
-  const { count: sentToday } = await supabaseAdmin
+  const { count: sentToday, error: sentCountError } = await supabaseAdmin
     .from("truck_profile_outreach")
     .select("id", { count: "exact", head: true })
     .gte("sent_at", startOfDay.toISOString())
     .in("status", ["sent", "delivered", "opened", "clicked"]);
+  if (sentCountError) {
+    return { ok: false, error: "sent_count_query_failed", detail: sentCountError.message, sent: 0 };
+  }
   const remaining = Math.max(0, Number(settings.daily_limit) - Number(sentToday || 0));
   if (!remaining) return { ok: true, skipped: "daily_limit_reached", sent: 0 };
 
-  const [{ data: profiles }, { data: history }] = await Promise.all([
+  const [{ data: profiles, error: profilesError }, { data: history, error: historyError }] = await Promise.all([
     supabaseAdmin.from("unclaimed_truck_directory")
-      .select("id,slug,company_name,contact_name,equipment_name,location_city,location_state,source_payload,profile_status,is_published")
+      .select("id,slug,company_name,contact_name,equipment_name,location_city,location_state,public_email:source_payload->>public_email")
       .eq("profile_status", "unclaimed").eq("is_published", true).order("created_at").limit(1000),
     supabaseAdmin.from("truck_profile_outreach")
       .select("profile_id,email,status,sent_at,created_at").order("created_at", { ascending: false }).limit(5000),
   ]);
+  if (profilesError) {
+    return { ok: false, error: "profiles_query_failed", detail: profilesError.message, sent: 0 };
+  }
+  if (historyError) {
+    return { ok: false, error: "outreach_history_query_failed", detail: historyError.message, sent: 0 };
+  }
 
   const baseUrl = import.meta.env.PUBLIC_SITE_URL || "https://sftreeremoval.com";
   const cooldownMs = Number(settings.cooldown_days) * 86400000;
@@ -58,7 +68,7 @@ export async function runTruckOutreachBatch({ force = false }: { force?: boolean
   const batchEmails = new Set<string>();
 
   for (const profile of profiles || []) {
-    const email = String(profile.source_payload?.public_email || "").trim().toLowerCase();
+    const email = String(profile.public_email || "").trim().toLowerCase();
     if (!email || !email.includes("@") || batchEmails.has(email)) continue;
     const emailHistory = (history || []).filter((row: any) => String(row.email).toLowerCase() === email);
     if (emailHistory.some((row: any) => ["bounced", "complained", "unsubscribed"].includes(row.status))) continue;
@@ -76,7 +86,11 @@ export async function runTruckOutreachBatch({ force = false }: { force?: boolean
   for (const { profile, email } of candidates) {
     const { data: log, error: logError } = await supabaseAdmin.from("truck_profile_outreach")
       .insert([{ profile_id: profile.id, email, status: "queued" }]).select().single();
-    if (logError || !log) { failed++; continue; }
+    if (logError || !log) {
+      console.error("Truck outreach log insert failed:", logError);
+      failed++;
+      continue;
+    }
     const claimUrl = new URL(`/truck-registration?claim=${encodeURIComponent(profile.slug)}`, baseUrl);
     claimUrl.searchParams.set("utm_source", "truck_profile_outreach");
     claimUrl.searchParams.set("utm_medium", "email");
@@ -110,4 +124,3 @@ export async function runTruckOutreachBatch({ force = false }: { force?: boolean
   }
   return { ok: true, sent, failed, eligible: candidates.length, remainingAfterRun: remaining - sent };
 }
-

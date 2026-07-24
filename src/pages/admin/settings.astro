@@ -502,10 +502,31 @@ const permitSettings = parsePermitSettings(tracking?.global_scripts);
     if (!confirm('Run one rate-limited outreach batch now? Daily limits and suppression rules still apply.')) return;
     const button = document.getElementById('runTruckOutreach') as HTMLButtonElement;
     button.disabled = true; button.textContent = 'Running…';
-    const response = await adminFetch('/api/truck-outreach/run', { method: 'POST' });
-    const result = await response.json().catch(() => ({}));
-    alert(result.ok ? `Batch complete: ${result.sent || 0} sent, ${result.failed || 0} failed.` : `Batch failed: ${result.error || 'Unknown error'}`);
-    button.disabled = false; button.textContent = 'Run safe batch now'; loadTruckOutreach();
+    try {
+      const response = await adminFetch('/api/truck-outreach/run', { method: 'POST' });
+      const responseText = await response.text();
+      let result: any = {};
+      try {
+        result = responseText ? JSON.parse(responseText) : {};
+      } catch {
+        result = {};
+      }
+
+      if (response.ok && result.ok) {
+        const skipped = result.skipped ? ` (${String(result.skipped).replaceAll('_', ' ')})` : '';
+        alert(`Batch complete: ${result.sent || 0} sent, ${result.failed || 0} failed${skipped}.`);
+      } else {
+        const serverMessage = result.detail || result.error;
+        const fallback = responseText && responseText.length < 240 ? responseText : `HTTP ${response.status}`;
+        alert(`Batch failed: ${serverMessage || fallback || 'No response from server'}`);
+      }
+    } catch (error) {
+      alert(`Batch failed: ${error instanceof Error ? error.message : 'Network request failed'}`);
+    } finally {
+      button.disabled = false;
+      button.textContent = 'Run safe batch now';
+      loadTruckOutreach();
+    }
   });
   document.getElementById('refreshTruckOutreach')?.addEventListener('click', loadTruckOutreach);
 
