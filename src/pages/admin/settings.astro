@@ -503,7 +503,11 @@ const permitSettings = parsePermitSettings(tracking?.global_scripts);
     const button = document.getElementById('runTruckOutreach') as HTMLButtonElement;
     button.disabled = true; button.textContent = 'Running…';
     try {
-      const response = await adminFetch('/api/truck-outreach/run', { method: 'POST' });
+      const response = await adminFetch('/api/truck-outreach/run', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: '{}',
+      });
       const responseText = await response.text();
       let result: any = {};
       try {
