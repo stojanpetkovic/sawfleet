@@ -730,17 +730,30 @@ const { data: territories } = await supabase.from('service_territories').select(
       if (!session?.access_token) throw new Error('Admin session expired');
       const response = await fetch('/api/permit-sync', {
         method: 'POST',
-        headers: { Authorization: `Bearer ${session.access_token}` },
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${session.access_token}`,
+        },
+        body: '{}',
       });
-      const payload = await response.json().catch(() => ({}));
-      if (!response.ok || !payload.ok) throw new Error(payload.error || 'Run failed');
+      const responseText = await response.text();
+      let payload: any = {};
+      try {
+        payload = responseText ? JSON.parse(responseText) : {};
+      } catch {
+        payload = {};
+      }
+      if (!response.ok || !payload.ok) {
+        const fallback = responseText && responseText.length < 240 ? responseText : `HTTP ${response.status}`;
+        throw new Error(payload.error || fallback || 'No response from server');
+      }
       alert(`Permit run completed. Created ${payload.created || 0} leads.`);
       await loadPermitLeads();
       await loadActivityLog();
       await loadAuditLog();
     } catch (error) {
       console.error(error);
-      alert('Permit run failed.');
+      alert(`Permit run failed: ${error instanceof Error ? error.message : 'Unknown error'}`);
     } finally {
       btn.disabled = false;
       btn.textContent = 'Run now';
