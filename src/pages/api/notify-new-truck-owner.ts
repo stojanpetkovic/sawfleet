@@ -1,11 +1,30 @@
 export const prerender = false;
 
 import { supabase } from "../../lib/supabase";
+import { supabaseAdmin } from "../../lib/supabaseAdmin";
 import { sendEmail } from "../../lib/resend";
 
+// Poziva se sa javne registracione strane odmah posle signUp-a — nema
+// admin sesije u tom trenutku, pa ne može biti admin-only. Da sadržaj
+// mejla ne bi bio proizvoljan tekst iz body-ja, učitavamo pravi red iz
+// baze preko ownerId-a i šaljemo SAMO ono što je stvarno upisano.
 export async function POST({ request }) {
   try {
-    const { ownerName, companyName } = await request.json();
+    const { ownerId } = await request.json();
+    if (!ownerId) {
+      return new Response(JSON.stringify({ error: "ownerId is required" }), { status: 400 });
+    }
+
+    const db = supabaseAdmin ?? supabase;
+    const { data: owner } = await db
+      .from("truck_owners")
+      .select("company_name, contact_name")
+      .eq("id", ownerId)
+      .maybeSingle();
+
+    if (!owner) {
+      return new Response(JSON.stringify({ error: "owner_not_found" }), { status: 404 });
+    }
 
     const { data: admins, error } = await supabase.rpc('get_admin_emails');
     if (error) {
@@ -14,7 +33,7 @@ export async function POST({ request }) {
     }
 
     const siteUrl = import.meta.env.PUBLIC_SITE_URL || new URL(request.url).origin;
-    const label = companyName || ownerName || "New owner";
+    const label = owner.company_name || owner.contact_name || "New owner";
 
     const results = await Promise.all(
       (admins || []).map((a) =>

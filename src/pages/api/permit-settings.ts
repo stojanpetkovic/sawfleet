@@ -1,9 +1,14 @@
 export const prerender = false;
 
 import { getPermitAutomationSettings, savePermitAutomationSettings } from "../../lib/permitData";
+import { authorizeAutomationRequest } from "../../lib/automationAuth";
 
-export async function GET() {
+export async function GET({ request }: { request: Request }) {
   try {
+    const authorization = await authorizeAutomationRequest(request);
+    if (!authorization.authorized) {
+      return new Response(JSON.stringify({ ok: false, error: "unauthorized" }), { status: 401, headers: { "Content-Type": "application/json" } });
+    }
     const settings = await getPermitAutomationSettings();
     return new Response(JSON.stringify({ ok: true, settings }), { status: 200, headers: { "Content-Type": "application/json" } });
   } catch (error) {
@@ -13,6 +18,10 @@ export async function GET() {
 
 export async function POST({ request }: { request: Request }) {
   try {
+    const authorization = await authorizeAutomationRequest(request);
+    if (!authorization.authorized) {
+      return new Response(JSON.stringify({ ok: false, error: "unauthorized" }), { status: 401, headers: { "Content-Type": "application/json" } });
+    }
     const body = await request.json().catch(() => null);
     if (!body) {
       return new Response(JSON.stringify({ ok: false, error: "invalid_json" }), { status: 400, headers: { "Content-Type": "application/json" } });

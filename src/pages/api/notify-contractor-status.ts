@@ -3,10 +3,16 @@ export const prerender = false;
 import { supabase } from "../../lib/supabase";
 import { supabaseAdmin } from "../../lib/supabaseAdmin";
 import { sendEmail, contractorStatusEmailHtml } from "../../lib/resend";
+import { authorizeAutomationRequest } from "../../lib/automationAuth";
 
 // Poziva se iz admin panela kad se odobri/odbije kontraktor.
 export async function POST({ request }) {
   try {
+    const authorization = await authorizeAutomationRequest(request);
+    if (!authorization.authorized) {
+      return new Response(JSON.stringify({ error: "unauthorized" }), { status: 401 });
+    }
+
     const { contractorId, status } = await request.json();
     if (!contractorId || !status) {
       return new Response(JSON.stringify({ error: "contractorId and status are required" }), { status: 400 });

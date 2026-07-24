@@ -140,6 +140,22 @@ if (!contractor) return Astro.redirect('/admin/contractors');
         </span>
       </div>
 
+      <!-- Credits -->
+      <div class="detail-card">
+        <h3 class="detail-card__title">Credits</h3>
+        <p class="text-2xl font-bold text-slate-900 font-mono">${contractor.credit_balance ?? 0}</p>
+        <p class="text-[10px] text-zinc-400 mb-3">$1 = 1 credit, spent automatically when this contractor claims a lead (if the credit system is enabled in Settings).</p>
+        {contractor.user_id ? (
+          <div class="flex gap-2">
+            <input id="creditAdjustAmount" type="number" step="1" placeholder="e.g. 10 or -5 ($)" class="w-full rounded-lg border border-zinc-200 p-2.5 text-sm text-slate-900" />
+            <button id="creditAdjustBtn" data-account-id={contractor.user_id} class="shrink-0 h-10 px-4 rounded-lg bg-green-600 text-white text-[10px] font-bold uppercase tracking-wider hover:bg-green-500">Add</button>
+          </div>
+        ) : (
+          <p class="text-[11px] text-amber-600">Account not linked yet — credits can be adjusted once the contractor logs in for the first time.</p>
+        )}
+        <p id="creditAdjustMsg" class="text-[11px] mt-2"></p>
+      </div>
+
       <!-- Actions -->
       <div class="detail-card">
         <h3 class="detail-card__title">Actions</h3>
@@ -223,9 +239,10 @@ if (!contractor) return Astro.redirect('/admin/contractors');
     await supabase.from('contractor_logs').insert([{ contractor_id: id, action: `Status changed to ${newStatus}`, changed_by: currentUser }]);
 
     try {
+      const { data: { session } } = await supabase.auth.getSession();
       await fetch('/api/notify-contractor-status', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${session?.access_token}` },
         keepalive: true,
         body: JSON.stringify({ contractorId: id, status: newStatus }),
       });
@@ -322,6 +339,38 @@ if (!contractor) return Astro.redirect('/admin/contractors');
       resetMsg.className = 'text-[11px] text-red-600';
     }
   });
+  // --- CREDIT ADJUST ---
+  document.getElementById('creditAdjustBtn')?.addEventListener('click', async (e) => {
+    const btn = e.currentTarget as HTMLButtonElement;
+    const accountId = btn.dataset.accountId;
+    const input = document.getElementById('creditAdjustAmount') as HTMLInputElement;
+    const msg = document.getElementById('creditAdjustMsg')!;
+    const amount = Number(input.value);
+    if (!accountId || !amount) {
+      msg.textContent = 'Enter a non-zero amount.';
+      msg.className = 'text-[11px] mt-2 text-red-600';
+      return;
+    }
+    btn.disabled = true;
+    const { data: { session } } = await supabase.auth.getSession();
+    const res = await fetch('/api/credit-adjust', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${session?.access_token}` },
+      body: JSON.stringify({ accountType: 'contractor', accountId, amount }),
+    });
+    const result = await res.json().catch(() => ({}));
+    btn.disabled = false;
+    if (res.ok && result.ok) {
+      msg.textContent = `✅ New balance: $${result.balance}`;
+      msg.className = 'text-[11px] mt-2 text-green-700';
+      input.value = '';
+      setTimeout(() => window.location.reload(), 900);
+    } else {
+      msg.textContent = '❌ ' + (result.error || 'Failed to adjust credits.');
+      msg.className = 'text-[11px] mt-2 text-red-600';
+    }
+  });
+
   // --- CLAIMED LEADS PAGINATION (5 per page) ---
   const claimedRows = Array.from(document.querySelectorAll('.claimed-lead-row')) as HTMLElement[];
   const CLAIMED_PAGE_SIZE = 5;

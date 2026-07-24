@@ -17,6 +17,20 @@ export async function POST({ request }: { request: Request }) {
       return json({ error: "invalid_input", message: "userId and email are required." }, 400);
     }
 
+    // Zatvara IDOR rupu (bilo ko je mogao da prikači proizvoljan profil na
+    // TUĐI userId): proveravamo da userId zaista postoji u auth.users i da
+    // se njegov pravi email poklapa sa onim iz body-ja. Ovo je bezbedno da
+    // se doda — ako klijent prepozna "looksUnconfirmedRetry" (isti email
+    // već postoji, nepotvrđen), on se zaustavlja PRE ovog poziva, pa se
+    // ovde nikad ne pojavljuje onaj id koji ne odgovara 1:1 auth.users redu.
+    const { data: userLookup, error: userLookupError } = await supabaseAdmin.auth.admin.getUserById(userId);
+    if (userLookupError || !userLookup?.user) {
+      return json({ error: "invalid_user", message: "No matching account found for this id." }, 400);
+    }
+    if (String(userLookup.user.email || "").trim().toLowerCase() !== String(email).trim().toLowerCase()) {
+      return json({ error: "email_mismatch", message: "The provided email does not match the account." }, 400);
+    }
+
     // Isti razlog kao kod create-owner-profile.ts: ne oslanjamo se na
     // auth.uid() postojanje u trenutku signUp-a (ako je "Confirm email"
     // uključeno, nema sesije, pa bi insert sa browser klijenta pukao na

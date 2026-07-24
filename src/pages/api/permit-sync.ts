@@ -5,6 +5,7 @@ import { buildPermitOutreachEmail, getPermitLeads, getPermitAutomationSettings, 
 import { sendEmail } from "../../lib/resend";
 import { authorizeAutomationRequest } from "../../lib/automationAuth";
 import { runTruckOutreachBatch } from "../../lib/truckOutreach";
+import { processCreditAutoRefill } from "../../lib/creditSystem";
 
 /**
  * Autonomous permit lead scraping and sync to external_leads table.
@@ -22,6 +23,10 @@ export async function POST({ request }: { request: Request }) {
     }
     console.log(`[PERMIT SYNC] Starting permit lead synchronization at ${new Date().toISOString()}`);
     const truckOutreach = await runTruckOutreachBatch();
+    const creditRefill = await processCreditAutoRefill().catch((err) => {
+      console.error("[PERMIT SYNC] Credit auto-refill failed:", err);
+      return { ok: false, refilled: 0 };
+    });
 
     // Get automation settings
     const settings = await getPermitAutomationSettings();
@@ -35,6 +40,7 @@ export async function POST({ request }: { request: Request }) {
           synced: 0,
           created: 0,
           truckOutreach,
+          creditRefill,
         }),
         { status: 200, headers: { "Content-Type": "application/json" } }
       );
@@ -80,6 +86,17 @@ export async function POST({ request }: { request: Request }) {
     // Filter and transform new permits
     const toInsert = permits
       .filter((permit) => {
+        // Spoljašnji pipeline za permite bez pravog vlasničkog kontakta ubacuje
+        // izmišljenu "permit-<broj>@permit.local" adresu samo da bi zadovoljio
+        // svoju šemu — to NIJE pravi email (.local se ne razrešava na internetu,
+        // svaki pokušaj slanja bi tvrdo bounce-ovao). Tretiramo ga kao da nema
+        // email uopšte, pa ovakav permit ulazi u permit_leads SAMO ako ima
+        // pravi telefon; u suprotnom ga preskačemo (isto kao da nema kontakt).
+        const hasRealEmail = !!permit.owner_email && !permit.owner_email.toLowerCase().endsWith("@permit.local");
+        if (!hasRealEmail && !permit.owner_phone) {
+          return false;
+        }
+
         // Check territory filter
         if (settings.allowedTerritories.length > 0) {
           const allowed = settings.allowedTerritories.some((territory) => {
@@ -111,9 +128,10 @@ export async function POST({ request }: { request: Request }) {
         return !isDuplicate;
       })
       .map((permit) => {
+        const hasRealEmail = !!permit.owner_email && !permit.owner_email.toLowerCase().endsWith("@permit.local");
         return {
           owner_name: permit.owner_name || null,
-          owner_email: permit.owner_email || null,
+          owner_email: hasRealEmail ? permit.owner_email : null,
           owner_phone: permit.owner_phone || null,
           owner_mailing_address: permit.owner_mailing_address || null,
           permit_type: permit.permit_type || null,
@@ -183,8 +201,14 @@ export async function POST({ request }: { request: Request }) {
           .select("*")
           .in("permit_status", ["new", "qualified", "invited"])
           .not("owner_email", "is", null)
+          .not("owner_email", "like", "%@permit.local")
           .lt("outreach_attempts", settings.permitMaxEmailAttempts)
-          .order("created_at", { ascending: true })
+          .is("archived_at", null)
+          // Prvo krug: svima po jedan pokušaj (najstariji permit prvo) PRE
+          // nego što se iko vrati na 2. ili 3. pokušaj — outreach_attempts
+          // je primarni ključ sortiranja, permit_date sekundarni.
+          .order("outreach_attempts", { ascending: true })
+          .order("permit_date", { ascending: true, nullsFirst: false })
           .limit(500);
         const { data: outreachHistory } = await supabaseAdmin.from("permit_outreach_events")
           .select("permit_lead_id,email,status,sent_at,created_at")
@@ -278,6 +302,7 @@ export async function POST({ request }: { request: Request }) {
         created: insertedCount,
         skipped: permits.length - insertedCount,
         truckOutreach,
+        creditRefill,
       }),
       { status: 200, headers: { "Content-Type": "application/json" } }
     );

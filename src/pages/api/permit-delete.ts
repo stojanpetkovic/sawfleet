@@ -1,10 +1,19 @@
+export const prerender = false;
+
 import type { APIRoute } from 'astro';
-import { supabase } from '../../lib/supabase';
+import { supabaseAdmin } from '../../lib/supabaseAdmin';
+import { authorizeAutomationRequest } from '../../lib/automationAuth';
 
 export const POST: APIRoute = async ({ request }) => {
   try {
+    const authorization = await authorizeAutomationRequest(request);
+    if (!authorization.authorized) {
+      return new Response(JSON.stringify({ ok: false, error: 'unauthorized' }), { status: 401 });
+    }
+    if (!supabaseAdmin) return new Response(JSON.stringify({ ok: false, error: 'service_role_not_configured' }), { status: 500 });
+
     const bodyText = await request.text();
-    
+
     if (!bodyText) {
       return new Response(JSON.stringify({ ok: false, error: 'Empty request body' }), { status: 400 });
     }
@@ -23,7 +32,7 @@ export const POST: APIRoute = async ({ request }) => {
     }
 
     // Delete from external_leads
-    const { error } = await supabase
+    const { error } = await supabaseAdmin
       .from('external_leads')
       .delete()
       .eq('id', leadId);
@@ -34,7 +43,7 @@ export const POST: APIRoute = async ({ request }) => {
     }
 
     // Also delete associated logs
-    await supabase
+    await supabaseAdmin
       .from('lead_logs')
       .delete()
       .eq('lead_id', leadId);

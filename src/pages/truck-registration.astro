@@ -1,4 +1,5 @@
 ---
+export const prerender = false;
 import MainLayout from "../layouts/MainLayout.astro";
 import Header from "../components/layout/Header.astro";
 import Footer from "../components/layout/Footer.astro";
@@ -304,10 +305,7 @@ import Footer from "../components/layout/Footer.astro";
     fetch('/api/notify-new-truck-owner', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        ownerName: fd.get('contactName'),
-        companyName: fd.get('companyName'),
-      }),
+      body: JSON.stringify({ ownerId }),
     }).catch((err) => console.error('notify-new-truck-owner failed:', err));
 
     // REDIRECT TO THANK YOU PAGE (fires pixel/ads conversion)

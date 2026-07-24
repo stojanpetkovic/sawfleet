@@ -1,14 +1,22 @@
 export const prerender = false;
 
 import { supabaseAdmin } from "../../lib/supabaseAdmin";
+import { authorizeAutomationRequest } from "../../lib/automationAuth";
 
 /**
  * Migrates all permit leads from 'leads' table (source=permit_automation)
  * to 'permit_leads' table for unified permit lead management.
  * Run once: POST /api/migrate-to-external-leads
  */
-export async function POST() {
+export async function POST({ request }: { request: Request }) {
   try {
+    const authorization = await authorizeAutomationRequest(request);
+    if (!authorization.authorized) {
+      return new Response(JSON.stringify({ ok: false, error: "unauthorized" }), {
+        status: 401,
+        headers: { "Content-Type": "application/json" },
+      });
+    }
     // Get all permit leads from leads table
     const { data: leads, error: fetchError } = await supabaseAdmin
       .from("leads")

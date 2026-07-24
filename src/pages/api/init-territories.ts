@@ -1,6 +1,7 @@
 export const prerender = false;
 
 import { supabaseAdmin } from "../../lib/supabaseAdmin";
+import { authorizeAutomationRequest } from "../../lib/automationAuth";
 
 const TERRITORIES = [
   "Broward County",
@@ -20,8 +21,16 @@ const TERRITORIES = [
   "Village of Wellington"
 ];
 
-export async function POST() {
+export async function POST({ request }: { request: Request }) {
   try {
+    const authorization = await authorizeAutomationRequest(request);
+    if (!authorization.authorized) {
+      return new Response(JSON.stringify({ error: "unauthorized" }), {
+        status: 401,
+        headers: { "Content-Type": "application/json" },
+      });
+    }
+
     if (!supabaseAdmin) {
       return new Response(
         JSON.stringify({ error: "service_role_not_configured" }),

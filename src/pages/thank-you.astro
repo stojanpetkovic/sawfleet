@@ -1,10 +1,9 @@
 ---
+export const prerender = false;
 import MainLayout from "../layouts/MainLayout.astro";
 import Header from "../components/layout/Header.astro";
 import Footer from "../components/layout/Footer.astro";
 import { supabase } from "../lib/supabase";
-
-export const prerender = false;
 
 // Povlačimo isključivo konverzione skripte za ovu stranu
 const { data: tracking } = await supabase

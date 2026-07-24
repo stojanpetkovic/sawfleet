@@ -1,8 +1,15 @@
+export const prerender = false;
+
 import type { APIRoute } from "astro";
 import { supabaseAdmin } from "../../lib/supabaseAdmin";
+import { authorizeAutomationRequest } from "../../lib/automationAuth";
 
 export const POST: APIRoute = async ({ request }) => {
   try {
+    const authorization = await authorizeAutomationRequest(request);
+    if (!authorization.authorized) {
+      return new Response(JSON.stringify({ ok: false, error: "unauthorized" }), { status: 401 });
+    }
     if (!supabaseAdmin) return new Response(JSON.stringify({ ok: false, error: "service_role_not_configured" }), { status: 500 });
     const { leadId, status } = await request.json().catch(() => ({}));
     const validStatuses = ["new", "qualified", "invited", "responded", "published", "converted", "skipped", "expired"];

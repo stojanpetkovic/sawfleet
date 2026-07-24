@@ -147,6 +147,10 @@ const navItems = [
                 <span class="text-xs text-slate-600">Total claimed</span>
                 <span id="statClaimed" class="text-sm font-mono font-bold text-slate-900">-</span>
               </div>
+              <div id="statCreditsRow" class="hidden items-center justify-between pt-3 border-t border-slate-100">
+                <span class="text-xs text-slate-600">Credit balance</span>
+                <span id="statCredits" class="text-sm font-mono font-bold text-slate-900">$-</span>
+              </div>
             </div>
           </div>
 
@@ -420,13 +424,30 @@ const navItems = [
 
     const { data: success, error } = await supabase.rpc('claim_lead', { p_lead_id: leadId });
 
-    if (error || !success) {
+    if (error?.message?.includes('insufficient_credits')) {
+      toast('Not enough credit balance ($) to claim this lead — contact the administrator to top up.', 'error');
+      btn.disabled = false;
+      btn.textContent = originalText;
+    } else if (error || !success) {
       toast('Too slow! Someone else already claimed this lead.', 'error');
       await loadAvailableLeads(); // Osveži da prebaci u status "Claimed"
     } else {
       toast('Lead successfully claimed — contact details unlocked below.', 'success');
       await Promise.all([loadAvailableLeads(), loadClaimedLeads()]); // Briše iz gornje, dodaje u donju
+      await refreshCreditBalance();
     }
+  }
+
+  async function refreshCreditBalance() {
+    const row = document.getElementById('statCreditsRow');
+    const label = document.getElementById('statCredits');
+    if (!row || !label || !contractorId) return;
+    const { data: enabled } = await supabase.rpc('is_credit_system_enabled');
+    if (!enabled) { row.classList.add('hidden'); return; }
+    const { data: c } = await supabase.from('contractors').select('credit_balance').eq('user_id', contractorId).maybeSingle();
+    label.textContent = `$${c?.credit_balance ?? 0}`;
+    row.classList.remove('hidden');
+    row.classList.add('flex');
   }
 
   async function init() {
@@ -443,6 +464,8 @@ const navItems = [
 
     if (contractor.status === 'pending') { show('statePending'); return; }
     if (contractor.status !== 'active') { show('statePending'); return; }
+
+    refreshCreditBalance();
 
     // Popuni formu za profil
     (document.getElementById('profileCompany') as HTMLInputElement).value = contractor.company_name || '';

@@ -4,6 +4,7 @@ import { supabase } from "../../lib/supabase";
 import { supabaseAdmin } from "../../lib/supabaseAdmin";
 import { sendEmail, newLeadEmailHtml } from "../../lib/resend";
 import { getPermitAutomationSettings } from "../../lib/permitData";
+import { authorizeAutomationRequest } from "../../lib/automationAuth";
 
 export async function runNotify(county: string, details: string, origin: string, options: { notifyContractors?: boolean; notifyTruckOwners?: boolean } = {}) {
   if (!county) {
@@ -107,6 +108,11 @@ export async function runNotify(county: string, details: string, origin: string,
 
 export async function POST({ request }: { request: Request }) {
   try {
+    const authorization = await authorizeAutomationRequest(request);
+    if (!authorization.authorized) {
+      return new Response(JSON.stringify({ error: "unauthorized" }), { status: 401, headers: { "Content-Type": "application/json" } });
+    }
+
     const { county, details } = await request.json();
     const origin = import.meta.env.PUBLIC_SITE_URL || new URL(request.url).origin;
     const settings = await getPermitAutomationSettings();
@@ -125,6 +131,11 @@ export async function POST({ request }: { request: Request }) {
 // /api/notify-new-lead?county=Broward&details=Test
 export async function GET({ request }: { request: Request }) {
   try {
+    const authorization = await authorizeAutomationRequest(request);
+    if (!authorization.authorized) {
+      return new Response(JSON.stringify({ error: "unauthorized" }), { status: 401, headers: { "Content-Type": "application/json" } });
+    }
+
     const url = new URL(request.url);
     const county = url.searchParams.get("county") || "";
     const details = url.searchParams.get("details") || "Test lead";

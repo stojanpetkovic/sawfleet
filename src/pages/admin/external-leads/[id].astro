@@ -275,9 +275,10 @@ const extraFiltered = lead.extra
         if (settings?.external_lead_notify_on_approval_only) {
           const { data: lead } = await supabase.from('external_leads').select('*').eq('id', leadId).single();
           if (lead) {
+            const { data: { session: notifySession } } = await supabase.auth.getSession();
             fetch('/api/notify-new-external-lead', {
               method: 'POST',
-              headers: { 'Content-Type': 'application/json' },
+              headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${notifySession?.access_token}` },
               body: JSON.stringify({
                 fullName: lead.full_name,
                 email: lead.email,
@@ -326,9 +327,10 @@ const extraFiltered = lead.extra
     const btn = document.getElementById('confirmMoveBtn') as HTMLButtonElement;
     btn.disabled = true;
     btn.textContent = 'Publishing...';
+    const { data: { session: publishSession } } = await supabase.auth.getSession();
     const response = await fetch('/api/publish-lead', {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${publishSession?.access_token}` },
       body: JSON.stringify({ originType: 'external', originId: leadId, county }),
     });
     const result = await response.json().catch(() => ({}));

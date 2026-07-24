@@ -1,14 +1,22 @@
 export const prerender = false;
 
 import { supabaseAdmin } from "../../lib/supabaseAdmin";
+import { authorizeAutomationRequest } from "../../lib/automationAuth";
 
 /**
  * Initialize permit leads table with archive columns if they don't exist
  * This endpoint helps set up the database schema on first run
  * Called once during setup
  */
-export async function POST() {
+export async function POST({ request }: { request: Request }) {
   try {
+    const authorization = await authorizeAutomationRequest(request);
+    if (!authorization.authorized) {
+      return new Response(JSON.stringify({ ok: false, error: "unauthorized" }), {
+        status: 401,
+        headers: { "Content-Type": "application/json" },
+      });
+    }
     console.log("[SETUP ARCHIVE] Checking archive columns for permit_leads table");
 
     // Try to check if columns exist by querying them

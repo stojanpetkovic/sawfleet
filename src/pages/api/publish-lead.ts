@@ -3,6 +3,7 @@ export const prerender = false;
 import { supabaseAdmin } from "../../lib/supabaseAdmin";
 import { getPermitAutomationSettings } from "../../lib/permitData";
 import { publishWebsiteLead } from "../../lib/leadWorkflow";
+import { authorizeAutomationRequest } from "../../lib/automationAuth";
 
 function json(body: unknown, status = 200) {
   return new Response(JSON.stringify(body), { status, headers: { "Content-Type": "application/json" } });
@@ -10,6 +11,8 @@ function json(body: unknown, status = 200) {
 
 export async function POST({ request }: { request: Request }) {
   try {
+    const authorization = await authorizeAutomationRequest(request);
+    if (!authorization.authorized) return json({ ok: false, error: "unauthorized" }, 401);
     if (!supabaseAdmin) return json({ ok: false, error: "service_role_not_configured" }, 500);
     const body = await request.json().catch(() => null);
     if (!body?.originType || !body?.originId || !body?.county) return json({ ok: false, error: "originType, originId and county are required" }, 400);

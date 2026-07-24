@@ -2,9 +2,15 @@ export const prerender = false;
 
 import { buildPermitOutreachEmail, getPermitAutomationSettings } from "../../lib/permitData";
 import { sendEmail } from "../../lib/resend";
+import { authorizeAutomationRequest } from "../../lib/automationAuth";
 
 export async function POST({ request }: { request: Request }) {
   try {
+    const authorization = await authorizeAutomationRequest(request);
+    if (!authorization.authorized) {
+      return new Response(JSON.stringify({ ok: false, error: "unauthorized" }), { status: 401 });
+    }
+
     const body = await request.json().catch(() => null);
     if (!body?.email) return new Response(JSON.stringify({ ok: false, error: "email_required" }), { status: 400 });
     const settings = await getPermitAutomationSettings();

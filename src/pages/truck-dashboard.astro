@@ -174,9 +174,10 @@ const navItems = [
         <h1 class="mt-2 text-2xl font-bold tracking-tight text-slate-950 sm:text-3xl">Lead workspace</h1>
         <p class="mt-2 max-w-2xl text-sm text-slate-500">Jobs in territories covered by your approved, available trucks. Apply to offer equipment support.</p>
       </div>
-      <div class="grid grid-cols-2 gap-4">
+      <div id="truckStatsGrid" class="grid grid-cols-2 gap-4">
         <div class="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm"><p class="text-[9px] font-bold uppercase tracking-[0.18em] text-slate-400">Available</p><p id="truckLeadCount" class="mt-3 text-3xl font-bold tabular-nums text-slate-950">-</p></div>
         <div class="rounded-2xl border border-blue-200 bg-blue-50/50 p-5 shadow-sm"><p class="text-[9px] font-bold uppercase tracking-[0.18em] text-blue-700">Applied</p><p id="truckApplicationCount" class="mt-3 text-3xl font-bold tabular-nums text-slate-950">-</p></div>
+        <div id="truckCreditsCard" class="hidden rounded-2xl border border-green-200 bg-green-50/50 p-5 shadow-sm"><p class="text-[9px] font-bold uppercase tracking-[0.18em] text-green-700">Credits</p><p id="truckCreditBalance" class="mt-3 text-3xl font-bold tabular-nums text-slate-950">-</p></div>
       </div>
       <div id="truckLeadsContainer" class="space-y-4"></div>
       <div id="noTruckLeads" class="hidden rounded-2xl border border-dashed border-slate-300 p-10 text-center text-sm text-slate-400">No matching leads are available right now.</div>
@@ -351,12 +352,15 @@ const navItems = [
       const message = window.prompt('Optional note for dispatch about availability or equipment:') || '';
       const { error } = await supabase.rpc('apply_for_truck_lead', { p_lead_id: lead.id, p_truck_id: truckId, p_message: message });
       if (error) {
-        alert('Could not apply: ' + error.message);
+        alert(error.message?.includes('insufficient_credits')
+          ? 'Not enough credit balance ($) to apply for this job — contact the administrator to top up.'
+          : 'Could not apply: ' + error.message);
         button.disabled = false;
         button.textContent = 'Apply for job';
         return;
       }
       await loadTruckLeads();
+      await refreshCreditBalance();
     });
     return wrapper;
   }
@@ -416,6 +420,22 @@ const navItems = [
 
   let ownerHadNoRow = false;
 
+  async function refreshCreditBalance() {
+    const card = document.getElementById('truckCreditsCard');
+    const grid = document.getElementById('truckStatsGrid');
+    const label = document.getElementById('truckCreditBalance');
+    if (!card || !grid || !label) return;
+    const { data: enabled } = await supabase.rpc('is_credit_system_enabled');
+    if (!enabled) { card.classList.add('hidden'); grid.classList.remove('grid-cols-3'); grid.classList.add('grid-cols-2'); return; }
+    const { data: { session } } = await supabase.auth.getSession();
+    if (!session) return;
+    const { data: o } = await supabase.from('truck_owners').select('credit_balance').eq('id', session.user.id).maybeSingle();
+    label.textContent = `$${o?.credit_balance ?? 0}`;
+    card.classList.remove('hidden');
+    grid.classList.remove('grid-cols-2');
+    grid.classList.add('grid-cols-3');
+  }
+
   async function init() {
     const { data: { session } } = await supabase.auth.getSession();
     if (!session) { window.location.href = '/truck-login'; return; }
@@ -441,6 +461,7 @@ const navItems = [
 
       if (owner.status === 'pending') { show('statePending'); return; }
       if (owner.status === 'rejected') { show('stateRejected'); return; }
+      refreshCreditBalance();
     } else {
       // Nema truck_owners reda (npr. nalog napravljen pre ove migracije) —
       // ne blokiramo, samo popuni email iz sesije.

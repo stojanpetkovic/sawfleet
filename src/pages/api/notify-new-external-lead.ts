@@ -3,6 +3,7 @@ export const prerender = false;
 import { supabase } from "../../lib/supabase";
 import { supabaseAdmin } from "../../lib/supabaseAdmin";
 import { sendEmail } from "../../lib/resend";
+import { authorizeAutomationRequest } from "../../lib/automationAuth";
 
 type ExternalLeadNotifyPayload = {
   fullName?: string;
@@ -90,6 +91,11 @@ export async function notifyNewExternalLead(payload: ExternalLeadNotifyPayload, 
 
 export async function POST({ request }: { request: Request }) {
   try {
+    const authorization = await authorizeAutomationRequest(request);
+    if (!authorization.authorized) {
+      return new Response(JSON.stringify({ error: "unauthorized" }), { status: 401 });
+    }
+
     const payload = await request.json();
     const siteUrl = import.meta.env.PUBLIC_SITE_URL || new URL(request.url).origin;
     const result = await notifyNewExternalLead(payload, siteUrl);

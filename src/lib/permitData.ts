@@ -199,6 +199,112 @@ export async function getPermitLeads(limit = 500, includeAllStatuses = true): Pr
   return (Array.isArray(payload) ? payload : []).map(normalizePermitLead);
 }
 
+export type PermitJobRun = {
+  id: string;
+  job_name: string | null;
+  source_name: string | null;
+  started_at: string | null;
+  finished_at: string | null;
+  status: string | null;
+  error_message: string | null;
+  records_found: number | null;
+  records_inserted: number | null;
+  records_updated: number | null;
+};
+
+const PERMIT_SOURCE_NAMES: Record<string, string> = {
+  miami_dade_derm: "Miami-Dade DERM",
+  fort_lauderdale: "Fort Lauderdale",
+  fort_lauderdale_accela: "Fort Lauderdale",
+  city_of_miami: "City of Miami",
+  city_of_miami_tree: "Miami Tree Permits",
+  palm_beach_county: "Palm Beach County",
+  collier_county: "Collier County",
+  jupiter: "Town of Jupiter",
+  naples: "City of Naples",
+  coral_gables: "Coral Gables",
+  hallandale_beach: "Hallandale Beach",
+  west_palm_beach: "West Palm Beach",
+  doral: "Doral",
+  boca_raton: "Boca Raton",
+  miami_gardens: "Miami Gardens",
+  oakland_park: "Oakland Park",
+  wellington: "Wellington",
+  pipeline_sync: "Pipeline sync",
+};
+
+export function formatPermitSourceName(name: string | null | undefined) {
+  if (!name) return "—";
+  return PERMIT_SOURCE_NAMES[name] || name;
+}
+
+// Izvorni scraping pipeline (isti Supabase projekat kao getPermitLeads) prati
+// svako pokretanje svakog scrapera po jurisdikciji u "job_runs" tabeli —
+// koristimo je za System Health prikaz u admin panelu, isti podaci koje
+// koristi i eksterni "Tree Permit Lead Discovery" dashboard.
+export async function getPermitJobRuns(limit = 500): Promise<PermitJobRun[]> {
+  const supabaseUrl = import.meta.env.PUBLIC_PERMIT_DASHBOARD_SUPABASE_URL || DEFAULT_SUPABASE_URL;
+  const supabaseKey = import.meta.env.PUBLIC_PERMIT_DASHBOARD_SUPABASE_ANON_KEY || DEFAULT_SUPABASE_ANON_KEY;
+
+  const params = new URLSearchParams({
+    select: "id,job_name,source_name,started_at,finished_at,status,error_message,records_found,records_inserted,records_updated",
+    order: "started_at.desc",
+    limit: String(limit),
+  });
+
+  const url = `${supabaseUrl}/rest/v1/job_runs?${params.toString()}`;
+  const response = await fetch(url, {
+    headers: {
+      apikey: supabaseKey,
+      Authorization: `Bearer ${supabaseKey}`,
+      Accept: "application/json",
+    },
+  });
+
+  if (!response.ok) {
+    throw new Error(`Job run fetch failed: ${response.status} ${response.statusText}`);
+  }
+
+  return await response.json();
+}
+
+// Broj leadova po izvoru u poslednjih 90 dana (po permit_date), isto kao
+// "Total Leads" na eksternom dashboard-u.
+export async function getPermitSourceLeadCounts(): Promise<Record<string, number>> {
+  const supabaseUrl = import.meta.env.PUBLIC_PERMIT_DASHBOARD_SUPABASE_URL || DEFAULT_SUPABASE_URL;
+  const supabaseKey = import.meta.env.PUBLIC_PERMIT_DASHBOARD_SUPABASE_ANON_KEY || DEFAULT_SUPABASE_ANON_KEY;
+
+  const cutoff = new Date();
+  cutoff.setDate(cutoff.getDate() - 90);
+
+  const params = new URLSearchParams({
+    select: "source_name",
+    permit_date: `gte.${cutoff.toISOString().slice(0, 10)}`,
+    limit: "5000",
+  });
+
+  const url = `${supabaseUrl}/rest/v1/leads?${params.toString()}`;
+  const response = await fetch(url, {
+    headers: {
+      apikey: supabaseKey,
+      Authorization: `Bearer ${supabaseKey}`,
+      Accept: "application/json",
+    },
+  });
+
+  if (!response.ok) {
+    throw new Error(`Lead count fetch failed: ${response.status} ${response.statusText}`);
+  }
+
+  const rows: { source_name: string | null }[] = await response.json();
+  const counts: Record<string, number> = {};
+  for (const row of rows) {
+    const key = row.source_name || "unknown";
+    counts[key] = (counts[key] || 0) + 1;
+  }
+  return counts;
+}
+
 export function buildPermitOutreachUrl(permit: Partial<PermitLead> | null, baseUrl: string) {
   const url = new URL(baseUrl);
   url.searchParams.set("utm_source", "permit_outreach");

@@ -17,15 +17,21 @@ export async function POST({ request }: { request: Request }) {
       return json({ error: "invalid_input", message: "ownerId and email are required." }, 400);
     }
 
-    // Napomena: namerno NE proveravamo ownerId preko auth.admin.getUserById.
-    // Kad je "Confirm email" uključen i neko drugi put pošalje signUp za
-    // već postojeći, još nepotvrđen email, Supabase (namerno, da ne otkriva
-    // da nalog postoji) vraća user objekat koji se ne poklapa 1:1 sa
-    // internim auth.users redom preko admin API-ja — ta provera bi tada
-    // lažno odbila potpuno legitimnu registraciju. Ovaj endpoint upisuje
-    // samo neosetljive profilne podatke (naziv firme/kontakt/telefon),
-    // ne dodeljuje nikakva prava — pravi RLS i dalje važi za sve dalje
-    // izmene (owner menja svoj red isključivo preko svoje sesije).
+    // Zatvara IDOR rupu (bilo ko je mogao da prikači proizvoljan profil na
+    // TUĐI ownerId): proveravamo da ownerId zaista postoji u auth.users i
+    // da se njegov pravi email poklapa sa onim iz body-ja. Klijent (truck-
+    // registration.astro) već prepoznaje "looksUnconfirmedRetry" (isti
+    // email već postoji, nepotvrđen) i zaustavlja se PRE ovog poziva, pa se
+    // ovde nikad ne pojavljuje id koji ne odgovara 1:1 auth.users redu —
+    // getUserById je bezbedan da se koristi ovde.
+    const { data: userLookup, error: userLookupError } = await supabaseAdmin.auth.admin.getUserById(ownerId);
+    if (userLookupError || !userLookup?.user) {
+      return json({ error: "invalid_user", message: "No matching account found for this id." }, 400);
+    }
+    if (String(userLookup.user.email || "").trim().toLowerCase() !== String(email).trim().toLowerCase()) {
+      return json({ error: "email_mismatch", message: "The provided email does not match the account." }, 400);
+    }
+
     // Ako profil već postoji (npr. formu poslao dvaput, ili je ovaj
     // owner već ranije uspešno napravljen), ne prepisujemo ga — pogotovo
     // ne bismo hteli da mu nazad vratimo status na 'pending' ako je u

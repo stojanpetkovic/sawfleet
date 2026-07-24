@@ -2,6 +2,7 @@ export const prerender = false;
 
 import { supabaseAdmin } from "../../lib/supabaseAdmin";
 import { getPermitAutomationSettings } from "../../lib/permitData";
+import { authorizeAutomationRequest } from "../../lib/automationAuth";
 
 async function runArchiveCron() {
   const settings = await getPermitAutomationSettings();
@@ -45,9 +46,14 @@ async function runArchiveCron() {
   );
 }
 
-// GET - za external cron servise (Vercel cron, cPanel, curl cron)
-export async function GET() {
+// GET - za external cron servise (Vercel cron, cPanel, curl cron).
+// Zahteva Authorization: Bearer <CRON_SECRET> (ista promenljiva kao permit-sync.ts).
+export async function GET({ request }: { request: Request }) {
   try {
+    const authorization = await authorizeAutomationRequest(request);
+    if (!authorization.authorized) {
+      return new Response(JSON.stringify({ ok: false, error: "unauthorized" }), { status: 401, headers: { "Content-Type": "application/json" } });
+    }
     return await runArchiveCron();
   } catch (error) {
     console.error("[ARCHIVE CRON GET]", error);
@@ -58,9 +64,13 @@ export async function GET() {
   }
 }
 
-// POST - za manuelni trigger iz admin panela
-export async function POST() {
+// POST - za manuelni trigger iz admin panela (ili automation sa admin sesijom)
+export async function POST({ request }: { request: Request }) {
   try {
+    const authorization = await authorizeAutomationRequest(request);
+    if (!authorization.authorized) {
+      return new Response(JSON.stringify({ ok: false, error: "unauthorized" }), { status: 401, headers: { "Content-Type": "application/json" } });
+    }
     return await runArchiveCron();
   } catch (error) {
     console.error("[ARCHIVE CRON POST]", error);

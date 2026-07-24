@@ -1,11 +1,33 @@
 export const prerender = false;
 
 import { supabase } from "../../lib/supabase";
+import { supabaseAdmin } from "../../lib/supabaseAdmin";
 import { sendEmail } from "../../lib/resend";
 
+// Poziva se sa javne registracione strane odmah posle signUp-a — nema
+// admin sesije u tom trenutku, pa ne može biti admin-only. Da sadržaj
+// mejla ne bi bio proizvoljan tekst iz body-ja, učitavamo pravi red iz
+// baze preko userId-a i šaljemo SAMO ono što je stvarno upisano.
 export async function POST({ request }) {
   try {
-    const { companyName, territory } = await request.json();
+    const { userId } = await request.json();
+    if (!userId) {
+      return new Response(JSON.stringify({ error: "userId is required" }), { status: 400 });
+    }
+
+    const db = supabaseAdmin ?? supabase;
+    const { data: contractor } = await db
+      .from("contractors")
+      .select("company_name, territory")
+      .eq("user_id", userId)
+      .maybeSingle();
+
+    if (!contractor) {
+      return new Response(JSON.stringify({ error: "contractor_not_found" }), { status: 404 });
+    }
+
+    const companyName = contractor.company_name || "New contractor";
+    const territory = contractor.territory || "an unspecified territory";
 
     const { data: admins, error } = await supabase.rpc('get_admin_emails');
     if (error) {

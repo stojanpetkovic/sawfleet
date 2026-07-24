@@ -1,0 +1,314 @@
+---
+export const prerender = false;
+import AdminLayout from "../../layouts/AdminLayout.astro";
+---
+
+<AdminLayout>
+  <div class="dash-shell flex-1">
+  <div class="dash-shell__frozen">
+    <div>
+      <span class="dash-eyebrow text-green-700">// Money in / money out</span>
+      <h1 class="dash-title">Finances</h1>
+      <p class="dash-subtitle">$1 = 1 credit. Revenue is what contractors and truck owners spent claiming or applying for leads; expenses are logged manually below.</p>
+    </div>
+
+    <!-- Stats Row -->
+    <div class="stat-row grid-cols-4">
+      <div class="stat-card">
+        <p class="stat-card__label">Lifetime revenue</p>
+        <p id="statRevenue" class="stat-card__value text-green-700">$0</p>
+      </div>
+      <div class="stat-card">
+        <p class="stat-card__label">Outstanding balance</p>
+        <p id="statOutstanding" class="stat-card__value text-blue-700">$0</p>
+      </div>
+      <div class="stat-card">
+        <p class="stat-card__label">Total expenses</p>
+        <p id="statExpenses" class="stat-card__value text-red-600">$0</p>
+      </div>
+      <div class="stat-card">
+        <p class="stat-card__label">Net (revenue − expenses)</p>
+        <p id="statNet" class="stat-card__value">$0</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="dash-scroll space-y-6">
+
+    <!-- REVENUE LEDGER -->
+    <div class="bg-white border border-zinc-100 rounded-2xl p-4 sm:p-5">
+      <div class="flex flex-wrap items-center justify-between gap-3 mb-4">
+        <div>
+          <p class="text-[9px] font-bold uppercase tracking-[0.15em] text-zinc-400">Revenue</p>
+          <p id="revenueSummary" class="text-sm font-semibold text-slate-900 mt-1">0 transactions</p>
+        </div>
+        <div class="filter-bar">
+          <select id="revenueAccountFilter" class="filter-select">
+            <option value="all">All accounts</option>
+            <option value="contractor">Contractors</option>
+            <option value="truck_owner">Truck owners</option>
+          </select>
+          <select id="revenueReasonFilter" class="filter-select">
+            <option value="all">All activity</option>
+            <option value="lead_claim">Lead claims</option>
+            <option value="truck_apply">Job applications</option>
+            <option value="admin_topup">Admin top-ups</option>
+            <option value="admin_adjust">Admin adjustments</option>
+            <option value="auto_refill">Auto-refills</option>
+          </select>
+        </div>
+      </div>
+      <div class="overflow-x-auto">
+        <table class="w-full text-left text-sm">
+          <thead>
+            <tr class="text-[9px] font-bold uppercase tracking-[0.15em] text-zinc-400 border-b border-zinc-100">
+              <th class="pb-2 pr-3">Account</th>
+              <th class="pb-2 pr-3">Type</th>
+              <th class="pb-2 pr-3">Activity</th>
+              <th class="pb-2 pr-3">Amount</th>
+              <th class="pb-2">Date</th>
+            </tr>
+          </thead>
+          <tbody id="revenueTableBody"><tr><td colspan="5" class="py-8 text-center text-zinc-400">Loading...</td></tr></tbody>
+        </table>
+      </div>
+      <div id="revenuePaginationControls" class="flex items-center justify-between mt-4 pt-4 border-t border-zinc-100">
+        <div class="text-[11px] text-zinc-500 font-semibold">
+          Showing <span id="revenuePaginationStart">0</span> to <span id="revenuePaginationEnd">0</span> of <span id="revenuePaginationTotal">0</span>
+        </div>
+        <div class="flex items-center gap-2">
+          <button id="revenuePaginationPrev" class="rounded-lg border border-zinc-200 px-3 py-1.5 text-[10px] font-bold uppercase tracking-wider text-zinc-600 hover:bg-zinc-50 disabled:opacity-50 disabled:cursor-not-allowed">← Previous</button>
+          <span class="text-[11px] text-zinc-500 font-semibold px-2">Page <span id="revenueCurrentPage">1</span> of <span id="revenueTotalPages">1</span></span>
+          <button id="revenuePaginationNext" class="rounded-lg border border-zinc-200 px-3 py-1.5 text-[10px] font-bold uppercase tracking-wider text-zinc-600 hover:bg-zinc-50 disabled:opacity-50 disabled:cursor-not-allowed">Next →</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- EXPENSES -->
+    <div class="bg-white border border-zinc-100 rounded-2xl p-4 sm:p-5">
+      <div class="flex flex-col justify-between gap-4 sm:flex-row sm:items-start mb-5">
+        <div>
+          <p class="text-[9px] font-bold uppercase tracking-[0.15em] text-zinc-400">Expenses</p>
+          <p class="mt-1 text-sm font-semibold text-slate-900">Meta Ads, Google Ads, or any other cost — logged manually</p>
+        </div>
+        <p class="text-right"><span class="block text-[9px] font-bold uppercase tracking-[0.18em] text-slate-400">Total</span><span id="expensesTotalAll" class="text-xl font-bold tabular-nums text-slate-950">$0</span></p>
+      </div>
+      <form id="expenseForm" class="grid grid-cols-1 gap-3 sm:grid-cols-5 sm:items-end">
+        <label class="sm:col-span-2"><span class="mb-1 block text-[9px] font-bold uppercase tracking-wider text-slate-500">Category</span>
+          <input id="expenseCategory" list="expenseCategoryOptions" required placeholder="Meta Ads, Google Ads, ..." class="h-10 w-full rounded-lg border border-slate-200 px-3 text-sm" />
+          <datalist id="expenseCategoryOptions"><option value="Meta Ads" /><option value="Google Ads" /></datalist>
+        </label>
+        <label><span class="mb-1 block text-[9px] font-bold uppercase tracking-wider text-slate-500">Amount ($)</span><input id="expenseAmount" type="number" min="0.01" step="0.01" required class="h-10 w-full rounded-lg border border-slate-200 px-3 text-sm" /></label>
+        <label><span class="mb-1 block text-[9px] font-bold uppercase tracking-wider text-slate-500">Date</span><input id="expenseDate" type="date" required class="h-10 w-full rounded-lg border border-slate-200 px-3 text-sm" /></label>
+        <label><span class="mb-1 block text-[9px] font-bold uppercase tracking-wider text-slate-500">Note (optional)</span><input id="expenseNote" placeholder="Optional" class="h-10 w-full rounded-lg border border-slate-200 px-3 text-sm" /></label>
+        <button type="submit" class="h-10 rounded-lg bg-slate-950 text-xs font-bold uppercase tracking-wider text-white hover:bg-green-700 sm:col-span-5">Add expense</button>
+      </form>
+      <div class="mt-5 overflow-x-auto">
+        <table class="w-full min-w-[420px] text-left text-sm">
+          <thead><tr class="border-b border-slate-100 text-[9px] uppercase tracking-[0.16em] text-slate-400"><th class="pb-2 font-bold">Date</th><th class="pb-2 font-bold">Category</th><th class="pb-2 font-bold">Note</th><th class="pb-2 text-right font-bold">Amount</th><th class="pb-2"></th></tr></thead>
+          <tbody id="expensesTableBody"><tr><td colspan="5" class="py-6 text-center text-slate-400">Loading...</td></tr></tbody>
+        </table>
+      </div>
+    </div>
+
+  </div>
+  </div>
+</AdminLayout>
+
+<script>
+  import { supabase } from "../../lib/supabase";
+
+  async function authFetch(url: string, init: RequestInit = {}) {
+    const { data: { session } } = await supabase.auth.getSession();
+    return fetch(url, { ...init, headers: { ...(init.headers || {}), Authorization: `Bearer ${session?.access_token}` } });
+  }
+
+  function escapeHtml(value: unknown) {
+    return String(value ?? '').replace(/[&<>"']/g, (char) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#039;' }[char] || char));
+  }
+
+  // ── Revenue ledger ──────────────────────────────────────────────────
+  type CreditTx = { id: string; account_type: string; account_id: string; amount: number; reason: string; created_at: string };
+  const REASON_LABELS: Record<string, string> = {
+    lead_claim: 'Lead claim', truck_apply: 'Job application', admin_topup: 'Admin top-up',
+    admin_adjust: 'Admin adjustment', auto_refill: 'Auto-refill', purchase: 'Purchase',
+  };
+
+  let allTx: CreditTx[] = [];
+  let namesByContractor = new Map<string, string>();
+  let namesByOwner = new Map<string, string>();
+  let revenueCurrentPage = 1;
+  const revenueItemsPerPage = 25;
+
+  function getFilteredTx() {
+    const accountFilter = (document.getElementById('revenueAccountFilter') as HTMLSelectElement).value;
+    const reasonFilter = (document.getElementById('revenueReasonFilter') as HTMLSelectElement).value;
+    return allTx.filter((tx) => {
+      const matchesAccount = accountFilter === 'all' || tx.account_type === accountFilter;
+      const matchesReason = reasonFilter === 'all' || tx.reason === reasonFilter;
+      return matchesAccount && matchesReason;
+    });
+  }
+
+  function renderRevenueTable() {
+    const body = document.getElementById('revenueTableBody')!;
+    const filtered = getFilteredTx();
+    document.getElementById('revenueSummary')!.textContent = `${filtered.length} transactions`;
+
+    const totalPages = Math.max(1, Math.ceil(filtered.length / revenueItemsPerPage));
+    if (revenueCurrentPage > totalPages) revenueCurrentPage = totalPages;
+    if (revenueCurrentPage < 1) revenueCurrentPage = 1;
+    const startIdx = (revenueCurrentPage - 1) * revenueItemsPerPage;
+    const endIdx = startIdx + revenueItemsPerPage;
+    const page = filtered.slice(startIdx, endIdx);
+
+    body.innerHTML = page.length === 0
+      ? '<tr><td colspan="5" class="py-8 text-center text-zinc-400">No transactions match these filters.</td></tr>'
+      : page.map((tx) => {
+        const name = tx.account_type === 'contractor'
+          ? (namesByContractor.get(tx.account_id) || 'Contractor')
+          : (namesByOwner.get(tx.account_id) || 'Truck owner');
+        const positive = Number(tx.amount) > 0;
+        return `
+          <tr class="border-b border-zinc-50 last:border-0">
+            <td class="py-2 pr-3 font-semibold text-slate-900">${escapeHtml(name)}</td>
+            <td class="py-2 pr-3 text-zinc-500 capitalize">${tx.account_type.replace('_', ' ')}</td>
+            <td class="py-2 pr-3 text-zinc-500">${REASON_LABELS[tx.reason] || tx.reason}</td>
+            <td class="py-2 pr-3 font-mono font-bold ${positive ? 'text-green-700' : 'text-red-600'}">${positive ? '+' : ''}$${tx.amount}</td>
+            <td class="py-2 text-zinc-500 whitespace-nowrap">${new Date(tx.created_at).toLocaleString()}</td>
+          </tr>
+        `;
+      }).join('');
+
+    document.getElementById('revenuePaginationStart')!.textContent = String(filtered.length ? startIdx + 1 : 0);
+    document.getElementById('revenuePaginationEnd')!.textContent = String(Math.min(endIdx, filtered.length));
+    document.getElementById('revenuePaginationTotal')!.textContent = String(filtered.length);
+    document.getElementById('revenueCurrentPage')!.textContent = String(revenueCurrentPage);
+    document.getElementById('revenueTotalPages')!.textContent = String(totalPages);
+    (document.getElementById('revenuePaginationPrev') as HTMLButtonElement).disabled = revenueCurrentPage <= 1;
+    (document.getElementById('revenuePaginationNext') as HTMLButtonElement).disabled = revenueCurrentPage >= totalPages;
+  }
+
+  async function loadRevenue() {
+    const [{ data: tx }, { data: contractors }, { data: owners }] = await Promise.all([
+      supabase.from('credit_transactions').select('*').order('created_at', { ascending: false }).limit(2000),
+      supabase.from('contractors').select('user_id, company_name, credit_balance'),
+      supabase.from('truck_owners').select('id, company_name, credit_balance'),
+    ]);
+
+    allTx = tx || [];
+    namesByContractor = new Map((contractors || []).map((c: any) => [c.user_id, c.company_name]));
+    namesByOwner = new Map((owners || []).map((o: any) => [o.id, o.company_name]));
+
+    const revenue = allTx.filter((r) => ['lead_claim', 'truck_apply'].includes(r.reason)).reduce((sum, r) => sum + Math.abs(Number(r.amount || 0)), 0);
+    const outstanding = (contractors || []).reduce((sum: number, c: any) => sum + Number(c.credit_balance || 0), 0)
+      + (owners || []).reduce((sum: number, o: any) => sum + Number(o.credit_balance || 0), 0);
+    document.getElementById('statRevenue')!.textContent = `$${revenue.toLocaleString()}`;
+    document.getElementById('statOutstanding')!.textContent = `$${outstanding.toLocaleString()}`;
+    updateNetStat(revenue);
+
+    revenueCurrentPage = 1;
+    renderRevenueTable();
+  }
+
+  let lastKnownRevenue = 0;
+  function updateNetStat(revenue: number) {
+    lastKnownRevenue = revenue;
+    const expensesTotalEl = document.getElementById('expensesTotalAll');
+    const expensesTotal = Number(expensesTotalEl?.dataset.total || 0);
+    document.getElementById('statNet')!.textContent = `$${(revenue - expensesTotal).toLocaleString()}`;
+  }
+
+  document.getElementById('revenueAccountFilter')?.addEventListener('change', () => { revenueCurrentPage = 1; renderRevenueTable(); });
+  document.getElementById('revenueReasonFilter')?.addEventListener('change', () => { revenueCurrentPage = 1; renderRevenueTable(); });
+  document.getElementById('revenuePaginationPrev')?.addEventListener('click', () => { if (revenueCurrentPage > 1) { revenueCurrentPage--; renderRevenueTable(); } });
+  document.getElementById('revenuePaginationNext')?.addEventListener('click', () => {
+    const totalPages = Math.max(1, Math.ceil(getFilteredTx().length / revenueItemsPerPage));
+    if (revenueCurrentPage < totalPages) { revenueCurrentPage++; renderRevenueTable(); }
+  });
+
+  // ── Expenses ─────────────────────────────────────────────────────────
+  async function loadExpenses() {
+    const body = document.getElementById('expensesTableBody')!;
+    try {
+      const res = await authFetch('/api/expenses');
+      const result = await res.json().catch(() => ({}));
+      if (!res.ok || !result.ok) throw new Error(result.error || 'Failed to load expenses');
+      const rows = result.expenses || [];
+      const total = rows.reduce((sum: number, r: any) => sum + Number(r.amount || 0), 0);
+      const totalEl = document.getElementById('statExpenses')!;
+      totalEl.textContent = `$${total.toLocaleString()}`;
+      const expensesTotalAllEl = document.getElementById('expensesTotalAll')!;
+      expensesTotalAllEl.textContent = `$${total.toLocaleString()}`;
+      expensesTotalAllEl.dataset.total = String(total);
+      updateNetStat(lastKnownRevenue);
+
+      body.innerHTML = rows.length === 0
+        ? '<tr><td colspan="5" class="py-6 text-center text-slate-400">No expenses logged yet.</td></tr>'
+        : rows.map((r: any) => `
+          <tr class="border-b border-slate-50 last:border-0">
+            <td class="py-2 pr-3 text-slate-600 whitespace-nowrap">${new Date(r.expense_date).toLocaleDateString()}</td>
+            <td class="py-2 pr-3 font-semibold text-slate-900">${escapeHtml(r.category)}</td>
+            <td class="py-2 pr-3 text-slate-500">${escapeHtml(r.note || '')}</td>
+            <td class="py-2 pr-3 text-right font-mono font-bold text-slate-900">$${Number(r.amount).toLocaleString()}</td>
+            <td class="py-2 text-right"><button class="delete-expense-btn text-[10px] font-bold uppercase text-red-600 hover:text-red-700" data-id="${r.id}">Delete</button></td>
+          </tr>
+        `).join('');
+    } catch (err) {
+      body.innerHTML = `<tr><td colspan="5" class="py-6 text-center text-red-500">${escapeHtml((err as Error).message || 'Failed to load expenses')}</td></tr>`;
+    }
+  }
+
+  const expenseDateInput = document.getElementById('expenseDate') as HTMLInputElement | null;
+  if (expenseDateInput) expenseDateInput.value = new Date().toISOString().slice(0, 10);
+
+  document.getElementById('expenseForm')?.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const form = e.target as HTMLFormElement;
+    const submitBtn = form.querySelector('button[type="submit"]') as HTMLButtonElement;
+    const category = (document.getElementById('expenseCategory') as HTMLInputElement).value.trim();
+    const amount = Number((document.getElementById('expenseAmount') as HTMLInputElement).value);
+    const expense_date = (document.getElementById('expenseDate') as HTMLInputElement).value;
+    const note = (document.getElementById('expenseNote') as HTMLInputElement).value.trim();
+    if (!category || !Number.isFinite(amount) || amount <= 0) return;
+
+    submitBtn.disabled = true;
+    submitBtn.textContent = 'Saving...';
+    try {
+      const res = await authFetch('/api/expenses', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ category, amount, expense_date, note }),
+      });
+      const result = await res.json().catch(() => ({}));
+      if (!res.ok || !result.ok) throw new Error(result.error || 'Failed to save expense');
+      form.reset();
+      if (expenseDateInput) expenseDateInput.value = new Date().toISOString().slice(0, 10);
+      await loadExpenses();
+    } catch (err) {
+      alert('Could not save expense: ' + (err as Error).message);
+    } finally {
+      submitBtn.disabled = false;
+      submitBtn.textContent = 'Add expense';
+    }
+  });
+
+  document.getElementById('expensesTableBody')?.addEventListener('click', async (e) => {
+    const btn = (e.target as HTMLElement).closest('.delete-expense-btn') as HTMLButtonElement | null;
+    if (!btn) return;
+    if (!confirm('Delete this expense entry?')) return;
+    btn.disabled = true;
+    try {
+      const res = await authFetch(`/api/expenses?id=${btn.dataset.id}`, { method: 'DELETE', headers: { 'Content-Type': 'application/json' } });
+      const result = await res.json().catch(() => ({}));
+      if (!res.ok || !result.ok) throw new Error(result.error || 'Failed to delete');
+      await loadExpenses();
+    } catch (err) {
+      alert('Could not delete: ' + (err as Error).message);
+      btn.disabled = false;
+    }
+  });
+
+  loadRevenue();
+  loadExpenses();
+</script>

@@ -55,6 +55,10 @@ const permitSettings = parsePermitSettings(tracking?.global_scripts);
           <span class="indicator w-2 h-2 rounded-full bg-zinc-200"></span>
           Truck Profile Outreach
         </button>
+        <button id="tabBtn-credits" class="tab-btn flex-shrink-0 lg:w-full text-left px-4 py-3 text-zinc-500 hover:bg-zinc-100/50 hover:text-slate-900 rounded-lg text-[11px] font-bold uppercase tracking-wider transition-all border border-transparent flex items-center gap-3">
+          <span class="indicator w-2 h-2 rounded-full bg-zinc-200"></span>
+          Credits
+        </button>
       </div>
 
       <!-- DESNI SADRŽAJ -->
@@ -349,6 +353,37 @@ const permitSettings = parsePermitSettings(tracking?.global_scripts);
           </div>
         </div>
 
+        <!-- KREDIT SISTEM (Credits) -->
+        <div id="section-credits" class="tab-section hidden bg-white border border-slate-200 p-6 md:p-8 rounded-2xl shadow-sm">
+          <h2 class="text-sm font-bold text-slate-900 uppercase tracking-wider mb-2">Contractor & Truck Owner Credits</h2>
+          <p class="mb-6 text-[11px] leading-5 text-slate-500">Contractors spend $1 credits to claim a website lead; truck owners spend $1 credits to apply for a job. Set the price per lead and how (if at all) balances refill automatically.</p>
+
+          <form id="creditSettingsForm" class="space-y-6">
+            <label class="flex items-center justify-between gap-4 rounded-xl border border-amber-200 bg-amber-50/50 p-4">
+              <span><span class="block text-xs font-bold text-slate-900">Enable credit system</span><span class="mt-1 block text-[11px] text-slate-500">Disabled by default. When off, claiming/applying is free and no balance checks happen.</span></span>
+              <input id="creditsEnabled" type="checkbox" class="h-5 w-5 accent-green-600" />
+            </label>
+
+            <div class="grid gap-4 sm:grid-cols-2">
+              <label><span class="mb-2 block text-[10px] font-bold uppercase tracking-wider text-slate-600">Contractor cost per lead claim ($)</span><input id="creditsContractorCost" type="number" min="0" step="1" value="1" class="w-full rounded-xl border border-slate-200 p-3 text-sm" /></label>
+              <label><span class="mb-2 block text-[10px] font-bold uppercase tracking-wider text-slate-600">Truck owner cost per application ($)</span><input id="creditsTruckCost" type="number" min="0" step="1" value="1" class="w-full rounded-xl border border-slate-200 p-3 text-sm" /></label>
+            </div>
+
+            <label class="flex items-center justify-between gap-4 rounded-xl border border-slate-200 bg-slate-50 p-4">
+              <span><span class="block text-xs font-bold text-slate-900">Automatic refill</span><span class="mt-1 block text-[11px] text-slate-500">Applies uniformly to every active contractor and approved truck owner.</span></span>
+              <input id="creditsAutoRefillEnabled" type="checkbox" class="h-5 w-5 accent-green-600" />
+            </label>
+            <div class="grid gap-4 sm:grid-cols-2">
+              <label><span class="mb-2 block text-[10px] font-bold uppercase tracking-wider text-slate-600">Refill amount ($)</span><input id="creditsAutoRefillAmount" type="number" min="0" step="1" value="10" class="w-full rounded-xl border border-slate-200 p-3 text-sm" /></label>
+              <label><span class="mb-2 block text-[10px] font-bold uppercase tracking-wider text-slate-600">Every (days)</span><input id="creditsAutoRefillInterval" type="number" min="1" value="30" class="w-full rounded-xl border border-slate-200 p-3 text-sm" /></label>
+            </div>
+
+            <div class="rounded-xl border border-blue-100 bg-blue-50 p-4 text-[11px] leading-5 text-blue-800"><strong>Manual top-ups:</strong> add or remove credits for a specific contractor or truck owner from their detail page in the admin panel.</div>
+
+            <button id="saveCreditsBtn" type="submit" class="h-12 rounded-xl bg-slate-950 px-7 text-xs font-bold uppercase tracking-wider text-white hover:bg-green-700">Save credit settings</button>
+          </form>
+        </div>
+
       </div>
     </div>
   </div>
@@ -368,14 +403,16 @@ const permitSettings = parsePermitSettings(tracking?.global_scripts);
   const tabNotifications = document.getElementById('tabBtn-notifications');
   const tabPermit = document.getElementById('tabBtn-permit');
   const tabTruckOutreach = document.getElementById('tabBtn-truckOutreach');
+  const tabCredits = document.getElementById('tabBtn-credits');
   const secTerritories = document.getElementById('section-territories');
   const secTracking = document.getElementById('section-tracking');
   const secNotifications = document.getElementById('section-notifications');
   const secPermit = document.getElementById('section-permit');
   const secTruckOutreach = document.getElementById('section-truckOutreach');
+  const secCredits = document.getElementById('section-credits');
 
-  const allTabs = [tabTerritories, tabTracking, tabNotifications, tabPermit, tabTruckOutreach] as HTMLElement[];
-  const allSections = [secTerritories, secTracking, secNotifications, secPermit, secTruckOutreach] as HTMLElement[];
+  const allTabs = [tabTerritories, tabTracking, tabNotifications, tabPermit, tabTruckOutreach, tabCredits] as HTMLElement[];
+  const allSections = [secTerritories, secTracking, secNotifications, secPermit, secTruckOutreach, secCredits] as HTMLElement[];
 
   function switchTab(activeTab: HTMLElement, showSec: HTMLElement) {
     allTabs.forEach((tab) => {
@@ -401,6 +438,10 @@ const permitSettings = parsePermitSettings(tracking?.global_scripts);
   tabTruckOutreach?.addEventListener('click', () => {
     switchTab(tabTruckOutreach, secTruckOutreach!);
     loadTruckOutreach();
+  });
+  tabCredits?.addEventListener('click', () => {
+    switchTab(tabCredits, secCredits!);
+    loadCreditSettings();
   });
 
   function escapeHtml(value: unknown) {
@@ -467,6 +508,43 @@ const permitSettings = parsePermitSettings(tracking?.global_scripts);
     button.disabled = false; button.textContent = 'Run safe batch now'; loadTruckOutreach();
   });
   document.getElementById('refreshTruckOutreach')?.addEventListener('click', loadTruckOutreach);
+
+  // --- KREDIT SISTEM ---
+  async function loadCreditSettings() {
+    const response = await adminFetch('/api/credit-settings');
+    const result = await response.json().catch(() => ({}));
+    if (!response.ok || !result.ok || !result.settings) return;
+    const s = result.settings;
+    (document.getElementById('creditsEnabled') as HTMLInputElement).checked = s.enabled;
+    (document.getElementById('creditsContractorCost') as HTMLInputElement).value = s.contractor_lead_cost;
+    (document.getElementById('creditsTruckCost') as HTMLInputElement).value = s.truck_lead_cost;
+    (document.getElementById('creditsAutoRefillEnabled') as HTMLInputElement).checked = s.auto_refill_enabled;
+    (document.getElementById('creditsAutoRefillAmount') as HTMLInputElement).value = s.auto_refill_amount;
+    (document.getElementById('creditsAutoRefillInterval') as HTMLInputElement).value = s.auto_refill_interval_days;
+  }
+
+  document.getElementById('creditSettingsForm')?.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const saveBtn = document.getElementById('saveCreditsBtn') as HTMLButtonElement;
+    saveBtn.disabled = true;
+    saveBtn.textContent = 'Saving...';
+    const payload = {
+      enabled: (document.getElementById('creditsEnabled') as HTMLInputElement).checked,
+      contractor_lead_cost: Number((document.getElementById('creditsContractorCost') as HTMLInputElement).value || 0),
+      truck_lead_cost: Number((document.getElementById('creditsTruckCost') as HTMLInputElement).value || 0),
+      auto_refill_enabled: (document.getElementById('creditsAutoRefillEnabled') as HTMLInputElement).checked,
+      auto_refill_amount: Number((document.getElementById('creditsAutoRefillAmount') as HTMLInputElement).value || 0),
+      auto_refill_interval_days: Number((document.getElementById('creditsAutoRefillInterval') as HTMLInputElement).value || 30),
+    };
+    const response = await adminFetch('/api/credit-settings', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload),
+    });
+    const result = await response.json().catch(() => ({}));
+    saveBtn.textContent = response.ok && result.ok ? 'Saved ✓' : 'Save failed';
+    setTimeout(() => { saveBtn.textContent = 'Save credit settings'; saveBtn.disabled = false; }, 1800);
+  });
 
   // --- ČUVANJE NOTIFIKACIONIH EMAIL ADRESA ---
   document.getElementById('notificationsForm')?.addEventListener('submit', async (e) => {
@@ -554,7 +632,7 @@ const permitSettings = parsePermitSettings(tracking?.global_scripts);
       archiveDays: Number((document.getElementById('permitArchiveDays') as HTMLInputElement).value || 60),
     };
 
-    const res = await fetch('/api/permit-settings', {
+    const res = await adminFetch('/api/permit-settings', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(payload),

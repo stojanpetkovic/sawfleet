@@ -3,10 +3,16 @@ export const prerender = false;
 import { supabase } from "../../lib/supabase";
 import { supabaseAdmin } from "../../lib/supabaseAdmin";
 import { sendEmail, truckOwnerStatusEmailHtml } from "../../lib/resend";
+import { authorizeAutomationRequest } from "../../lib/automationAuth";
 
 // Poziva se iz admin panela kad se odobri/odbije vlasnik kamiona.
 export async function POST({ request }) {
   try {
+    const authorization = await authorizeAutomationRequest(request);
+    if (!authorization.authorized) {
+      return new Response(JSON.stringify({ error: "unauthorized" }), { status: 401 });
+    }
+
     const { ownerId, status } = await request.json();
     if (!ownerId || !status) {
       return new Response(JSON.stringify({ error: "ownerId and status are required" }), { status: 400 });

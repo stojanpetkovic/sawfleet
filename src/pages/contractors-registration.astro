@@ -1,4 +1,5 @@
 ---
+export const prerender = false;
 import MainLayout from "../layouts/MainLayout.astro";
 import Header from "../components/layout/Header.astro";
 import ContractorBottomNav from "../components/layout/ContractorBottomNav.astro";
@@ -421,7 +422,7 @@ const { data: territories } = await supabase
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       keepalive: true,
-      body: JSON.stringify({ companyName: company_name, territory }),
+      body: JSON.stringify({ userId }),
     }).catch(() => {});
   });
 </script>

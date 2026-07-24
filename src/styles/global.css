@@ -98,6 +98,13 @@ body {
    only the record list scrolls internally) on every screen size.
    ============================================================ */
 
+/* --- Admin sidebar nav: scrollable on short screens, scrollbar hidden --- */
+.sidebar-scroll {
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none; /* old Edge/IE */
+}
+.sidebar-scroll::-webkit-scrollbar { display: none; } /* Chrome/Safari/new Edge */
+
 /* --- Fixed-height, no-outer-scroll page shell ---
    Used by DashPageShell.astro. main content itself no longer
    scrolls (see AdminLayout); this fills that fixed height and
@@ -178,6 +185,23 @@ body {
   background-size: 12px;
 }
 .filter-select:focus { border-color: rgba(34,197,94,0.5); }
+
+/* --- View tabs (e.g. Leads / System health toggle) --- */
+.view-tab-btn {
+  height: 2.25rem;
+  padding: 0 1rem;
+  border-radius: 9999px;
+  background: #F4F4F5;
+  border: 1px solid #E4E4E7;
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: #71717A;
+}
+.view-tab-btn:hover { background: #E4E4E7; }
+.view-tab-btn--active { background: #16A34A; border-color: #16A34A; color: #fff; }
+.view-tab-btn--active:hover { background: #15803D; }
 
 /* Card-style filter row variant (search input + selects inside a bordered panel) */
 .filter-input {

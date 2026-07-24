@@ -1,16 +1,22 @@
+export const prerender = false;
+
 import type { APIRoute } from "astro";
 import { supabaseAdmin } from "../../lib/supabaseAdmin";
 import { buildPermitOutreachEmail, getPermitAutomationSettings } from "../../lib/permitData";
 import { sendEmail } from "../../lib/resend";
+import { authorizeAutomationRequest } from "../../lib/automationAuth";
 
 export const POST: APIRoute = async ({ request }) => {
   try {
+    const authorization = await authorizeAutomationRequest(request);
+    if (!authorization.authorized) return new Response(JSON.stringify({ ok: false, error: "unauthorized" }), { status: 401 });
     if (!supabaseAdmin) return new Response(JSON.stringify({ ok: false, error: "service_role_not_configured" }), { status: 500 });
     const { leadId } = await request.json().catch(() => ({}));
     if (!leadId) return new Response(JSON.stringify({ ok: false, error: "Missing leadId" }), { status: 400 });
 
     const { data: lead, error } = await supabaseAdmin.from("permit_leads").select("*").eq("id", leadId).single();
     if (error || !lead?.owner_email) return new Response(JSON.stringify({ ok: false, error: "Permit opportunity not found or has no email" }), { status: 404 });
+    if (lead.owner_email.toLowerCase().endsWith("@permit.local")) return new Response(JSON.stringify({ ok: false, error: "This contact has no real email on file (placeholder address only)." }), { status: 400 });
 
     const settings = await getPermitAutomationSettings();
     const normalizedEmail = String(lead.owner_email).trim().toLowerCase();

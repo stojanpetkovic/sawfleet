@@ -1,9 +1,18 @@
 export const prerender = false;
 
 import { supabaseAdmin } from "../../lib/supabaseAdmin";
+import { authorizeAutomationRequest } from "../../lib/automationAuth";
 
-export async function GET() {
+export async function GET({ request }: { request: Request }) {
   try {
+    const authorization = await authorizeAutomationRequest(request);
+    if (!authorization.authorized) {
+      return new Response(JSON.stringify({ ok: false, error: "unauthorized" }), {
+        status: 401,
+        headers: { "Content-Type": "application/json" },
+      });
+    }
+
     // Fetch all permit leads from permit_leads table (including archived)
     const { data: leads, error } = await supabaseAdmin
       .from('permit_leads')

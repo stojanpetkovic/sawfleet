@@ -290,8 +290,10 @@ const activityLog: { action: string; at: string; by?: string }[] =
   </div>
 </AdminLayout>
 
-<script define:vars={{ leadId: id }}>
+<script>
   import { supabase } from "../../../lib/supabase";
+
+  const leadId = window.location.pathname.split('/').pop()!;
 
   // Add Note functionality
   async function addLogEntry(action: string) {
@@ -335,9 +337,10 @@ const activityLog: { action: string; at: string; by?: string }[] =
     const button = document.getElementById('confirmPermitPublish') as HTMLButtonElement;
     button.disabled = true;
     button.textContent = 'Publishing…';
+    const { data: { session: publishSession } } = await supabase.auth.getSession();
     const response = await fetch('/api/publish-lead', {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${publishSession?.access_token}` },
       body: JSON.stringify({ originType: 'permit_dispatch', originId: leadId, county, confirmUnrequested: true }),
     });
     const result = await response.json().catch(() => ({}));
@@ -360,9 +363,10 @@ const activityLog: { action: string; at: string; by?: string }[] =
     btn.textContent = '⏳ Sending...';
     
     try {
+      const { data: { session } } = await supabase.auth.getSession();
       const response = await fetch('/api/permit-send-email', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${session?.access_token}` },
         body: JSON.stringify({ leadId })
       });
       
@@ -392,9 +396,10 @@ const activityLog: { action: string; at: string; by?: string }[] =
     select.disabled = true;
     
     try {
+      const { data: { session } } = await supabase.auth.getSession();
       const response = await fetch('/api/permit-update-status', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${session?.access_token}` },
         body: JSON.stringify({ leadId, status })
       });
       
@@ -442,9 +447,10 @@ const activityLog: { action: string; at: string; by?: string }[] =
     transferConfirm.textContent = '⏳ Transferring...';
 
     try {
+      const { data: { session } } = await supabase.auth.getSession();
       const response = await fetch('/api/permit-transfer', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${session?.access_token}` },
         body: JSON.stringify({ leadId, assignedTo: email })
       });
 
@@ -474,9 +480,10 @@ const activityLog: { action: string; at: string; by?: string }[] =
     btn.textContent = '⏳ Deleting...';
 
     try {
+      const { data: { session } } = await supabase.auth.getSession();
       const response = await fetch('/api/permit-delete', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${session?.access_token}` },
         body: JSON.stringify({ leadId })
       });
 

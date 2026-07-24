@@ -1,13 +1,21 @@
 export const prerender = false;
 
 import { supabaseAdmin } from "../../lib/supabaseAdmin";
+import { authorizeAutomationRequest } from "../../lib/automationAuth";
 
 /**
  * Creates the permit_leads table if it doesn't exist
  * Run once: POST /api/setup-permit-tables
  */
-export async function POST() {
+export async function POST({ request }: { request: Request }) {
   try {
+    const authorization = await authorizeAutomationRequest(request);
+    if (!authorization.authorized) {
+      return new Response(JSON.stringify({ ok: false, error: "unauthorized" }), {
+        status: 401,
+        headers: { "Content-Type": "application/json" },
+      });
+    }
     // Create permit_leads table
     const createTableSql = `
       CREATE TABLE IF NOT EXISTS permit_leads (

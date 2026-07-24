@@ -1,13 +1,21 @@
 export const prerender = false;
 
 import { supabaseAdmin } from "../../lib/supabaseAdmin";
+import { authorizeAutomationRequest } from "../../lib/automationAuth";
 
 /**
  * Execute raw SQL to add archive columns to permit_leads table
  * This is a one-time setup endpoint
  */
-export async function POST() {
+export async function POST({ request }: { request: Request }) {
   try {
+    const authorization = await authorizeAutomationRequest(request);
+    if (!authorization.authorized) {
+      return new Response(JSON.stringify({ ok: false, error: "unauthorized" }), {
+        status: 401,
+        headers: { "Content-Type": "application/json" },
+      });
+    }
     console.log("[ADD COLUMNS] Starting to add archive columns to permit_leads");
 
     // Try adding columns one by one
