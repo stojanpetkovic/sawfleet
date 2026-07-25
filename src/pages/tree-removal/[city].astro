@@ -64,11 +64,22 @@ const schemaMarkup = {
   
   <main class="bg-white">
     <!-- ============================================== -->
-    <!-- HERO SEKCIJA — GRAD FOKUS -->
+    <!-- HERO SEKCIJA — GRAD FOKUS SA VIDEOM -->
     <!-- ============================================== -->
-    <section class="relative isolate overflow-hidden pt-28 pb-20 lg:pt-36 lg:pb-28 px-4 sm:px-8 lg:min-h-[88vh] lg:flex lg:items-center bg-gradient-to-b from-slate-900 via-slate-800 to-slate-900">
-      <!-- Overlay -->
-      <div class="absolute inset-0 -z-10 bg-slate-950/40"></div>
+    <section class="relative isolate overflow-hidden pt-28 pb-20 lg:pt-36 lg:pb-28 px-4 sm:px-8 lg:min-h-[88vh] lg:flex lg:items-center bg-slate-900">
+      <!-- Video pozadina -->
+      <div class="absolute inset-0 -z-20">
+        <video
+          autoplay muted loop playsinline preload="metadata"
+          poster="/videos/hero-tree-service-poster.webp"
+          class="h-full w-full object-cover"
+        >
+          <source src="/videos/hero-optimized.webm" type="video/webm" media="(min-width: 640px) and (prefers-reduced-motion: no-preference)" />
+          <source src="/videos/hero-optimized.mp4" type="video/mp4" media="(min-width: 640px) and (prefers-reduced-motion: no-preference)" />
+        </video>
+      </div>
+      <!-- Tamni sloj radi čitljivosti teksta -->
+      <div class="absolute inset-0 -z-10 bg-slate-950/45"></div>
 
       <div class="mx-auto max-w-[1320px] grid lg:grid-cols-2 gap-12 items-center relative z-10 w-full">
         <!-- LEVO: Tekstualni deo -->

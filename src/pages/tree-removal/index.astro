@@ -25,23 +25,57 @@ const cities = [
 
   <main class="bg-white">
     <!-- ============================================== -->
-    <!-- HERO SEKCIJA -->
+    <!-- HERO SEKCIJA - PROFESSIONAL HEADER -->
     <!-- ============================================== -->
-    <section class="py-16 lg:py-24 px-4 sm:px-8 bg-gradient-to-b from-slate-900 to-slate-800">
-      <div class="mx-auto max-w-4xl text-center">
-        <h1 class="text-4xl lg:text-5xl font-black text-white tracking-tighter mb-6">
-          Professional Tree Removal Services Across South Florida
-        </h1>
-        <p class="text-lg text-slate-200 mb-8">
-          Licensed, insured contractors serving Miami-Dade, Broward, and Palm Beach counties. Get your free estimate today.
-        </p>
+    <section class="relative isolate overflow-hidden pt-28 pb-20 lg:pt-36 lg:pb-28 px-4 sm:px-8 lg:min-h-[88vh] lg:flex lg:items-center bg-slate-900">
+      <!-- Video pozadina -->
+      <div class="absolute inset-0 -z-20">
+        <video
+          autoplay muted loop playsinline preload="metadata"
+          poster="/videos/hero-tree-service-poster.webp"
+          class="h-full w-full object-cover"
+        >
+          <source src="/videos/hero-optimized.webm" type="video/webm" media="(min-width: 640px) and (prefers-reduced-motion: no-preference)" />
+          <source src="/videos/hero-optimized.mp4" type="video/mp4" media="(min-width: 640px) and (prefers-reduced-motion: no-preference)" />
+        </video>
+      </div>
+      <!-- Tamni sloj radi čitljivosti -->
+      <div class="absolute inset-0 -z-10 bg-slate-950/45"></div>
+
+      <div class="mx-auto max-w-[1320px] w-full relative z-10">
+        <div class="text-center max-w-3xl mx-auto">
+          <!-- Badge -->
+          <div class="inline-flex items-center gap-2 rounded-full border border-white/20 bg-white/10 backdrop-blur-md px-3 py-1.5 shadow-soft mb-8">
+            <span class="text-xs font-bold text-green-400">🌳 South Florida Service</span>
+          </div>
+
+          <!-- Heading -->
+          <h1 class="text-5xl sm:text-6xl lg:text-7xl font-black tracking-tighter text-white leading-tight mb-6">
+            Professional Tree Removal Across South Florida
+          </h1>
+
+          <!-- Subheading -->
+          <p class="text-lg lg:text-xl leading-relaxed text-slate-200 mb-10 max-w-2xl mx-auto">
+            Licensed, insured contractors serving Miami-Dade, Broward, and Palm Beach counties. Free estimates, emergency response available 24/7.
+          </p>
+
+          <!-- CTA Buttons -->
+          <div class="flex flex-col sm:flex-row items-center justify-center gap-4">
+            <a href="#cities" class="inline-flex items-center gap-2 px-8 py-3 rounded-xl bg-green-500 text-white font-bold text-sm hover:bg-green-600 transition-all shadow-xl hover:shadow-2xl">
+              Find Your City <span class="text-lg">→</span>
+            </a>
+            <a href="/#quote" class="inline-flex items-center gap-2 px-8 py-3 rounded-xl border border-white/30 bg-white/10 backdrop-blur text-white font-bold text-sm hover:bg-white/20 transition-all">
+              Get Free Estimate
+            </a>
+          </div>
+        </div>
       </div>
     </section>
 
     <!-- ============================================== -->
     <!-- CITIES GRID -->
     <!-- ============================================== -->
-    <section class="py-16 lg:py-24 px-4 sm:px-8">
+    <section class="py-16 lg:py-24 px-4 sm:px-8" id="cities">
       <div class="mx-auto max-w-5xl">
         <h2 class="text-3xl font-bold text-slate-900 mb-12">Select Your City</h2>
         
