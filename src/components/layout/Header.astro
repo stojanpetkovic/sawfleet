@@ -3,13 +3,19 @@
 const navigation = [
   { title: "Services", href: "/services" },
   { title: "Service Areas", href: "/service-areas" },
-  { title: "Contractors", href: "/contractors-registration" },
   { title: "Fleet Owners", href: "/truck-registration" },
   { title: "Truck Directory", href: "/truck-directory" },
 ];
 
+// Contractors dropdown items
+const contractorsDropdown = [
+  { title: "Find a Contractor", href: "/contractors", desc: "Browse verified profiles & reviews" },
+  { title: "Join the Network", href: "/contractors-registration", desc: "Apply as a service contractor" },
+];
+
 const currentPath = Astro.url.pathname;
 const isActive = (href: string) => href === '/' ? currentPath === '/' : currentPath.startsWith(href);
+const isContractorsActive = currentPath.startsWith('/contractors') || currentPath.startsWith('/contractors-registration');
 ---
 
 <header class="fixed inset-x-0 top-0 z-50 bg-white/80 backdrop-blur-md border-b border-slate-200/80 font-sans">
@@ -27,6 +33,32 @@ const isActive = (href: string) => href === '/' ? currentPath === '/' : currentP
           {item.title}
         </a>
       ))}
+
+      <!-- Contractors dropdown -->
+      <div class="relative group">
+        <button class={`relative py-2 flex items-center gap-1 text-[10px] font-mono font-bold uppercase tracking-[0.16em] transition-colors ${isContractorsActive ? 'text-green-700 after:absolute after:inset-x-0 after:-bottom-1 after:h-0.5 after:rounded-full after:bg-green-600' : 'text-slate-500 hover:text-slate-900'}`}>
+          Contractors
+          <svg class="h-3 w-3 transition-transform group-hover:rotate-180" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M19 9l-7 7-7-7" />
+          </svg>
+        </button>
+
+        <!-- Dropdown panel -->
+        <div class="pointer-events-none absolute left-1/2 top-full -translate-x-1/2 pt-3 opacity-0 transition-all duration-150 group-hover:pointer-events-auto group-hover:opacity-100 group-hover:translate-y-0 translate-y-1 z-50">
+          <div class="w-56 rounded-2xl border border-slate-200 bg-white shadow-xl ring-1 ring-slate-900/5 overflow-hidden">
+            {contractorsDropdown.map((item) => (
+              <a
+                href={item.href}
+                class={`flex flex-col px-4 py-3 hover:bg-green-50 transition-colors border-b border-slate-100 last:border-0 ${isActive(item.href) ? 'bg-green-50/60' : ''}`}
+              >
+                <span class="text-[10px] font-bold uppercase tracking-[0.14em] text-slate-900">{item.title}</span>
+                <span class="mt-0.5 text-[10px] text-slate-400">{item.desc}</span>
+              </a>
+            ))}
+          </div>
+        </div>
+      </div>
+
       <a href="/portal" class="text-[10px] font-mono font-bold uppercase tracking-[0.16em] text-slate-500 hover:text-slate-900 transition-colors">Sign in</a>
       <a href="/#quote" class="h-10 px-5 flex items-center justify-center rounded-xl bg-green-700 text-[10px] font-mono font-bold uppercase tracking-[0.16em] text-white shadow-[0_8px_20px_-10px_rgba(21,128,61,0.7)] hover:bg-green-800 transition-all">
         Free Estimate
@@ -59,6 +91,15 @@ const isActive = (href: string) => href === '/' ? currentPath === '/' : currentP
           {item.title}
         </a>
       ))}
+      <!-- Contractors sub-links (mobile) -->
+      <div class="space-y-3 border-l-2 border-green-200 pl-4">
+        <p class="text-[9px] font-bold uppercase tracking-[0.2em] text-slate-400">Contractors</p>
+        {contractorsDropdown.map((item) => (
+          <a href={item.href} class={`block text-sm font-bold uppercase tracking-[0.18em] transition-colors ${isActive(item.href) ? 'text-green-700' : 'text-slate-700 hover:text-green-700'}`}>
+            {item.title}
+          </a>
+        ))}
+      </div>
       <a href="/portal" class="text-sm font-bold uppercase tracking-[0.2em] text-slate-500 hover:text-green-700 transition-colors">Sign in</a>
       <a href="/#quote" class="mt-2 flex h-12 items-center justify-center rounded-xl bg-green-700 px-5 text-xs font-bold uppercase tracking-[0.16em] text-white">Get Free Estimate</a>
     </nav>

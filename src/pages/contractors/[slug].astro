@@ -1,0 +1,414 @@
+---
+export const prerender = false;
+import MainLayout from "../../layouts/MainLayout.astro";
+import Header from "../../components/layout/Header.astro";
+import MobileNav from "../../components/layout/MobileNav.astro";
+import Footer from "../../components/layout/Footer.astro";
+import { supabase } from "../../lib/supabase";
+import { supabaseAdmin } from "../../lib/supabaseAdmin";
+import { BadgeCheck, Building2, ExternalLink, MapPin, Phone, Mail, Star, ChevronRight } from "lucide-astro";
+
+const { slug } = Astro.params;
+
+// Koristimo supabaseAdmin da zaobiđemo RLS na contractors tabeli
+// (javni profili trebaju biti čitljivi bez autentifikacije)
+const db = supabaseAdmin ?? supabase;
+
+// Dohvati kontraktora (samo javni, aktivni profili)
+const { data: contractor } = await db
+  .from("contractors")
+  .select("id, company_name, contact_name, territory, bio, website, license_number, services_offered, is_public, status, slug")
+  .eq("slug", slug)
+  .eq("is_public", true)
+  .eq("status", "active")
+  .maybeSingle();
+
+if (!contractor) return Astro.redirect("/404");
+
+// Dohvati ocene
+const { data: reviews } = await db
+  .from("contractor_reviews")
+  .select("id, rating, body, reviewer_name, created_at")
+  .eq("contractor_id", contractor.id)
+  .eq("status", "approved")
+  .order("created_at", { ascending: false })
+  .limit(20);
+
+// Agregat
+const { data: stats } = await db
+  .from("contractor_review_stats")
+  .select("review_count, avg_rating")
+  .eq("contractor_id", contractor.id)
+  .maybeSingle();
+
+const reviewCount = Number(stats?.review_count || 0);
+const avgRating = Number(stats?.avg_rating || 0);
+const reviewList = reviews || [];
+
+const SERVICES: string[] = contractor.services_offered || [];
+
+const title = `${contractor.company_name} — Tree Service in ${contractor.territory || "South Florida"} | SF Tree Removal`;
+const description = `${contractor.company_name} is a verified tree service contractor${contractor.territory ? ` serving ${contractor.territory}` : " in South Florida"}. ${reviewCount > 0 ? `Rated ${avgRating}★ by ${reviewCount} customer${reviewCount !== 1 ? "s" : ""}.` : ""} Request a free quote today.`;
+const canonical = `https://sftreeremoval.com/contractors/${contractor.slug}`;
+
+const schema = {
+  "@context": "https://schema.org",
+  "@type": "LocalBusiness",
+  "@id": `${canonical}#business`,
+  name: contractor.company_name,
+  url: canonical,
+  description,
+  telephone: undefined,
+  address: {
+    "@type": "PostalAddress",
+    addressRegion: contractor.territory || "FL",
+    addressCountry: "US",
+  },
+  ...(reviewCount > 0 && {
+    aggregateRating: {
+      "@type": "AggregateRating",
+      ratingValue: avgRating,
+      reviewCount,
+      bestRating: 5,
+      worstRating: 1,
+    },
+  }),
+};
+
+function starsHtml(rating: number): string {
+  return Array.from({ length: 5 }, (_, i) => {
+    const filled = i < Math.round(rating);
+    return `<span class="${filled ? "text-amber-400" : "text-slate-300"}">★</span>`;
+  }).join("");
+}
+---
+
+<MainLayout title={title} description={description} structuredData={schema}>
+  <Header />
+  <MobileNav />
+
+  <main class="min-h-screen bg-slate-50 pb-24 pt-28 md:pt-36">
+    <div class="mx-auto w-full max-w-5xl px-5 md:px-8">
+
+      <!-- Breadcrumb -->
+      <nav aria-label="Breadcrumb" class="mb-6 flex items-center gap-1.5 text-[10px] font-bold uppercase tracking-widest text-slate-400">
+        <a href="/" class="hover:text-green-700 transition-colors">Home</a>
+        <ChevronRight size={10} />
+        <a href="/contractors" class="hover:text-green-700 transition-colors">Contractors</a>
+        <ChevronRight size={10} />
+        <span class="text-slate-600">{contractor.company_name}</span>
+      </nav>
+
+      <div class="grid gap-6 lg:grid-cols-[1fr_340px]">
+
+        <!-- ======================================================= -->
+        <!-- LEFT COLUMN                                              -->
+        <!-- ======================================================= -->
+        <div class="space-y-5">
+
+          <!-- HERO CARD -->
+          <section class="relative overflow-hidden rounded-3xl border border-slate-200 bg-white p-6 shadow-sm md:p-9">
+            <div class="absolute inset-x-0 top-0 h-1 bg-gradient-to-r from-green-500 via-emerald-400 to-green-500"></div>
+
+            <div class="flex flex-col justify-between gap-5 sm:flex-row sm:items-start">
+              <div class="flex items-start gap-4">
+                <span class="flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl bg-slate-950 text-white">
+                  <Building2 size={26} />
+                </span>
+                <div>
+                  <p class="text-[10px] font-bold uppercase tracking-[0.2em] text-green-700">Verified tree service contractor</p>
+                  <h1 class="mt-1 text-2xl font-bold tracking-tight text-slate-950 md:text-4xl">{contractor.company_name}</h1>
+                  {contractor.territory && (
+                    <p class="mt-2 flex items-center gap-1.5 text-sm text-slate-500">
+                      <MapPin size={14} />
+                      {contractor.territory}
+                    </p>
+                  )}
+                </div>
+              </div>
+
+              <span class="w-fit rounded-full border border-green-200 bg-green-50 px-3 py-1.5 text-[9px] font-bold uppercase tracking-wider text-green-700 flex items-center gap-1.5">
+                <BadgeCheck size={12} />
+                Active · Verified
+              </span>
+            </div>
+
+            <!-- Aggregate rating -->
+            {reviewCount > 0 && (
+              <div class="mt-6 flex items-center gap-3">
+                <div class="flex items-center gap-0.5 text-xl" set:html={starsHtml(avgRating)} />
+                <span class="text-sm font-bold text-slate-900">{avgRating.toFixed(1)}</span>
+                <span class="text-xs text-slate-500">({reviewCount} review{reviewCount !== 1 ? "s" : ""})</span>
+              </div>
+            )}
+
+            <!-- Services chips -->
+            {SERVICES.length > 0 && (
+              <div class="mt-6 flex flex-wrap gap-2">
+                {SERVICES.map((s) => (
+                  <span class="rounded-full border border-slate-200 bg-slate-50 px-3 py-1.5 text-[10px] font-bold uppercase tracking-wide text-slate-600">{s}</span>
+                ))}
+              </div>
+            )}
+
+            <!-- License -->
+            {contractor.license_number && (
+              <p class="mt-5 text-xs text-slate-500">
+                License&nbsp;<span class="font-semibold text-slate-700">{contractor.license_number}</span>
+              </p>
+            )}
+          </section>
+
+          <!-- BIO -->
+          {contractor.bio && (
+            <section class="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm md:p-9">
+              <h2 class="text-base font-bold text-slate-950">About {contractor.company_name}</h2>
+              <p class="mt-4 text-sm leading-7 text-slate-600 whitespace-pre-line">{contractor.bio}</p>
+            </section>
+          )}
+
+          <!-- REVIEWS -->
+          <section class="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm md:p-9" id="reviews">
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+              <div>
+                <h2 class="text-base font-bold text-slate-950">Customer reviews</h2>
+                {reviewCount > 0
+                  ? <p class="mt-1 text-xs text-slate-500">{reviewCount} verified review{reviewCount !== 1 ? "s" : ""}</p>
+                  : <p class="mt-1 text-xs text-slate-500">Be the first to leave a review.</p>
+                }
+              </div>
+              <a href="#leave-review" class="w-fit rounded-xl border border-green-200 bg-green-50 px-4 py-2 text-[10px] font-bold uppercase tracking-wider text-green-700 hover:bg-green-100 transition-colors">
+                + Write a review
+              </a>
+            </div>
+
+            {reviewList.length > 0 ? (
+              <ul class="mt-6 space-y-5">
+                {reviewList.map((r) => (
+                  <li class="border-t border-slate-100 pt-5 first:border-0 first:pt-0">
+                    <div class="flex items-center justify-between gap-3">
+                      <div class="flex items-center gap-0.5 text-base" set:html={starsHtml(r.rating)} />
+                      <span class="text-[10px] text-slate-400">
+                        {new Date(r.created_at).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" })}
+                      </span>
+                    </div>
+                    {r.reviewer_name && (
+                      <p class="mt-1 text-xs font-bold text-slate-700">{r.reviewer_name}</p>
+                    )}
+                    {r.body && (
+                      <p class="mt-2 text-sm leading-6 text-slate-600">{r.body}</p>
+                    )}
+                  </li>
+                ))}
+              </ul>
+            ) : (
+              <div class="mt-8 rounded-2xl border border-dashed border-slate-200 p-8 text-center text-sm text-slate-400">
+                No reviews yet — be the first to share your experience.
+              </div>
+            )}
+          </section>
+
+          <!-- LEAVE REVIEW FORM -->
+          <section class="rounded-3xl border border-green-200 bg-gradient-to-br from-white to-green-50/40 p-6 shadow-sm md:p-9" id="leave-review">
+            <h2 class="text-base font-bold text-slate-950">Leave a review</h2>
+            <p class="mt-1 text-xs text-slate-500">Your review will be published after a brief moderation check.</p>
+
+            <form id="reviewForm" class="mt-6 space-y-4" novalidate>
+              <input type="hidden" name="contractor_id" value={contractor.id} />
+
+              <!-- Star picker -->
+              <div>
+                <label class="mb-2 block text-[10px] font-bold uppercase tracking-[0.15em] text-slate-500">Rating <span class="text-red-500">*</span></label>
+                <div id="starPicker" class="flex items-center gap-1" role="radiogroup" aria-label="Rating">
+                  {[1, 2, 3, 4, 5].map((n) => (
+                    <button
+                      type="button"
+                      class="star-btn text-3xl text-slate-300 hover:text-amber-400 transition-colors focus:outline-none"
+                      data-value={n}
+                      aria-label={`${n} star${n !== 1 ? "s" : ""}`}
+                    >★</button>
+                  ))}
+                </div>
+                <input type="hidden" id="ratingInput" name="rating" value="" />
+              </div>
+
+              <div>
+                <label for="reviewerName" class="mb-2 block text-[10px] font-bold uppercase tracking-[0.15em] text-slate-500">Your name (optional)</label>
+                <input
+                  id="reviewerName"
+                  type="text"
+                  name="reviewer_name"
+                  maxlength="80"
+                  placeholder="E.g. John D."
+                  class="h-12 w-full rounded-xl border border-slate-200 bg-white px-4 text-sm text-slate-900 outline-none focus:border-green-500 focus:ring-2 focus:ring-green-500/20 transition-all"
+                />
+              </div>
+
+              <div>
+                <label for="reviewBody" class="mb-2 block text-[10px] font-bold uppercase tracking-[0.15em] text-slate-500">Your review (optional)</label>
+                <textarea
+                  id="reviewBody"
+                  name="body"
+                  rows={4}
+                  maxlength="1000"
+                  placeholder="Share your experience with this contractor…"
+                  class="w-full rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm text-slate-900 outline-none focus:border-green-500 focus:ring-2 focus:ring-green-500/20 resize-none transition-all"
+                ></textarea>
+              </div>
+
+              <!-- Honeypot - hidden from real users -->
+              <input type="text" name="website_url" autocomplete="off" tabindex="-1" aria-hidden="true" class="absolute opacity-0 pointer-events-none h-0 w-0 overflow-hidden" />
+
+              <button
+                id="submitReviewBtn"
+                type="submit"
+                class="h-12 w-full rounded-xl bg-green-500 text-sm font-bold text-white hover:bg-green-600 transition-all active:scale-[0.98] shadow-[0_8px_24px_-6px_rgba(34,197,94,0.35)]"
+              >
+                Submit review
+              </button>
+              <p id="reviewMsg" class="text-[11px]"></p>
+            </form>
+          </section>
+
+        </div>
+
+        <!-- ======================================================= -->
+        <!-- RIGHT SIDEBAR                                            -->
+        <!-- ======================================================= -->
+        <aside class="space-y-5 lg:sticky lg:top-28 h-fit">
+
+          <!-- CTA CARD -->
+          <section class="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
+            <p class="text-[10px] font-bold uppercase tracking-[0.15em] text-green-700">// Get a free quote</p>
+            <h2 class="mt-2 text-lg font-bold text-slate-950">Need tree service?</h2>
+            <p class="mt-2 text-xs leading-5 text-slate-500">Submit a request and we'll connect you with {contractor.company_name} or another verified contractor in your area.</p>
+            <a
+              href="/#request"
+              class="mt-5 flex h-12 items-center justify-center rounded-xl bg-green-500 text-sm font-bold text-white hover:bg-green-600 transition-all"
+            >
+              Request a free quote
+            </a>
+          </section>
+
+          <!-- CONTACT / WEBSITE -->
+          {contractor.website && (
+            <section class="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
+              <h2 class="text-sm font-bold text-slate-950 mb-4">Contact & links</h2>
+              <a
+                href={contractor.website}
+                target="_blank"
+                rel="nofollow noopener"
+                class="flex min-h-11 items-center gap-3 rounded-xl border border-slate-200 px-4 text-sm font-medium text-slate-700 hover:border-green-300 hover:text-green-700 transition-colors"
+              >
+                <ExternalLink size={15} />
+                Company website
+              </a>
+            </section>
+          )}
+
+          <!-- QUICK STATS -->
+          {reviewCount > 0 && (
+            <section class="rounded-3xl border border-amber-100 bg-amber-50 p-6 shadow-sm">
+              <p class="text-[10px] font-bold uppercase tracking-[0.15em] text-amber-700 mb-3">Customer rating</p>
+              <div class="flex items-center gap-2">
+                <span class="text-4xl font-bold text-slate-950">{avgRating.toFixed(1)}</span>
+                <div>
+                  <div class="flex gap-0.5 text-lg" set:html={starsHtml(avgRating)} />
+                  <p class="text-[10px] text-slate-500 mt-0.5">{reviewCount} review{reviewCount !== 1 ? "s" : ""}</p>
+                </div>
+              </div>
+            </section>
+          )}
+
+          <!-- DISCLAIMER -->
+          <p class="px-1 text-[10px] leading-4 text-slate-400">
+            Profiles are published by contractors and have not been independently verified for all claims. Always confirm licenses and insurance before hiring.
+          </p>
+        </aside>
+
+      </div>
+    </div>
+  </main>
+
+  <Footer />
+</MainLayout>
+
+<script>
+  // Star picker interactivity
+  const starBtns = document.querySelectorAll<HTMLButtonElement>('.star-btn');
+  const ratingInput = document.getElementById('ratingInput') as HTMLInputElement;
+
+  function setStars(value: number) {
+    starBtns.forEach((btn) => {
+      const v = Number(btn.dataset.value);
+      btn.classList.toggle('text-amber-400', v <= value);
+      btn.classList.toggle('text-slate-300', v > value);
+    });
+    ratingInput.value = String(value);
+  }
+
+  starBtns.forEach((btn) => {
+    btn.addEventListener('click', () => setStars(Number(btn.dataset.value)));
+    btn.addEventListener('mouseenter', () => {
+      starBtns.forEach((b) => {
+        const v = Number(b.dataset.value);
+        b.classList.toggle('text-amber-300', v <= Number(btn.dataset.value));
+        b.classList.toggle('text-slate-300', v > Number(btn.dataset.value));
+      });
+    });
+  });
+
+  document.getElementById('starPicker')?.addEventListener('mouseleave', () => {
+    const current = Number(ratingInput.value);
+    setStars(current);
+  });
+
+  // Review form submission
+  document.getElementById('reviewForm')?.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const form = e.target as HTMLFormElement;
+    const btn = document.getElementById('submitReviewBtn') as HTMLButtonElement;
+    const msg = document.getElementById('reviewMsg')!;
+
+    const rating = Number(ratingInput.value);
+    if (!rating) {
+      msg.textContent = '⚠️ Please select a star rating.';
+      msg.className = 'text-[11px] text-amber-600';
+      return;
+    }
+
+    // Honeypot check
+    const honeypot = (form.querySelector('[name="website_url"]') as HTMLInputElement)?.value;
+    if (honeypot) return; // Bot
+
+    const contractor_id = (form.querySelector('[name="contractor_id"]') as HTMLInputElement).value;
+    const reviewer_name = (form.querySelector('[name="reviewer_name"]') as HTMLInputElement).value.trim();
+    const body = (form.querySelector('[name="body"]') as HTMLTextAreaElement).value.trim();
+
+    btn.disabled = true;
+    btn.textContent = 'Submitting…';
+
+    try {
+      const res = await fetch('/api/submit-review', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ contractor_id, rating, reviewer_name: reviewer_name || null, body: body || null }),
+      });
+      const data = await res.json();
+
+      if (!res.ok) throw new Error(data.message || 'Submission failed');
+
+      msg.textContent = '✅ Thank you! Your review will be published after moderation.';
+      msg.className = 'text-[11px] text-green-700';
+      form.reset();
+      setStars(0);
+      ratingInput.value = '';
+    } catch (err) {
+      msg.textContent = '❌ Could not submit review. Please try again.';
+      msg.className = 'text-[11px] text-red-600';
+    } finally {
+      btn.disabled = false;
+      btn.textContent = 'Submit review';
+    }
+  });
+</script>

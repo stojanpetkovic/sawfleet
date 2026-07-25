@@ -1,0 +1,191 @@
+---
+export const prerender = false;
+import AdminLayout from "../../layouts/AdminLayout.astro";
+import { supabaseAdmin } from "../../lib/supabaseAdmin";
+import { Star, CheckCircle2, XCircle, Clock3 } from "lucide-astro";
+
+const db = supabaseAdmin;
+
+// Dohvati sve recenzije sa imenom kompanije
+const { data: reviews } = db ? await db
+  .from("contractor_reviews")
+  .select("id, contractor_id, rating, body, reviewer_name, status, ip_hash, created_at, contractors(company_name, slug)")
+  .order("created_at", { ascending: false })
+  .limit(200) : { data: [] };
+
+const allReviews = reviews || [];
+const pending = allReviews.filter((r: any) => r.status === "pending");
+const approved = allReviews.filter((r: any) => r.status === "approved");
+const rejected = allReviews.filter((r: any) => r.status === "rejected");
+---
+
+<AdminLayout>
+  <div class="mx-auto flex w-full max-w-[1400px] min-w-0 flex-col gap-8">
+
+    <!-- HEADER -->
+    <div class="flex flex-col justify-between gap-4 border-b border-slate-200 pb-7 sm:flex-row sm:items-end">
+      <div>
+        <div class="mb-3 flex items-center gap-2 text-amber-600">
+          <Star size={15} />
+          <span class="text-[10px] font-mono font-bold uppercase tracking-[0.22em]">Reputation management</span>
+        </div>
+        <h1 class="text-2xl font-bold tracking-tight text-slate-950 sm:text-3xl">Contractor reviews</h1>
+        <p class="mt-2 max-w-xl text-sm text-slate-500">Review and approve customer feedback before it's published on contractor profiles.</p>
+      </div>
+
+      <div class="flex items-center gap-4 text-sm">
+        <div class="text-center">
+          <p class="text-2xl font-bold text-amber-600">{pending.length}</p>
+          <p class="text-[10px] uppercase tracking-wider text-slate-400">Pending</p>
+        </div>
+        <div class="text-center">
+          <p class="text-2xl font-bold text-green-600">{approved.length}</p>
+          <p class="text-[10px] uppercase tracking-wider text-slate-400">Approved</p>
+        </div>
+        <div class="text-center">
+          <p class="text-2xl font-bold text-slate-400">{rejected.length}</p>
+          <p class="text-[10px] uppercase tracking-wider text-slate-400">Rejected</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- TABS -->
+    <div class="flex gap-1 border-b border-slate-200">
+      {[
+        { id: "pending", label: "Pending", count: pending.length },
+        { id: "approved", label: "Approved", count: approved.length },
+        { id: "rejected", label: "Rejected", count: rejected.length },
+      ].map((tab) => (
+        <button
+          data-tab={tab.id}
+          class={`review-tab px-4 py-2.5 text-xs font-bold uppercase tracking-wider transition-colors border-b-2 -mb-px ${tab.id === "pending" ? "border-amber-500 text-amber-700" : "border-transparent text-slate-500 hover:text-slate-800"}`}
+        >
+          {tab.label} {tab.count > 0 && <span class="ml-1 rounded-full bg-slate-100 px-1.5 py-0.5 text-[9px]">{tab.count}</span>}
+        </button>
+      ))}
+    </div>
+
+    <!-- REVIEW PANELS -->
+    {["pending", "approved", "rejected"].map((tabId) => {
+      const list = tabId === "pending" ? pending : tabId === "approved" ? approved : rejected;
+      return (
+        <div id={`tab-${tabId}`} class={`review-panel space-y-4 ${tabId !== "pending" ? "hidden" : ""}`}>
+          {list.length === 0 ? (
+            <div class="rounded-2xl border border-dashed border-slate-200 p-12 text-center text-sm text-slate-400">
+              No {tabId} reviews.
+            </div>
+          ) : list.map((r: any) => (
+            <div class="review-card rounded-2xl border border-slate-200 bg-white p-5 shadow-sm" data-id={r.id}>
+              <div class="flex flex-col sm:flex-row sm:items-start gap-4 justify-between">
+                <div class="flex-1 min-w-0">
+                  <div class="flex flex-wrap items-center gap-2 mb-1">
+                    <div class="flex items-center gap-0.5 text-base">
+                      {Array.from({ length: 5 }, (_, i) => (
+                        <span class={i < r.rating ? "text-amber-400" : "text-slate-200"}>★</span>
+                      ))}
+                    </div>
+                    <span class={`rounded-full px-2 py-0.5 text-[9px] font-bold uppercase ${r.status === "pending" ? "bg-amber-50 border border-amber-200 text-amber-700" : r.status === "approved" ? "bg-green-50 border border-green-200 text-green-700" : "bg-red-50 border border-red-200 text-red-700"}`}>
+                      {r.status}
+                    </span>
+                  </div>
+
+                  <p class="text-[10px] text-slate-400 mb-2">
+                    For: <strong class="text-slate-700">{(r.contractors as any)?.company_name || r.contractor_id}</strong>
+                    &nbsp;·&nbsp;
+                    {new Date(r.created_at).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" })}
+                  </p>
+
+                  {r.reviewer_name && (
+                    <p class="text-xs font-bold text-slate-800">{r.reviewer_name}</p>
+                  )}
+                  {r.body ? (
+                    <p class="mt-1 text-sm text-slate-600 leading-6">{r.body}</p>
+                  ) : (
+                    <p class="mt-1 text-xs italic text-slate-400">No written review — rating only.</p>
+                  )}
+                </div>
+
+                <!-- ACTION BUTTONS -->
+                <div class="flex gap-2 shrink-0">
+                  {r.status !== "approved" && (
+                    <button
+                      class="approve-btn inline-flex h-9 items-center gap-1.5 rounded-lg bg-green-500 px-4 text-[10px] font-bold uppercase text-white hover:bg-green-600 transition-colors"
+                      data-id={r.id}
+                    >
+                      <CheckCircle2 size={13} /> Approve
+                    </button>
+                  )}
+                  {r.status !== "rejected" && (
+                    <button
+                      class="reject-btn inline-flex h-9 items-center gap-1.5 rounded-lg border border-red-200 bg-red-50 px-4 text-[10px] font-bold uppercase text-red-700 hover:bg-red-100 transition-colors"
+                      data-id={r.id}
+                    >
+                      <XCircle size={13} /> Reject
+                    </button>
+                  )}
+                  {(r.contractors as any)?.slug && (
+                    <a
+                      href={`/contractors/${(r.contractors as any).slug}`}
+                      target="_blank"
+                      class="inline-flex h-9 items-center gap-1.5 rounded-lg border border-slate-200 px-3 text-[10px] font-bold uppercase text-slate-600 hover:text-green-700 transition-colors"
+                    >
+                      Profile ↗
+                    </a>
+                  )}
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+      );
+    })}
+
+  </div>
+</AdminLayout>
+
+<script>
+  // Tab switching
+  document.querySelectorAll<HTMLButtonElement>('.review-tab').forEach((btn) => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('.review-tab').forEach((b) => {
+        b.classList.remove('border-amber-500', 'text-amber-700');
+        b.classList.add('border-transparent', 'text-slate-500');
+      });
+      btn.classList.add('border-amber-500', 'text-amber-700');
+      btn.classList.remove('border-transparent', 'text-slate-500');
+
+      document.querySelectorAll('.review-panel').forEach((p) => p.classList.add('hidden'));
+      document.getElementById(`tab-${btn.dataset.tab}`)?.classList.remove('hidden');
+    });
+  });
+
+  async function updateReviewStatus(reviewId: string, status: 'approved' | 'rejected') {
+    const res = await fetch('/api/admin-review-action', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ reviewId, status }),
+    });
+    if (!res.ok) {
+      const d = await res.json().catch(() => ({}));
+      alert('Error: ' + (d.message || 'Unknown error'));
+      return;
+    }
+
+    // Visually remove the card
+    const card = document.querySelector<HTMLElement>(`.review-card[data-id="${reviewId}"]`);
+    if (card) {
+      card.style.opacity = '0';
+      card.style.transform = 'translateY(-4px)';
+      card.style.transition = 'all 0.2s ease';
+      setTimeout(() => card.remove(), 200);
+    }
+  }
+
+  document.addEventListener('click', (e) => {
+    const approveBtn = (e.target as Element)?.closest<HTMLButtonElement>('.approve-btn');
+    const rejectBtn = (e.target as Element)?.closest<HTMLButtonElement>('.reject-btn');
+
+    if (approveBtn?.dataset.id) updateReviewStatus(approveBtn.dataset.id, 'approved');
+    if (rejectBtn?.dataset.id) updateReviewStatus(rejectBtn.dataset.id, 'rejected');
+  });
+</script>

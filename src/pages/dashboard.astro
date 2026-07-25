@@ -92,41 +92,113 @@ const navItems = [
       <div class="max-w-5xl mx-auto grid lg:grid-cols-3 gap-6 lg:gap-8 items-start">
 
         <!-- FORMA ZA PODATKE -->
-        <div class="lg:col-span-2 relative overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-soft">
-          <div class="absolute inset-x-0 top-0 h-1 bg-gradient-to-r from-green-500 via-emerald-500 to-green-500"></div>
-          <div class="p-6 sm:p-8 space-y-5">
-            <div class="pb-2">
-              <span class="text-[10px] font-mono font-bold uppercase tracking-[0.2em] text-green-700">// Account Settings</span>
-              <h2 class="mt-1 text-xl font-bold text-slate-900">Company Profile</h2>
-              <p class="mt-1 text-xs text-slate-500">Keep this up to date — it's what determines which leads reach you.</p>
-            </div>
-            <div>
-              <label class="mb-2 block text-[10px] font-bold uppercase tracking-[0.15em] text-slate-500">Company Name</label>
-              <input id="profileCompany" type="text" class="h-12 w-full rounded-xl border border-slate-200 bg-slate-50 px-4 text-sm text-slate-900 outline-none focus:border-green-500 focus:ring-2 focus:ring-green-500/20 focus:bg-white transition-all"/>
-            </div>
-            <div class="grid gap-4 sm:grid-cols-2">
-              <div>
-                <label class="mb-2 block text-[10px] font-bold uppercase tracking-[0.15em] text-slate-500">Contact Name</label>
-                <input id="profileContact" type="text" class="h-12 w-full rounded-xl border border-slate-200 bg-slate-50 px-4 text-sm text-slate-900 outline-none focus:border-green-500 focus:ring-2 focus:ring-green-500/20 focus:bg-white transition-all"/>
+        <div class="lg:col-span-2 space-y-5">
+          <div class="relative overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-soft">
+            <div class="absolute inset-x-0 top-0 h-1 bg-gradient-to-r from-green-500 via-emerald-500 to-green-500"></div>
+            <div class="p-6 sm:p-8 space-y-5">
+              <div class="pb-2">
+                <span class="text-[10px] font-mono font-bold uppercase tracking-[0.2em] text-green-700">// Account Settings</span>
+                <h2 class="mt-1 text-xl font-bold text-slate-900">Company Profile</h2>
+                <p class="mt-1 text-xs text-slate-500">Keep this up to date — it's what determines which leads reach you.</p>
               </div>
               <div>
-                <label class="mb-2 block text-[10px] font-bold uppercase tracking-[0.15em] text-slate-500">Phone</label>
-                <input id="profilePhone" type="tel" class="h-12 w-full rounded-xl border border-slate-200 bg-slate-50 px-4 text-sm text-slate-900 outline-none focus:border-green-500 focus:ring-2 focus:ring-green-500/20 focus:bg-white transition-all"/>
+                <label class="mb-2 block text-[10px] font-bold uppercase tracking-[0.15em] text-slate-500">Company Name</label>
+                <input id="profileCompany" type="text" class="h-12 w-full rounded-xl border border-slate-200 bg-slate-50 px-4 text-sm text-slate-900 outline-none focus:border-green-500 focus:ring-2 focus:ring-green-500/20 focus:bg-white transition-all"/>
+              </div>
+              <div class="grid gap-4 sm:grid-cols-2">
+                <div>
+                  <label class="mb-2 block text-[10px] font-bold uppercase tracking-[0.15em] text-slate-500">Contact Name</label>
+                  <input id="profileContact" type="text" class="h-12 w-full rounded-xl border border-slate-200 bg-slate-50 px-4 text-sm text-slate-900 outline-none focus:border-green-500 focus:ring-2 focus:ring-green-500/20 focus:bg-white transition-all"/>
+                </div>
+                <div>
+                  <label class="mb-2 block text-[10px] font-bold uppercase tracking-[0.15em] text-slate-500">Phone</label>
+                  <input id="profilePhone" type="tel" class="h-12 w-full rounded-xl border border-slate-200 bg-slate-50 px-4 text-sm text-slate-900 outline-none focus:border-green-500 focus:ring-2 focus:ring-green-500/20 focus:bg-white transition-all"/>
+                </div>
+              </div>
+              <div>
+                <label class="mb-2 block text-[10px] font-bold uppercase tracking-[0.15em] text-slate-500">Territory</label>
+                <select id="profileTerritory" class="h-12 w-full rounded-xl border border-slate-200 bg-slate-50 px-4 text-sm text-slate-900 outline-none focus:border-green-500 focus:ring-2 focus:ring-green-500/20 focus:bg-white transition-all">
+                  {territories?.map((t) => <option value={t.name}>{t.name}</option>)}
+                </select>
+              </div>
+              <div class="pt-2 border-t border-slate-100">
+                <label class="mb-2 block text-[10px] font-bold uppercase tracking-[0.15em] text-slate-500">Login Email</label>
+                <input id="profileEmail" type="email" disabled class="h-12 w-full rounded-xl border border-slate-200 bg-slate-100 px-4 text-sm text-slate-500 outline-none cursor-not-allowed"/>
+                <p class="mt-1.5 text-[10px] text-slate-400">Contact the administrator to change your login email.</p>
+              </div>
+              <button id="saveProfileBtn" class="h-12 w-full rounded-xl bg-green-500 text-sm font-bold text-white hover:bg-green-600 transition-all active:scale-[0.98] shadow-[0_8px_24px_-6px_rgba(34,197,94,0.4)]">Save Changes</button>
+              <p id="profileMsg" class="text-[11px]"></p>
+            </div>
+          </div>
+
+          <!-- PUBLIC PROFILE CARD -->
+          <div class="relative overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-soft">
+            <div class="absolute inset-x-0 top-0 h-1 bg-gradient-to-r from-blue-500 via-indigo-400 to-blue-500"></div>
+            <div class="p-6 sm:p-8 space-y-5">
+              <div class="pb-2">
+                <span class="text-[10px] font-mono font-bold uppercase tracking-[0.2em] text-blue-700">// Public Profile</span>
+                <h2 class="mt-1 text-xl font-bold text-slate-900">Your Public Page</h2>
+                <p class="mt-1 text-xs text-slate-500">Customers searching for tree service in your area can find and review you here. Toggle visibility when ready.</p>
+              </div>
+
+              <!-- is_public toggle -->
+              <div class="flex items-center justify-between rounded-xl border border-slate-200 bg-slate-50 p-4">
+                <div>
+                  <p class="text-sm font-bold text-slate-900">Profile visibility</p>
+                  <p class="text-xs text-slate-500 mt-0.5">Show your profile in the contractor directory</p>
+                </div>
+                <label class="relative inline-flex items-center cursor-pointer">
+                  <input type="checkbox" id="profileIsPublic" class="sr-only peer" />
+                  <div class="w-11 h-6 bg-slate-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600"></div>
+                </label>
+              </div>
+
+              <div>
+                <label class="mb-2 block text-[10px] font-bold uppercase tracking-[0.15em] text-slate-500">About your company</label>
+                <textarea id="profileBio" rows={4} maxlength="2000" placeholder="Describe your services, experience, coverage area…" class="w-full rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm text-slate-900 outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 focus:bg-white resize-none transition-all"></textarea>
+              </div>
+
+              <div class="grid gap-4 sm:grid-cols-2">
+                <div>
+                  <label class="mb-2 block text-[10px] font-bold uppercase tracking-[0.15em] text-slate-500">Company website</label>
+                  <input id="profileWebsite" type="url" placeholder="https://yourcompany.com" class="h-12 w-full rounded-xl border border-slate-200 bg-slate-50 px-4 text-sm text-slate-900 outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 focus:bg-white transition-all"/>
+                </div>
+                <div>
+                  <label class="mb-2 block text-[10px] font-bold uppercase tracking-[0.15em] text-slate-500">License number</label>
+                  <input id="profileLicense" type="text" placeholder="FL-XXXX" class="h-12 w-full rounded-xl border border-slate-200 bg-slate-50 px-4 text-sm text-slate-900 outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 focus:bg-white transition-all"/>
+                </div>
+              </div>
+
+              <div>
+                <label class="mb-3 block text-[10px] font-bold uppercase tracking-[0.15em] text-slate-500">Services offered</label>
+                <div id="servicesCheckboxes" class="flex flex-wrap gap-2">
+                  {["Tree Removal","Tree Trimming","Stump Grinding","Emergency Service","Land Clearing","Debris Removal","Crane Service"].map((s) => (
+                    <label class="service-label flex items-center gap-2 rounded-xl border border-slate-200 bg-slate-50 px-3 py-2 text-xs font-medium text-slate-700 cursor-pointer hover:border-blue-300 hover:bg-blue-50 transition-colors has-[:checked]:border-blue-400 has-[:checked]:bg-blue-50 has-[:checked]:text-blue-700">
+                      <input type="checkbox" class="service-checkbox sr-only" value={s} />
+                      {s}
+                    </label>
+                  ))}
+                </div>
+              </div>
+
+              <div class="flex flex-col sm:flex-row gap-3 pt-2">
+                <button id="savePublicProfileBtn" class="h-12 flex-1 rounded-xl bg-blue-600 text-sm font-bold text-white hover:bg-blue-700 transition-all active:scale-[0.98]">Save Public Profile</button>
+                <a id="viewPublicProfileLink" href="#" target="_blank" class="hidden h-12 items-center justify-center rounded-xl border border-blue-200 px-6 text-sm font-bold text-blue-700 hover:bg-blue-50 transition-all">View profile →</a>
+              </div>
+              <p id="publicProfileMsg" class="text-[11px]"></p>
+            </div>
+          </div>
+
+          <!-- MY REVIEWS CARD -->
+          <div class="relative overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-soft">
+            <div class="p-6 sm:p-8">
+              <span class="text-[10px] font-mono font-bold uppercase tracking-[0.2em] text-amber-700">// Customer Feedback</span>
+              <h2 class="mt-1 text-xl font-bold text-slate-900">Your Reviews</h2>
+              <p class="mt-1 text-xs text-slate-500">Reviews left by customers. Pending reviews are waiting for admin approval.</p>
+              <div id="myReviewsList" class="mt-5 space-y-4">
+                <p class="text-xs text-slate-400 italic">Loading reviews…</p>
               </div>
             </div>
-            <div>
-              <label class="mb-2 block text-[10px] font-bold uppercase tracking-[0.15em] text-slate-500">Territory</label>
-              <select id="profileTerritory" class="h-12 w-full rounded-xl border border-slate-200 bg-slate-50 px-4 text-sm text-slate-900 outline-none focus:border-green-500 focus:ring-2 focus:ring-green-500/20 focus:bg-white transition-all">
-                {territories?.map((t) => <option value={t.name}>{t.name}</option>)}
-              </select>
-            </div>
-            <div class="pt-2 border-t border-slate-100">
-              <label class="mb-2 block text-[10px] font-bold uppercase tracking-[0.15em] text-slate-500">Login Email</label>
-              <input id="profileEmail" type="email" disabled class="h-12 w-full rounded-xl border border-slate-200 bg-slate-100 px-4 text-sm text-slate-500 outline-none cursor-not-allowed"/>
-              <p class="mt-1.5 text-[10px] text-slate-400">Contact the administrator to change your login email.</p>
-            </div>
-            <button id="saveProfileBtn" class="h-12 w-full rounded-xl bg-green-500 text-sm font-bold text-white hover:bg-green-600 transition-all active:scale-[0.98] shadow-[0_8px_24px_-6px_rgba(34,197,94,0.4)]">Save Changes</button>
-            <p id="profileMsg" class="text-[11px]"></p>
           </div>
         </div>
 
@@ -181,6 +253,20 @@ const navItems = [
           <div class="rounded-2xl border border-green-200 bg-green-50 p-5">
             <p class="text-[10px] font-bold uppercase tracking-[0.15em] text-green-700 mb-2">💡 Tip</p>
             <p class="text-xs text-green-800 leading-relaxed">Leads are matched automatically by territory — the more accurate this setting, the faster you'll see new requests.</p>
+          </div>
+
+          <!-- Public profile toggle (sidebar) -->
+          <div id="publicProfileToggleCard" class="hidden rounded-2xl border border-blue-200 bg-gradient-to-br from-white to-blue-50/40 p-5">
+            <div class="flex items-center justify-between mb-2">
+              <p class="text-[10px] font-bold uppercase tracking-[0.15em] text-blue-700">🌐 Public profile</p>
+              <label class="relative inline-flex items-center cursor-pointer">
+                <input type="checkbox" id="sidebarIsPublicToggle" class="sr-only peer" />
+                <div class="w-11 h-6 bg-slate-200 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600"></div>
+              </label>
+            </div>
+            <p id="sidebarPublicStatus" class="text-xs text-slate-500 leading-relaxed">Uključi da se tvoj profil pojavi u direktorijumu.</p>
+            <a id="sidebarProfileLink" href="#" target="_blank" class="hidden mt-3 text-[10px] font-bold text-blue-700 hover:text-blue-900">Pogledaj profil →</a>
+            <p id="sidebarPublicMsg" class="text-[10px] mt-1"></p>
           </div>
         </aside>
 
@@ -635,6 +721,177 @@ const navItems = [
       }
       btn.disabled = false;
     });
+
+    // --- PUBLIC PROFILE ---
+    // Dohvati trenutne public profile podatke
+    const { data: publicData } = await supabase
+      .from('contractors')
+      .select('bio, website, license_number, services_offered, is_public, slug')
+      .eq('id', contractor.id)
+      .maybeSingle();
+
+    if (publicData) {
+      (document.getElementById('profileBio') as HTMLTextAreaElement).value = publicData.bio || '';
+      (document.getElementById('profileWebsite') as HTMLInputElement).value = publicData.website || '';
+      (document.getElementById('profileLicense') as HTMLInputElement).value = publicData.license_number || '';
+      (document.getElementById('profileIsPublic') as HTMLInputElement).checked = !!publicData.is_public;
+
+      // Services checkboxes
+      const services: string[] = publicData.services_offered || [];
+      document.querySelectorAll<HTMLInputElement>('.service-checkbox').forEach((cb) => {
+        cb.checked = services.includes(cb.value);
+      });
+
+      // View profile link
+      if (publicData.slug) {
+        const viewLink = document.getElementById('viewPublicProfileLink') as HTMLAnchorElement;
+        if (viewLink) {
+          viewLink.href = `/contractors/${publicData.slug}`;
+          viewLink.classList.remove('hidden');
+          viewLink.classList.add('flex');
+        }
+      }
+    }
+
+    document.getElementById('savePublicProfileBtn')?.addEventListener('click', async () => {
+      const msg = document.getElementById('publicProfileMsg')!;
+      const btn = document.getElementById('savePublicProfileBtn') as HTMLButtonElement;
+      btn.disabled = true;
+      btn.textContent = 'Saving...';
+      msg.textContent = '';
+
+      const services_offered = Array.from(
+        document.querySelectorAll<HTMLInputElement>('.service-checkbox:checked')
+      ).map((cb) => cb.value);
+
+      try {
+        const res = await fetch('/api/update-public-profile', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            bio: (document.getElementById('profileBio') as HTMLTextAreaElement).value,
+            website: (document.getElementById('profileWebsite') as HTMLInputElement).value,
+            license_number: (document.getElementById('profileLicense') as HTMLInputElement).value,
+            services_offered,
+            is_public: (document.getElementById('profileIsPublic') as HTMLInputElement).checked,
+          }),
+        });
+        const data = await res.json();
+        if (!res.ok) throw new Error(data.message || 'Update failed');
+
+        msg.textContent = '✅ Public profile saved.';
+        msg.className = 'text-[11px] text-green-700';
+
+        // Show / update the view link
+        if (data.slug) {
+          const viewLink = document.getElementById('viewPublicProfileLink') as HTMLAnchorElement;
+          if (viewLink) {
+            viewLink.href = `/contractors/${data.slug}`;
+            viewLink.classList.remove('hidden');
+            viewLink.classList.add('flex');
+          }
+        }
+      } catch (err) {
+        msg.textContent = '❌ ' + (err as Error).message;
+        msg.className = 'text-[11px] text-red-600';
+      } finally {
+        btn.disabled = false;
+        btn.textContent = 'Save Public Profile';
+      }
+    });
+
+    // --- MY REVIEWS ---
+    async function loadMyReviews() {
+      const { data: reviews } = await supabase
+        .from('contractor_reviews')
+        .select('id, rating, body, reviewer_name, status, created_at')
+        .eq('contractor_id', contractor.id)
+        .order('created_at', { ascending: false })
+        .limit(30);
+
+      const container = document.getElementById('myReviewsList')!;
+      if (!reviews || reviews.length === 0) {
+        container.innerHTML = '<p class="text-xs text-slate-400 italic">No reviews yet. Share your public profile link with customers to collect feedback.</p>';
+        return;
+      }
+
+      const statusBadge = (s: string) => {
+        if (s === 'approved') return '<span class="rounded-full bg-green-50 border border-green-200 text-green-700 text-[9px] font-bold uppercase px-2 py-0.5">Approved</span>';
+        if (s === 'rejected') return '<span class="rounded-full bg-red-50 border border-red-200 text-red-700 text-[9px] font-bold uppercase px-2 py-0.5">Rejected</span>';
+        return '<span class="rounded-full bg-amber-50 border border-amber-200 text-amber-700 text-[9px] font-bold uppercase px-2 py-0.5">Pending</span>';
+      };
+
+      const starsHtml = (r: number) => Array.from({ length: 5 }, (_, i) =>
+        `<span class="${i < r ? 'text-amber-400' : 'text-slate-300'}">★</span>`
+      ).join('');
+
+      container.innerHTML = reviews.map((r: any) => `
+        <div class="rounded-xl border border-slate-200 bg-slate-50 p-4">
+          <div class="flex items-center justify-between gap-2 flex-wrap">
+            <div class="flex items-center gap-1 text-base">${starsHtml(r.rating)}</div>
+            <div class="flex items-center gap-2">
+              ${statusBadge(r.status)}
+              <span class="text-[10px] text-slate-400">${new Date(r.created_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}</span>
+            </div>
+          </div>
+          ${r.reviewer_name ? `<p class="mt-1.5 text-xs font-bold text-slate-700">${r.reviewer_name}</p>` : ''}
+          ${r.body ? `<p class="mt-2 text-xs leading-5 text-slate-600">${r.body}</p>` : ''}
+        </div>
+      `).join('');
+    }
+    loadMyReviews();
+
+    // --- SIDEBAR PUBLIC TOGGLE ---
+    if (publicData) {
+      const card = document.getElementById('publicProfileToggleCard')!;
+      const toggle = document.getElementById('sidebarIsPublicToggle') as HTMLInputElement;
+      const status = document.getElementById('sidebarPublicStatus')!;
+      const link = document.getElementById('sidebarProfileLink') as HTMLAnchorElement;
+      const msg = document.getElementById('sidebarPublicMsg')!;
+
+      card.classList.remove('hidden');
+      toggle.checked = !!publicData.is_public;
+
+      function updateSidebarStatus(isPublic: boolean) {
+        status.textContent = isPublic
+          ? 'Profil je vidljiv u direktorijumu kontraktora.'
+          : 'Profil je skriven. Uključi da bude vidljiv.';
+        if (publicData?.slug) {
+          link.href = `/contractors/${publicData.slug}`;
+          link.classList.toggle('hidden', !isPublic);
+        }
+      }
+      updateSidebarStatus(!!publicData.is_public);
+
+      toggle.addEventListener('change', async () => {
+        const isPublic = toggle.checked;
+        msg.textContent = 'Saving…';
+        const res = await fetch('/api/update-public-profile', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ is_public: isPublic }),
+        });
+        const data = await res.json();
+        if (res.ok) {
+          updateSidebarStatus(isPublic);
+          // Sync with the main profile toggle too
+          const mainToggle = document.getElementById('profileIsPublic') as HTMLInputElement;
+          if (mainToggle) mainToggle.checked = isPublic;
+          msg.textContent = isPublic ? '✅ Profil je sada javan' : '✅ Profil sakriven';
+          msg.className = 'text-[10px] text-green-700';
+          if (data.slug) {
+            link.href = `/contractors/${data.slug}`;
+            const mainLink = document.getElementById('viewPublicProfileLink') as HTMLAnchorElement;
+            if (mainLink) { mainLink.href = `/contractors/${data.slug}`; mainLink.classList.remove('hidden'); mainLink.classList.add('flex'); }
+          }
+        } else {
+          toggle.checked = !isPublic;
+          msg.textContent = '❌ Greška pri čuvanju';
+          msg.className = 'text-[10px] text-red-600';
+        }
+        setTimeout(() => { msg.textContent = ''; }, 3000);
+      });
+    }
 
     show('stateActive');
     goToTab('available');
