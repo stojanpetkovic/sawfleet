@@ -1,0 +1,137 @@
+---
+import MainLayout from "../../layouts/MainLayout.astro";
+import Header from "../../components/layout/Header.astro";
+import Footer from "../../components/layout/Footer.astro";
+import { MapPin, ArrowRight } from "lucide-astro";
+
+const cities = [
+  { slug: "miami", name: "Miami", county: "Miami-Dade County" },
+  { slug: "fort-lauderdale", name: "Fort Lauderdale", county: "Broward County" },
+  { slug: "west-palm-beach", name: "West Palm Beach", county: "Palm Beach County" },
+  { slug: "coral-springs", name: "Coral Springs", county: "Broward County" },
+  { slug: "plantation", name: "Plantation", county: "Broward County" },
+  { slug: "pompano-beach", name: "Pompano Beach", county: "Broward County" },
+  { slug: "deerfield-beach", name: "Deerfield Beach", county: "Broward County" },
+  { slug: "boca-raton", name: "Boca Raton", county: "Palm Beach County" },
+  { slug: "hollywood", name: "Hollywood", county: "Broward County" },
+  { slug: "delray-beach", name: "Delray Beach", county: "Palm Beach County" },
+];
+---
+
+<MainLayout
+  title="Tree Removal Services by City | SF Tree Removal"
+  description="Find professional tree removal services in Miami, Fort Lauderdale, West Palm Beach, and throughout South Florida.">
+  <Header />
+
+  <main class="bg-white">
+    <!-- ============================================== -->
+    <!-- HERO SEKCIJA -->
+    <!-- ============================================== -->
+    <section class="py-16 lg:py-24 px-4 sm:px-8 bg-gradient-to-b from-slate-900 to-slate-800">
+      <div class="mx-auto max-w-4xl text-center">
+        <h1 class="text-4xl lg:text-5xl font-black text-white tracking-tighter mb-6">
+          Professional Tree Removal Services Across South Florida
+        </h1>
+        <p class="text-lg text-slate-200 mb-8">
+          Licensed, insured contractors serving Miami-Dade, Broward, and Palm Beach counties. Get your free estimate today.
+        </p>
+      </div>
+    </section>
+
+    <!-- ============================================== -->
+    <!-- CITIES GRID -->
+    <!-- ============================================== -->
+    <section class="py-16 lg:py-24 px-4 sm:px-8">
+      <div class="mx-auto max-w-5xl">
+        <h2 class="text-3xl font-bold text-slate-900 mb-12">Select Your City</h2>
+        
+        <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
+          {cities.map((city) => (
+            <a
+              href={`/tree-removal/${city.slug}`}
+              class="group relative rounded-2xl border border-slate-200 bg-white p-6 hover:border-green-300 hover:shadow-lg transition-all duration-300"
+            >
+              <div class="flex items-start justify-between mb-3">
+                <div>
+                  <h3 class="text-lg font-bold text-slate-900 group-hover:text-green-600 transition-colors">
+                    {city.name}
+                  </h3>
+                  <p class="text-xs text-slate-500 mt-1 flex items-center gap-1">
+                    <MapPin size={14} />
+                    {city.county}
+                  </p>
+                </div>
+                <ArrowRight size={20} class="text-slate-300 group-hover:text-green-600 group-hover:translate-x-1 transition-all" />
+              </div>
+              <p class="text-sm text-slate-600">
+                Tree removal, trimming & stump grinding in {city.name}. Free estimates available.
+              </p>
+            </a>
+          ))}
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================== -->
+    <!-- WHY CHOOSE US -->
+    <!-- ============================================== -->
+    <section class="py-16 lg:py-24 px-4 sm:px-8 bg-slate-50">
+      <div class="mx-auto max-w-4xl">
+        <h2 class="text-3xl font-bold text-center text-slate-900 mb-12">
+          Why SF Tree Removal?
+        </h2>
+        
+        <div class="grid md:grid-cols-2 gap-8">
+          <div>
+            <h3 class="font-bold text-lg text-slate-900 mb-3">✓ Licensed & Insured</h3>
+            <p class="text-slate-600">All contractors are fully licensed, certified, and insured for your protection.</p>
+          </div>
+          <div>
+            <h3 class="font-bold text-lg text-slate-900 mb-3">✓ 24/7 Emergency Service</h3>
+            <p class="text-slate-600">Fallen trees? We respond immediately to emergency situations day or night.</p>
+          </div>
+          <div>
+            <h3 class="font-bold text-lg text-slate-900 mb-3">✓ Free Estimates</h3>
+            <p class="text-slate-600">No hidden fees. We provide upfront, transparent pricing for all projects.</p>
+          </div>
+          <div>
+            <h3 class="font-bold text-lg text-slate-900 mb-3">✓ Expert Professionals</h3>
+            <p class="text-slate-600">Years of experience in residential and commercial tree care.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================== -->
+    <!-- SERVICE AREAS MAP TEXT -->
+    <!-- ============================================== -->
+    <section class="py-16 lg:py-24 px-4 sm:px-8">
+      <div class="mx-auto max-w-3xl">
+        <h2 class="text-3xl font-bold text-slate-900 mb-8">Serving All of South Florida</h2>
+        
+        <div class="space-y-6 text-slate-700 leading-relaxed">
+          <p>
+            SF Tree Removal is your trusted partner for professional tree services throughout South Florida. We serve Miami-Dade County, Broward County, and Palm Beach County with licensed, insured contractors ready to handle any tree removal, trimming, or stump grinding project.
+          </p>
+          
+          <p>
+            Whether you need emergency tree removal, routine maintenance trimming, or complete stump grinding, our experienced team is here to help. We understand the unique challenges of Florida's climate and landscape, and we're equipped to handle everything from small residential projects to large commercial jobs.
+          </p>
+
+          <p>
+            <strong>Same-day estimates available.</strong> We offer free consultations and transparent pricing with no hidden fees. Our goal is to provide reliable, professional tree services that you can trust.
+          </p>
+
+          <div class="mt-8 p-6 rounded-xl bg-green-50 border border-green-200">
+            <p class="font-bold text-green-900 mb-2">Ready to get started?</p>
+            <p class="text-sm text-green-800">
+              Select your city above or <a href="/" class="font-bold hover:underline">submit a request on our main page</a> to schedule your free estimate.
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <Footer />
+</MainLayout>
