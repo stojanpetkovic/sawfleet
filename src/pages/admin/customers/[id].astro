@@ -1,0 +1,234 @@
+---
+export const prerender = false;
+import AdminLayout from "../../../layouts/AdminLayout.astro";
+import { supabaseAdmin } from "../../../lib/supabaseAdmin";
+import { supabase } from "../../../lib/supabase";
+import { Mail, Phone, MapPin, Calendar, Clock, Send, Plus, CheckCircle2 } from "lucide-astro";
+
+const db = supabaseAdmin ?? supabase;
+
+const { id } = Astro.params;
+
+// Fetch customer
+const { data: customer } = await db
+  .from("customers")
+  .select("*")
+  .eq("id", id)
+  .maybeSingle();
+
+if (!customer) return Astro.redirect("/admin/customers");
+
+// Fetch customer's leads
+const { data: leads } = await db
+  .from("leads")
+  .select("id, county, details, status, created_at, claimed_at, phone, email, contractor_id")
+  .eq("customer_id", id)
+  .order("created_at", { ascending: false });
+
+// Fetch follow-ups
+const { data: followups } = await db
+  .from("customer_followups")
+  .select("id, type, subject, scheduled_for, status, sent_at")
+  .eq("customer_id", id)
+  .order("scheduled_for", { ascending: false });
+---
+
+<AdminLayout>
+  <div class="dash-shell flex-1"><div class="dash-scroll">
+    <div class="w-full grid grid-cols-1 xl:grid-cols-12 gap-8">
+      <!-- Main content -->
+      <div class="xl:col-span-8 space-y-6">
+        <!-- Header -->
+        <div class="flex items-center gap-3">
+          <a href="/admin/customers" class="inline-flex items-center gap-2 px-3 py-2 rounded-lg border border-zinc-200 text-[11px] font-bold uppercase tracking-wider text-zinc-600 hover:bg-zinc-50">← Back</a>
+          <div>
+            <span class="dash-eyebrow text-blue-700">// Customer</span>
+            <h1 class="mt-1.5 text-2xl font-bold text-slate-950 tracking-tight">{customer.full_name || customer.email}</h1>
+            <p class="text-[10px] font-mono text-slate-400 mt-1 uppercase">ID: {customer.id.split('-')[0]}</p>
+          </div>
+        </div>
+
+        <!-- Customer info card -->
+        <div class="bg-white border border-zinc-100 p-8 rounded-xl shadow-sm">
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+            <div>
+              <p class="text-[9px] uppercase tracking-[0.2em] text-zinc-400">Email</p>
+              <a href={`mailto:${customer.email}`} class="text-slate-900 font-mono mt-1 text-lg block hover:text-blue-700 transition-colors break-all">{customer.email}</a>
+            </div>
+            <div>
+              <p class="text-[9px] uppercase tracking-[0.2em] text-zinc-400">Full name</p>
+              <p class="text-slate-900 font-mono mt-1 text-lg">{customer.full_name || 'N/A'}</p>
+            </div>
+            <div>
+              <p class="text-[9px] uppercase tracking-[0.2em] text-zinc-400">Phone</p>
+              {customer.phone ? (
+                <a href={`tel:${customer.phone}`} class="text-slate-900 font-mono mt-1 text-lg block hover:text-green-700 transition-colors">{customer.phone}</a>
+              ) : (
+                <p class="text-slate-900 font-mono mt-1 text-lg">N/A</p>
+              )}
+            </div>
+            <div>
+              <p class="text-[9px] uppercase tracking-[0.2em] text-zinc-400">Customer since</p>
+              <p class="text-slate-900 font-mono mt-1 text-lg">{new Date(customer.created_at).toLocaleDateString()}</p>
+            </div>
+            <div>
+              <p class="text-[9px] uppercase tracking-[0.2em] text-zinc-400">Last seen</p>
+              <p class="text-slate-900 font-mono mt-1 text-lg">
+                {customer.last_seen_at 
+                  ? new Date(customer.last_seen_at).toLocaleDateString() + ' ' + new Date(customer.last_seen_at).toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'})
+                  : 'Never'}
+              </p>
+            </div>
+            <div>
+              <p class="text-[9px] uppercase tracking-[0.2em] text-zinc-400">Total requests</p>
+              <p class="text-slate-900 font-mono mt-1 text-lg font-bold">{leads?.length || 0}</p>
+            </div>
+          </div>
+
+          {customer.notes && (
+            <div class="mt-6 pt-6 border-t border-zinc-100">
+              <p class="text-[9px] uppercase tracking-[0.2em] text-zinc-400">Admin notes</p>
+              <p class="text-slate-600 mt-2 text-sm italic">{customer.notes}</p>
+            </div>
+          )}
+        </div>
+
+        <!-- Service requests -->
+        <div class="bg-white border border-zinc-100 rounded-2xl overflow-hidden">
+          <div class="p-5 border-b border-zinc-100">
+            <h3 class="text-[10px] font-bold uppercase tracking-[0.2em] text-slate-900">Service requests ({leads?.length || 0})</h3>
+          </div>
+          <div class="p-3 space-y-2">
+            {leads && leads.length > 0 ? leads.map((lead: any) => (
+              <div class="lead-row flex items-center gap-3 p-3 rounded-xl hover:bg-zinc-100/40 transition-colors cursor-pointer" onclick={`window.location.href='/admin/leads/${lead.id}'`}>
+                <div class="w-9 h-9 rounded-full bg-blue-100 border border-blue-200 flex items-center justify-center shrink-0 text-[10px] font-bold text-blue-700">
+                  {(lead.county || '?').charAt(0).toUpperCase()}
+                </div>
+                <div class="min-w-0 flex-1">
+                  <p class="text-[13px] font-bold text-slate-900">{lead.county || 'No county'}</p>
+                  <p class="text-[10px] text-zinc-500 font-mono mt-0.5">{new Date(lead.created_at).toLocaleDateString()} · {lead.status}</p>
+                </div>
+                <div class="flex items-center gap-1.5 shrink-0">
+                  {lead.status === 'claimed' && <span class="px-2.5 py-1 rounded-full text-[9px] font-bold uppercase border bg-blue-500/10 text-blue-600 border-blue-500/20">Claimed</span>}
+                  {lead.status === 'completed' && <span class="px-2.5 py-1 rounded-full text-[9px] font-bold uppercase border bg-green-500/10 text-green-600 border-green-500/20">✓ Done</span>}
+                </div>
+              </div>
+            )) : (
+              <div class="p-8 text-center text-zinc-400 text-sm">No requests yet.</div>
+            )}
+          </div>
+        </div>
+
+        <!-- Follow-ups -->
+        <div class="bg-white border border-zinc-100 rounded-2xl overflow-hidden">
+          <div class="p-5 border-b border-zinc-100 flex items-center justify-between">
+            <h3 class="text-[10px] font-bold uppercase tracking-[0.2em] text-slate-900">Follow-up reminders ({followups?.length || 0})</h3>
+            <button id="newFollowupBtn" class="h-8 px-3 rounded-lg bg-blue-50 border border-blue-200 text-[10px] font-bold text-blue-700 hover:bg-blue-100 transition-colors inline-flex items-center gap-1.5">
+              <Plus size={12} /> Schedule
+            </button>
+          </div>
+          <div class="p-3 space-y-2">
+            {followups && followups.length > 0 ? followups.map((fup: any) => (
+              <div class="flex items-center gap-3 p-3 rounded-xl border border-zinc-100 hover:bg-zinc-50/50 transition-colors">
+                <div class="w-9 h-9 rounded-full flex items-center justify-center shrink-0 text-[13px] font-bold"
+                  style={{background: fup.status === 'sent' ? '#dcfce7' : fup.status === 'pending' ? '#fef3c7' : '#f3f4f6', color: fup.status === 'sent' ? '#15803d' : fup.status === 'pending' ? '#b45309' : '#6b7280'}}>
+                  {fup.status === 'sent' ? '✓' : '⏱'}
+                </div>
+                <div class="min-w-0 flex-1">
+                  <p class="text-[12px] font-bold text-slate-900">{fup.subject || 'Annual reminder'}</p>
+                  <p class="text-[10px] text-zinc-500 mt-0.5">
+                    {fup.status === 'sent' 
+                      ? `Sent ${new Date(fup.sent_at).toLocaleDateString()}`
+                      : `Scheduled for ${new Date(fup.scheduled_for).toLocaleDateString()}`}
+                  </p>
+                </div>
+                <span class={`px-2.5 py-1 rounded-full text-[9px] font-bold uppercase border
+                  ${fup.status === 'sent' ? 'bg-green-500/10 text-green-600 border-green-500/20' : 
+                    fup.status === 'pending' ? 'bg-amber-500/10 text-amber-600 border-amber-500/20' : 
+                    'bg-zinc-100 text-zinc-600 border-zinc-200'}`}>
+                  {fup.status}
+                </span>
+              </div>
+            )) : (
+              <div class="p-8 text-center text-zinc-400 text-sm">No follow-ups scheduled yet.</div>
+            )}
+          </div>
+        </div>
+      </div>
+
+      <!-- Sidebar: Quick actions -->
+      <div class="xl:col-span-4 space-y-5">
+        <!-- Contact options -->
+        <div class="bg-white border border-zinc-100 rounded-2xl p-6">
+          <h3 class="text-[10px] font-bold uppercase tracking-[0.2em] text-slate-900 mb-3">Contact</h3>
+          <div class="space-y-2">
+            {customer.email && (
+              <a href={`mailto:${customer.email}`} class="h-10 flex items-center gap-2 px-4 rounded-lg border border-zinc-200 text-[10px] font-bold text-zinc-700 hover:bg-zinc-50 transition-colors">
+                <Mail size={13} /> Email
+              </a>
+            )}
+            {customer.phone && (
+              <a href={`tel:${customer.phone}`} class="h-10 flex items-center gap-2 px-4 rounded-lg border border-green-200 bg-green-50/50 text-[10px] font-bold text-green-700 hover:bg-green-50 transition-colors">
+                <Phone size={13} /> Call
+              </a>
+            )}
+          </div>
+        </div>
+      </div>
+    </div>
+  </div></div>
+</AdminLayout>
+
+<!-- Modal: Schedule follow-up -->
+<div id="followupModal" class="hidden fixed inset-0 bg-slate-900/40 backdrop-blur-sm z-[200] flex items-center justify-center p-4">
+  <div class="bg-white border border-zinc-200 p-8 rounded-xl max-w-md w-full shadow-2xl">
+    <h2 class="text-slate-900 font-bold mb-6">Schedule follow-up reminder</h2>
+    <form id="followupForm" class="space-y-4">
+      <div>
+        <label class="text-[9px] uppercase tracking-[0.2em] text-zinc-500 ml-1">Subject (optional)</label>
+        <input id="fupSubject" type="text" placeholder="e.g., Annual trim check" class="mt-1 w-full bg-zinc-100 border border-zinc-200 p-3 rounded text-slate-900" />
+      </div>
+      <div>
+        <label class="text-[9px] uppercase tracking-[0.2em] text-zinc-500 ml-1">Months from now</label>
+        <input id="fupMonths" type="number" value="12" min="1" max="36" class="mt-1 w-full bg-zinc-100 border border-zinc-200 p-3 rounded text-slate-900" />
+      </div>
+      <div class="flex gap-4 mt-8 pt-4 border-t border-zinc-100/50">
+        <button type="button" id="closeFollowupModal" class="flex-1 bg-zinc-200 p-3 rounded text-slate-900 font-bold text-[10px] uppercase tracking-wider hover:bg-zinc-300 transition-colors">Cancel</button>
+        <button type="submit" class="flex-1 bg-blue-500 p-3 rounded text-white font-bold text-[10px] uppercase tracking-wider hover:bg-blue-600 transition-colors">Schedule</button>
+      </div>
+      <p id="fupMsg" class="text-[11px]"></p>
+    </form>
+  </div>
+</div>
+
+<script>
+  const customerId = window.location.pathname.split('/').pop();
+  const modal = document.getElementById('followupModal')!;
+  const form = document.getElementById('followupForm') as HTMLFormElement;
+  const msg = document.getElementById('fupMsg')!;
+
+  document.getElementById('newFollowupBtn')?.addEventListener('click', () => modal.classList.remove('hidden'));
+  document.getElementById('closeFollowupModal')?.addEventListener('click', () => modal.classList.add('hidden'));
+
+  form?.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const subject = (document.getElementById('fupSubject') as HTMLInputElement).value.trim() || null;
+    const months = parseInt((document.getElementById('fupMonths') as HTMLInputElement).value) || 12;
+
+    msg.textContent = 'Scheduling…';
+    const res = await fetch('/api/customer-followup', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ customerId, monthsFromNow: months, subject }),
+    });
+
+    if (res.ok) {
+      msg.textContent = '✅ Scheduled successfully';
+      msg.className = 'text-[11px] text-green-700';
+      setTimeout(() => window.location.reload(), 1000);
+    } else {
+      msg.textContent = '❌ Failed to schedule';
+      msg.className = 'text-[11px] text-red-600';
+    }
+  });
+</script>

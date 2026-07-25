@@ -1,0 +1,335 @@
+---
+export const prerender = false;
+import MainLayout from "../layouts/MainLayout.astro";
+import Header from "../components/layout/Header.astro";
+import MobileNav from "../components/layout/MobileNav.astro";
+import Footer from "../components/layout/Footer.astro";
+import { supabase } from "../lib/supabase";
+import { supabaseAdmin } from "../lib/supabaseAdmin";
+import { ClipboardList, Clock, CheckCircle2, MapPin, Phone, Mail, ArrowRight, LogOut, Bell } from "lucide-astro";
+
+// Check existing session
+const { data: { session } } = await supabase.auth.getSession();
+
+let customer: any = null;
+let leads: any[] = [];
+let followups: any[] = [];
+
+if (session) {
+  const db = supabaseAdmin ?? supabase;
+
+  // Get customer record
+  const { data: cust } = await db
+    .from("customers")
+    .select("*")
+    .eq("user_id", session.user.id)
+    .maybeSingle();
+
+  if (cust) {
+    customer = cust;
+
+    // Get their leads (by customer_id OR by email match)
+    const { data: leadsData } = await db
+      .from("leads")
+      .select("id, county, details, status, created_at, claimed_at, phone, email")
+      .or(`customer_id.eq.${cust.id},email.eq.${cust.email}`)
+      .order("created_at", { ascending: false })
+      .limit(20);
+
+    leads = leadsData || [];
+
+    // Get pending follow-ups
+    const { data: fups } = await db
+      .from("customer_followups")
+      .select("id, type, scheduled_for, status, subject")
+      .eq("customer_id", cust.id)
+      .eq("status", "pending")
+      .order("scheduled_for", { ascending: true })
+      .limit(5);
+
+    followups = fups || [];
+
+    // Update last_seen_at
+    await db
+      .from("customers")
+      .update({ last_seen_at: new Date().toISOString() })
+      .eq("id", cust.id);
+  }
+}
+
+function statusLabel(status: string) {
+  if (status === "claimed") return { text: "In progress", cls: "bg-blue-50 border-blue-200 text-blue-700" };
+  if (status === "completed") return { text: "Completed", cls: "bg-green-50 border-green-200 text-green-700" };
+  return { text: "Pending", cls: "bg-amber-50 border-amber-200 text-amber-700" };
+}
+---
+
+<MainLayout
+  title="My Account | SF Tree Removal"
+  description="Track your tree service requests, view job history, and manage your account."
+>
+  <Header />
+  <MobileNav />
+
+  <main class="min-h-screen bg-slate-50 pt-28 pb-24 md:pt-36">
+    <div class="mx-auto w-full max-w-4xl px-5 md:px-8">
+
+      {!session ? (
+        <div class="max-w-md mx-auto">
+          <div class="text-center mb-10">
+            <span class="text-[10px] font-mono font-bold uppercase tracking-[0.22em] text-green-700">// Customer portal</span>
+            <h1 class="mt-3 text-3xl font-bold tracking-tight text-slate-950">Track your requests</h1>
+            <p class="mt-3 text-sm text-slate-500 leading-relaxed">
+              Enter your email to get a secure sign-in link. No password needed.
+            </p>
+          </div>
+
+          <div class="rounded-3xl border border-slate-200 bg-white p-8 shadow-sm">
+            <form id="magicLinkForm" novalidate>
+              <label class="mb-2 block text-[10px] font-bold uppercase tracking-[0.15em] text-slate-500">Your email address</label>
+              <input
+                id="magicEmail"
+                type="email"
+                placeholder="you@example.com"
+                autocomplete="email"
+                class="h-13 w-full rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm text-slate-900 outline-none focus:border-green-500 focus:ring-2 focus:ring-green-500/20 focus:bg-white transition-all"
+                required
+              />
+              <button
+                type="submit"
+                id="magicLinkBtn"
+                class="mt-4 h-12 w-full rounded-xl bg-green-500 text-sm font-bold text-white hover:bg-green-600 transition-all active:scale-[0.98] shadow-[0_8px_24px_-6px_rgba(34,197,94,0.35)]"
+              >
+                Send sign-in link
+              </button>
+              <p id="magicMsg" class="mt-3 text-[11px] text-center"></p>
+            </form>
+
+            <div class="mt-6 pt-6 border-t border-slate-100 text-center">
+              <p class="text-xs text-slate-400">Don't have an account yet?</p>
+              <p class="mt-1 text-xs text-slate-500">Just enter your email — we'll create your account automatically.</p>
+            </div>
+          </div>
+
+          <p class="mt-8 text-center text-xs text-slate-400">
+            Looking to submit a new request?
+            <a href="/#request" class="text-green-700 font-bold hover:underline">Get a free quote →</a>
+          </p>
+        </div>
+      ) : !customer ? (
+        <div class="max-w-md mx-auto text-center py-16">
+          <p class="text-2xl font-bold text-slate-900">Setting up your account…</p>
+          <p class="mt-3 text-sm text-slate-500">We're linking your previous requests. This only takes a moment.</p>
+          <div id="setupSpinner" class="mt-6 flex justify-center">
+            <div class="w-8 h-8 border-2 border-green-200 border-t-green-500 rounded-full animate-spin"></div>
+          </div>
+        </div>
+      ) : (
+        <>
+          <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-8">
+            <div>
+              <span class="text-[10px] font-mono font-bold uppercase tracking-[0.22em] text-green-700">// Customer portal</span>
+              <h1 class="mt-1 text-2xl sm:text-3xl font-bold tracking-tight text-slate-950">
+                {customer.full_name ? `Hi, ${customer.full_name.split(' ')[0]}` : 'My account'}
+              </h1>
+              <p class="mt-1 text-sm text-slate-500">{customer.email}</p>
+            </div>
+            <div class="flex gap-3">
+              <a href="/#request" class="h-10 inline-flex items-center gap-2 px-5 rounded-xl bg-green-500 text-xs font-bold text-white hover:bg-green-600 transition-all">
+                + New request
+              </a>
+              <button id="signOutBtn" class="h-10 inline-flex items-center gap-2 px-4 rounded-xl border border-slate-200 bg-white text-xs font-bold text-slate-600 hover:text-red-600 hover:border-red-200 transition-all">
+                <LogOut size={13} /> Sign out
+              </button>
+            </div>
+          </div>
+
+          <!-- Upcoming follow-ups banner -->
+          {followups.length > 0 && (
+            <div class="mb-6 rounded-2xl border border-amber-200 bg-amber-50 p-4 flex items-start gap-3">
+              <Bell size={18} class="text-amber-600 shrink-0 mt-0.5" />
+              <div>
+                <p class="text-sm font-bold text-amber-800">Upcoming reminder</p>
+                <p class="text-xs text-amber-700 mt-0.5">
+                  {followups[0].subject || "Time for your annual tree service check-up"} —
+                  scheduled for {new Date(followups[0].scheduled_for).toLocaleDateString("en-US", { month: "long", day: "numeric", year: "numeric" })}
+                </p>
+              </div>
+            </div>
+          )}
+
+          <!-- Stats row -->
+          <div class="grid grid-cols-3 gap-4 mb-8">
+            <div class="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm text-center">
+              <p class="text-2xl font-bold text-slate-950">{leads.length}</p>
+              <p class="text-[10px] font-bold uppercase tracking-wider text-slate-400 mt-1">Total requests</p>
+            </div>
+            <div class="rounded-2xl border border-green-200 bg-green-50 p-5 text-center">
+              <p class="text-2xl font-bold text-slate-950">{leads.filter(l => l.status === 'completed').length}</p>
+              <p class="text-[10px] font-bold uppercase tracking-wider text-green-700 mt-1">Completed jobs</p>
+            </div>
+            <div class="rounded-2xl border border-blue-200 bg-blue-50 p-5 text-center">
+              <p class="text-2xl font-bold text-slate-950">{leads.filter(l => l.status === 'claimed').length}</p>
+              <p class="text-[10px] font-bold uppercase tracking-wider text-blue-700 mt-1">In progress</p>
+            </div>
+          </div>
+
+          <!-- Leads list -->
+          <section class="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm md:p-8">
+            <h2 class="text-base font-bold text-slate-950 mb-5">Your service requests</h2>
+
+            {leads.length === 0 ? (
+              <div class="rounded-2xl border border-dashed border-slate-200 p-10 text-center">
+                <p class="text-slate-400 text-sm">No requests yet.</p>
+                <a href="/#request" class="mt-4 inline-flex h-10 items-center gap-2 px-5 rounded-xl bg-green-500 text-xs font-bold text-white hover:bg-green-600">
+                  Submit your first request →
+                </a>
+              </div>
+            ) : (
+              <ul class="space-y-4">
+                {leads.map((lead) => {
+                  const badge = statusLabel(lead.status);
+                  return (
+                    <li class="rounded-2xl border border-slate-200 p-5">
+                      <div class="flex flex-col sm:flex-row sm:items-start gap-3 justify-between">
+                        <div class="flex-1 min-w-0">
+                          <div class="flex flex-wrap items-center gap-2 mb-2">
+                            <span class={`rounded-full border px-2.5 py-1 text-[9px] font-bold uppercase tracking-wide ${badge.cls}`}>{badge.text}</span>
+                            {lead.county && (
+                              <span class="flex items-center gap-1 text-[10px] text-slate-400">
+                                <MapPin size={10} /> {lead.county}
+                              </span>
+                            )}
+                            <span class="text-[10px] text-slate-400">
+                              {new Date(lead.created_at).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" })}
+                            </span>
+                          </div>
+                          {lead.details && (
+                            <p class="text-sm text-slate-600 leading-5 line-clamp-2">{lead.details}</p>
+                          )}
+                          {lead.status === 'claimed' && (
+                            <p class="mt-2 text-xs text-blue-700 font-medium">
+                              ✅ A contractor has been assigned and will contact you shortly.
+                            </p>
+                          )}
+                        </div>
+                        {lead.status !== 'completed' && (
+                          <a href="/#request" class="shrink-0 h-9 inline-flex items-center gap-1.5 px-4 rounded-xl border border-slate-200 text-xs font-bold text-slate-600 hover:border-green-300 hover:text-green-700 transition-all">
+                            <ArrowRight size={12} /> New request
+                          </a>
+                        )}
+                      </div>
+                    </li>
+                  );
+                })}
+              </ul>
+            )}
+          </section>
+
+          <!-- Account info -->
+          <section class="mt-5 rounded-3xl border border-slate-200 bg-white p-6 shadow-sm md:p-8">
+            <h2 class="text-base font-bold text-slate-950 mb-5">Account details</h2>
+            <form id="profileForm" class="space-y-4 max-w-sm">
+              <div>
+                <label class="mb-2 block text-[10px] font-bold uppercase tracking-[0.15em] text-slate-500">Full name</label>
+                <input id="custName" type="text" value={customer.full_name || ''} placeholder="Your name" class="h-11 w-full rounded-xl border border-slate-200 bg-slate-50 px-4 text-sm text-slate-900 outline-none focus:border-green-500 focus:ring-2 focus:ring-green-500/20 focus:bg-white transition-all" />
+              </div>
+              <div>
+                <label class="mb-2 block text-[10px] font-bold uppercase tracking-[0.15em] text-slate-500">Phone</label>
+                <input id="custPhone" type="tel" value={customer.phone || ''} placeholder="+1 (xxx) xxx-xxxx" class="h-11 w-full rounded-xl border border-slate-200 bg-slate-50 px-4 text-sm text-slate-900 outline-none focus:border-green-500 focus:ring-2 focus:ring-green-500/20 focus:bg-white transition-all" />
+              </div>
+              <div>
+                <label class="mb-2 block text-[10px] font-bold uppercase tracking-[0.15em] text-slate-500">Email</label>
+                <input type="email" value={customer.email} disabled class="h-11 w-full rounded-xl border border-slate-200 bg-slate-100 px-4 text-sm text-slate-500 cursor-not-allowed" />
+              </div>
+              <button type="submit" class="h-11 w-full rounded-xl bg-slate-900 text-xs font-bold text-white hover:bg-slate-800 transition-all">Save details</button>
+              <p id="profileMsg" class="text-[11px]"></p>
+            </form>
+          </section>
+        </>
+      )}
+
+    </div>
+  </main>
+
+  <Footer />
+</MainLayout>
+
+<script>
+  import { supabase } from "../lib/supabase";
+
+  // ---- Magic link form ----
+  document.getElementById('magicLinkForm')?.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const email = (document.getElementById('magicEmail') as HTMLInputElement).value.trim();
+    const btn = document.getElementById('magicLinkBtn') as HTMLButtonElement;
+    const msg = document.getElementById('magicMsg')!;
+
+    if (!email) return;
+    btn.disabled = true;
+    btn.textContent = 'Sending…';
+
+    const { error } = await supabase.auth.signInWithOtp({
+      email,
+      options: {
+        emailRedirectTo: window.location.origin + '/my-account',
+        shouldCreateUser: true,
+      },
+    });
+
+    if (error) {
+      msg.textContent = '❌ ' + error.message;
+      msg.className = 'mt-3 text-[11px] text-center text-red-600';
+      btn.disabled = false;
+      btn.textContent = 'Send sign-in link';
+    } else {
+      btn.textContent = '✅ Check your email';
+      msg.textContent = `We sent a sign-in link to ${email}. Click the link in that email to access your account.`;
+      msg.className = 'mt-3 text-[11px] text-center text-green-700';
+    }
+  });
+
+  // ---- Sign out ----
+  document.getElementById('signOutBtn')?.addEventListener('click', async () => {
+    await supabase.auth.signOut();
+    window.location.reload();
+  });
+
+  // ---- Profile update ----
+  document.getElementById('profileForm')?.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const msg = document.getElementById('profileMsg')!;
+    const name = (document.getElementById('custName') as HTMLInputElement).value.trim();
+    const phone = (document.getElementById('custPhone') as HTMLInputElement).value.trim();
+
+    const res = await fetch('/api/customer-update-profile', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ full_name: name || null, phone: phone || null }),
+    });
+
+    if (res.ok) {
+      msg.textContent = '✅ Details saved.';
+      msg.className = 'text-[11px] text-green-700';
+    } else {
+      msg.textContent = '❌ Could not save. Please try again.';
+      msg.className = 'text-[11px] text-red-600';
+    }
+    setTimeout(() => { msg.textContent = ''; }, 3000);
+  });
+
+  // ---- Setup auto-create customer if logged in but no profile ----
+  const setupSpinner = document.getElementById('setupSpinner');
+  if (setupSpinner) {
+    // We're logged in but no customer record — create it
+    const { data: { session } } = await supabase.auth.getSession();
+    if (session) {
+      await fetch('/api/customer-init', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email: session.user.email }),
+      });
+      window.location.reload();
+    }
+  }
+</script>

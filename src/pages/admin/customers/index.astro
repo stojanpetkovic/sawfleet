@@ -1,0 +1,166 @@
+---
+export const prerender = false;
+import AdminLayout from "../../../layouts/AdminLayout.astro";
+import { supabaseAdmin } from "../../../lib/supabaseAdmin";
+import { supabase } from "../../../lib/supabase";
+import { Mail, Phone, Calendar, TrendingUp, ArrowRight } from "lucide-astro";
+
+const db = supabaseAdmin ?? supabase;
+
+// Fetch customers with lead counts
+const { data: customersRaw } = await db
+  .from("customers")
+  .select(`
+    id,
+    email,
+    full_name,
+    phone,
+    created_at,
+    last_seen_at,
+    leads(id)
+  `)
+  .order("last_seen_at", { ascending: false, nullsFirst: false });
+
+const customers = (customersRaw || []).map((c: any) => ({
+  ...c,
+  lead_count: c.leads?.length || 0,
+}));
+---
+
+<AdminLayout>
+  <div class="dash-shell flex-1"><div class="dash-scroll">
+    <div class="w-full space-y-6">
+      <!-- Header -->
+      <div class="flex items-center gap-3">
+        <a href="/admin" class="inline-flex items-center gap-2 px-3 py-2 rounded-lg border border-zinc-200 text-[11px] font-bold uppercase tracking-wider text-zinc-600 hover:bg-zinc-50">← Back</a>
+        <div>
+          <span class="dash-eyebrow text-blue-700">// Customer Retention</span>
+          <h1 class="mt-1.5 text-2xl font-bold text-slate-950 tracking-tight">Customers</h1>
+          <p class="text-[10px] font-mono text-slate-400 mt-1 uppercase">Total: {customers.length}</p>
+        </div>
+      </div>
+
+      <!-- Search & filters -->
+      <div class="flex flex-col sm:flex-row gap-3">
+        <input
+          id="customerSearch"
+          type="text"
+          placeholder="Search by name, email..."
+          class="flex-1 h-11 rounded-lg border border-zinc-200 bg-white px-4 text-sm text-slate-900 placeholder-zinc-400 outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500"
+        />
+        <select id="customerSort" class="h-11 rounded-lg border border-zinc-200 bg-white px-4 text-sm text-slate-900 outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500">
+          <option value="recent">Recent activity</option>
+          <option value="name">Name A-Z</option>
+          <option value="leads">Most requests</option>
+          <option value="newest">Newest</option>
+        </select>
+      </div>
+
+      <!-- Customers table -->
+      <div class="rounded-2xl border border-zinc-200 bg-white overflow-hidden">
+        <div class="overflow-x-auto">
+          <table class="w-full text-sm">
+            <thead>
+              <tr class="border-b border-zinc-100 bg-zinc-50">
+                <th class="px-6 py-4 text-left text-[10px] font-bold uppercase tracking-wider text-zinc-600">Customer</th>
+                <th class="px-6 py-4 text-left text-[10px] font-bold uppercase tracking-wider text-zinc-600">Contact</th>
+                <th class="px-6 py-4 text-center text-[10px] font-bold uppercase tracking-wider text-zinc-600">Requests</th>
+                <th class="px-6 py-4 text-left text-[10px] font-bold uppercase tracking-wider text-zinc-600">Last seen</th>
+                <th class="px-6 py-4 text-left text-[10px] font-bold uppercase tracking-wider text-zinc-600">Joined</th>
+                <th class="px-6 py-4 text-right text-[10px] font-bold uppercase tracking-wider text-zinc-600">Action</th>
+              </tr>
+            </thead>
+            <tbody id="customersTable">
+              {customers.map((c: any) => (
+                <tr class="border-b border-zinc-100 hover:bg-zinc-50/50 transition-colors customerRow" data-email={c.email} data-name={c.full_name || ''} data-leads={c.lead_count}>
+                  <td class="px-6 py-4">
+                    <div class="flex items-center gap-3">
+                      <div class="w-9 h-9 rounded-full bg-blue-100 border border-blue-200 flex items-center justify-center shrink-0 text-[11px] font-bold text-blue-700">
+                        {(c.full_name || c.email).charAt(0).toUpperCase()}
+                      </div>
+                      <div>
+                        <p class="text-[13px] font-bold text-slate-900">{c.full_name || 'N/A'}</p>
+                        <p class="text-[10px] text-slate-400 mt-0.5">{c.email}</p>
+                      </div>
+                    </div>
+                  </td>
+                  <td class="px-6 py-4">
+                    <div class="space-y-1.5">
+                      {c.phone && (
+                        <a href={`tel:${c.phone}`} class="flex items-center gap-2 text-[11px] text-slate-600 hover:text-green-700 transition-colors">
+                          <Phone size={12} /> {c.phone}
+                        </a>
+                      )}
+                      {!c.phone && <p class="text-[10px] text-zinc-300">—</p>}
+                    </div>
+                  </td>
+                  <td class="px-6 py-4 text-center">
+                    <span class="inline-flex items-center justify-center w-8 h-8 rounded-full bg-blue-50 border border-blue-200 text-[11px] font-bold text-blue-700">
+                      {c.lead_count}
+                    </span>
+                  </td>
+                  <td class="px-6 py-4">
+                    {c.last_seen_at ? (
+                      <p class="text-[11px] text-slate-600">{new Date(c.last_seen_at).toLocaleDateString()} {new Date(c.last_seen_at).toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'})}</p>
+                    ) : (
+                      <p class="text-[10px] text-zinc-300">Never</p>
+                    )}
+                  </td>
+                  <td class="px-6 py-4">
+                    <p class="text-[10px] text-zinc-400 font-mono">{new Date(c.created_at).toLocaleDateString()}</p>
+                  </td>
+                  <td class="px-6 py-4 text-right">
+                    <a href={`/admin/customers/${c.id}`} class="inline-flex h-8 items-center gap-1.5 px-3 rounded-lg bg-blue-50 border border-blue-200 text-[10px] font-bold text-blue-700 hover:bg-blue-100 transition-colors">
+                      <ArrowRight size={12} /> View
+                    </a>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+
+        {customers.length === 0 && (
+          <div class="px-6 py-12 text-center">
+            <p class="text-slate-400 text-sm">No customers yet.</p>
+          </div>
+        )}
+      </div>
+    </div>
+  </div></div>
+</AdminLayout>
+
+<script>
+  const search = document.getElementById('customerSearch') as HTMLInputElement;
+  const sort = document.getElementById('customerSort') as HTMLSelectElement;
+  const rows = Array.from(document.querySelectorAll('.customerRow'));
+
+  function filterAndSort() {
+    const query = search.value.toLowerCase();
+    let filtered = rows.filter(row => {
+      const email = (row as any).dataset.email.toLowerCase();
+      const name = (row as any).dataset.name.toLowerCase();
+      return email.includes(query) || name.includes(query);
+    });
+
+    // Sort
+    filtered.sort((a, b) => {
+      const sortBy = sort.value;
+      if (sortBy === 'name') {
+        return ((a as any).dataset.name || '').localeCompare((b as any).dataset.name || '');
+      } else if (sortBy === 'leads') {
+        return parseInt((b as any).dataset.leads) - parseInt((a as any).dataset.leads);
+      }
+      // default: 'recent' is already by last_seen_at from DB
+      return 0;
+    });
+
+    // Re-render
+    const tbody = document.getElementById('customersTable')!;
+    tbody.innerHTML = '';
+    filtered.forEach(row => tbody.appendChild(row.cloneNode(true)));
+  }
+
+  search.addEventListener('input', filterAndSort);
+  sort.addEventListener('change', filterAndSort);
+</script>

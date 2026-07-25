@@ -58,6 +58,56 @@ export async function POST({ request }: { request: Request }) {
       }]);
     }
 
+    if (permit && result.lead?.id) {
+      await supabaseAdmin.from("permit_leads").update({
+        permit_status: "converted",
+        website_lead_id: result.lead.id,
+        converted_at: new Date().toISOString(),
+      }).eq("id", permit.id);
+      await supabaseAdmin.from("permit_outreach_events").update({
+        status: "converted",
+        updated_at: new Date().toISOString(),
+      }).eq("permit_lead_id", permit.id).not("status", "in", '("bounced","complained","unsubscribed")');
+      await supabaseAdmin.from("permit_lead_logs").insert([{
+        permit_lead_id: permit.id,
+        action: `Homeowner submitted a request and converted to Website Lead ${result.lead.id}`,
+        changed_by: "website_form",
+      }]);
+    }
+
+    // Auto-create/link customer account when email is provided
+    if (email && result.lead?.id) {
+      try {
+        const normalEmail = email.toLowerCase().trim();
+        // Upsert customer record
+        const { data: existingCustomer } = await supabaseAdmin
+          .from("customers")
+          .select("id")
+          .eq("email", normalEmail)
+          .maybeSingle();
+
+        let customerId = existingCustomer?.id;
+        if (!customerId) {
+          const { data: newCustomer } = await supabaseAdmin
+            .from("customers")
+            .insert([{ email: normalEmail, phone: phone || null }])
+            .select("id")
+            .maybeSingle();
+          customerId = newCustomer?.id;
+        }
+        // Link lead to customer
+        if (customerId) {
+          await supabaseAdmin
+            .from("leads")
+            .update({ customer_id: customerId })
+            .eq("id", result.lead.id);
+        }
+      } catch (e) {
+        // Non-fatal — don't fail the lead submission
+        console.error("customer auto-link failed", e);
+      }
+    }
+
     return json({ ok: true, leadId: result.lead?.id, created: result.created, duplicate: result.duplicate || null });
   } catch (error: any) {
     console.error("website lead submission failed", error);

@@ -211,6 +211,20 @@ import AdminLayout from "../../layouts/AdminLayout.astro";
         </div>
       </div>
 
+      <!-- SEKCIJA: CUSTOMERS LISTA -->
+      <div class="bg-white border border-zinc-100 rounded-2xl overflow-hidden">
+        <div class="p-5 border-b border-zinc-100 flex items-center justify-between">
+          <div>
+            <h3 class="text-[10px] font-bold uppercase tracking-[0.2em] text-slate-900">Recent Customers</h3>
+            <p class="mt-1 text-[10px] text-slate-400">Customers with accounts and service history</p>
+          </div>
+          <a href="/admin/customers" class="text-[9px] uppercase tracking-widest text-zinc-400 hover:text-slate-900 transition-colors">View all →</a>
+        </div>
+        <div id="customersTable" class="p-3 space-y-2">
+          <div class="p-6 text-center text-zinc-400 text-sm">Loading...</div>
+        </div>
+      </div>
+
       <!-- SEKCIJA TRUCKS LISTA -->
       <div class="bg-white border border-zinc-100 rounded-2xl overflow-hidden">
         <div class="p-5 border-b border-zinc-100 flex items-center justify-between">
@@ -466,7 +480,24 @@ import AdminLayout from "../../layouts/AdminLayout.astro";
       `}).join('');
     }
 
-    // === 5. KAMIONI ===
+    // === 5. CUSTOMERS ===
+    const { data: customers } = await supabase.from('customers').select('id, email, full_name, phone, last_seen_at, created_at, leads(id)').order('created_at', { ascending: false });
+    if (customers) {
+      document.getElementById('customersTable')!.innerHTML = customers.slice(0, 3).map((c: any) => {
+        const leadCount = c.leads?.length || 0;
+        return `
+        <div class="flex items-center gap-3 p-3 rounded-xl hover:bg-zinc-100/50 transition-colors cursor-pointer" onclick="window.location.href='/admin/customers/${c.id}'">
+          <div class="w-9 h-9 rounded-full bg-blue-100 border border-blue-200 flex items-center justify-center shrink-0 text-[10px] font-bold text-blue-700">${(c.full_name || c.email).charAt(0).toUpperCase()}</div>
+          <div class="min-w-0 flex-1">
+            <p class="text-[13px] font-bold text-slate-900 truncate">${c.full_name || 'N/A'}</p>
+            <p class="text-[10px] text-zinc-500 font-mono truncate">${c.email} · ${leadCount} request${leadCount === 1 ? '' : 's'}</p>
+          </div>
+          <span class="shrink-0 px-2 py-0.5 rounded-full text-[9px] font-bold uppercase border bg-blue-50 text-blue-700 border-blue-200">${leadCount}</span>
+        </div>
+      `}).join('');
+    }
+
+    // === 6. KAMIONI ===
     const { data: trucks } = await supabase.from('grapple_saw_trucks').select('*').order('created_at', { ascending: false });
     if (trucks) {
       document.getElementById('count-t-total')!.textContent = trucks.length.toString();
