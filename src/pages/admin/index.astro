@@ -370,6 +370,9 @@ import AdminLayout from "../../layouts/AdminLayout.astro";
           rejected: 'bg-red-500/10 text-red-600 border-red-500/20',
         };
         const statusClass = statusStyles[l.status] || 'bg-zinc-200/50 text-zinc-600 border-zinc-300';
+        const sourceValue = (l.source || 'website').toString();
+        const sourceLabel = sourceValue.includes('permit') ? 'Permit dispatch' : sourceValue === 'dispatcher_manual' ? 'Dispatcher' : sourceValue === 'city_landing' ? 'City Landing' : ['website', 'google', 'facebook', 'bing', 'organic', 'website_form'].includes(sourceValue) ? 'Website' : 'External';
+        const sourceClass = sourceLabel === 'Permit dispatch' ? 'bg-amber-500/10 text-amber-700 border-amber-500/20' : sourceLabel === 'City Landing' ? 'bg-green-500/10 text-green-700 border-green-500/20' : sourceLabel === 'External' ? 'bg-teal-500/10 text-teal-700 border-teal-500/20' : sourceLabel === 'Dispatcher' ? 'bg-violet-500/10 text-violet-700 border-violet-500/20' : 'bg-slate-100 text-slate-700 border-slate-200';
         return `
         <div class="flex items-center gap-3 p-3 rounded-xl hover:bg-zinc-100/50 transition-colors cursor-pointer" onclick="window.location.href='/admin/leads/${l.id}'">
           <div class="w-9 h-9 rounded-full bg-zinc-100 border border-zinc-200 flex items-center justify-center shrink-0 text-[10px] font-bold text-zinc-600">${(l.email || '?').charAt(0).toUpperCase()}</div>
@@ -377,6 +380,7 @@ import AdminLayout from "../../layouts/AdminLayout.astro";
             <p class="text-[13px] font-bold text-slate-900 truncate">${l.email || 'No email'}</p>
             <p class="text-[10px] text-zinc-500 font-mono truncate">${l.county || 'N/A'} · ${new Date(l.created_at).toLocaleDateString()}</p>
           </div>
+          <span class="shrink-0 px-2 py-0.5 rounded-full text-[9px] font-bold uppercase border tracking-wide ${sourceClass}">${sourceLabel}</span>
           <span class="shrink-0 px-2 py-0.5 rounded-full text-[9px] font-bold uppercase border tracking-wide ${statusClass}">${l.status || 'New'}</span>
         </div>
       `}).join('');

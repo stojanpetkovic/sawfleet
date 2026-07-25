@@ -121,6 +121,14 @@ const leadStatus = lead.status || 'new';
             <p class="text-[9px] uppercase tracking-[0.2em] text-zinc-400">Details</p>
             <p class="text-zinc-700 font-mono mt-1 text-sm">{lead.details || 'No details'}</p>
           </div>
+          <div>
+            <p class="text-[9px] uppercase tracking-[0.2em] text-zinc-400">Source</p>
+            {(() => {
+              const sourceValue = (lead.source || 'website').toString();
+              const sourceDisplay = sourceValue === 'city_landing' ? '🌳 City Landing Page' : sourceValue === 'dispatcher_manual' ? '📋 Dispatcher' : sourceValue.includes('permit') ? '📜 Permit Dispatch' : sourceValue === 'website' || sourceValue === 'google' || sourceValue === 'facebook' || sourceValue === 'bing' || sourceValue === 'organic' ? '🌐 Website' : sourceValue === 'website_form' ? '📝 Website Form' : sourceValue;
+              return <p class="text-slate-900 font-mono mt-1 text-lg">{sourceDisplay}</p>;
+            })()}
+          </div>
         </div>
       </div>
 
