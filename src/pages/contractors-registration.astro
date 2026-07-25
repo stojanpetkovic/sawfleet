@@ -4,6 +4,7 @@ import MainLayout from "../layouts/MainLayout.astro";
 import Header from "../components/layout/Header.astro";
 import ContractorBottomNav from "../components/layout/ContractorBottomNav.astro";
 import Footer from "../components/layout/Footer.astro";
+import FormDisclaimer from "../components/FormDisclaimer.astro";
 import { supabase } from "../lib/supabase";
 import { ArrowRight, BadgeCheck, BriefcaseBusiness, CheckCircle2, ClipboardCheck, Coins, Eye, LayoutDashboard, MapPinned, PhoneCall, ShieldCheck, UserCheck } from "lucide-astro";
 
@@ -151,6 +152,8 @@ const { data: territories } = await supabase
               <label for="password" class="mb-2 block text-[10px] font-bold uppercase tracking-[0.15em] text-slate-500">Password</label>
               <input id="password" name="password" type="password" required minlength="6" placeholder="min. 6 characters" class="h-12 w-full rounded-xl border border-slate-200 bg-slate-50 px-4 text-sm text-slate-900 outline-none focus:border-green-500 focus:ring-2 focus:ring-green-500/20 focus:bg-white placeholder:text-slate-400"/>
             </div>
+
+            <FormDisclaimer />
 
             <button type="submit" id="submitBtn" class="mt-6 flex h-14 w-full items-center justify-center gap-2 rounded-xl bg-green-500 text-sm font-bold text-white transition-all hover:bg-green-600 active:scale-[0.98] shadow-[0_8px_24px_-6px_rgba(34,197,94,0.5)] hover:shadow-[0_12px_28px_-6px_rgba(34,197,94,0.6)]">
               Apply For Network Access →

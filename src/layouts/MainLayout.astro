@@ -1,6 +1,7 @@
 ---
 import "../styles/app.css";
 import { supabase } from "../lib/supabase";
+import CookieBanner from "../components/layout/CookieBanner.astro";
 
 interface Props {
   title?: string;
@@ -137,6 +138,9 @@ const { data: tracking } = await supabase
 
   <!-- GLAVNI SADRŽAJ STRANICE -->
   <slot />
+
+  <!-- COOKIE BANNER -->
+  <CookieBanner />
 
   <script>
     (() => {

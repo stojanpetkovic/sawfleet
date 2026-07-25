@@ -1,0 +1,226 @@
+---
+// Cookie Banner - prikazuje se kao bottom banner na desktop i popup na mobile
+---
+
+<!-- COOKIE BANNER -->
+<div id="cookieBanner" class="hidden fixed bottom-0 left-0 right-0 z-[1000] lg:bottom-6 lg:left-6 lg:right-auto lg:max-w-md">
+  <!-- Desktop Banner (bottom-left sticky) -->
+  <div id="cookieBannerDesktop" class="hidden lg:block rounded-2xl border border-slate-200 bg-gradient-to-br from-white to-slate-50 p-6 shadow-2xl">
+    <div class="flex items-start gap-3">
+      <!-- Cookie Icon -->
+      <div class="shrink-0 text-3xl mt-0.5">🍪</div>
+      
+      <div class="flex-1 min-w-0">
+        <h3 class="text-sm font-bold text-slate-900">We use cookies</h3>
+        <p class="mt-2 text-xs leading-relaxed text-slate-600">We use essential cookies to operate our platform and optional cookies to improve your experience and analyze usage.</p>
+        
+        <div class="mt-4 space-y-2.5">
+          <label class="flex items-center gap-2.5 cursor-pointer">
+            <input type="checkbox" id="cookieEssential" checked disabled class="rounded border-slate-300 cursor-not-allowed w-4 h-4 shrink-0" />
+            <span class="text-xs text-slate-600"><span class="font-semibold">Essential</span> • Platform functionality</span>
+          </label>
+          <label class="flex items-center gap-2.5 cursor-pointer">
+            <input type="checkbox" id="cookieAnalytics" class="rounded border-slate-300 w-4 h-4 shrink-0" />
+            <span class="text-xs text-slate-600"><span class="font-semibold">Analytics</span> • Usage insights</span>
+          </label>
+          <label class="flex items-center gap-2.5 cursor-pointer">
+            <input type="checkbox" id="cookieMarketing" class="rounded border-slate-300 w-4 h-4 shrink-0" />
+            <span class="text-xs text-slate-600"><span class="font-semibold">Marketing</span> • Personalized ads</span>
+          </label>
+        </div>
+
+        <div class="mt-5 grid grid-cols-2 gap-2">
+          <button id="cookieAcceptAll" class="h-9 px-3 rounded-lg bg-green-500 text-xs font-bold text-white hover:bg-green-600 transition-all active:scale-95 whitespace-nowrap">
+            Accept all
+          </button>
+          <button id="cookieSavePreferences" class="h-9 px-3 rounded-lg border border-slate-300 bg-white text-xs font-bold text-slate-700 hover:bg-slate-50 transition-all whitespace-nowrap">
+            Save
+          </button>
+        </div>
+        <a href="/privacy#cookies-and-tracking" target="_blank" class="mt-2 block text-center text-xs font-bold text-blue-600 hover:text-blue-700 py-1.5">
+          Learn more
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <!-- Mobile Popup (full-width modal at bottom) -->
+  <div id="cookieBannerMobile" class="lg:hidden fixed bottom-0 left-0 right-0 z-[1000] bg-white border-t-2 border-t-slate-200 shadow-2xl">
+    <div class="p-4 max-h-[70vh] overflow-y-auto">
+      <div class="flex items-start gap-3 mb-4">
+        <div class="text-2xl shrink-0">🍪</div>
+        <div class="flex-1">
+          <h3 class="text-sm font-bold text-slate-900">Cookie Settings</h3>
+          <p class="mt-1 text-xs text-slate-500">We use cookies to operate our platform and improve your experience.</p>
+        </div>
+      </div>
+
+      <div class="space-y-3 mb-4">
+        <label class="flex items-center gap-3 p-2 rounded-lg border border-slate-100 bg-slate-50 cursor-pointer">
+          <input type="checkbox" id="cookieEssentialMobile" checked disabled class="w-4 h-4 rounded border-slate-300 cursor-not-allowed" />
+          <div class="flex-1 min-w-0">
+            <p class="text-xs font-bold text-slate-900">Essential cookies</p>
+            <p class="text-[11px] text-slate-500">Required for platform to work</p>
+          </div>
+        </label>
+        
+        <label class="flex items-center gap-3 p-2 rounded-lg border border-slate-100 hover:bg-slate-50 cursor-pointer transition-colors">
+          <input type="checkbox" id="cookieAnalyticsMobile" class="w-4 h-4 rounded border-slate-300" />
+          <div class="flex-1 min-w-0">
+            <p class="text-xs font-bold text-slate-900">Analytics</p>
+            <p class="text-[11px] text-slate-500">Help us improve performance</p>
+          </div>
+        </label>
+        
+        <label class="flex items-center gap-3 p-2 rounded-lg border border-slate-100 hover:bg-slate-50 cursor-pointer transition-colors">
+          <input type="checkbox" id="cookieMarketingMobile" class="w-4 h-4 rounded border-slate-300" />
+          <div class="flex-1 min-w-0">
+            <p class="text-xs font-bold text-slate-900">Marketing</p>
+            <p class="text-[11px] text-slate-500">Personalized offers</p>
+          </div>
+        </label>
+      </div>
+
+      <div class="flex gap-2 flex-col">
+        <button id="cookieAcceptAllMobile" class="h-10 rounded-lg bg-green-500 text-sm font-bold text-white hover:bg-green-600 transition-all active:scale-95">
+          Accept all cookies
+        </button>
+        <button id="cookieSavePreferencesMobile" class="h-10 rounded-lg border border-slate-200 bg-white text-sm font-bold text-slate-700 hover:bg-slate-50 transition-all">
+          Save my choices
+        </button>
+        <a href="/privacy#cookies-and-tracking" target="_blank" class="text-center text-xs font-bold text-blue-600 hover:text-blue-700 py-2">
+          Privacy & cookies
+        </a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script is:inline>
+  // Cookie management
+  const COOKIE_CONSENT_KEY = 'sf_cookie_consent';
+
+  function getCookieConsent() {
+    try {
+      const stored = localStorage.getItem(COOKIE_CONSENT_KEY);
+      return stored ? JSON.parse(stored) : null;
+    } catch {
+      return null;
+    }
+  }
+
+  function setCookieConsent(preferences) {
+    const consentData = {
+      essential: true,
+      analytics: preferences.analytics || false,
+      marketing: preferences.marketing || false,
+      timestamp: Date.now(),
+    };
+    localStorage.setItem(COOKIE_CONSENT_KEY, JSON.stringify(consentData));
+    applyConsentChoices(consentData);
+  }
+
+  function applyConsentChoices(consent) {
+    // Primeni Google Analytics ako je prihvaćen
+    if (consent.analytics) {
+      window.dataLayer = window.dataLayer || [];
+      function gtag() {
+        dataLayer.push(arguments);
+      }
+      gtag('consent', 'update', {
+        'analytics_storage': 'granted',
+      });
+    } else {
+      window['ga-disable-G-LG6F8P23QM'] = true;
+    }
+
+    // Primeni marketing cookies
+    if (consent.marketing) {
+      // Aktiviraj marketing tracking
+      window.dataLayer = window.dataLayer || [];
+      function gtag() {
+        dataLayer.push(arguments);
+      }
+      gtag('consent', 'update', {
+        'ad_storage': 'granted',
+      });
+    }
+  }
+
+  function showCookieBanner() {
+    const banner = document.getElementById('cookieBanner');
+    if (banner) {
+      banner.classList.remove('hidden');
+    }
+  }
+
+  function hideCookieBanner() {
+    const banner = document.getElementById('cookieBanner');
+    if (banner) {
+      banner.classList.add('hidden');
+    }
+  }
+
+  function initCookieBanner() {
+    const consent = getCookieConsent();
+
+    // Ako je korisnik već dao consent, prikrij banner
+    if (consent) {
+      hideCookieBanner();
+      applyConsentChoices(consent);
+      return;
+    }
+
+    // Prikaži banner ako nema prethodnog pristanka
+    showCookieBanner();
+
+    // Desktop verzija
+    document.getElementById('cookieAcceptAll')?.addEventListener('click', () => {
+      setCookieConsent({ analytics: true, marketing: true });
+      hideCookieBanner();
+    });
+
+    document.getElementById('cookieSavePreferences')?.addEventListener('click', () => {
+      const preferences = {
+        analytics: document.getElementById('cookieAnalytics')?.checked || false,
+        marketing: document.getElementById('cookieMarketing')?.checked || false,
+      };
+      setCookieConsent(preferences);
+      hideCookieBanner();
+    });
+
+    // Mobile verzija
+    document.getElementById('cookieAcceptAllMobile')?.addEventListener('click', () => {
+      setCookieConsent({ analytics: true, marketing: true });
+      hideCookieBanner();
+    });
+
+    document.getElementById('cookieSavePreferencesMobile')?.addEventListener('click', () => {
+      const preferences = {
+        analytics: document.getElementById('cookieAnalyticsMobile')?.checked || false,
+        marketing: document.getElementById('cookieMarketingMobile')?.checked || false,
+      };
+      setCookieConsent(preferences);
+      hideCookieBanner();
+    });
+  }
+
+  // Inicijalizuj banner kada se stranica učita
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initCookieBanner);
+  } else {
+    initCookieBanner();
+  }
+
+  // Takođe recheck pri Astro page-load event
+  document.addEventListener('astro:page-load', initCookieBanner);
+</script>
+
+<style>
+  /* Safe area za mobile sa notch-om */
+  @supports (padding: max(0px)) {
+    #cookieBannerMobile {
+      padding-bottom: max(1rem, env(safe-area-inset-bottom));
+    }
+  }
+</style>

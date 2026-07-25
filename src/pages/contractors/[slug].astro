@@ -4,6 +4,7 @@ import MainLayout from "../../layouts/MainLayout.astro";
 import Header from "../../components/layout/Header.astro";
 import MobileNav from "../../components/layout/MobileNav.astro";
 import Footer from "../../components/layout/Footer.astro";
+import FormDisclaimer from "../../components/FormDisclaimer.astro";
 import { supabase } from "../../lib/supabase";
 import { supabaseAdmin } from "../../lib/supabaseAdmin";
 import { BadgeCheck, Building2, ExternalLink, MapPin, Phone, Mail, Star, ChevronRight } from "lucide-astro";
@@ -258,6 +259,8 @@ function starsHtml(rating: number): string {
 
               <!-- Honeypot - hidden from real users -->
               <input type="text" name="website_url" autocomplete="off" tabindex="-1" aria-hidden="true" class="absolute opacity-0 pointer-events-none h-0 w-0 overflow-hidden" />
+
+              <FormDisclaimer />
 
               <button
                 id="submitReviewBtn"
