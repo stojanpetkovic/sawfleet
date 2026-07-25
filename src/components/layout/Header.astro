@@ -1,4 +1,7 @@
 ---
+import { User, LogIn, Bell } from "lucide-astro";
+import { supabase } from "../../lib/supabase";
+
 // Možeš dodati props ako želiš da menjaš linkove po stranici
 const navigation = [
   { title: "Services", href: "/services" },
@@ -16,6 +19,9 @@ const contractorsDropdown = [
 const currentPath = Astro.url.pathname;
 const isActive = (href: string) => href === '/' ? currentPath === '/' : currentPath.startsWith(href);
 const isContractorsActive = currentPath.startsWith('/contractors') || currentPath.startsWith('/contractors-registration');
+
+// Check session for notifications
+const { data: { session } } = await supabase.auth.getSession();
 ---
 
 <header class="fixed inset-x-0 top-0 z-50 bg-white/80 backdrop-blur-md border-b border-slate-200/80 font-sans">
@@ -27,16 +33,16 @@ const isContractorsActive = currentPath.startsWith('/contractors') || currentPat
     </a>
 
   <!-- Desktop Nav -->
-    <nav class="hidden items-center gap-5 lg:flex">
+    <nav class="hidden items-center gap-1 lg:flex">
       {navigation.map((item) => (
-        <a href={item.href} aria-current={isActive(item.href) ? 'page' : undefined} class={`relative py-2 text-[10px] font-mono font-bold uppercase tracking-[0.16em] transition-colors ${isActive(item.href) ? 'text-green-700 after:absolute after:inset-x-0 after:-bottom-1 after:h-0.5 after:rounded-full after:bg-green-600' : 'text-slate-500 hover:text-slate-900'}`}>
+        <a href={item.href} aria-current={isActive(item.href) ? 'page' : undefined} class={`relative py-2 px-3 text-[10px] font-mono font-bold uppercase tracking-[0.16em] transition-colors ${isActive(item.href) ? 'text-green-700 after:absolute after:inset-x-0 after:-bottom-1 after:h-0.5 after:rounded-full after:bg-green-600' : 'text-slate-500 hover:text-slate-900'}`}>
           {item.title}
         </a>
       ))}
 
       <!-- Contractors dropdown -->
       <div class="relative group">
-        <button class={`relative py-2 flex items-center gap-1 text-[10px] font-mono font-bold uppercase tracking-[0.16em] transition-colors ${isContractorsActive ? 'text-green-700 after:absolute after:inset-x-0 after:-bottom-1 after:h-0.5 after:rounded-full after:bg-green-600' : 'text-slate-500 hover:text-slate-900'}`}>
+        <button class={`relative py-2 px-3 flex items-center gap-1 text-[10px] font-mono font-bold uppercase tracking-[0.16em] transition-colors ${isContractorsActive ? 'text-green-700 after:absolute after:inset-x-0 after:-bottom-1 after:h-0.5 after:rounded-full after:bg-green-600' : 'text-slate-500 hover:text-slate-900'}`}>
           Contractors
           <svg class="h-3 w-3 transition-transform group-hover:rotate-180" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M19 9l-7 7-7-7" />
@@ -58,13 +64,39 @@ const isContractorsActive = currentPath.startsWith('/contractors') || currentPat
           </div>
         </div>
       </div>
+    </nav>
 
-      <a href="/portal" class="text-[10px] font-mono font-bold uppercase tracking-[0.16em] text-slate-500 hover:text-slate-900 transition-colors">Sign in</a>
-      <a href="/my-account" class="text-[10px] font-mono font-bold uppercase tracking-[0.16em] text-slate-500 hover:text-slate-900 transition-colors">My account</a>
+    <!-- Right section: Auth buttons + CTA -->
+    <div class="hidden items-center gap-3 lg:flex">
+      {session ? (
+        <>
+          <!-- Notifications badge -->
+          <button id="notifBell" class="relative p-2.5 rounded-lg border border-slate-200 text-slate-500 hover:bg-slate-50 hover:text-slate-700 transition-all" title="Notifications">
+            <Bell size={18} />
+            <span id="notifBadge" class="absolute top-1 right-1 w-2 h-2 bg-red-500 rounded-full"></span>
+          </button>
+          
+          <!-- My Account -->
+          <a href="/my-account" class={`flex items-center gap-2 px-4 py-2.5 rounded-lg border transition-all ${currentPath === '/my-account' ? 'bg-green-50 border-green-200 text-green-700' : 'border-slate-200 text-slate-600 hover:bg-slate-50 hover:text-slate-900'}`}>
+            <User size={16} />
+            <span class="text-[10px] font-bold uppercase tracking-[0.12em]">My Account</span>
+          </a>
+        </>
+      ) : (
+        <>
+          <!-- Sign In button (outline) -->
+          <a href="/portal" class="px-4 py-2.5 rounded-lg border border-slate-200 text-slate-600 text-[10px] font-bold uppercase tracking-[0.12em] hover:bg-slate-50 transition-all flex items-center gap-2">
+            <LogIn size={16} />
+            Sign In
+          </a>
+        </>
+      )}
+      
+      <!-- CTA: Free Estimate -->
       <a href="/#quote" class="h-10 px-5 flex items-center justify-center rounded-xl bg-green-700 text-[10px] font-mono font-bold uppercase tracking-[0.16em] text-white shadow-[0_8px_20px_-10px_rgba(21,128,61,0.7)] hover:bg-green-800 transition-all">
         Free Estimate
       </a>
-    </nav>
+    </div>
 
     <!-- Mobilni Okidač -->
     <button id="menu-toggle" class="flex h-10 w-10 items-center justify-center rounded-lg border border-slate-200 bg-slate-50 text-slate-500 active:scale-95 transition-transform lg:hidden">
@@ -101,21 +133,59 @@ const isContractorsActive = currentPath.startsWith('/contractors') || currentPat
           </a>
         ))}
       </div>
-      <a href="/portal" class="text-sm font-bold uppercase tracking-[0.2em] text-slate-500 hover:text-green-700 transition-colors">Sign in</a>
-        <a href="/my-account" class="text-sm font-bold uppercase tracking-[0.2em] text-slate-500 hover:text-green-700 transition-colors">My account</a>
-      <a href="/#quote" class="mt-2 flex h-12 items-center justify-center rounded-xl bg-green-700 px-5 text-xs font-bold uppercase tracking-[0.16em] text-white">Get Free Estimate</a>
+
+      <!-- Divider -->
+      <div class="border-t border-slate-200 my-2"></div>
+
+      <!-- Auth Section -->
+      {session ? (
+        <>
+          <!-- Notifications -->
+          <div class="space-y-2">
+            <p class="text-[9px] font-bold uppercase tracking-[0.2em] text-slate-400">Account</p>
+            <a href="/my-account" class={`flex items-center gap-3 px-4 py-3 rounded-lg border transition-all ${currentPath === '/my-account' ? 'bg-green-50 border-green-200 text-green-700' : 'border-slate-200 text-slate-700 hover:bg-slate-50'}`}>
+              <User size={18} className="shrink-0" />
+              <div>
+                <p class="text-xs font-bold">My Account</p>
+                <p class="text-[10px] text-slate-500">Manage profile & requests</p>
+              </div>
+            </a>
+          </div>
+
+          <!-- Sign Out button -->
+          <button id="mobileSignOut" class="w-full h-10 rounded-lg border border-red-200 bg-red-50 text-xs font-bold uppercase tracking-[0.12em] text-red-700 hover:bg-red-100 transition-all">
+            Sign Out
+          </button>
+        </>
+      ) : (
+        <>
+          <!-- Sign In / Register -->
+          <div class="space-y-3">
+            <p class="text-[9px] font-bold uppercase tracking-[0.2em] text-slate-400">Get Started</p>
+            <a href="/portal" class="flex items-center justify-center gap-2 h-11 rounded-lg border border-slate-300 bg-white text-sm font-bold uppercase tracking-[0.12em] text-slate-900 hover:bg-slate-50 transition-all">
+              <LogIn size={16} />
+              Sign In
+            </a>
+          </div>
+        </>
+      )}
+
+      <a href="/#quote" class="w-full h-12 flex items-center justify-center rounded-xl bg-green-700 text-xs font-bold uppercase tracking-[0.16em] text-white hover:bg-green-800 transition-all">
+        Get Free Estimate
+      </a>
     </nav>
   </div>
 </div>
 
 <script>
+  import { supabase } from "../../lib/supabase";
+
   function setupMobileMenu() {
     const toggle = document.getElementById('menu-toggle');
     const menu = document.getElementById('mobile-menu');
     const close = document.getElementById('close-menu');
     const backdrop = document.getElementById('menu-backdrop');
 
-    // Prekidamo izvršavanje ako neki od elemenata ne postoji
     if (!toggle || !menu || !close || !backdrop) return;
 
     const openMenu = () => menu.classList.remove('translate-x-full');
@@ -126,9 +196,37 @@ const isContractorsActive = currentPath.startsWith('/contractors') || currentPat
     backdrop.addEventListener('click', closeMenu);
   }
 
-  // Pokrećemo funkciju kada se DOM učita
-  document.addEventListener('DOMContentLoaded', setupMobileMenu);
+  async function setupAuth() {
+    const mobileSignOut = document.getElementById('mobileSignOut');
+    const notifBell = document.getElementById('notifBell');
+    const notifBadge = document.getElementById('notifBadge');
 
-  // Opciono: Ako koristiš Astro View Transitions, ovo osigurava da meni radi i prilikom navigacije
-  document.addEventListener('astro:page-load', setupMobileMenu);
+    if (mobileSignOut) {
+      mobileSignOut.addEventListener('click', async () => {
+        await supabase.auth.signOut();
+        window.location.href = '/';
+      });
+    }
+
+    if (notifBell) {
+      notifBell.addEventListener('click', () => {
+        // Za sada samo toggle badge - kasnije možeš da dodam modal
+        if (notifBadge?.classList.contains('hidden')) {
+          notifBadge?.classList.remove('hidden');
+        } else {
+          notifBadge?.classList.add('hidden');
+        }
+      });
+    }
+  }
+
+  document.addEventListener('DOMContentLoaded', () => {
+    setupMobileMenu();
+    setupAuth();
+  });
+
+  document.addEventListener('astro:page-load', () => {
+    setupMobileMenu();
+    setupAuth();
+  });
 </script>

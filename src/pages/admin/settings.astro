@@ -59,6 +59,10 @@ const permitSettings = parsePermitSettings(tracking?.global_scripts);
           <span class="indicator w-2 h-2 rounded-full bg-zinc-200"></span>
           Credits
         </button>
+        <button id="tabBtn-oauth" class="tab-btn flex-shrink-0 lg:w-full text-left px-4 py-3 text-zinc-500 hover:bg-zinc-100/50 hover:text-slate-900 rounded-lg text-[11px] font-bold uppercase tracking-wider transition-all border border-transparent flex items-center gap-3">
+          <span class="indicator w-2 h-2 rounded-full bg-zinc-200"></span>
+          Integrations
+        </button>
       </div>
 
       <!-- DESNI SADRŽAJ -->
@@ -384,7 +388,52 @@ const permitSettings = parsePermitSettings(tracking?.global_scripts);
           </form>
         </div>
 
+        <!-- OAUTH & INTEGRATIONS -->
+        <div id="section-oauth" class="tab-section hidden bg-white border border-slate-200 p-6 md:p-8 rounded-2xl shadow-sm space-y-6">
+          <div>
+            <h2 class="text-sm font-bold text-slate-900 uppercase tracking-wider mb-2">Google OAuth Configuration</h2>
+            <p class="mb-6 text-[11px] leading-5 text-slate-500">Add your Google OAuth 2.0 credentials from <a href="https://console.cloud.google.com" target="_blank" class="text-blue-600 hover:underline">Google Cloud Console</a> to enable Google sign-in on all login portals.</p>
+
+            <div class="rounded-xl border border-blue-100 bg-blue-50 p-4 mb-6 text-[11px] leading-5 text-blue-800">
+              <strong>Setup steps:</strong>
+              <ol class="list-decimal list-inside mt-2 space-y-1">
+                <li>Create OAuth 2.0 credentials in Google Cloud Console</li>
+                <li>Set Authorized Redirect URI: <code class="bg-blue-100 px-1 rounded text-[10px]">https://[your-project].supabase.co/auth/v1/callback</code></li>
+                <li>Copy Client ID and Client Secret below</li>
+                <li>Go to Supabase Authentication → Providers → Google to complete setup</li>
+              </ol>
+            </div>
+
+            <form id="oauthSettingsForm" class="space-y-4">
+              <div>
+                <label class="mb-2 block text-[10px] font-bold uppercase tracking-wider text-slate-600">Google Client ID</label>
+                <input id="googleClientId" type="text" placeholder="xxx-xxxxxxxxxxxxxxx.apps.googleusercontent.com" class="w-full rounded-xl border border-slate-200 p-3 text-sm font-mono" />
+              </div>
+
+              <div>
+                <label class="mb-2 block text-[10px] font-bold uppercase tracking-wider text-slate-600">Google Client Secret</label>
+                <input id="googleClientSecret" type="password" placeholder="••••••••••••••••••••••••" class="w-full rounded-xl border border-slate-200 p-3 text-sm font-mono" />
+                <p class="mt-2 text-[9px] text-amber-700 bg-amber-50 px-3 py-2 rounded-lg">⚠️ Store securely. Never commit to version control.</p>
+              </div>
+
+              <button id="saveOAuthBtn" type="submit" class="h-11 rounded-xl bg-slate-950 px-6 text-xs font-bold uppercase tracking-wider text-white hover:bg-green-700 transition-colors">
+                Save OAuth Settings
+              </button>
+              <p id="oauthMsg" class="text-[11px]"></p>
+            </form>
+          </div>
+
+          <div class="border-t border-slate-100 pt-6">
+            <h3 class="text-xs font-bold text-slate-900 uppercase tracking-wider mb-3">Active on portals:</h3>
+            <ul class="space-y-2 text-[10px] text-slate-600">
+              <li class="flex items-center gap-2"><span class="w-1.5 h-1.5 rounded-full bg-green-500"></span>Contractor login (/login)</li>
+              <li class="flex items-center gap-2"><span class="w-1.5 h-1.5 rounded-full bg-green-500"></span>Admin login (/admin/login)</li>
+              <li class="flex items-center gap-2"><span class="w-1.5 h-1.5 rounded-full bg-green-500"></span>Fleet owner login (/truck-login)</li>
+            </ul>
+          </div>
+        </div>
       </div>
+
     </div>
   </div>
 </AdminLayout>
@@ -404,15 +453,17 @@ const permitSettings = parsePermitSettings(tracking?.global_scripts);
   const tabPermit = document.getElementById('tabBtn-permit');
   const tabTruckOutreach = document.getElementById('tabBtn-truckOutreach');
   const tabCredits = document.getElementById('tabBtn-credits');
+  const tabOAuth = document.getElementById('tabBtn-oauth');
   const secTerritories = document.getElementById('section-territories');
   const secTracking = document.getElementById('section-tracking');
   const secNotifications = document.getElementById('section-notifications');
   const secPermit = document.getElementById('section-permit');
   const secTruckOutreach = document.getElementById('section-truckOutreach');
   const secCredits = document.getElementById('section-credits');
+  const secOAuth = document.getElementById('section-oauth');
 
-  const allTabs = [tabTerritories, tabTracking, tabNotifications, tabPermit, tabTruckOutreach, tabCredits] as HTMLElement[];
-  const allSections = [secTerritories, secTracking, secNotifications, secPermit, secTruckOutreach, secCredits] as HTMLElement[];
+  const allTabs = [tabTerritories, tabTracking, tabNotifications, tabPermit, tabTruckOutreach, tabCredits, tabOAuth] as HTMLElement[];
+  const allSections = [secTerritories, secTracking, secNotifications, secPermit, secTruckOutreach, secCredits, secOAuth] as HTMLElement[];
 
   function switchTab(activeTab: HTMLElement, showSec: HTMLElement) {
     allTabs.forEach((tab) => {
@@ -442,6 +493,10 @@ const permitSettings = parsePermitSettings(tracking?.global_scripts);
   tabCredits?.addEventListener('click', () => {
     switchTab(tabCredits, secCredits!);
     loadCreditSettings();
+  });
+  tabOAuth?.addEventListener('click', () => {
+    switchTab(tabOAuth, secOAuth!);
+    loadOAuthSettings();
   });
 
   function escapeHtml(value: unknown) {
@@ -547,6 +602,51 @@ const permitSettings = parsePermitSettings(tracking?.global_scripts);
     (document.getElementById('creditsAutoRefillAmount') as HTMLInputElement).value = s.auto_refill_amount;
     (document.getElementById('creditsAutoRefillInterval') as HTMLInputElement).value = s.auto_refill_interval_days;
   }
+
+  async function loadOAuthSettings() {
+    // OAuth je konfigurisan na Supabase, ali prikazujemo info
+    const form = document.getElementById('oauthSettingsForm') as HTMLFormElement;
+    form.style.opacity = '0.7';
+    const msg = document.getElementById('oauthMsg') as HTMLElement;
+    msg.textContent = '✓ Check Supabase Dashboard → Authentication → Providers → Google for full OAuth configuration';
+    msg.className = 'text-[11px] text-blue-600 mt-2';
+  }
+
+  document.getElementById('oauthSettingsForm')?.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const saveBtn = document.getElementById('saveOAuthBtn') as HTMLButtonElement;
+    const msg = document.getElementById('oauthMsg') as HTMLElement;
+    
+    saveBtn.disabled = true;
+    saveBtn.textContent = 'Processing...';
+
+    const clientId = (document.getElementById('googleClientId') as HTMLInputElement).value.trim();
+    const clientSecret = (document.getElementById('googleClientSecret') as HTMLInputElement).value.trim();
+
+    if (!clientId || !clientSecret) {
+      msg.textContent = '❌ Please enter both Client ID and Client Secret';
+      msg.className = 'text-[11px] text-red-600 mt-2';
+      saveBtn.disabled = false;
+      saveBtn.textContent = 'Save OAuth Settings';
+      return;
+    }
+
+    // Store locally as reminder (actual OAuth config is on Supabase)
+    localStorage.setItem('google_oauth_configured', 'true');
+    localStorage.setItem('google_oauth_date', new Date().toISOString());
+
+    msg.textContent = '✓ Configuration saved. Next step: Go to Supabase Dashboard → Authentication → Providers → Google and paste your credentials there.';
+    msg.className = 'text-[11px] text-green-600 mt-2';
+    
+    // Clear fields for security
+    (document.getElementById('googleClientId') as HTMLInputElement).value = '';
+    (document.getElementById('googleClientSecret') as HTMLInputElement).value = '';
+    
+    setTimeout(() => {
+      saveBtn.disabled = false;
+      saveBtn.textContent = 'Save OAuth Settings';
+    }, 2000);
+  });
 
   document.getElementById('creditSettingsForm')?.addEventListener('submit', async (e) => {
     e.preventDefault();
