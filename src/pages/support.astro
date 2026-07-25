@@ -8,8 +8,8 @@ import { House, Users, Truck, HelpCircle } from "lucide-astro";
 
 const paths = [
   { icon: House, title: "Property owners", text: "Need an estimate or help with a submitted request? Start with the estimate flow so dispatch has the project details.", href: "/#quote", action: "Request or update a project" },
-  { icon: Users, title: "Contractors", text: "Access claimed leads and profile settings from the contractor portal. Registration support begins on the network application page.", href: "/portal", action: "Open contractor access" },
-  { icon: Truck, title: "Fleet owners", text: "Manage equipment listings, availability and profile information from the Fleet Owner portal.", href: "/portal", action: "Open fleet access" },
+  { icon: Users, title: "Contractors", text: "Sign in to review available and claimed leads, credits, billing activity and your contractor profile. New contractors must apply before access is approved.", href: "/login", action: "Contractor sign in" },
+  { icon: Truck, title: "Fleet owners", text: "Sign in to manage truck listings, approval status, availability and applications. You can also start by claiming an existing directory profile.", href: "/truck-login", action: "Fleet owner sign in" },
 ];
 ---
 <MainLayout title="Support | SF Tree Removal" description="Get help with homeowner requests, contractor accounts and fleet listings on SF Tree Removal.">

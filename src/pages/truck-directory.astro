@@ -7,7 +7,7 @@ import Header from "../components/layout/Header.astro";
 import { supabase } from "../lib/supabase";
 import { parsePermitSettings } from "../lib/permitData";
 import { directoryLocationUrl, directoryProfileUrl } from "../lib/truckDirectory";
-import { ArrowLeft, ArrowRight, BadgeCheck, CheckCircle2, MapPin, Ruler, Search, ShieldCheck, Truck, UserCheck } from "lucide-astro";
+import { ArrowLeft, ArrowRight, BadgeCheck, Building2, CheckCircle2, Database, MapPin, Ruler, Search, ShieldCheck, Truck, UserCheck } from "lucide-astro";
 
 const { data: profiles } = await supabase
   .from("unclaimed_truck_directory")
@@ -29,19 +29,53 @@ const permitCoverage = [...new Set(configuredPermitCoverage.filter(Boolean))].so
 const profileCount = profiles?.length || 0;
 const stateCount = new Set((profiles || []).map((profile: any) => profile.location_state).filter(Boolean)).size;
 const states = [...new Set((profiles || []).map((profile: any) => profile.location_state).filter(Boolean))].sort();
+
+const coverageCoordinates: Record<string, [number, number]> = {
+  "Broward County": [26.1224, -80.1373], "City of Boca Raton": [26.3583, -80.0833],
+  "City of Coral Gables": [25.7459, -80.2732], "City of Doral": [25.8158, -80.3437],
+  "City of Fort Lauderdale": [26.1223, -80.1434], "City of Hallandale Beach": [26.0176, -80.1456],
+  "City of Miami": [25.7617, -80.1918], "City of Miami Gardens": [25.9500, -80.2000],
+  "City of Naples": [26.1406, -81.7934], "City of Oakland Park": [26.1667, -80.1167],
+  "Collier County": [26.2, -81.5], "Miami-Dade County": [25.7617, -80.1918],
+  "Palm Beach County": [26.7153, -80.0534], "Town of Jupiter": [26.9483, -80.0534],
+  "Village of Wellington": [26.6228, -80.2347],
+};
+const floridaFleetCoordinates: Record<string, [number, number]> = {
+  "Bradenton": [27.4989, -82.5748], "Crystal River": [28.9025, -82.5926],
+  "Dunnellon": [29.0491, -82.4609], "Edgewater": [28.9889, -80.9023],
+  "Fort Lauderdale": [26.1224, -80.1373], "Gonzalez": [30.5813, -87.2914],
+  "North Miami Beach": [25.9331, -80.1625], "Sand Lake": [28.4494, -81.4687],
+  "Tampa": [27.9506, -82.4572],
+};
+const mappableProfiles = (profiles || [])
+  .filter((profile: any) => profile.location_state === "FL" && floridaFleetCoordinates[profile.location_city])
+  .map((profile: any) => ({
+    slug: profile.slug,
+    companyName: profile.company_name,
+    equipmentName: profile.equipment_name,
+    city: profile.location_city,
+    state: profile.location_state,
+    coordinates: floridaFleetCoordinates[profile.location_city],
+  }));
+const mappedCoverage = permitCoverage
+  .filter((name) => coverageCoordinates[name])
+  .map((name) => ({ name, coordinates: coverageCoordinates[name] }));
 ---
 
-<MainLayout title="Grapple Saw Truck & Equipment Directory | SF Tree Removal" description="Find grapple saw trucks, cranes and equipment operators by location. Own a listed company? Claim your free profile and connect with contractors who need heavy equipment.">
+<MainLayout title="Grapple Saw Truck & Fleet Directory | SF Tree Removal" description="Search public grapple saw truck and fleet profiles by location, compare listed equipment details, or claim your company profile.">
   <Header />
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
   <main class="min-h-screen bg-white pt-16 lg:pt-20">
     <section class="relative overflow-hidden border-b border-slate-200 bg-slate-950 px-5 py-16 text-white md:px-8 lg:py-24">
+      <img src="/videos/hero-fleet-poster.webp" alt="" class="absolute inset-0 h-full w-full object-cover opacity-25" />
+      <div class="absolute inset-0 bg-gradient-to-r from-slate-950 via-slate-950/95 to-slate-950/65"></div>
       <div class="pointer-events-none absolute -right-24 -top-36 h-[420px] w-[420px] rounded-full bg-green-500/10 blur-[110px]"></div>
       <div class="pointer-events-none absolute -bottom-40 left-1/4 h-80 w-80 rounded-full bg-green-500/[0.06] blur-[100px]"></div>
       <div class="relative mx-auto grid w-full max-w-7xl gap-12 lg:grid-cols-[1fr_390px] lg:items-center">
         <div>
-          <p class="font-mono text-[10px] font-bold uppercase tracking-[0.24em] text-green-400">// Heavy equipment network</p>
-          <h1 class="mt-5 max-w-4xl text-4xl font-bold leading-[1.04] tracking-tight sm:text-5xl lg:text-6xl">Find the equipment that helps you take on bigger tree jobs.</h1>
-          <p class="mt-6 max-w-2xl text-sm leading-7 text-slate-300 md:text-base">Search grapple saw trucks, cranes and experienced operators by location. Compare capabilities, find nearby fleet support and connect with the right equipment partner for demanding work.</p>
+          <p class="font-mono text-[10px] font-bold uppercase tracking-[0.24em] text-green-400">// Public fleet directory</p>
+          <h1 class="mt-5 max-w-4xl text-4xl font-bold leading-[1.04] tracking-tight sm:text-5xl lg:text-6xl">Find equipment capability near the work.</h1>
+          <p class="mt-6 max-w-2xl text-sm leading-7 text-slate-300 md:text-base">Search grapple saw truck and fleet profiles by company, equipment or location. Compare the details available today, then confirm unverified information directly with the operator.</p>
           <div class="mt-8 flex flex-col gap-3 sm:flex-row">
             <a href="#browse-directory" class="inline-flex h-12 items-center justify-center gap-2 rounded-xl bg-green-600 px-6 text-xs font-bold uppercase tracking-[0.14em] text-white transition hover:bg-green-500"><Search size={16} /> Find equipment</a>
             <a href="#claim-profile" class="inline-flex h-12 items-center justify-center gap-2 rounded-xl border border-white/15 bg-white/[0.06] px-6 text-xs font-bold uppercase tracking-[0.14em] text-white transition hover:border-green-400/40 hover:bg-green-400/10">Own a truck? Claim profile <ArrowRight size={15} /></a>
@@ -51,7 +85,7 @@ const states = [...new Set((profiles || []).map((profile: any) => profile.locati
           <div class="rounded-2xl border border-white/10 bg-white/[0.05] p-5 backdrop-blur"><strong class="block text-3xl font-bold text-white">{profileCount}</strong><span class="mt-1 block text-[10px] font-bold uppercase tracking-[0.16em] text-slate-400">Equipment profiles</span></div>
           <div class="rounded-2xl border border-white/10 bg-white/[0.05] p-5 backdrop-blur"><strong class="block text-3xl font-bold text-white">{stateCount}</strong><span class="mt-1 block text-[10px] font-bold uppercase tracking-[0.16em] text-slate-400">States covered</span></div>
           <div class="col-span-2 rounded-2xl border border-green-400/20 bg-green-400/10 p-5">
-            <div class="flex items-center gap-3"><span class="flex h-10 w-10 items-center justify-center rounded-xl bg-green-400/15 text-green-300"><ShieldCheck size={20} /></span><div><strong class="block text-sm text-white">Free profile ownership</strong><span class="text-xs text-green-100/70">Verify your business and unlock lead access.</span></div></div>
+            <div class="flex items-center gap-3"><span class="flex h-10 w-10 items-center justify-center rounded-xl bg-green-400/15 text-green-300"><ShieldCheck size={20} /></span><div><strong class="block text-sm text-white">Public data, clear status</strong><span class="text-xs text-green-100/70">Unclaimed information is labeled until ownership is reviewed.</span></div></div>
           </div>
         </div>
       </div>
@@ -59,11 +93,11 @@ const states = [...new Set((profiles || []).map((profile: any) => profile.locati
 
     <section id="claim-profile" class="border-b border-slate-200 bg-slate-50 px-5 py-16 md:px-8 lg:py-20">
       <div class="mx-auto w-full max-w-7xl">
-        <div class="grid gap-10 lg:grid-cols-[380px_1fr] lg:items-start">
+        <div class="grid gap-10 lg:grid-cols-[390px_1fr] lg:items-center">
           <div>
             <p class="font-mono text-[10px] font-bold uppercase tracking-[0.22em] text-green-700">// Is this your company?</p>
-            <h2 class="mt-4 text-3xl font-bold tracking-tight text-slate-950 md:text-4xl">Turn your listing into a source of new work.</h2>
-            <p class="mt-4 text-sm leading-6 text-slate-600">Claiming is free. Once your ownership is confirmed, you can correct your equipment details, receive relevant job notifications and apply for leads from contractors who need fleet support.</p>
+            <h2 class="mt-4 text-3xl font-bold tracking-tight text-slate-950 md:text-4xl">Take control of your public fleet profile.</h2>
+            <p class="mt-4 text-sm leading-7 text-slate-600">Claiming is free. Once ownership is reviewed, manage equipment information from your fleet account and use approved trucks when applying for relevant opportunities.</p>
             <a href="/truck-registration" class="mt-7 inline-flex h-12 items-center justify-center gap-2 rounded-xl bg-slate-950 px-6 text-xs font-bold uppercase tracking-[0.14em] text-white transition hover:bg-green-700">Claim your free profile <ArrowRight size={15} /></a>
           </div>
           <div class="grid gap-4 md:grid-cols-3">
@@ -72,13 +106,38 @@ const states = [...new Set((profiles || []).map((profile: any) => profile.locati
               { icon: UserCheck, number: "02", title: "Submit your claim", text: "Select Claim Profile and register using accurate business contact information." },
               { icon: BadgeCheck, number: "03", title: "Get verified", text: "We review ownership details. After approval, manage the profile and access matched opportunities." }
             ].map(({ icon: Icon, number, title, text }) => (
-              <article class="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
+              <article class="group rounded-2xl border border-slate-200 bg-white p-6 shadow-soft transition hover:-translate-y-0.5 hover:border-green-200 hover:shadow-soft-lg">
                 <div class="flex items-center justify-between"><span class="flex h-11 w-11 items-center justify-center rounded-xl bg-green-50 text-green-700"><Icon size={20} /></span><span class="font-mono text-[10px] font-bold text-slate-300">{number}</span></div>
                 <h3 class="mt-5 text-base font-bold text-slate-950">{title}</h3>
                 <p class="mt-2 text-xs leading-5 text-slate-600">{text}</p>
               </article>
             ))}
           </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="border-b border-slate-200 bg-white px-5 py-16 md:px-8 lg:py-20">
+      <div class="mx-auto w-full max-w-7xl">
+        <div class="grid gap-6 lg:grid-cols-[0.9fr_0.7fr] lg:items-end">
+          <div><p class="font-mono text-[10px] font-bold uppercase tracking-[0.22em] text-green-700">// Fleet & coverage map</p><h2 class="mt-3 text-3xl font-bold tracking-tight text-slate-950 sm:text-4xl">See where fleet profiles overlap active service territory.</h2></div>
+          <p class="max-w-xl text-sm leading-7 text-slate-600">Green zones represent the site's current South Florida coverage. Truck markers show Florida directory profiles with a mappable city location. Select a marker to open the profile.</p>
+        </div>
+
+        <div class="mt-8 grid gap-4 lg:grid-cols-[1fr_280px]">
+          <div class="relative overflow-hidden rounded-2xl border border-slate-200 bg-white p-2 shadow-soft-lg sm:rounded-3xl sm:p-3">
+            <div id="fleetCoverageMap" class="h-[440px] w-full rounded-xl bg-slate-100 sm:h-[560px] lg:h-[620px]"></div>
+            <div class="pointer-events-none absolute bottom-5 left-5 z-[500] hidden flex-wrap items-center gap-4 rounded-xl border border-slate-200 bg-white/95 px-4 py-3 text-[9px] font-bold uppercase tracking-wider text-slate-600 shadow-soft backdrop-blur sm:flex">
+              <span class="flex items-center gap-2"><span class="h-4 w-4 rounded-full border border-green-500/40 bg-green-500/15"></span> Site coverage</span>
+              <span class="flex items-center gap-2"><span class="flex h-5 w-5 items-center justify-center rounded-full bg-slate-950 text-[9px] text-white">T</span> Truck profile</span>
+            </div>
+          </div>
+          <aside class="flex flex-col gap-3">
+            <div class="rounded-2xl border border-green-200 bg-green-50 p-5"><span class="text-[9px] font-bold uppercase tracking-[0.18em] text-green-700">Active coverage</span><strong class="mt-2 block text-3xl font-bold text-slate-950">{mappedCoverage.length}</strong><p class="mt-1 text-xs leading-5 text-slate-600">Mapped South Florida territories</p></div>
+            <div class="rounded-2xl border border-slate-200 bg-slate-50 p-5"><span class="text-[9px] font-bold uppercase tracking-[0.18em] text-slate-500">Florida fleet markers</span><strong class="mt-2 block text-3xl font-bold text-slate-950">{mappableProfiles.length}</strong><p class="mt-1 text-xs leading-5 text-slate-600">Profiles with known city coordinates</p></div>
+            <div class="rounded-2xl border border-amber-200 bg-amber-50 p-5"><span class="text-[9px] font-bold uppercase tracking-[0.18em] text-amber-700">Location note</span><p class="mt-2 text-xs leading-5 text-amber-900">Markers use city centers, not private yards or exact equipment positions. Confirm current location and service radius directly with the operator.</p></div>
+            <button id="fitCoverageMap" type="button" class="inline-flex h-11 items-center justify-center gap-2 rounded-xl border border-slate-200 bg-white px-4 text-[10px] font-bold uppercase tracking-[0.14em] text-slate-700 hover:border-green-300 hover:text-green-800"><MapPin size={14} /> Reset map view</button>
+          </aside>
         </div>
       </div>
     </section>
@@ -96,13 +155,14 @@ const states = [...new Set((profiles || []).map((profile: any) => profile.locati
             <span class="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-green-700 text-white"><MapPin size={20} /></span>
             <div class="min-w-0 flex-1">
               <div class="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
-                <div><p class="text-[10px] font-bold uppercase tracking-[0.18em] text-green-700">Current permit lead coverage</p><h3 class="mt-1 text-base font-bold text-slate-950">We currently monitor and serve {permitCoverage.length} active {permitCoverage.length === 1 ? "area" : "areas"}.</h3></div>
+                <div><p class="text-[10px] font-bold uppercase tracking-[0.18em] text-green-700">Marketplace coverage</p><h3 class="mt-1 text-base font-bold text-slate-950">{permitCoverage.length} active service {permitCoverage.length === 1 ? "territory" : "territories"} support location-based opportunities.</h3></div>
                 <a href="/service-areas" class="shrink-0 text-[10px] font-bold uppercase tracking-[0.14em] text-green-800 hover:text-green-600">View service areas →</a>
               </div>
-              <p class="mt-2 text-xs leading-5 text-slate-600">These territories come directly from the active Permit Leads automation settings.</p>
-              <div class="mt-4 flex flex-wrap gap-2">
-                {permitCoverage.map((area) => <span class="rounded-full border border-green-200 bg-white px-3 py-1.5 text-[10px] font-bold text-green-800">{area}</span>)}
+              <p class="mt-2 text-xs leading-5 text-slate-600">Coverage comes from the platform's active territory configuration and is shown here as operational context for fleet owners.</p>
+              <div class="mt-4 grid gap-2 sm:grid-cols-2 lg:grid-cols-4">
+                {permitCoverage.slice(0, 8).map((area) => <span class="truncate rounded-lg border border-green-200 bg-white px-3 py-2 text-[10px] font-bold text-green-800">{area}</span>)}
               </div>
+              {permitCoverage.length > 8 && <p class="mt-3 text-[10px] font-bold uppercase tracking-wider text-green-800">+ {permitCoverage.length - 8} additional territories</p>}
             </div>
           </div>
         </aside>
@@ -110,16 +170,21 @@ const states = [...new Set((profiles || []).map((profile: any) => profile.locati
 
       <div class="mt-8 flex flex-col gap-3 rounded-2xl border border-slate-200 bg-slate-50 p-3 shadow-sm sm:flex-row">
         <label class="relative flex-1"><span class="sr-only">Search directory</span><Search size={16} class="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 text-slate-400" /><input id="directorySearch" type="search" placeholder="Search company, equipment or city…" class="h-12 w-full rounded-xl border border-slate-200 bg-white pl-11 pr-4 text-sm outline-none transition focus:border-green-500 focus:ring-4 focus:ring-green-500/10" /></label>
-        <select id="stateFilter" aria-label="Filter by state" class="h-12 rounded-xl border border-slate-200 bg-white px-4 text-xs font-bold uppercase tracking-wider text-slate-600 outline-none focus:border-green-500">
+        <select id="stateFilter" aria-label="Filter by state" class="h-12 w-full rounded-xl border border-slate-200 bg-white px-4 text-xs font-bold uppercase tracking-wider text-slate-600 outline-none focus:border-green-500 sm:w-48">
           <option value="">All states</option>
           {states.map((state) => <option value={state}>{state}</option>)}
         </select>
       </div>
 
+      <div class="mt-4 grid gap-3 sm:grid-cols-2">
+        <div class="flex gap-3 rounded-xl border border-amber-200 bg-amber-50 p-4"><Database size={18} class="mt-0.5 shrink-0 text-amber-700" /><div><strong class="block text-xs font-bold text-amber-900">Unclaimed public profile</strong><p class="mt-1 text-[11px] leading-5 text-amber-800">Compiled from public business information. Confirm specifications, availability and credentials directly.</p></div></div>
+        <div class="flex gap-3 rounded-xl border border-green-200 bg-green-50 p-4"><Building2 size={18} class="mt-0.5 shrink-0 text-green-700" /><div><strong class="block text-xs font-bold text-green-900">Fleet owner workflow</strong><p class="mt-1 text-[11px] leading-5 text-green-800">Owners can claim a listing, pass ownership review and manage equipment through their account.</p></div></div>
+      </div>
+
       <div id="directoryGrid" class="mt-6 grid grid-cols-1 gap-5 md:grid-cols-2 xl:grid-cols-3">
         {(profiles || []).map((profile: any) => (
           <article class="directory-card group flex flex-col rounded-2xl border border-slate-200 bg-white p-5 shadow-sm transition duration-300 hover:-translate-y-0.5 hover:border-slate-300 hover:shadow-lg" data-search={`${profile.company_name} ${profile.equipment_name} ${profile.location_city} ${profile.location_state}`.toLowerCase()} data-state={profile.location_state || ""}>
-            <div class="flex items-start justify-between gap-4">
+            <div class="flex flex-col items-start justify-between gap-3 min-[420px]:flex-row">
               <span class="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-slate-950 text-white"><Truck size={20} /></span>
               <span class="rounded-full border border-amber-200 bg-amber-50 px-2.5 py-1 text-[9px] font-bold uppercase tracking-wider text-amber-700">Unclaimed · Unverified</span>
             </div>
@@ -145,7 +210,7 @@ const states = [...new Set((profiles || []).map((profile: any) => profile.locati
       <div id="emptyDirectory" class="hidden mt-6 rounded-2xl border border-dashed border-slate-300 bg-white p-10 text-center text-sm text-slate-400">No matching equipment profiles.</div>
       <nav id="directoryPagination" class="mt-10 flex flex-col items-center justify-between gap-4 border-t border-slate-200 pt-6 sm:flex-row" aria-label="Truck directory pagination">
         <p id="directoryResults" class="text-xs text-slate-500" aria-live="polite"></p>
-        <div class="flex items-center gap-2">
+        <div class="no-scrollbar flex w-full items-center gap-2 overflow-x-auto pb-1 sm:w-auto">
           <button id="previousPage" type="button" class="inline-flex h-10 items-center justify-center gap-1.5 rounded-xl border border-slate-200 bg-white px-3 text-[10px] font-bold uppercase tracking-[0.12em] text-slate-600 transition hover:border-green-300 hover:text-green-700 disabled:cursor-not-allowed disabled:opacity-40"><ArrowLeft size={14} /> Previous</button>
           <div id="pageNumbers" class="flex items-center gap-1"></div>
           <button id="nextPage" type="button" class="inline-flex h-10 items-center justify-center gap-1.5 rounded-xl border border-slate-200 bg-white px-3 text-[10px] font-bold uppercase tracking-[0.12em] text-slate-600 transition hover:border-green-300 hover:text-green-700 disabled:cursor-not-allowed disabled:opacity-40">Next <ArrowRight size={14} /></button>
@@ -154,16 +219,107 @@ const states = [...new Set((profiles || []).map((profile: any) => profile.locati
       </div>
     </section>
 
-    <section class="border-t border-slate-200 bg-slate-950 px-5 py-14 text-white md:px-8">
-      <div class="mx-auto flex w-full max-w-7xl flex-col gap-6 rounded-2xl border border-white/10 bg-white/[0.04] p-7 md:flex-row md:items-center md:justify-between lg:p-9">
-        <div><div class="flex items-center gap-2 text-green-400"><CheckCircle2 size={17} /><span class="text-[10px] font-bold uppercase tracking-[0.18em]">Free to join</span></div><h2 class="mt-3 text-2xl font-bold">Put your equipment in front of contractors who need it.</h2><p class="mt-2 text-sm text-slate-400">Create or claim your fleet profile and start receiving relevant opportunities.</p></div>
-        <a href="/truck-registration" class="inline-flex h-12 shrink-0 items-center justify-center gap-2 rounded-xl bg-green-600 px-6 text-xs font-bold uppercase tracking-[0.14em] text-white hover:bg-green-500">Register fleet <ArrowRight size={15} /></a>
+    <section class="border-t border-slate-200 bg-white px-5 py-16 md:px-8 lg:py-20">
+      <div class="mx-auto grid w-full max-w-7xl overflow-hidden rounded-3xl border border-green-200 bg-green-50 shadow-soft-lg lg:grid-cols-[1fr_auto] lg:items-stretch">
+        <div class="p-7 sm:p-9 lg:p-11">
+          <div class="flex items-center gap-2 text-green-700"><CheckCircle2 size={17} /><span class="text-[10px] font-bold uppercase tracking-[0.18em]">Fleet owner access</span></div>
+          <h2 class="mt-4 max-w-2xl text-2xl font-bold tracking-tight text-slate-950 sm:text-3xl">Manage your equipment profile from one fleet account.</h2>
+          <p class="mt-3 max-w-2xl text-sm leading-6 text-slate-600">Register a new fleet or claim an existing public listing, then keep equipment details and availability current from your dashboard.</p>
+        </div>
+        <div class="flex items-center border-t border-green-200 bg-white/70 p-7 sm:p-9 lg:border-l lg:border-t-0">
+          <a href="/truck-registration" class="inline-flex h-12 w-full shrink-0 items-center justify-center gap-2 rounded-xl bg-slate-950 px-7 text-xs font-bold uppercase tracking-[0.14em] text-white transition hover:bg-green-700 sm:w-auto">Register or claim profile <ArrowRight size={15} /></a>
+        </div>
       </div>
     </section>
   </main>
   <Footer />
   <MobileNav />
 </MainLayout>
+
+<script is:inline src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script is:inline define:vars={{ mappedCoverage, mappableProfiles }}>
+  window.addEventListener("load", () => {
+    const mapElement = document.getElementById("fleetCoverageMap");
+    if (!mapElement || typeof L === "undefined") return;
+
+    const map = L.map(mapElement, { scrollWheelZoom: false, zoomControl: false }).setView([27.2, -81.6], 6);
+    L.control.zoom({ position: "topright" }).addTo(map);
+    L.tileLayer("https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png", {
+      attribution: "&copy; OpenStreetMap &copy; CARTO",
+      maxZoom: 19,
+    }).addTo(map);
+
+    const allPoints = [];
+    mappedCoverage.forEach((area) => {
+      const isCounty = area.name.includes("County");
+      const isTownOrVillage = area.name.startsWith("Town of") || area.name.startsWith("Village of");
+      const radius = isCounty ? 28000 : isTownOrVillage ? 15000 : 12000;
+      allPoints.push(area.coordinates);
+      L.circle(area.coordinates, {
+        radius,
+        color: "#16a34a",
+        fillColor: "#22c55e",
+        fillOpacity: 0.09,
+        opacity: 0.38,
+        weight: 1,
+      }).addTo(map).bindTooltip(area.name, { direction: "top" });
+    });
+
+    const cityCounts = {};
+    mappableProfiles.forEach((profile) => {
+      const count = cityCounts[profile.city] || 0;
+      cityCounts[profile.city] = count + 1;
+      const angle = count * 2.4;
+      const offset = count === 0 ? 0 : 0.018;
+      const point = [
+        profile.coordinates[0] + Math.sin(angle) * offset,
+        profile.coordinates[1] + Math.cos(angle) * offset,
+      ];
+      allPoints.push(point);
+
+      const marker = L.circleMarker(point, {
+        radius: 8,
+        color: "#ffffff",
+        fillColor: "#0f172a",
+        fillOpacity: 1,
+        weight: 3,
+      }).addTo(map);
+
+      const popup = document.createElement("div");
+      popup.className = "fleet-map-popup";
+      const company = document.createElement("strong");
+      company.textContent = profile.companyName;
+      const equipment = document.createElement("span");
+      equipment.textContent = profile.equipmentName || "Equipment profile";
+      const location = document.createElement("small");
+      location.textContent = [profile.city, profile.state].filter(Boolean).join(", ");
+      const link = document.createElement("a");
+      link.href = `/truck-directory/profile/${encodeURIComponent(profile.slug)}`;
+      link.textContent = "View profile →";
+      popup.append(company, equipment, location, link);
+      marker.bindPopup(popup);
+    });
+
+    const resetView = () => {
+      if (allPoints.length > 1) map.fitBounds(allPoints, { padding: [42, 42], maxZoom: 8 });
+    };
+    resetView();
+    document.getElementById("fitCoverageMap")?.addEventListener("click", resetView);
+  });
+</script>
+
+<style>
+  #fleetCoverageMap { filter: saturate(.88) contrast(1.02); }
+  :global(.fleet-map-popup) { min-width: 180px; font-family: ui-sans-serif, system-ui, sans-serif; }
+  :global(.fleet-map-popup strong),
+  :global(.fleet-map-popup span),
+  :global(.fleet-map-popup small) { display: block; }
+  :global(.fleet-map-popup strong) { color: #0f172a; font-size: 13px; }
+  :global(.fleet-map-popup span) { margin-top: 4px; color: #15803d; font-size: 11px; font-weight: 700; }
+  :global(.fleet-map-popup small) { margin-top: 3px; color: #64748b; font-size: 10px; }
+  :global(.fleet-map-popup a) { display: inline-flex; margin-top: 10px; color: #166534; font-size: 10px; font-weight: 800; text-transform: uppercase; letter-spacing: .08em; }
+  :global(.leaflet-popup-content-wrapper) { border: 1px solid #e2e8f0; border-radius: 12px; box-shadow: 0 16px 38px -16px rgba(15,23,42,.35); }
+</style>
 
 <script>
   const search = document.getElementById("directorySearch") as HTMLInputElement;

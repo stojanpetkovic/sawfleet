@@ -5,6 +5,7 @@ import Header from "../components/layout/Header.astro";
 import MobileNav from "../components/layout/MobileNav.astro";
 import Footer from "../components/layout/Footer.astro";
 import { supabase } from "../lib/supabase";
+import { House, BriefcaseBusiness, Truck, ArrowRight, MapPin, Trees, Scissors, CircleDotDashed, LandPlot, ShieldCheck, ClipboardCheck, HardHat, Landmark } from "lucide-astro";
 
 // 1. Učitavamo teritorije iz baze za formu
 const { data: territories } = await supabase
@@ -15,7 +16,7 @@ const { data: territories } = await supabase
 
 <MainLayout
   title="SF Tree Removal | Find Trusted Tree Service Professionals"
-  description="Connect homeowners with trusted local tree service professionals across South Florida.">
+  description="Submit a tree-service request, connect with local contractors, or manage fleet equipment and opportunities across South Florida.">
 
   <Header />
 
@@ -58,26 +59,26 @@ const { data: territories } = await supabase
 
           <!-- Editorial Heading -->
           <h1 class="mt-6 text-[2.75rem] sm:text-[3.5rem] lg:text-[4rem] font-bold leading-[1.05] tracking-tighter text-white">
-            Need a Tree
+            One place to move
             <span class="block mt-1 bg-gradient-to-r from-green-400 to-emerald-400 bg-clip-text text-transparent">
-              Removed?
+              tree work forward.
             </span>
           </h1>
 
           <!-- High-Contrast Subtitle -->
           <p class="mt-6 text-base sm:text-lg leading-relaxed text-white/85 font-medium">
-            Submit one request and we'll connect you with the right tree service professional for your project.
+            Tell us what the property needs. We route the request to approved tree-service contractors working in your area.
           </p>
 
           <!-- Clean System Description -->
           <p class="mt-6 text-sm leading-relaxed text-white/60 border-l-2 border-white/20 pl-4 py-1">
-            Stop calling multiple companies. Describe your needs once, and our dispatch system matches you with a verified local contractor active in your area.
+            SF Tree Removal is a request and dispatch platform. Independent contractors review available projects, claim the work they can serve and contact the property owner directly.
           </p>
 
           <!-- Premium CTA Block -->
           <div class="mt-10">
             <a href="#how-it-works" class="flex h-12 w-fit px-8 items-center justify-center rounded-xl border border-white/20 bg-white/10 backdrop-blur-md text-[11px] font-bold uppercase tracking-wider text-white/90 transition-all hover:border-white/30 hover:bg-white/20">
-              Learn More
+              See how it works
             </a>
           </div>
 
@@ -87,7 +88,7 @@ const { data: territories } = await supabase
               <span class="text-green-400">//</span> 100% Free Estimate
             </div>
             <div class="flex items-center gap-2">
-              <span class="text-green-400">//</span> Qualified Contractors
+              <span class="text-green-400">//</span> Location-Based Routing
             </div>
             <div class="flex items-center gap-2">
               <span class="text-green-400">//</span> No Obligation
@@ -108,7 +109,7 @@ const { data: territories } = await supabase
           <div class="border-b border-slate-200 pb-5 mb-6 relative">
             <div class="flex items-center justify-between gap-3">
               <span class="text-[10px] font-mono font-bold uppercase tracking-[0.2em] text-green-700">
-                // Dispatch Pipeline
+                // Property request
               </span>
               <span class="inline-flex items-center gap-1.5 rounded-full bg-green-50 border border-green-200 px-2.5 py-1 text-[9px] font-bold uppercase tracking-wider text-green-700">
                 <span class="h-1.5 w-1.5 rounded-full bg-green-500 animate-pulse"></span>
@@ -119,7 +120,7 @@ const { data: territories } = await supabase
               Request a Free Estimate
             </h2>
             <p class="mt-1 text-xs text-slate-500">
-              Serving our active service territories. Takes under a minute.
+              Available across {territories?.length || 0} active service territories. Takes under a minute.
             </p>
           </div>
 
@@ -169,10 +170,37 @@ const { data: territories } = await supabase
 
           <!-- Footer Forme -->
           <div class="mt-6 flex items-center justify-center gap-2 border-t border-slate-200 pt-5 text-[9px] font-mono font-bold uppercase tracking-[0.2em] text-slate-400">
-            <span>🔒 Secure Protocol Active</span>
+            <span>Contact details used to process your request</span>
           </div>
         </div>
 
+      </div>
+    </section>
+
+    <section class="border-b border-slate-200 bg-slate-950 px-4 py-14 text-white sm:px-8 lg:py-20">
+      <div class="mx-auto max-w-[1200px]">
+        <div class="grid gap-8 lg:grid-cols-[0.8fr_1.2fr] lg:items-end">
+          <div>
+            <span class="text-[10px] font-mono font-bold uppercase tracking-[0.22em] text-green-400">// One platform, three workflows</span>
+            <h2 class="mt-3 text-3xl font-bold tracking-tighter sm:text-4xl">Start from the role that matches you.</h2>
+          </div>
+          <p class="max-w-2xl text-sm leading-7 text-slate-400">The public website, partner dashboards and equipment directory work together. Each role gets a focused path and only the information needed for the next step.</p>
+        </div>
+        <div class="mt-10 grid gap-4 lg:grid-cols-3">
+          {[
+            { icon: House, label: "Property owners", title: "Request tree service", text: "Submit the location, contact details and project scope. Dispatch routes the request to contractors serving that territory.", href: "#quote", action: "Start a request" },
+            { icon: BriefcaseBusiness, label: "Contractors", title: "Review local opportunities", text: "Approved contractors see project summaries in their configured territory and use credits to claim the leads they want to pursue.", href: "/contractors-registration", action: "Join the network" },
+            { icon: Truck, label: "Fleet owners", title: "List equipment and apply", text: "Manage truck specifications and availability, claim an existing public profile and apply for relevant fleet opportunities.", href: "/truck-registration", action: "Register fleet" },
+          ].map(({ icon: Icon, label, title, text, href, action }) => (
+            <article class="flex flex-col rounded-2xl border border-white/10 bg-white/[0.04] p-6 transition hover:border-green-400/30 hover:bg-white/[0.06]">
+              <div class="flex items-center justify-between"><span class="flex h-11 w-11 items-center justify-center rounded-xl bg-green-400/10 text-green-300"><Icon size={21} strokeWidth={1.7} /></span><span class="text-[9px] font-bold uppercase tracking-[0.18em] text-slate-500">{label}</span></div>
+              <h3 class="mt-6 text-lg font-bold">{title}</h3>
+              <p class="mt-3 flex-1 text-sm leading-6 text-slate-400">{text}</p>
+              <a href={href} class="mt-6 inline-flex items-center gap-2 text-[10px] font-bold uppercase tracking-[0.16em] text-green-300 hover:text-green-200">{action}<ArrowRight size={14} /></a>
+            </article>
+          ))}
+        </div>
+        <div class="mt-4 flex items-center gap-3 rounded-2xl border border-white/10 bg-white/[0.03] px-5 py-4 text-xs text-slate-400"><MapPin size={17} class="shrink-0 text-green-400" /><span>Coverage is driven by the active territories shown on the <a href="/service-areas" class="font-bold text-white hover:text-green-300">Service Areas page</a>.</span></div>
       </div>
     </section>
 
@@ -181,115 +209,96 @@ const { data: territories } = await supabase
     <!-- 2. CAPABILITIES & REGIONAL BOUNDS -->
     <!-- ============================================== -->
     <!-- Svetla pozadina -->
-    <section id="how-it-works" class="border-t border-slate-200 bg-white px-4 py-12 sm:px-8 sm:py-16 lg:py-20 font-sans selection:bg-green-500/30 selection:text-slate-900">
+    <section id="how-it-works" class="border-t border-slate-200 bg-white px-4 py-14 font-sans selection:bg-green-500/30 selection:text-slate-900 sm:px-8 sm:py-20 lg:py-24">
       <div class="mx-auto max-w-[1200px]">
-        
-        <div class="mb-8 max-w-2xl sm:mb-10">
+        <div class="grid gap-5 border-b border-slate-200 pb-8 sm:pb-10 lg:grid-cols-[minmax(0,0.9fr)_minmax(360px,0.65fr)] lg:items-end">
+          <div>
           <span class="text-[10px] font-mono font-bold uppercase tracking-[0.2em] text-green-700">// One request, local response</span>
-          <h2 class="mt-3 text-2xl font-bold tracking-tight text-slate-950 sm:text-3xl">Everything starts with the right project details.</h2>
-          <p class="mt-3 text-sm leading-relaxed text-slate-600">We route your request by location and service need so you spend less time calling around and more time comparing the right options.</p>
+            <h2 class="mt-3 max-w-2xl text-3xl font-bold leading-tight tracking-tighter text-slate-950 sm:text-4xl lg:text-[2.75rem]">Everything starts with the right project details.</h2>
+          </div>
+          <p class="max-w-xl text-sm leading-7 text-slate-600 sm:text-base">We route your request by location and service need so you spend less time calling around and more time discussing the project with a relevant local professional.</p>
         </div>
 
-        <div class="grid gap-8 lg:grid-cols-2 lg:gap-12">
-          
-          <!-- LEVO: Obim Usluga -->
-          <div>
-            <span class="text-[10px] font-mono font-bold uppercase tracking-[0.2em] text-slate-400">Services we route</span>
-            <h3 class="mt-2 text-xl font-bold tracking-tight text-slate-900 sm:text-2xl">Projects large and small.</h3>
-            
+        <div class="mt-8 grid gap-5 lg:mt-10 lg:grid-cols-[minmax(0,1.15fr)_minmax(340px,0.85fr)] lg:items-stretch">
+          <div class="rounded-2xl border border-slate-200 bg-slate-50/70 p-5 sm:p-7 lg:p-8">
+            <div class="flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
+              <div><span class="text-[10px] font-mono font-bold uppercase tracking-[0.2em] text-slate-500">Services we route</span><h3 class="mt-2 text-2xl font-bold tracking-tight text-slate-950">Projects large and small.</h3></div>
+              <a href="/services" class="inline-flex items-center gap-1.5 text-[10px] font-bold uppercase tracking-[0.15em] text-green-700 hover:text-green-900">All services <ArrowRight size={13} /></a>
+            </div>
             <div class="mt-6 grid gap-3 sm:grid-cols-2">
               {[
-                { t: "Tree Removal", d: "Safe extraction of dead, dying, or hazardous trees near foundations." },
-                { t: "Trimming & Pruning", d: "Precision cutting for canopy health, aesthetics, and storm mitigation prep." },
-                { t: "Stump Grinding", d: "Complete below-grade grinding to clear land for replanting or construction." },
-                { t: "Lot Clearing", d: "Full-scale vegetative removal and site preparation for residential projects." }
-              ].map((item) => (
-                // SLATE KARTICE
-                <div class="rounded-xl border border-slate-200 bg-white p-4 shadow-soft hover:shadow-soft-lg hover:border-slate-300 transition-all">
-                  <div class="text-xs font-bold text-slate-900 uppercase tracking-wider">{item.t}</div>
-                  <p class="text-[11px] text-slate-600 mt-2 leading-relaxed">{item.d}</p>
-                </div>
+                { icon: Trees, t: "Tree Removal", d: "Dead, damaged, hazardous or unwanted trees, including work near structures." },
+                { icon: Scissors, t: "Trimming & Pruning", d: "Canopy maintenance, clearance work and preparation for severe weather." },
+                { icon: CircleDotDashed, t: "Stump Grinding", d: "Below-grade grinding to reclaim space for landscaping or construction." },
+                { icon: LandPlot, t: "Lot Clearing", d: "Tree and vegetation clearing for access, cleanup and property improvements." }
+              ].map(({ icon: Icon, t, d }) => (
+                <article class="group rounded-xl border border-slate-200 bg-white p-4 shadow-soft transition-all hover:-translate-y-0.5 hover:border-green-200 hover:shadow-soft-lg sm:p-5">
+                  <span class="flex h-9 w-9 items-center justify-center rounded-lg bg-green-50 text-green-700"><Icon size={18} strokeWidth={1.8} /></span>
+                  <h4 class="mt-4 text-sm font-bold text-slate-950">{t}</h4>
+                  <p class="mt-2 text-xs leading-5 text-slate-600">{d}</p>
+                </article>
               ))}
             </div>
           </div>
 
-          <!-- DESNO: Regional Bounds -->
-          <div class="flex flex-col justify-center rounded-2xl border border-slate-200 bg-slate-50 p-5 sm:p-7">
-            <div>
-              <span class="text-[10px] font-mono font-bold uppercase tracking-[0.2em] text-green-700">// Local coverage</span>
-              <h3 class="mt-2 text-xl font-bold tracking-tight text-slate-900 sm:text-2xl">Built around South Florida.</h3>
-              <p class="mt-3 text-sm leading-relaxed text-slate-600">
-                Requests are matched by active territory, helping local professionals respond with realistic availability and travel time.
-              </p>
-              
-              <!-- Gradovi -->
-              <div class="mt-5 flex flex-wrap gap-2">
-                {['Miami', 'Fort Lauderdale', 'West Palm Beach', 'Boca Raton', 'Hollywood', 'Coral Gables'].map(city => (
-                  <span class="rounded-full bg-white border border-slate-200 px-3 py-1.5 text-[10px] font-mono text-slate-600 hover:border-slate-300 transition-colors">
-                    {city}
-                  </span>
+          <div class="relative flex min-h-full flex-col overflow-hidden rounded-2xl bg-slate-950 p-5 text-white sm:p-7 lg:p-8">
+            <div class="pointer-events-none absolute -right-20 -top-20 h-56 w-56 rounded-full bg-green-500/10 blur-[70px]"></div>
+            <div class="relative">
+              <span class="flex h-11 w-11 items-center justify-center rounded-xl border border-green-400/20 bg-green-400/10 text-green-300"><MapPin size={21} /></span>
+              <span class="mt-6 block text-[10px] font-mono font-bold uppercase tracking-[0.2em] text-green-400">// Local coverage</span>
+              <h3 class="mt-2 text-2xl font-bold tracking-tight">Built around South Florida.</h3>
+              <p class="mt-3 text-sm leading-6 text-slate-400">Requests are routed using the active territory selected in the form, helping contractors focus on locations they are configured to serve.</p>
+              <div class="mt-6 grid grid-cols-2 gap-2">
+                {(territories || []).slice(0, 6).map((territory) => (
+                  <span class="truncate rounded-lg border border-white/10 bg-white/[0.05] px-3 py-2.5 text-[10px] font-medium text-slate-300">{territory.name.replace(/^(City|Town|Village) of /, '')}</span>
                 ))}
               </div>
+              <a href="/service-areas" class="mt-5 inline-flex items-center gap-2 text-[10px] font-bold uppercase tracking-[0.15em] text-green-300 hover:text-green-200">View all {territories?.length || 0} territories <ArrowRight size={13} /></a>
             </div>
-
-            <!-- Protokol -->
-            <div class="mt-6 rounded-xl border border-green-200 bg-green-50 p-4 text-[11px] leading-relaxed text-slate-700 relative overflow-hidden">
-              <div class="absolute top-0 right-0 w-32 h-32 bg-green-500/5 blur-[40px] rounded-full pointer-events-none"></div>
-              <strong class="text-green-700 block mb-1 uppercase tracking-wider">Respectful matching</strong>
-              Your request is shared with a limited number of relevant local professionals—not an endless list of callers.
+            <div class="relative mt-7 border-t border-white/10 pt-6">
+              <div class="flex gap-3"><ShieldCheck size={18} class="mt-0.5 shrink-0 text-green-400" /><div><strong class="block text-xs font-bold uppercase tracking-wider text-white">Focused routing</strong><p class="mt-1.5 text-xs leading-5 text-slate-400">The request enters a relevant local workflow instead of being posted as an unrestricted public contact list.</p></div></div>
             </div>
           </div>
-
         </div>
       </div>
     </section>
 
-    <!-- ============================================== -->
-    <!-- 3. TRUST & COMPLIANCE -->
-    <!-- ============================================== -->
-    <!-- Svetla pozadina -->
-    <section class="relative overflow-hidden bg-slate-50 py-12 sm:py-16 lg:py-20 px-4 sm:px-8 border-t border-slate-200 font-sans selection:bg-green-500/30 selection:text-slate-900">
-      
-      <!-- Suptilan Glow centar -->
-      <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 h-[400px] w-[400px] rounded-full bg-green-500/[0.03] blur-[120px] pointer-events-none" aria-hidden="true"></div>
-
+    <section class="relative overflow-hidden border-t border-slate-200 bg-slate-50 px-4 py-14 font-sans selection:bg-green-500/30 selection:text-slate-900 sm:px-8 sm:py-20 lg:py-24">
+      <div class="pointer-events-none absolute right-0 top-0 h-96 w-96 rounded-full bg-green-500/[0.05] blur-[110px]" aria-hidden="true"></div>
       <div class="relative z-10 mx-auto max-w-[1200px]">
-        
-        <div class="max-w-2xl mb-8 sm:mb-10">
-          <span class="text-[10px] font-mono font-bold uppercase tracking-[0.2em] text-green-700">// Trust & Compliance</span>
-          <h2 class="mt-3 text-2xl font-bold tracking-tight text-slate-900 sm:text-3xl">Clear expectations before work begins.</h2>
-          <p class="mt-3 text-sm leading-relaxed text-slate-600">The platform supports better matching and account review. Always confirm current project-specific credentials directly with the provider.</p>
+        <div class="grid gap-6 lg:grid-cols-[minmax(0,0.9fr)_minmax(360px,0.65fr)] lg:items-end">
+          <div>
+            <div class="flex items-center gap-3">
+              <span class="flex h-10 w-10 items-center justify-center rounded-xl border border-green-200 bg-green-50 text-green-700"><ShieldCheck size={20} strokeWidth={1.8} /></span>
+              <span class="text-[10px] font-mono font-bold uppercase tracking-[0.2em] text-green-700">// Trust & compliance</span>
+            </div>
+            <h2 class="mt-5 max-w-2xl text-3xl font-bold leading-tight tracking-tighter text-slate-950 sm:text-4xl lg:text-[2.75rem]">Clear responsibilities before work begins.</h2>
+          </div>
+          <p class="max-w-xl text-sm leading-7 text-slate-600 sm:text-base">The platform provides structured routing and account review. Property-specific credentials, protections and permit requirements should always be confirmed directly before scheduling work.</p>
         </div>
 
-        <div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-          <!-- Guard 1 (SLATE KARTICE) -->
-          <div class="rounded-2xl border border-slate-200 bg-white p-5 shadow-soft hover:shadow-soft-lg hover:border-slate-300 transition-all">
-            <div class="text-xs font-mono text-green-700 font-bold mb-3">// 01</div>
-            <h4 class="text-sm font-bold text-slate-900 uppercase tracking-wider">Verified Liability</h4>
-            <p class="mt-2 text-[11px] leading-relaxed text-slate-600">
-              Provider information is reviewed during account approval; homeowners should confirm current project-specific coverage.
-            </p>
-          </div>
-
-          <!-- Guard 2 -->
-          <div class="rounded-2xl border border-slate-200 bg-white p-5 shadow-soft hover:shadow-soft-lg hover:border-slate-300 transition-all">
-            <div class="text-xs font-mono text-green-700 font-bold mb-3">// 02</div>
-            <h4 class="text-sm font-bold text-slate-900 uppercase tracking-wider">Workers' Comp</h4>
-            <p class="mt-2 text-[11px] leading-relaxed text-slate-600">
-              Ask the selected contractor which crew and workplace protections apply to your specific job before scheduling.
-            </p>
-          </div>
-
-          <!-- Guard 3 -->
-          <div class="rounded-2xl border border-slate-200 bg-white p-5 sm:col-span-2 lg:col-span-1 shadow-soft hover:shadow-soft-lg hover:border-slate-300 transition-all">
-            <div class="text-xs font-mono text-green-700 font-bold mb-3">// 03</div>
-            <h4 class="text-sm font-bold text-slate-900 uppercase tracking-wider">County Compliance</h4>
-            <p class="mt-2 text-[11px] leading-relaxed text-slate-600">
-              Local permit and licensing needs vary by property and municipality and should be confirmed before work starts.
-            </p>
-          </div>
+        <div class="mt-9 grid gap-3 lg:mt-12 lg:grid-cols-3">
+          {[
+            { icon: ClipboardCheck, n: "01", label: "Platform step", title: "Account review", text: "Contractor applications are reviewed before dashboard access is approved. This administrative review does not guarantee credentials, availability or work quality." },
+            { icon: HardHat, n: "02", label: "Confirm with provider", title: "Crew protection", text: "Ask which crew will perform the work and confirm the insurance and workplace protections that apply to your specific project." },
+            { icon: Landmark, n: "03", label: "Confirm locally", title: "Permit requirements", text: "Licensing and permit requirements vary by property, scope and municipality. Confirm the current requirements before work starts." },
+          ].map(({ icon: Icon, n, label, title, text }) => (
+            <article class="group relative overflow-hidden rounded-2xl border border-slate-200 bg-white p-5 shadow-soft transition-all hover:-translate-y-0.5 hover:border-green-200 hover:shadow-soft-lg sm:p-6">
+              <div class="flex items-start justify-between">
+                <span class="flex h-11 w-11 items-center justify-center rounded-xl bg-slate-50 text-green-700 transition group-hover:bg-green-50"><Icon size={21} strokeWidth={1.7} /></span>
+                <span class="font-mono text-[10px] font-bold text-slate-400">// {n}</span>
+              </div>
+              <span class="mt-6 block text-[9px] font-bold uppercase tracking-[0.18em] text-green-700">{label}</span>
+              <h3 class="mt-2 text-lg font-bold text-slate-950">{title}</h3>
+              <p class="mt-3 text-xs leading-6 text-slate-600 sm:text-sm">{text}</p>
+            </article>
+          ))}
         </div>
 
+        <div class="mt-4 flex flex-col gap-4 rounded-2xl border border-slate-200 bg-white px-5 py-5 shadow-soft sm:flex-row sm:items-center sm:justify-between sm:px-6">
+          <div><h3 class="text-sm font-bold text-slate-950">Understand the platform and provider responsibilities.</h3><p class="mt-1 text-xs leading-5 text-slate-500">Review the full framework before choosing or scheduling an independent provider.</p></div>
+          <a href="/compliance" class="inline-flex h-11 w-full shrink-0 items-center justify-center gap-2 rounded-xl border border-slate-200 px-5 text-[10px] font-bold uppercase tracking-[0.15em] text-slate-700 transition hover:border-green-300 hover:text-green-800 sm:w-auto">View compliance framework <ArrowRight size={14} /></a>
+        </div>
       </div>
     </section>
 

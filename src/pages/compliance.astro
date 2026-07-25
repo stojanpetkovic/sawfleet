@@ -4,12 +4,122 @@ import MainLayout from "../layouts/MainLayout.astro";
 import Header from "../components/layout/Header.astro";
 import Footer from "../components/layout/Footer.astro";
 import MobileNav from "../components/layout/MobileNav.astro";
-import { BadgeCheck, FileCheck2, HardHat, MessageSquareText } from "lucide-astro";
-const items = [
-  { icon: BadgeCheck, title: "Provider information", text: "Contractors and fleet owners submit business and contact details for administrative review before full platform access is activated." },
-  { icon: FileCheck2, title: "Listing review", text: "Equipment listings and provider accounts may be reviewed for completeness, status and relevance before being shown or used in dispatch workflows." },
-  { icon: HardHat, title: "Job-site responsibility", text: "Independent providers remain responsible for site assessment, crew safety, permits, utilities, equipment operation and compliance with local requirements." },
-  { icon: MessageSquareText, title: "Consent records", text: "Forms that support SMS communications record the consent provided by the submitting user and display applicable opt-out information." },
+import {
+  ArrowRight,
+  BadgeCheck,
+  Building2,
+  CheckCircle2,
+  FileCheck2,
+  HardHat,
+  House,
+  LockKeyhole,
+  MapPinned,
+  MessageSquareText,
+  ShieldCheck,
+  UserRoundCheck,
+} from "lucide-astro";
+
+const controls = [
+  { icon: BadgeCheck, number: "01", label: "Account access", title: "Provider information", text: "Contractors and fleet owners submit business and contact information before full dashboard access is approved." },
+  { icon: FileCheck2, number: "02", label: "Platform records", title: "Listing review", text: "Provider profiles and equipment listings may be reviewed for completeness, status and relevance before use in public or dispatch workflows." },
+  { icon: LockKeyhole, number: "03", label: "Communication", title: "Consent records", text: "Forms supporting email or SMS communication capture the information submitted by the user and present applicable consent or opt-out language." },
+  { icon: MapPinned, number: "04", label: "Request routing", title: "Territory matching", text: "Project and equipment opportunities are organized using active service territories and the locations configured on provider accounts." },
+];
+
+const responsibilities = [
+  { icon: Building2, owner: "The platform", title: "Structures the workflow", text: "Maintains account, listing, lead-routing and communication records used by the application." },
+  { icon: HardHat, owner: "Independent provider", title: "Controls the work", text: "Assesses the site, defines the scope and is responsible for crews, equipment, utilities, permits and safe execution." },
+  { icon: House, owner: "Property owner", title: "Confirms the engagement", text: "Reviews current credentials, written scope, pricing, schedule and property-specific requirements before authorizing work." },
+];
+
+const checklist = [
+  "Current business, license or registration information required for the location",
+  "Insurance coverage and worker protections applicable to the actual crew",
+  "Written scope, exclusions, cleanup responsibilities and total pricing",
+  "Municipal permits, utility clearance and property-access requirements",
+  "Equipment suitability, site conditions and planned safety controls",
 ];
 ---
-<MainLayout title="Platform Compliance | SF Tree Removal" description="Overview of provider review, safety responsibility and communication compliance on SF Tree Removal."><Header /><main class="min-h-screen bg-white pt-28 lg:pt-32"><section class="px-4 py-16 sm:px-8 lg:py-24"><div class="mx-auto max-w-[1100px]"><div class="max-w-3xl"><span class="text-[10px] font-mono font-bold uppercase tracking-[0.22em] text-green-700">// Trust framework</span><h1 class="mt-4 text-4xl font-bold tracking-tighter text-slate-950 sm:text-5xl">Clear responsibilities across the platform.</h1><p class="mt-5 text-base leading-relaxed text-slate-600">Our compliance framework supports accurate routing and account oversight while recognizing that on-site work is performed by independent providers.</p></div><div class="mt-12 grid gap-5 md:grid-cols-2">{items.map(({ icon: Icon, title, text }) => <article class="rounded-2xl border border-slate-200 bg-white p-6 shadow-soft"><span class="flex h-11 w-11 items-center justify-center rounded-xl bg-green-50 text-green-700"><Icon size={21} strokeWidth={1.7} /></span><h2 class="mt-5 text-lg font-bold text-slate-950">{title}</h2><p class="mt-3 text-sm leading-relaxed text-slate-600">{text}</p></article>)}</div><div class="mt-10 rounded-2xl border border-slate-200 bg-slate-50 p-6"><h2 class="text-sm font-bold text-slate-950">Important distinction</h2><p class="mt-2 text-xs leading-relaxed text-slate-600">Administrative review is not a guarantee of future insurance status, licensing, availability or work quality. Property owners should confirm current credentials, project scope and site-specific requirements directly with the provider before work begins.</p></div></div></section></main><Footer /><MobileNav /></MainLayout>
+
+<MainLayout title="Platform Compliance & Responsibilities | SF Tree Removal" description="Understand provider review, platform controls and the responsibilities to confirm before tree work begins.">
+  <Header />
+  <main class="bg-white pt-16 lg:pt-20">
+    <section class="relative overflow-hidden border-b border-slate-800 bg-slate-950 px-4 py-16 text-white sm:px-8 sm:py-20 lg:py-24">
+      <div class="pointer-events-none absolute -right-24 -top-24 h-96 w-96 rounded-full bg-green-500/10 blur-[100px]"></div>
+      <div class="relative mx-auto grid max-w-[1200px] gap-10 lg:grid-cols-[minmax(0,1fr)_390px] lg:items-end">
+        <div class="max-w-3xl">
+          <div class="inline-flex items-center gap-2 rounded-full border border-green-400/20 bg-green-400/10 px-3 py-1.5 text-[10px] font-bold uppercase tracking-[0.2em] text-green-300">
+            <ShieldCheck size={14} /> Trust framework
+          </div>
+          <h1 class="mt-6 text-4xl font-bold leading-[1.06] tracking-tighter sm:text-5xl lg:text-6xl">Clear roles. Better decisions before work begins.</h1>
+          <p class="mt-6 max-w-2xl text-base leading-7 text-slate-300 sm:text-lg">SF Tree Removal provides the digital workflow for requests, accounts and matching. Independent providers remain responsible for every on-site decision and service they perform.</p>
+        </div>
+        <div class="rounded-2xl border border-white/10 bg-white/[0.05] p-6 backdrop-blur">
+          <span class="text-[9px] font-bold uppercase tracking-[0.2em] text-green-400">// Important distinction</span>
+          <p class="mt-3 text-sm leading-6 text-slate-300">Administrative approval is not a guarantee of current licensing, insurance, availability, safety practices or work quality.</p>
+          <a href="#before-work" class="mt-5 inline-flex items-center gap-2 text-[10px] font-bold uppercase tracking-[0.16em] text-white hover:text-green-300">Review the checklist <ArrowRight size={14} /></a>
+        </div>
+      </div>
+    </section>
+
+    <section class="px-4 py-16 sm:px-8 sm:py-20 lg:py-24">
+      <div class="mx-auto max-w-[1200px]">
+        <div class="grid gap-6 lg:grid-cols-[0.85fr_1fr] lg:items-end">
+          <div><span class="text-[10px] font-mono font-bold uppercase tracking-[0.2em] text-green-700">// Platform controls</span><h2 class="mt-3 text-3xl font-bold tracking-tighter text-slate-950 sm:text-4xl">What the application reviews and records.</h2></div>
+          <p class="max-w-xl text-sm leading-7 text-slate-600 sm:text-base">These controls support a more organized marketplace. They establish consistent account and routing workflows without replacing project-specific due diligence.</p>
+        </div>
+
+        <div class="mt-10 grid gap-4 md:grid-cols-2">
+          {controls.map(({ icon: Icon, number, label, title, text }) => (
+            <article class="group rounded-2xl border border-slate-200 bg-white p-6 shadow-soft transition hover:-translate-y-0.5 hover:border-green-200 hover:shadow-soft-lg">
+              <div class="flex items-start justify-between"><span class="flex h-11 w-11 items-center justify-center rounded-xl bg-green-50 text-green-700"><Icon size={21} strokeWidth={1.7} /></span><span class="font-mono text-[10px] font-bold text-slate-400">// {number}</span></div>
+              <span class="mt-6 block text-[9px] font-bold uppercase tracking-[0.18em] text-green-700">{label}</span>
+              <h3 class="mt-2 text-lg font-bold text-slate-950">{title}</h3>
+              <p class="mt-3 text-sm leading-6 text-slate-600">{text}</p>
+            </article>
+          ))}
+        </div>
+      </div>
+    </section>
+
+    <section class="border-y border-slate-200 bg-slate-50 px-4 py-16 sm:px-8 sm:py-20 lg:py-24">
+      <div class="mx-auto max-w-[1200px]">
+        <div class="max-w-2xl"><span class="text-[10px] font-mono font-bold uppercase tracking-[0.2em] text-green-700">// Responsibility map</span><h2 class="mt-3 text-3xl font-bold tracking-tighter text-slate-950 sm:text-4xl">Who is responsible for what?</h2><p class="mt-4 text-sm leading-7 text-slate-600">The platform supports the introduction and workflow. The service relationship and on-site work remain between the property owner and the selected independent provider.</p></div>
+        <div class="mt-10 grid overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-soft lg:grid-cols-3">
+          {responsibilities.map(({ icon: Icon, owner, title, text }, index) => (
+            <article class={`p-6 sm:p-8 ${index > 0 ? "border-t border-slate-200 lg:border-l lg:border-t-0" : ""}`}>
+              <span class="flex h-11 w-11 items-center justify-center rounded-xl bg-slate-950 text-green-300"><Icon size={20} strokeWidth={1.7} /></span>
+              <span class="mt-6 block text-[9px] font-bold uppercase tracking-[0.2em] text-green-700">{owner}</span>
+              <h3 class="mt-2 text-lg font-bold text-slate-950">{title}</h3>
+              <p class="mt-3 text-sm leading-6 text-slate-600">{text}</p>
+            </article>
+          ))}
+        </div>
+      </div>
+    </section>
+
+    <section id="before-work" class="px-4 py-16 sm:px-8 sm:py-20 lg:py-24">
+      <div class="mx-auto grid max-w-[1200px] gap-8 lg:grid-cols-[0.75fr_1fr] lg:items-start">
+        <div>
+          <span class="flex h-12 w-12 items-center justify-center rounded-xl bg-green-700 text-white"><UserRoundCheck size={23} /></span>
+          <span class="mt-6 block text-[10px] font-mono font-bold uppercase tracking-[0.2em] text-green-700">// Before authorizing work</span>
+          <h2 class="mt-3 text-3xl font-bold tracking-tighter text-slate-950 sm:text-4xl">Confirm the details that matter on your property.</h2>
+          <p class="mt-4 text-sm leading-7 text-slate-600">Requirements change by municipality, job scope, crew and site conditions. Ask for current, project-specific answers in writing.</p>
+        </div>
+        <div class="rounded-2xl border border-slate-200 bg-slate-50 p-5 sm:p-7">
+          <div class="space-y-3">
+            {checklist.map((item, index) => (
+              <div class="flex gap-4 rounded-xl border border-slate-200 bg-white p-4 sm:p-5">
+                <span class="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-green-50 text-green-700"><CheckCircle2 size={17} /></span>
+                <div><span class="text-[9px] font-bold uppercase tracking-[0.18em] text-slate-400">Check {String(index + 1).padStart(2, "0")}</span><p class="mt-1 text-sm font-medium leading-6 text-slate-800">{item}</p></div>
+              </div>
+            ))}
+          </div>
+          <div class="mt-5 flex gap-3 rounded-xl border border-amber-200 bg-amber-50 p-4 text-xs leading-5 text-amber-900"><MessageSquareText size={18} class="mt-0.5 shrink-0" /><p>Keep copies of the agreed scope, provider documents and project communication for your records.</p></div>
+        </div>
+      </div>
+    </section>
+  </main>
+  <Footer />
+  <MobileNav />
+</MainLayout>

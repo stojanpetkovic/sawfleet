@@ -3,9 +3,10 @@ export const prerender = false;
 import MainLayout from "../layouts/MainLayout.astro";
 import Header from "../components/layout/Header.astro";
 import Footer from "../components/layout/Footer.astro";
+import { ArrowRight, BadgeCheck, CheckCircle2, ClipboardCheck, Coins, Gauge, LayoutDashboard, ListPlus, MapPinned, Radio, Search, Truck, UserCheck } from "lucide-astro";
 ---
 
-<MainLayout title="Register as a Fleet Owner | SF Tree Removal">
+<MainLayout title="Register or Claim a Fleet Profile | SF Tree Removal" description="Create a fleet owner account, add grapple saw trucks, manage availability and apply for relevant equipment opportunities.">
   <Header />
 
   <main class="min-h-screen bg-white">
@@ -23,7 +24,7 @@ import Footer from "../components/layout/Footer.astro";
           <source src="/videos/hero-optimized.mp4" type="video/mp4" media="(min-width: 640px) and (prefers-reduced-motion: no-preference)" />
         </video>
       </div>
-      <div class="absolute inset-0 -z-10 bg-slate-950/45"></div>
+      <div class="absolute inset-0 -z-10 bg-gradient-to-r from-slate-950/95 via-slate-950/82 to-slate-950/55"></div>
 
       <div class="mx-auto max-w-[1320px] w-full relative z-10">
         <div class="grid lg:grid-cols-2 gap-12 items-start lg:items-center">
@@ -36,39 +37,34 @@ import Footer from "../components/layout/Footer.astro";
                 <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
                 <span class="relative inline-flex rounded-full h-2 w-2 bg-green-400"></span>
               </span>
-              <span class="text-[10px] font-bold uppercase tracking-[0.2em] text-white/90">Dispatch Network</span>
+              <span class="text-[10px] font-bold uppercase tracking-[0.2em] text-white/90">Fleet partner network</span>
             </div>
 
             <!-- Heading -->
             <h1 class="mt-6 text-[2.5rem] sm:text-[3.5rem] font-bold leading-[1.1] tracking-tighter text-white">
-              Become a
-              <span class="block mt-1 bg-gradient-to-r from-green-400 to-emerald-400 bg-clip-text text-transparent">Fleet Owner.</span>
+              Put every truck
+              <span class="block mt-1 bg-gradient-to-r from-green-400 to-emerald-400 bg-clip-text text-transparent">under one fleet account.</span>
             </h1>
 
             <!-- Expanded Description -->
             <div class="mt-6 space-y-4">
               <p class="text-base text-white/85 font-medium leading-relaxed">
-                Create your free fleet owner account first. Once you're in, you can add as many grapple saw trucks as you own straight from your dashboard — each one gets its own availability and approval status.
+                Create a fleet owner account or claim an existing public directory profile. After sign-in, add and manage each truck as a separate equipment listing.
               </p>
               <p class="text-sm text-white/60 leading-relaxed border-l-2 border-white/20 pl-4">
-                Our platform eliminates the friction of traditional dispatching, providing you with real-time visibility into project demand within the exact counties and territories you serve.
+                Each truck carries its own specifications, review status and availability. Approved accounts can review truck leads and choose which opportunities fit their fleet.
               </p>
             </div>
 
-            <!-- Expanded Benefits Grid -->
-            <div class="mt-10 space-y-5 border-t border-white/15 pt-8">
+            <div class="mt-10 grid gap-3 border-t border-white/15 pt-7 sm:grid-cols-3">
               {[
-                { title: "One Account, Many Trucks", desc: "Register once, then list every asset you own from your dashboard — no re-signing up." },
-                { title: "Per-Truck Availability", desc: "Mark each truck Available or Busy independently as your schedule changes." },
-                { title: "Direct Dispatch", desc: "Remove the middleman. Access a steady pipeline of inbound requests ready for immediate scheduling." },
-                { title: "Smart Utilization", desc: "Data-driven routing maximizes your billable hours while minimizing transit and logistics overhead." }
-              ].map((item, i) => (
-                <div class="flex items-start gap-4 group">
-                  <div class="mt-0.5 flex h-6 w-6 shrink-0 items-center justify-center rounded border border-white/20 bg-white/10 backdrop-blur-md text-[10px] font-mono text-green-400 group-hover:border-green-400/50 transition-colors">0{i + 1}</div>
-                  <div>
-                    <h3 class="text-xs font-bold text-white uppercase tracking-wider">{item.title}</h3>
-                    <p class="mt-1 text-[11px] leading-relaxed text-white/60">{item.desc}</p>
-                  </div>
+                { value: "Free", label: "Fleet account" },
+                { value: "Multiple", label: "Truck listings" },
+                { value: "Per asset", label: "Review & availability" },
+              ].map(({ value, label }) => (
+                <div class="rounded-xl border border-white/10 bg-white/[0.06] px-4 py-3 backdrop-blur">
+                  <strong class="block text-lg font-bold text-white">{value}</strong>
+                  <span class="mt-1 block text-[9px] font-bold uppercase tracking-[0.16em] text-white/50">{label}</span>
                 </div>
               ))}
             </div>
@@ -90,8 +86,8 @@ import Footer from "../components/layout/Footer.astro";
                   Free account
                 </span>
               </div>
-              <h2 class="mt-2 text-2xl font-bold text-slate-900 tracking-tight">Create Your Account</h2>
-              <p class="text-xs text-slate-500 mt-1">Add your trucks after you sign in — takes a minute per truck.</p>
+              <h2 class="mt-2 text-2xl font-bold text-slate-900 tracking-tight">Create your fleet account</h2>
+              <p class="mt-1 text-xs leading-5 text-slate-500">Register the owner first. Equipment is added and submitted separately from the dashboard.</p>
             </div>
 
             <!-- Prikazano ako je neko već ulogovan — nema potrebe da se ponovo registruje -->
@@ -141,49 +137,69 @@ import Footer from "../components/layout/Footer.astro";
       </div>
     </section>
 
-    <section class="border-t border-slate-200 bg-white px-4 py-12 sm:px-8 sm:py-16 lg:py-20">
+    <section class="border-t border-slate-200 bg-white px-4 py-16 sm:px-8 sm:py-20 lg:py-24">
       <div class="mx-auto max-w-[1200px]">
-        <div class="mb-8 max-w-2xl sm:mb-10">
-          <span class="text-[10px] font-mono font-bold uppercase tracking-[0.2em] text-blue-700">// Fleet listing workflow</span>
-          <h2 class="mt-3 text-2xl font-bold tracking-tighter text-slate-950 sm:text-3xl">Keep every approved asset visible and current.</h2>
-          <p class="mt-3 text-sm leading-relaxed text-slate-600">One fleet owner account can manage multiple trucks. Each listing carries its own specifications, review status and availability.</p>
+        <div class="grid gap-6 lg:grid-cols-[0.9fr_0.7fr] lg:items-end">
+          <div><span class="text-[10px] font-mono font-bold uppercase tracking-[0.2em] text-green-700">// Fleet workspace</span><h2 class="mt-3 text-3xl font-bold tracking-tighter text-slate-950 sm:text-4xl">Keep every asset accurate, visible and ready.</h2></div>
+          <p class="max-w-xl text-sm leading-7 text-slate-600">One owner account can manage multiple trucks. Each listing carries its own specifications, administrative review state and live availability.</p>
         </div>
 
-        <div class="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+        <div class="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
           {[
-            { n: "01", t: "One Fleet Account", d: "Manage company details and all equipment from a single dashboard." },
-            { n: "02", t: "Asset-Level Review", d: "Every truck is submitted and reviewed as an individual listing." },
-            { n: "03", t: "Clear Specifications", d: "Record equipment type, lift capacity, height, access and location." },
-            { n: "04", t: "Live Availability", d: "Update approved equipment when it becomes available or unavailable." }
-          ].map(item => (
-            <div class="rounded-2xl border border-slate-200 bg-white p-5 shadow-soft transition-all hover:-translate-y-0.5 hover:border-slate-300 hover:shadow-soft-lg">
-              <div class="flex h-7 w-7 items-center justify-center rounded-lg bg-blue-50 text-[10px] font-mono font-bold text-blue-700">{item.n}</div>
-              <h3 class="mt-4 text-xs font-bold uppercase tracking-wide text-slate-900">{item.t}</h3>
-              <p class="mt-2 text-[11px] leading-relaxed text-slate-600">{item.d}</p>
-            </div>
+            { icon: LayoutDashboard, label: "Owner account", title: "One fleet dashboard", text: "Manage company details and every equipment listing from one authenticated workspace." },
+            { icon: BadgeCheck, label: "Listing status", title: "Asset-level review", text: "Submit each truck separately and track its pending, approved or rejected status." },
+            { icon: Gauge, label: "Equipment data", title: "Useful specifications", text: "Record equipment type, lift capacity, working height, access notes and operating location." },
+            { icon: Radio, label: "Operating state", title: "Live availability", text: "Keep each approved truck marked available or unavailable as fleet capacity changes." }
+          ].map(({ icon: Icon, label, title, text }) => (
+            <article class="group rounded-2xl border border-slate-200 bg-white p-5 shadow-soft transition hover:-translate-y-0.5 hover:border-green-200 hover:shadow-soft-lg">
+              <span class="flex h-11 w-11 items-center justify-center rounded-xl bg-green-50 text-green-700"><Icon size={21} strokeWidth={1.7} /></span>
+              <span class="mt-6 block text-[9px] font-bold uppercase tracking-[0.18em] text-green-700">{label}</span>
+              <h3 class="mt-2 text-lg font-bold text-slate-950">{title}</h3>
+              <p class="mt-3 text-sm leading-6 text-slate-600">{text}</p>
+            </article>
           ))}
         </div>
       </div>
     </section>
 
-    <section class="border-t border-slate-200 bg-slate-50 px-4 py-12 sm:px-8 sm:py-16 lg:py-20">
-      <div class="mx-auto max-w-[1200px]">
-        <div class="mb-8 max-w-2xl"><span class="text-[10px] font-mono font-bold uppercase tracking-[0.2em] text-blue-700">// What happens next</span><h2 class="mt-3 text-2xl font-bold tracking-tighter text-slate-950 sm:text-3xl">From registration to an active listing.</h2></div>
-        <div class="grid gap-4 lg:grid-cols-3">
+    <section class="border-y border-slate-200 bg-slate-50 px-4 py-16 sm:px-8 sm:py-20 lg:py-24">
+      <div class="mx-auto grid max-w-[1200px] gap-10 lg:grid-cols-[0.7fr_1fr] lg:items-start">
+        <div>
+          <span class="flex h-12 w-12 items-center justify-center rounded-xl bg-slate-950 text-green-300"><Truck size={22} /></span>
+          <span class="mt-6 block text-[10px] font-mono font-bold uppercase tracking-[0.2em] text-green-700">// Fleet lifecycle</span>
+          <h2 class="mt-3 text-3xl font-bold tracking-tighter text-slate-950 sm:text-4xl">From owner registration to truck opportunities.</h2>
+          <p class="mt-4 text-sm leading-7 text-slate-600">Account creation and truck approval are separate steps. An approved owner can manage equipment, but every submitted asset retains its own listing status.</p>
+        </div>
+        <div class="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-soft">
           {[
-            { step: "Step 01", title: "Create and confirm", text: "Create the fleet owner account, confirm the email address and sign in to the dashboard." },
-            { step: "Step 02", title: "Add equipment", text: "Enter each truck separately so dispatch can understand its capability and operating location." },
-            { step: "Step 03", title: "Review and update", text: "Administrators review submitted listings. Once approved, keep availability accurate from the dashboard." }
-          ].map((item, index) => (
-            <article class={`rounded-2xl border p-5 sm:p-6 ${index === 1 ? 'border-blue-200 bg-blue-50' : 'border-slate-200 bg-white shadow-soft'}`}>
-              <span class={`text-[9px] font-bold uppercase tracking-[0.18em] ${index === 1 ? 'text-blue-700' : 'text-slate-400'}`}>{item.step}</span>
-              <h3 class="mt-3 text-base font-bold text-slate-950">{item.title}</h3><p class="mt-2 text-xs leading-relaxed text-slate-600">{item.text}</p>
+            { icon: UserCheck, n: "01", label: "Owner account", title: "Create and confirm your login", text: "Register the fleet owner, confirm the email address and sign in to the dedicated fleet dashboard." },
+            { icon: ListPlus, n: "02", label: "Equipment", title: "Add each truck separately", text: "Enter the specifications, operating location and details dispatch needs to understand the asset." },
+            { icon: ClipboardCheck, n: "03", label: "Review", title: "Track the listing decision", text: "Administrators review submitted equipment. Pending and approved states remain visible in the dashboard." },
+            { icon: Coins, n: "04", label: "Opportunities", title: "Apply when the truck is a fit", text: "Review available truck leads and use the required account credits when applying for a relevant opportunity." },
+          ].map(({ icon: Icon, n, label, title, text }, index) => (
+            <article class={`grid gap-4 p-5 sm:grid-cols-[48px_1fr] sm:p-6 ${index > 0 ? "border-t border-slate-200" : ""}`}>
+              <span class="flex h-11 w-11 items-center justify-center rounded-xl bg-green-50 text-green-700"><Icon size={20} strokeWidth={1.7} /></span>
+              <div><div class="flex items-center justify-between gap-3"><span class="text-[9px] font-bold uppercase tracking-[0.18em] text-green-700">{label}</span><span class="font-mono text-[10px] font-bold text-slate-400">// {n}</span></div><h3 class="mt-2 text-base font-bold text-slate-950">{title}</h3><p class="mt-2 text-sm leading-6 text-slate-600">{text}</p></div>
             </article>
           ))}
         </div>
-        <div class="mt-6 flex flex-col items-start justify-between gap-4 rounded-2xl border border-slate-200 bg-white p-5 sm:flex-row sm:items-center sm:p-6">
-          <div><h3 class="text-sm font-bold text-slate-950">Have your login details ready?</h3><p class="mt-1 text-xs text-slate-500">Create the owner account above, then add equipment from the Fleet dashboard.</p></div>
-          <a href="#ownerForm" class="inline-flex h-11 w-full items-center justify-center rounded-xl bg-blue-700 px-5 text-[10px] font-bold uppercase tracking-[0.15em] text-white hover:bg-blue-800 sm:w-auto">Back to registration ↑</a>
+      </div>
+    </section>
+
+    <section class="px-4 py-16 sm:px-8 sm:py-20">
+      <div class="mx-auto grid max-w-[1200px] overflow-hidden rounded-3xl border border-green-200 bg-green-50 shadow-soft-lg lg:grid-cols-[1fr_0.82fr]">
+        <div class="p-6 sm:p-9 lg:p-10">
+          <div class="flex items-center gap-3 text-green-800"><Search size={18} /><span class="text-[10px] font-bold uppercase tracking-[0.18em]">Already listed in the directory?</span></div>
+          <h2 class="mt-4 text-2xl font-bold tracking-tight text-slate-950">Claim the public profile instead of starting from zero.</h2>
+          <p class="mt-3 max-w-2xl text-sm leading-7 text-slate-600">Open the Truck Directory, find the company profile and use Claim Profile. The registration form will carry the listing reference into the ownership-review workflow.</p>
+          <a href="/truck-directory" class="mt-6 inline-flex items-center gap-2 text-[10px] font-bold uppercase tracking-[0.15em] text-green-800 hover:text-green-950">Search truck directory <ArrowRight size={14} /></a>
+        </div>
+        <div class="flex flex-col justify-center border-t border-green-200 bg-white/70 p-6 sm:p-9 lg:border-l lg:border-t-0">
+          <span class="text-[9px] font-bold uppercase tracking-[0.18em] text-slate-500">New fleet or existing account</span>
+          <div class="mt-5 flex flex-col gap-3">
+            <a href="#ownerForm" class="inline-flex h-12 items-center justify-center gap-2 rounded-xl bg-green-700 px-5 text-[10px] font-bold uppercase tracking-[0.15em] text-white hover:bg-green-800">Create fleet account <ArrowRight size={14} /></a>
+            <a href="/truck-login" class="inline-flex h-12 items-center justify-center rounded-xl border border-slate-200 bg-white px-5 text-[10px] font-bold uppercase tracking-[0.15em] text-slate-700 hover:border-slate-300">Fleet owner sign in</a>
+          </div>
         </div>
       </div>
     </section>

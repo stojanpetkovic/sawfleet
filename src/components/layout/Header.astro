@@ -1,12 +1,11 @@
 ---
 // Možeš dodati props ako želiš da menjaš linkove po stranici
 const navigation = [
-  { title: "Home", href: "/" },
   { title: "Services", href: "/services" },
-  { title: "For Contractors", href: "/contractors-registration" },
-  { title: "Fleet Ops", href: "/truck-registration" },
+  { title: "Service Areas", href: "/service-areas" },
+  { title: "Contractors", href: "/contractors-registration" },
+  { title: "Fleet Owners", href: "/truck-registration" },
   { title: "Truck Directory", href: "/truck-directory" },
-  { title: "Service Areas", href: "/service-areas" }
 ];
 
 const currentPath = Astro.url.pathname;
@@ -28,7 +27,7 @@ const isActive = (href: string) => href === '/' ? currentPath === '/' : currentP
           {item.title}
         </a>
       ))}
-      <a href="/portal" class="text-[10px] font-mono font-bold uppercase tracking-[0.16em] text-slate-500 hover:text-slate-900 transition-colors">Portal</a>
+      <a href="/portal" class="text-[10px] font-mono font-bold uppercase tracking-[0.16em] text-slate-500 hover:text-slate-900 transition-colors">Sign in</a>
       <a href="/#quote" class="h-10 px-5 flex items-center justify-center rounded-xl bg-green-700 text-[10px] font-mono font-bold uppercase tracking-[0.16em] text-white shadow-[0_8px_20px_-10px_rgba(21,128,61,0.7)] hover:bg-green-800 transition-all">
         Free Estimate
       </a>
@@ -60,7 +59,7 @@ const isActive = (href: string) => href === '/' ? currentPath === '/' : currentP
           {item.title}
         </a>
       ))}
-      <a href="/portal" class="text-sm font-bold uppercase tracking-[0.2em] text-slate-500 hover:text-green-700 transition-colors">Portal</a>
+      <a href="/portal" class="text-sm font-bold uppercase tracking-[0.2em] text-slate-500 hover:text-green-700 transition-colors">Sign in</a>
       <a href="/#quote" class="mt-2 flex h-12 items-center justify-center rounded-xl bg-green-700 px-5 text-xs font-bold uppercase tracking-[0.16em] text-white">Get Free Estimate</a>
     </nav>
   </div>
