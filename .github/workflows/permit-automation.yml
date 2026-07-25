@@ -2,13 +2,23 @@ name: Permit automation
 
 on:
   schedule:
-    - cron: '0 */3 * * *'
+    - cron: '0 */6 * * *'
   workflow_dispatch:
 
 jobs:
   run-permit-automation:
     runs-on: ubuntu-latest
+    timeout-minutes: 10
     steps:
       - name: Trigger permit automation endpoint
+        env:
+          CRON_SECRET: ${{ secrets.CRON_SECRET }}
         run: |
-          curl -fsS "https://sawfleet2026-eng.github.io/Tree-Permit-Lead-Dashboard/api/permit-automation" || true
+          test -n "$CRON_SECRET"
+          curl --fail-with-body --show-error --silent \
+            --request POST \
+            --header "Authorization: Bearer $CRON_SECRET" \
+            --header "Content-Type: application/json" \
+            --data '{}' \
+            --max-time 300 \
+            "https://sftreeremoval.com/api/permit-sync"
