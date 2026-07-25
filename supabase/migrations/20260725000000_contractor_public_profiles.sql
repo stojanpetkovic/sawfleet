@@ -94,7 +94,9 @@ CREATE POLICY "admins manage reviews" ON contractor_reviews
 -- ---------------------------------------------------------------
 -- 3. Helper: aggregate rating for a contractor (public view)
 -- ---------------------------------------------------------------
-CREATE OR REPLACE VIEW contractor_review_stats AS
+-- SECURITY INVOKER: Execute with querying user's permissions, not creator's
+-- This respects RLS policies on contractor_reviews table
+CREATE OR REPLACE VIEW contractor_review_stats WITH (security_invoker) AS
 SELECT
   contractor_id,
   COUNT(*)                        AS review_count,
