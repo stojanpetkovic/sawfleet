@@ -88,10 +88,10 @@ const navItems = [
     </section>
 
     <section id="panelProfile" class="hidden">
-      <!-- Sadržaj centriran na velikim ekranima: forma levo/u sredini, bitne informacije desno -->
-      <div class="max-w-5xl mx-auto grid lg:grid-cols-3 gap-6 lg:gap-8 items-start">
+      <!-- Profile sekcija sa main karticama i sidebar informacijama -->
+      <div class="grid lg:grid-cols-4 gap-6 lg:gap-8 items-start">
 
-        <!-- FORMA ZA PODATKE -->
+        <!-- MAIN KARTE (LEVO) -->
         <div class="lg:col-span-2 space-y-5">
           <div class="relative overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-soft">
             <div class="absolute inset-x-0 top-0 h-1 bg-gradient-to-r from-green-500 via-emerald-500 to-green-500"></div>
@@ -202,8 +202,8 @@ const navItems = [
           </div>
         </div>
 
-        <!-- BITNE INFORMACIJE (desna kolona na velikim ekranima) -->
-        <aside class="space-y-4 lg:sticky lg:top-24">
+        <!-- SIDEBAR INFORMACIJE (desna kolona na velikim ekranima) -->
+        <aside class="space-y-4 lg:col-span-2 lg:sticky lg:top-20 lg:max-h-[calc(100vh-80px-2rem)] lg:overflow-y-auto">
           <div class="rounded-2xl border border-slate-200 bg-white p-5 shadow-soft">
             <p class="text-[10px] font-bold uppercase tracking-[0.15em] text-slate-400">Account Status</p>
             <div class="mt-2 flex items-center gap-2">
