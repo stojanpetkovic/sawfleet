@@ -1,8 +1,8 @@
 name: Permit automation
 
 on:
-  schedule:
-    - cron: '0 */6 * * *'
+  # Scheduled runs now handled by the pg_cron job "sftreeremoval-permit-sync"
+  # inside Supabase itself, so this workflow is kept for manual triggering only.
   workflow_dispatch:
 
 jobs:
