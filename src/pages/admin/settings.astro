@@ -47,6 +47,10 @@ const permitSettings = parsePermitSettings(tracking?.global_scripts);
           <span class="indicator w-2 h-2 rounded-full bg-zinc-200"></span>
           Notifications
         </button>
+        <button id="tabBtn-externalLeadRouting" class="tab-btn flex-shrink-0 lg:w-full text-left px-4 py-3 text-zinc-500 hover:bg-zinc-100/50 hover:text-slate-900 rounded-lg text-[11px] font-bold uppercase tracking-wider transition-all border border-transparent flex items-center gap-3">
+          <span class="indicator w-2 h-2 rounded-full bg-zinc-200"></span>
+          External Leads
+        </button>
         <button id="tabBtn-permit" class="tab-btn flex-shrink-0 lg:w-full text-left px-4 py-3 text-zinc-500 hover:bg-zinc-100/50 hover:text-slate-900 rounded-lg text-[11px] font-bold uppercase tracking-wider transition-all border border-transparent flex items-center gap-3">
           <span class="indicator w-2 h-2 rounded-full bg-zinc-200"></span>
           Workflow Automation
@@ -179,6 +183,50 @@ const permitSettings = parsePermitSettings(tracking?.global_scripts);
             <button type="submit" id="saveNotificationsBtn" class="flex h-12 w-full sm:w-auto px-8 items-center justify-center rounded-xl bg-green-500 text-sm font-bold text-slate-900 transition-all hover:bg-green-400 active:scale-[0.98]">
               Save Notification Settings
             </button>
+          </form>
+        </div>
+
+        <!-- EXTERNAL LEADS — PARTNER ROUTING -->
+        <div id="section-externalLeadRouting" class="tab-section hidden bg-white border border-slate-200 p-6 md:p-8 rounded-2xl shadow-sm">
+          <div class="border-b border-zinc-100 pb-5 mb-6">
+            <h2 class="text-sm font-bold text-slate-900 uppercase tracking-wider mb-2">External Lead Routing</h2>
+            <p class="text-[11px] text-zinc-500">Per partner site (e.g. treejaws.com), pick a standing list of contractors/truck owners who should get an instant email and see the lead unblurred — free to accept — the moment it arrives. If nobody on the list takes it, publish it manually to Website Leads from /admin/external-leads as usual.</p>
+          </div>
+
+          <div id="externalLeadRoutingRules" class="space-y-3 mb-8">
+            <p class="text-xs text-slate-400">Loading rules…</p>
+          </div>
+
+          <form id="externalLeadRoutingForm" class="space-y-6 border-t border-zinc-100 pt-6">
+            <input type="hidden" id="routingRuleId" value="" />
+            <div>
+              <label class="mb-2 block text-[10px] font-bold uppercase tracking-wider text-slate-600">Source domain</label>
+              <input id="routingDomain" type="text" placeholder="treejaws.com" class="w-full rounded-xl border border-slate-200 p-3 text-sm font-mono" />
+            </div>
+
+            <label class="flex items-center justify-between gap-4 rounded-xl border border-slate-200 bg-slate-50 p-4">
+              <span class="block text-xs font-bold text-slate-900">Enabled</span>
+              <input id="routingEnabled" type="checkbox" class="h-5 w-5 accent-green-600" checked />
+            </label>
+
+            <div>
+              <label class="mb-2 block text-[10px] font-bold uppercase tracking-wider text-slate-600">Active contractors</label>
+              <div id="routingContractorList" class="max-h-48 overflow-y-auto rounded-xl border border-slate-200 p-3 space-y-1.5">
+                <p class="text-xs text-slate-400">Loading…</p>
+              </div>
+            </div>
+
+            <div>
+              <label class="mb-2 block text-[10px] font-bold uppercase tracking-wider text-slate-600">Approved truck owners</label>
+              <div id="routingTruckOwnerList" class="max-h-48 overflow-y-auto rounded-xl border border-slate-200 p-3 space-y-1.5">
+                <p class="text-xs text-slate-400">Loading…</p>
+              </div>
+            </div>
+
+            <div class="flex items-center gap-3">
+              <button id="saveRoutingBtn" type="submit" class="h-12 rounded-xl bg-slate-950 px-7 text-xs font-bold uppercase tracking-wider text-white hover:bg-green-700">Save rule</button>
+              <button id="cancelRoutingEditBtn" type="button" class="hidden h-12 rounded-xl border border-slate-200 px-6 text-xs font-bold uppercase tracking-wider text-slate-600 hover:bg-slate-50">Cancel edit</button>
+            </div>
           </form>
         </div>
 
@@ -450,6 +498,7 @@ const permitSettings = parsePermitSettings(tracking?.global_scripts);
   const tabTerritories = document.getElementById('tabBtn-territories');
   const tabTracking = document.getElementById('tabBtn-tracking');
   const tabNotifications = document.getElementById('tabBtn-notifications');
+  const tabExternalLeadRouting = document.getElementById('tabBtn-externalLeadRouting');
   const tabPermit = document.getElementById('tabBtn-permit');
   const tabTruckOutreach = document.getElementById('tabBtn-truckOutreach');
   const tabCredits = document.getElementById('tabBtn-credits');
@@ -457,13 +506,14 @@ const permitSettings = parsePermitSettings(tracking?.global_scripts);
   const secTerritories = document.getElementById('section-territories');
   const secTracking = document.getElementById('section-tracking');
   const secNotifications = document.getElementById('section-notifications');
+  const secExternalLeadRouting = document.getElementById('section-externalLeadRouting');
   const secPermit = document.getElementById('section-permit');
   const secTruckOutreach = document.getElementById('section-truckOutreach');
   const secCredits = document.getElementById('section-credits');
   const secOAuth = document.getElementById('section-oauth');
 
-  const allTabs = [tabTerritories, tabTracking, tabNotifications, tabPermit, tabTruckOutreach, tabCredits, tabOAuth] as HTMLElement[];
-  const allSections = [secTerritories, secTracking, secNotifications, secPermit, secTruckOutreach, secCredits, secOAuth] as HTMLElement[];
+  const allTabs = [tabTerritories, tabTracking, tabNotifications, tabExternalLeadRouting, tabPermit, tabTruckOutreach, tabCredits, tabOAuth] as HTMLElement[];
+  const allSections = [secTerritories, secTracking, secNotifications, secExternalLeadRouting, secPermit, secTruckOutreach, secCredits, secOAuth] as HTMLElement[];
 
   function switchTab(activeTab: HTMLElement, showSec: HTMLElement) {
     allTabs.forEach((tab) => {
@@ -485,6 +535,10 @@ const permitSettings = parsePermitSettings(tracking?.global_scripts);
   tabTerritories?.addEventListener('click', () => switchTab(tabTerritories, secTerritories!));
   tabTracking?.addEventListener('click', () => switchTab(tabTracking, secTracking!));
   tabNotifications?.addEventListener('click', () => switchTab(tabNotifications, secNotifications!));
+  tabExternalLeadRouting?.addEventListener('click', () => {
+    switchTab(tabExternalLeadRouting, secExternalLeadRouting!);
+    loadExternalLeadRouting();
+  });
   tabPermit?.addEventListener('click', () => switchTab(tabPermit, secPermit!));
   tabTruckOutreach?.addEventListener('click', () => {
     switchTab(tabTruckOutreach, secTruckOutreach!);
@@ -602,6 +656,118 @@ const permitSettings = parsePermitSettings(tracking?.global_scripts);
     (document.getElementById('creditsAutoRefillAmount') as HTMLInputElement).value = s.auto_refill_amount;
     (document.getElementById('creditsAutoRefillInterval') as HTMLInputElement).value = s.auto_refill_interval_days;
   }
+
+  // --- EXTERNAL LEAD ROUTING (partner site → contractors/truck owners) ---
+  let routingContractors: { user_id: string; company_name: string | null; contact_name: string | null }[] = [];
+  let routingTruckOwners: { id: string; company_name: string | null; contact_name: string | null }[] = [];
+
+  function renderRoutingCheckboxes(container: HTMLElement, items: { id: string; label: string }[], name: string, checkedIds: string[]) {
+    container.innerHTML = items.length
+      ? items.map((item) => `
+        <label class="flex items-center gap-2 text-xs text-slate-700">
+          <input type="checkbox" name="${name}" value="${item.id}" class="h-4 w-4 accent-green-600" ${checkedIds.includes(item.id) ? 'checked' : ''} />
+          ${escapeHtml(item.label)}
+        </label>`).join('')
+      : '<p class="text-xs text-slate-400">None found.</p>';
+  }
+
+  function resetRoutingForm() {
+    (document.getElementById('routingRuleId') as HTMLInputElement).value = '';
+    (document.getElementById('routingDomain') as HTMLInputElement).value = '';
+    (document.getElementById('routingEnabled') as HTMLInputElement).checked = true;
+    renderRoutingCheckboxes(document.getElementById('routingContractorList')!, routingContractors.map((c) => ({ id: c.user_id, label: c.company_name || c.contact_name || c.user_id })), 'routingContractor', []);
+    renderRoutingCheckboxes(document.getElementById('routingTruckOwnerList')!, routingTruckOwners.map((o) => ({ id: o.id, label: o.company_name || o.contact_name || o.id })), 'routingTruckOwner', []);
+    document.getElementById('cancelRoutingEditBtn')?.classList.add('hidden');
+  }
+
+  async function loadExternalLeadRouting() {
+    const response = await adminFetch('/api/external-lead-routing');
+    const result = await response.json().catch(() => ({}));
+    const rulesEl = document.getElementById('externalLeadRoutingRules')!;
+    if (!response.ok || !result.ok) {
+      rulesEl.innerHTML = '<p class="text-xs text-red-600">Could not load routing rules.</p>';
+      return;
+    }
+
+    routingContractors = result.contractors || [];
+    routingTruckOwners = result.truckOwners || [];
+
+    const rules = result.rules || [];
+    rulesEl.innerHTML = rules.length ? rules.map((r: any) => {
+      const contractorNames = (r.contractor_ids || []).map((id: string) => routingContractors.find((c) => c.user_id === id)?.company_name || 'Unknown').join(', ') || '—';
+      const truckOwnerNames = (r.truck_owner_ids || []).map((id: string) => routingTruckOwners.find((o) => o.id === id)?.company_name || 'Unknown').join(', ') || '—';
+      return `
+        <div class="flex flex-col gap-2 rounded-xl border border-slate-200 p-4 sm:flex-row sm:items-center sm:justify-between" data-rule-id="${r.id}">
+          <div class="min-w-0">
+            <p class="text-xs font-bold text-slate-900">${escapeHtml(r.source_domain)} <span class="ml-2 rounded-full px-2 py-0.5 text-[9px] font-bold uppercase ${r.enabled ? 'bg-green-50 text-green-700' : 'bg-slate-100 text-slate-500'}">${r.enabled ? 'Enabled' : 'Disabled'}</span></p>
+            <p class="mt-1 text-[10px] text-slate-400">Contractors: ${escapeHtml(contractorNames)}</p>
+            <p class="text-[10px] text-slate-400">Truck owners: ${escapeHtml(truckOwnerNames)}</p>
+          </div>
+          <div class="flex shrink-0 gap-2">
+            <button class="edit-routing-rule h-8 rounded-lg border border-slate-200 px-3 text-[10px] font-bold uppercase tracking-wider text-slate-600 hover:bg-slate-50" data-rule-id="${r.id}">Edit</button>
+            <button class="delete-routing-rule h-8 rounded-lg border border-red-200 px-3 text-[10px] font-bold uppercase tracking-wider text-red-600 hover:bg-red-50" data-rule-id="${r.id}">Delete</button>
+          </div>
+        </div>`;
+    }).join('') : '<p class="text-xs text-slate-400">No routing rules yet — add one below.</p>';
+
+    resetRoutingForm();
+
+    rulesEl.querySelectorAll<HTMLButtonElement>('.edit-routing-rule').forEach((btn) => {
+      btn.addEventListener('click', () => {
+        const rule = rules.find((r: any) => r.id === btn.dataset.ruleId);
+        if (!rule) return;
+        (document.getElementById('routingRuleId') as HTMLInputElement).value = rule.id;
+        (document.getElementById('routingDomain') as HTMLInputElement).value = rule.source_domain;
+        (document.getElementById('routingEnabled') as HTMLInputElement).checked = rule.enabled;
+        renderRoutingCheckboxes(document.getElementById('routingContractorList')!, routingContractors.map((c) => ({ id: c.user_id, label: c.company_name || c.contact_name || c.user_id })), 'routingContractor', rule.contractor_ids || []);
+        renderRoutingCheckboxes(document.getElementById('routingTruckOwnerList')!, routingTruckOwners.map((o) => ({ id: o.id, label: o.company_name || o.contact_name || o.id })), 'routingTruckOwner', rule.truck_owner_ids || []);
+        document.getElementById('cancelRoutingEditBtn')?.classList.remove('hidden');
+        document.getElementById('routingDomain')?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      });
+    });
+
+    rulesEl.querySelectorAll<HTMLButtonElement>('.delete-routing-rule').forEach((btn) => {
+      btn.addEventListener('click', async () => {
+        if (!confirm('Delete this routing rule? Contractors/truck owners on this list will stop getting priority leads from this domain.')) return;
+        await adminFetch(`/api/external-lead-routing?id=${btn.dataset.ruleId}`, { method: 'DELETE' });
+        loadExternalLeadRouting();
+      });
+    });
+  }
+
+  document.getElementById('cancelRoutingEditBtn')?.addEventListener('click', resetRoutingForm);
+
+  document.getElementById('externalLeadRoutingForm')?.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const saveBtn = document.getElementById('saveRoutingBtn') as HTMLButtonElement;
+    saveBtn.disabled = true;
+    saveBtn.textContent = 'Saving...';
+
+    const payload = {
+      source_domain: (document.getElementById('routingDomain') as HTMLInputElement).value.trim(),
+      enabled: (document.getElementById('routingEnabled') as HTMLInputElement).checked,
+      contractor_ids: Array.from(document.querySelectorAll('input[name="routingContractor"]:checked')).map((el) => (el as HTMLInputElement).value),
+      truck_owner_ids: Array.from(document.querySelectorAll('input[name="routingTruckOwner"]:checked')).map((el) => (el as HTMLInputElement).value),
+    };
+
+    const response = await adminFetch('/api/external-lead-routing', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload),
+    });
+    const result = await response.json().catch(() => ({}));
+
+    if (!response.ok || !result.ok) {
+      alert(`Error saving routing rule: ${result.error || 'unknown error'}`);
+      saveBtn.textContent = 'Save rule';
+      saveBtn.disabled = false;
+      return;
+    }
+
+    saveBtn.textContent = 'Saved Successfully ✓';
+    setTimeout(() => { saveBtn.textContent = 'Save rule'; saveBtn.disabled = false; }, 2000);
+    loadExternalLeadRouting();
+  });
 
   async function loadOAuthSettings() {
     // OAuth je konfigurisan na Supabase, ali prikazujemo info

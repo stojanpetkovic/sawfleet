@@ -13,6 +13,14 @@ const { data: territories } = await supabase
   .from('service_territories')
   .select('*')
   .order('name', { ascending: true });
+
+// Poslednja 4 objavljena blog posta za izdvojenu sekciju na dnu strane
+const { data: featuredPosts } = await supabase
+  .from('blog_posts')
+  .select('title, slug, excerpt, cover_image_url, category, published_at')
+  .eq('status', 'published')
+  .order('published_at', { ascending: false })
+  .limit(4);
 ---
 
 <MainLayout
@@ -305,6 +313,43 @@ const { data: territories } = await supabase
         </div>
       </div>
     </section>
+
+    {featuredPosts && featuredPosts.length > 0 && (
+      <section class="border-t border-slate-200 bg-white px-4 py-14 font-sans sm:px-8 sm:py-20 lg:py-24">
+        <div class="mx-auto max-w-[1200px]">
+          <div class="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
+            <div>
+              <span class="text-[10px] font-mono font-bold uppercase tracking-[0.2em] text-green-700">// From the blog</span>
+              <h2 class="mt-2 text-3xl font-bold tracking-tight text-slate-950 sm:text-4xl">Tips, guides, and stories</h2>
+            </div>
+            <a href="/blog" class="inline-flex h-11 shrink-0 items-center justify-center gap-2 rounded-xl border border-slate-200 px-5 text-[10px] font-bold uppercase tracking-[0.15em] text-slate-700 transition hover:border-green-300 hover:text-green-800">View all posts <ArrowRight size={14} /></a>
+          </div>
+
+          <div class="mt-9 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:mt-12 lg:grid-cols-4">
+            {featuredPosts.map((post) => (
+              <a
+                href={`/blog/${post.slug}`}
+                class="group flex flex-col overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-soft transition-all hover:-translate-y-0.5 hover:border-green-200 hover:shadow-soft-lg"
+              >
+                <div class="relative aspect-[16/10] w-full overflow-hidden bg-slate-100">
+                  {post.cover_image_url ? (
+                    <img src={post.cover_image_url} alt={post.title} class="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105" />
+                  ) : (
+                    <div class="h-full w-full bg-gradient-to-br from-green-50 to-slate-100"></div>
+                  )}
+                  {post.category && <span class="absolute left-3 top-3 rounded-full bg-white/90 px-2.5 py-1 text-[9px] font-bold uppercase tracking-wider text-green-700">{post.category}</span>}
+                </div>
+                <div class="flex flex-1 flex-col p-5">
+                  <span class="text-[10px] font-mono text-slate-400">{post.published_at ? new Date(post.published_at).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" }) : ""}</span>
+                  <h3 class="mt-2 text-sm font-bold text-slate-950 leading-snug">{post.title}</h3>
+                  {post.excerpt && <p class="mt-2 text-xs leading-5 text-slate-500 line-clamp-3">{post.excerpt}</p>}
+                </div>
+              </a>
+            ))}
+          </div>
+        </div>
+      </section>
+    )}
 
   </main>
 

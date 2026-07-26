@@ -101,3 +101,26 @@ export function truckOwnerStatusEmailHtml({ ownerName, status, loginUrl }) {
     ${approved ? `<a href="${loginUrl}" style="display:inline-block; margin-top:8px; background:#22C55E; color:#FFFFFF; text-decoration:none; font-weight:bold; font-size:13px; padding:12px 24px; border-radius:10px;">Sign in →</a>` : ""}
   </div>`;
 }
+
+export function customerTrackingEmailHtml({ county, dashboardUrl, accountUrl }) {
+  return `
+  <div style="font-family: -apple-system, sans-serif; max-width: 480px; margin: 0 auto; background:#FFFFFF; color:#0F172A; padding:32px; border-radius:16px; border:1px solid #E7EAE8;">
+    <p style="font-size:10px; letter-spacing:2px; text-transform:uppercase; color:#16803C; font-weight:bold; margin:0 0 12px;">// Request Received</p>
+    <h1 style="font-size:22px; margin:0 0 16px;">We've got your request${county ? ` for ${county}` : ""}</h1>
+    <p style="color:#475569; font-size:14px; line-height:1.6;">We're matching you with a qualified local contractor now. Use the secure link below anytime to check the status of your request — no password needed.</p>
+    <a href="${dashboardUrl}" style="display:inline-block; margin-top:8px; background:#22C55E; color:#FFFFFF; text-decoration:none; font-weight:bold; font-size:13px; padding:12px 24px; border-radius:10px;">Track your request →</a>
+    <p style="color:#94A3B8; font-size:11px; margin-top:20px; line-height:1.5;">This link expires after a short time. You can always request a new one at <a href="${accountUrl}" style="color:#64748B;">${accountUrl}</a>.</p>
+  </div>`;
+}
+
+export function routedExternalLeadEmailHtml({ recipientName, sourceDomain, fullName, message, dashboardUrl }) {
+  return `
+  <div style="font-family: -apple-system, sans-serif; max-width: 480px; margin: 0 auto; background:#FFFFFF; color:#0F172A; padding:32px; border-radius:16px; border:1px solid #E7EAE8;">
+    <p style="font-size:10px; letter-spacing:2px; text-transform:uppercase; color:#16803C; font-weight:bold; margin:0 0 12px;">// Priority Referral</p>
+    <h1 style="font-size:22px; margin:0 0 16px;">A new lead just arrived${sourceDomain ? ` from ${sourceDomain}` : ""}</h1>
+    <p style="color:#475569; font-size:14px; line-height:1.6;">Hi${recipientName ? " " + recipientName : ""}, you're set up as a priority partner for this source — this lead is already in your dashboard with full contact info, no credits required to accept it.</p>
+    <p style="color:#64748B; font-size:13px; line-height:1.6; border-left:2px solid #E2E8F0; padding-left:12px;">${fullName ? `<strong>${fullName}</strong><br/>` : ""}${message ? message.slice(0, 140) : "Details available in your dashboard."}</p>
+    <p style="color:#D97706; font-size:12px; margin:20px 0;">⚡ First to accept keeps it — no charge either way.</p>
+    <a href="${dashboardUrl}" style="display:inline-block; margin-top:8px; background:#22C55E; color:#FFFFFF; text-decoration:none; font-weight:bold; font-size:13px; padding:12px 24px; border-radius:10px;">View in dashboard →</a>
+  </div>`;
+}

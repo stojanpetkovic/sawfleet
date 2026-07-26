@@ -32,13 +32,22 @@ const { data: tracking } = await supabase
 
       <h1 class="text-4xl sm:text-5xl font-bold tracking-tighter text-slate-900 mb-4">Request Received.</h1>
       
-      <p class="text-base text-slate-600 leading-relaxed mb-10">
+      <p class="text-base text-slate-600 leading-relaxed mb-4">
         Thank you for submitting your details. Our system is currently matching your request with qualified professionals. You will be contacted shortly.
       </p>
 
-      <a href="/" class="inline-flex h-12 px-8 items-center justify-center rounded-xl border border-slate-300 bg-slate-100 text-sm font-bold text-slate-900 transition-all hover:bg-slate-200 hover:border-slate-400">
-        ← Return to Homepage
-      </a>
+      <p class="text-sm text-slate-400 leading-relaxed mb-10">
+        Check your email — we've sent you a secure link to track this request anytime.
+      </p>
+
+      <div class="flex flex-col sm:flex-row gap-3 justify-center">
+        <a href="/my-account" class="inline-flex h-12 px-8 items-center justify-center rounded-xl bg-green-500 text-sm font-bold text-white transition-all hover:bg-green-600">
+          Track your request →
+        </a>
+        <a href="/" class="inline-flex h-12 px-8 items-center justify-center rounded-xl border border-slate-300 bg-slate-100 text-sm font-bold text-slate-900 transition-all hover:bg-slate-200 hover:border-slate-400">
+          ← Return to Homepage
+        </a>
+      </div>
     </div>
 
   </main>

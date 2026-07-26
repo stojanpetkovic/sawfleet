@@ -11,6 +11,9 @@ export function GET() {
   <sitemap>
     <loc>${baseUrl}/sitemap-trucks.xml</loc>
   </sitemap>
+  <sitemap>
+    <loc>${baseUrl}/sitemap-blog.xml</loc>
+  </sitemap>
 </sitemapindex>`;
 
   return new Response(body, {

@@ -285,10 +285,13 @@ const navItems = [
   type AvailableLead = { id: string; county: string; details: string; created_at: string; status: string; contractor_id: string | null };
   type ClaimedLead = { id: string; county: string; phone: string; email: string | null; details: string; claimed_at: string | null; created_at: string };
   type RecommendedTruck = { truck_id: string; company_name: string | null; contact_name: string | null; phone: string | null; email: string | null; equipment_type: string; lift_capacity_tons: number | null; working_height_ft: number | null; access_type: string | null; listing_type: string | null; location: string };
+  type RoutedExternalLead = { id: string; source_domain: string | null; full_name: string | null; email: string | null; phone: string | null; message: string | null; created_at: string; claimed_by_id: string | null };
 
   let contractorId: string | null = null;
   let pollTimer: ReturnType<typeof setInterval> | null = null;
   let knownAvailableIds = new Set<string>();
+  let knownRoutedIds = new Set<string>();
+  let lastAvailableCount = 0;
 
   // Menja koji panel je vidljiv. NE dispatch-uje event — samo reaguje na
   // 'layout:tab-change' (koji šalje ContractorLayout na klik, ili mi sami
@@ -387,6 +390,7 @@ const navItems = [
           goToTab('profile');
           await supabase.from('credit_requests').update({ seen_by_requester: true }).eq('id', btn.dataset.id);
           await refreshCreditBalance();
+          await updateNotificationBell(lastAvailableCount);
         });
       });
     }
@@ -443,6 +447,57 @@ const navItems = [
     return wrapper;
   }
 
+  function renderRoutedExternalLead(lead: RoutedExternalLead) {
+    const takenByOther = !!lead.claimed_by_id && lead.claimed_by_id !== contractorId;
+    const wrapper = document.createElement('div');
+    wrapper.id = `avail-ext-${lead.id}`;
+    wrapper.dataset.taken = takenByOther ? '1' : '0';
+    wrapper.className = `relative p-4 md:p-6 bg-gradient-to-br from-white to-amber-50/40 border ${takenByOther ? 'border-slate-200 opacity-70' : 'border-amber-300 shadow-sm'} rounded-2xl overflow-hidden transition-all`;
+    wrapper.innerHTML = `
+      <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
+        <div class="min-w-0 flex-1">
+          <div class="flex flex-wrap items-center gap-2">
+            <span class="px-2 py-0.5 rounded-full bg-amber-100 border border-amber-300 text-amber-800 text-[9px] font-bold uppercase tracking-widest">Priority referral — ${lead.source_domain || 'partner'}</span>
+            <span class="text-[9px] font-mono text-zinc-400">// ${timeAgo(lead.created_at)}</span>
+          </div>
+          <p class="mt-3 text-sm font-bold text-slate-900">${lead.full_name || 'Unnamed'}</p>
+          <p class="mt-1 text-xs text-slate-600">${[lead.email, lead.phone].filter(Boolean).join(' · ') || 'No contact info provided'}</p>
+          ${lead.message ? `<p class="mt-2 text-sm text-slate-700 max-w-md">${lead.message}</p>` : ''}
+        </div>
+        ${!takenByOther ? `
+          <button
+            data-ext-id="${lead.id}"
+            class="accept-ext-btn w-full md:w-auto shrink-0 px-6 py-3 md:py-4 bg-amber-500 text-slate-950 text-[10px] font-bold uppercase tracking-widest rounded-xl hover:bg-amber-400 transition-all active:scale-95 whitespace-nowrap"
+          >
+            Accept →
+          </button>
+        ` : `
+          <button disabled class="w-full md:w-auto shrink-0 px-6 py-3 md:py-4 bg-zinc-100 text-zinc-400 border border-zinc-200 text-[10px] font-bold uppercase tracking-widest rounded-xl cursor-not-allowed whitespace-nowrap">
+            Already accepted
+          </button>
+        `}
+      </div>
+    `;
+    if (!takenByOther) {
+      wrapper.querySelector('.accept-ext-btn')?.addEventListener('click', (e) => acceptRoutedLead(lead.id, e.currentTarget as HTMLButtonElement));
+    }
+    return wrapper;
+  }
+
+  async function acceptRoutedLead(id: string, btn: HTMLButtonElement) {
+    btn.disabled = true;
+    btn.textContent = 'Accepting...';
+    const { error } = await supabase.rpc('accept_external_lead', { p_external_lead_id: id });
+    if (error) {
+      toast(error.message?.includes('already_accepted') ? 'Too slow — already accepted by another partner.' : 'Could not accept lead.', 'error');
+      btn.disabled = false;
+      btn.textContent = 'Accept →';
+    } else {
+      toast('Lead accepted — no credits used.', 'success');
+    }
+    await loadAvailableLeads();
+  }
+
   function renderClaimedLead(lead: ClaimedLead) {
     const wrapper = document.createElement('div');
     wrapper.className = 'p-4 md:p-6 bg-gradient-to-br from-white to-green-50/50 border border-green-200 rounded-2xl shadow-sm';
@@ -467,12 +522,23 @@ const navItems = [
     return wrapper;
   }
 
+  async function loadRoutedExternalLeadsData(): Promise<RoutedExternalLead[]> {
+    const { data, error } = await supabase
+      .from('external_leads')
+      .select('id, source_domain, full_name, email, phone, message, created_at, claimed_by_id')
+      .order('created_at', { ascending: false });
+    return error ? [] : (data || []);
+  }
+
   async function loadAvailableLeads() {
-    const { data, error } = await supabase.rpc('get_available_leads');
+    const [{ data, error }, routedLeads] = await Promise.all([
+      supabase.rpc('get_available_leads'),
+      loadRoutedExternalLeadsData(),
+    ]);
     const container = document.getElementById('availableLeadsContainer')!;
     const empty = document.getElementById('noAvailableLeads')!;
     if (error) return;
-    
+
     // Filtriramo lidove: ne prikazujemo u gornjoj listi one koje je OVAJ korisnik preuzeo
     // (jer oni idu u donju listu "My claimed leads")
     const leads: AvailableLead[] = (data || []).filter((l: AvailableLead) => l.contractor_id !== contractorId);
@@ -501,7 +567,35 @@ const navItems = [
     });
 
     knownAvailableIds = freshIds;
-    empty.classList.toggle('hidden', leads.length > 0);
+
+    // Priority referral (routed external) leads — mixed into the same container,
+    // diffed separately since they come from a different table/RPC.
+    const freshRoutedIds = new Set(routedLeads.map((l) => l.id));
+    knownRoutedIds.forEach((id) => {
+      if (!freshRoutedIds.has(id)) {
+        const el = document.getElementById(`avail-ext-${id}`);
+        if (el) {
+          el.style.opacity = '0';
+          setTimeout(() => el.remove(), 300);
+        }
+      }
+    });
+    routedLeads.forEach((lead) => {
+      const existing = document.getElementById(`avail-ext-${lead.id}`) as HTMLElement | null;
+      if (!existing) {
+        container.appendChild(renderRoutedExternalLead(lead));
+      } else {
+        const nowTaken = !!lead.claimed_by_id && lead.claimed_by_id !== contractorId ? '1' : '0';
+        if (existing.dataset.taken !== nowTaken) {
+          container.replaceChild(renderRoutedExternalLead(lead), existing);
+        }
+      }
+    });
+    knownRoutedIds = freshRoutedIds;
+
+    const totalCount = leads.length + routedLeads.length;
+    empty.classList.toggle('hidden', totalCount > 0);
+    lastAvailableCount = leads.length;
     updateNotificationBell(leads.length);
 
     const statAvailable = document.getElementById('statAvailable');

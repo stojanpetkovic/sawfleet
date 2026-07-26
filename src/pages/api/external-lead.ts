@@ -4,6 +4,7 @@ import { supabaseAdmin } from "../../lib/supabaseAdmin";
 import { notifyNewExternalLead } from "./notify-new-external-lead";
 import { getPermitAutomationSettings } from "../../lib/permitData";
 import { publishWebsiteLead, scoreExternalLead } from "../../lib/leadWorkflow";
+import { sendEmail, routedExternalLeadEmailHtml } from "../../lib/resend.js";
 
 // CORS — ovo namerno prima pozive sa DRUGIH domena (spoljni sajtovi
 // šalju svoje forme ovde), pa je Access-Control-Allow-Origin otvoren.
@@ -183,6 +184,58 @@ export async function POST({ request }: { request: Request }) {
         { fullName, email, phone, message, sourceDomain: resolvedDomain, formType: formType || "lead", photoUrls },
         siteUrl
       ).catch((err) => console.error("notifyNewExternalLead failed:", err));
+    }
+
+    // Priority partner routing — additive, non-fatal. If this source_domain has a
+    // standing routing rule, notify every configured contractor/truck owner that
+    // a lead just arrived. It's already visible unblurred in their dashboard via
+    // the external_leads_*_routed_select RLS policies — this is just the email.
+    try {
+      const { data: rules } = await supabaseAdmin
+        .from("external_lead_routing")
+        .select("*")
+        .eq("enabled", true);
+
+      const normalizedForRouting = String(resolvedDomain || "").toLowerCase();
+      const rule = (rules || []).find((r) => {
+        const d = String(r.source_domain || "").toLowerCase();
+        return normalizedForRouting === d || normalizedForRouting.endsWith(`.${d}`);
+      });
+
+      if (rule && (rule.contractor_ids?.length || rule.truck_owner_ids?.length)) {
+        const [{ data: contractors }, { data: truckOwners }] = await Promise.all([
+          rule.contractor_ids?.length
+            ? supabaseAdmin.from("contractors").select("email,company_name,contact_name").in("user_id", rule.contractor_ids)
+            : Promise.resolve({ data: [] }),
+          rule.truck_owner_ids?.length
+            ? supabaseAdmin.from("truck_owners").select("email,company_name,contact_name").in("id", rule.truck_owner_ids)
+            : Promise.resolve({ data: [] }),
+        ]);
+
+        const recipients = [
+          ...(contractors || []).map((c: any) => ({ email: c.email, name: c.company_name || c.contact_name, dashboardPath: "/dashboard" })),
+          ...(truckOwners || []).map((o: any) => ({ email: o.email, name: o.company_name || o.contact_name, dashboardPath: "/truck-dashboard" })),
+        ].filter((r) => r.email);
+
+        const siteUrl = import.meta.env.PUBLIC_SITE_URL || origin || new URL(request.url).origin;
+        await Promise.all(
+          recipients.map((r) =>
+            sendEmail({
+              to: r.email,
+              subject: `Priority referral lead from ${resolvedDomain || "a partner site"}`,
+              html: routedExternalLeadEmailHtml({
+                recipientName: r.name,
+                sourceDomain: resolvedDomain,
+                fullName,
+                message,
+                dashboardUrl: `${siteUrl}${r.dashboardPath}`,
+              }),
+            })
+          )
+        );
+      }
+    } catch (routingError) {
+      console.error("external lead routing notify failed", routingError);
     }
 
     return json({ ok: true }, 200);
