@@ -71,6 +71,7 @@ import MainLayout from "../layouts/MainLayout.astro";
 <script>
   import { supabase } from "../lib/supabase";
   import { getAuthRedirectUrl } from "../lib/authRedirect";
+  import { hasOAuthHash } from "../lib/oauthCallback";
 
   const form = document.getElementById('loginForm') as HTMLFormElement;
   const btn = document.getElementById('submitBtn') as HTMLButtonElement;
@@ -147,9 +148,12 @@ import MainLayout from "../layouts/MainLayout.astro";
   });
 
   // Check if this is OAuth callback and redirect to dashboard
-  if (new URLSearchParams(window.location.search).has('oauth_callback')) {
+  if (new URLSearchParams(window.location.search).has('oauth_callback') || hasOAuthHash(window.location.hash)) {
     (async () => {
       await new Promise(resolve => setTimeout(resolve, 500));
+      const cleanUrl = new URL(window.location.href);
+      cleanUrl.hash = '';
+      window.history.replaceState({}, '', cleanUrl.toString());
       window.location.assign('/portal');
     })();
   }
