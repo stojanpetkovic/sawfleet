@@ -62,6 +62,7 @@ import MainLayout from "../layouts/MainLayout.astro";
 
 <script>
   import { supabase } from "../lib/supabase";
+  import { getAuthRedirectUrl } from "../lib/authRedirect";
 
   const form = document.getElementById('loginForm') as HTMLFormElement;
   const btn = document.getElementById('submitBtn') as HTMLButtonElement;
@@ -107,7 +108,7 @@ import MainLayout from "../layouts/MainLayout.astro";
       return;
     }
     const { error } = await supabase.auth.resetPasswordForEmail(email, {
-      redirectTo: `${window.location.origin}/reset-password`,
+      redirectTo: getAuthRedirectUrl('/reset-password'),
     });
     if (error) {
       alert('Error: ' + error.message);
@@ -124,7 +125,7 @@ import MainLayout from "../layouts/MainLayout.astro";
     const { error } = await supabase.auth.signInWithOAuth({
       provider: 'google',
       options: {
-        redirectTo: `${window.location.origin}/truck-login?oauth_callback=true`,
+        redirectTo: getAuthRedirectUrl('/truck-login?oauth_callback=true'),
       },
     });
 
