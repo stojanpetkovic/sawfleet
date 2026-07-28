@@ -140,7 +140,9 @@ import MainLayout from "../layouts/MainLayout.astro";
   // Check if this is OAuth callback
   if (new URLSearchParams(window.location.search).has('oauth_callback') || hasOAuthHash(window.location.hash)) {
     (async () => {
-      await new Promise(resolve => setTimeout(resolve, 500));
+      await new Promise(resolve => setTimeout(resolve, 700));
+      const { data: { session } } = await supabase.auth.getSession();
+      if (!session) return;
       const cleanUrl = new URL(window.location.href);
       cleanUrl.hash = '';
       window.history.replaceState({}, '', cleanUrl.toString());

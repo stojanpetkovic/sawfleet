@@ -150,11 +150,14 @@ import MainLayout from "../layouts/MainLayout.astro";
   // Check if this is OAuth callback and redirect to dashboard
   if (new URLSearchParams(window.location.search).has('oauth_callback') || hasOAuthHash(window.location.hash)) {
     (async () => {
-      await new Promise(resolve => setTimeout(resolve, 500));
-      const cleanUrl = new URL(window.location.href);
-      cleanUrl.hash = '';
-      window.history.replaceState({}, '', cleanUrl.toString());
-      window.location.assign('/portal');
+      await new Promise(resolve => setTimeout(resolve, 700));
+      const { data: { session } } = await supabase.auth.getSession();
+      if (session) {
+        const cleanUrl = new URL(window.location.href);
+        cleanUrl.hash = '';
+        window.history.replaceState({}, '', cleanUrl.toString());
+        window.location.assign('/portal');
+      }
     })();
   }
 </script>
