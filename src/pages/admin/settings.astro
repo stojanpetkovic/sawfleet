@@ -493,6 +493,7 @@ const permitSettings = parsePermitSettings(tracking?.global_scripts);
 
 <script>
   import { supabase } from "../../lib/supabase";
+  import { getStoredOAuthSettings, saveStoredOAuthSettings } from "../../lib/integrationSettings";
 
   // --- TABOVI LOGIKA ---
   const tabTerritories = document.getElementById('tabBtn-territories');
@@ -770,21 +771,48 @@ const permitSettings = parsePermitSettings(tracking?.global_scripts);
   });
 
   async function loadOAuthSettings() {
-    // OAuth je konfigurisan na Supabase, ali prikazujemo info
     const form = document.getElementById('oauthSettingsForm') as HTMLFormElement;
-    form.style.opacity = '0.7';
     const msg = document.getElementById('oauthMsg') as HTMLElement;
-    msg.textContent = '✓ Check Supabase Dashboard → Authentication → Providers → Google for full OAuth configuration';
-    msg.className = 'text-[11px] text-blue-600 mt-2';
+    const localSaved = getStoredOAuthSettings();
+
+    form.style.opacity = '1';
+
+    const { data, error } = await supabase
+      .from('tracking_settings')
+      .select('google_oauth_client_id, google_oauth_client_secret')
+      .eq('id', 1)
+      .maybeSingle();
+
+    const saved = {
+      clientId: data?.google_oauth_client_id || localSaved.clientId || '',
+      clientSecret: data?.google_oauth_client_secret || localSaved.clientSecret || '',
+    };
+
+    (document.getElementById('googleClientId') as HTMLInputElement).value = saved.clientId;
+    (document.getElementById('googleClientSecret') as HTMLInputElement).value = saved.clientSecret;
+
+    if (error) {
+      msg.textContent = '⚠️ Loaded fallback values from this browser because the database query failed.';
+      msg.className = 'text-[11px] text-amber-600 mt-2';
+      return;
+    }
+
+    if (saved.clientId && saved.clientSecret) {
+      msg.textContent = '✓ OAuth settings loaded from the database.';
+      msg.className = 'text-[11px] text-green-600 mt-2';
+    } else {
+      msg.textContent = '✓ Check Supabase Dashboard → Authentication → Providers → Google for full OAuth configuration';
+      msg.className = 'text-[11px] text-blue-600 mt-2';
+    }
   }
 
   document.getElementById('oauthSettingsForm')?.addEventListener('submit', async (e) => {
     e.preventDefault();
     const saveBtn = document.getElementById('saveOAuthBtn') as HTMLButtonElement;
     const msg = document.getElementById('oauthMsg') as HTMLElement;
-    
+
     saveBtn.disabled = true;
-    saveBtn.textContent = 'Processing...';
+    saveBtn.textContent = 'Saving...';
 
     const clientId = (document.getElementById('googleClientId') as HTMLInputElement).value.trim();
     const clientSecret = (document.getElementById('googleClientSecret') as HTMLInputElement).value.trim();
@@ -797,17 +825,23 @@ const permitSettings = parsePermitSettings(tracking?.global_scripts);
       return;
     }
 
-    // Store locally as reminder (actual OAuth config is on Supabase)
-    localStorage.setItem('google_oauth_configured', 'true');
-    localStorage.setItem('google_oauth_date', new Date().toISOString());
+    const payload = {
+      id: 1,
+      google_oauth_client_id: clientId,
+      google_oauth_client_secret: clientSecret,
+    };
 
-    msg.textContent = '✓ Configuration saved. Next step: Go to Supabase Dashboard → Authentication → Providers → Google and paste your credentials there.';
-    msg.className = 'text-[11px] text-green-600 mt-2';
-    
-    // Clear fields for security
-    (document.getElementById('googleClientId') as HTMLInputElement).value = '';
-    (document.getElementById('googleClientSecret') as HTMLInputElement).value = '';
-    
+    const { error } = await supabase.from('tracking_settings').upsert(payload, { onConflict: 'id' });
+
+    if (error) {
+      saveStoredOAuthSettings({ clientId, clientSecret });
+      msg.textContent = '⚠️ Saved to this browser as fallback because the database save failed.';
+      msg.className = 'text-[11px] text-amber-600 mt-2';
+    } else {
+      msg.textContent = '✓ OAuth settings saved to the database.';
+      msg.className = 'text-[11px] text-green-600 mt-2';
+    }
+
     setTimeout(() => {
       saveBtn.disabled = false;
       saveBtn.textContent = 'Save OAuth Settings';
