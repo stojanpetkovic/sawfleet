@@ -117,6 +117,7 @@ const tabItems = menuItems.slice(0, 4);
                 <div class="p-2 space-y-1">
                   <a href="/admin/service-leads" class="flex items-center justify-between px-3 py-2 rounded-lg hover:bg-slate-50 transition-colors"><span class="text-xs text-slate-600">New Leads</span><span id="badge-leads" class="text-[10px] font-mono text-green-700 bg-green-50 px-2 py-0.5 rounded">0</span></a>
                   <a href="/admin/external-leads" class="flex items-center justify-between px-3 py-2 rounded-lg hover:bg-slate-50 transition-colors"><span class="text-xs text-slate-600">New External Leads</span><span id="badge-external" class="text-[10px] font-mono text-teal-600 bg-teal-50 px-2 py-0.5 rounded">0</span></a>
+                  <a href="/admin/permit-leads" class="flex items-center justify-between px-3 py-2 rounded-lg hover:bg-slate-50 transition-colors"><span class="text-xs text-slate-600">New Permit Leads (24h)</span><span id="badge-permits" class="text-[10px] font-mono text-indigo-600 bg-indigo-50 px-2 py-0.5 rounded">0</span></a>
                   <a href="/admin/contractors" class="flex items-center justify-between px-3 py-2 rounded-lg hover:bg-slate-50 transition-colors"><span class="text-xs text-slate-600">Pending Contractors</span><span id="badge-contractors" class="text-[10px] font-mono text-blue-600 bg-blue-50 px-2 py-0.5 rounded">0</span></a>
                   <a href="/admin/truck-owners" class="flex items-center justify-between px-3 py-2 rounded-lg hover:bg-slate-50 transition-colors"><span class="text-xs text-slate-600">Pending Owners</span><span id="badge-owners" class="text-[10px] font-mono text-amber-600 bg-amber-50 px-2 py-0.5 rounded">0</span></a>
                   <a href="/admin/grapple-saw-trucks" class="flex items-center justify-between px-3 py-2 rounded-lg hover:bg-slate-50 transition-colors"><span class="text-xs text-slate-600">Pending Assets</span><span id="badge-trucks" class="text-[10px] font-mono text-purple-600 bg-purple-50 px-2 py-0.5 rounded">0</span></a>
@@ -203,23 +204,30 @@ const tabItems = menuItems.slice(0, 4);
       });
 
       async function fetchNotifications() {
+        const since24h = new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString();
         const { count: leads } = await supabase.from('leads').select('*', { count: 'exact', head: true }).eq('status', 'new');
         const { count: external } = await supabase.from('external_leads').select('*', { count: 'exact', head: true }).eq('status', 'new');
+        const { count: permits } = await supabase.from('permit_leads').select('*', { count: 'exact', head: true }).gte('created_at', since24h);
         const { count: contr } = await supabase.from('contractors').select('*', { count: 'exact', head: true }).eq('status', 'pending');
         const { count: owners } = await supabase.from('truck_owners').select('*', { count: 'exact', head: true }).eq('status', 'pending');
         const { count: trucks } = await supabase.from('grapple_saw_trucks').select('*', { count: 'exact', head: true }).eq('approval_status', 'pending');
         const { count: creditRequests } = await supabase.from('credit_requests').select('*', { count: 'exact', head: true }).eq('status', 'pending');
-        const total = (leads || 0) + (external || 0) + (contr || 0) + (owners || 0) + (trucks || 0) + (creditRequests || 0);
+        const total = (leads || 0) + (external || 0) + (permits || 0) + (contr || 0) + (owners || 0) + (trucks || 0) + (creditRequests || 0);
         const badge = document.getElementById('notificationBadge');
-        if (total > 0 && badge) { badge.textContent = total.toString(); badge.classList.remove('hidden'); }
+        if (badge) {
+          if (total > 0) { badge.textContent = total.toString(); badge.classList.remove('hidden'); }
+          else { badge.classList.add('hidden'); }
+        }
         document.getElementById('badge-leads')!.textContent = (leads || 0).toString();
         document.getElementById('badge-external')!.textContent = (external || 0).toString();
+        document.getElementById('badge-permits')!.textContent = (permits || 0).toString();
         document.getElementById('badge-contractors')!.textContent = (contr || 0).toString();
         document.getElementById('badge-owners')!.textContent = (owners || 0).toString();
         document.getElementById('badge-trucks')!.textContent = (trucks || 0).toString();
         document.getElementById('badge-credits')!.textContent = (creditRequests || 0).toString();
       }
       document.addEventListener('astro:page-load', fetchNotifications);
+      setInterval(fetchNotifications, 30000);
 
       // Initialize permit sync cron on first admin page load
       (async () => {
