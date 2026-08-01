@@ -299,7 +299,15 @@ const navItems = [
           </form>
           <p id="creditRequestMsg" class="mt-2 text-[11px]"></p>
 
-          <p class="mt-5 border-t border-emerald-100 pt-3 text-[10px] text-emerald-700/70 leading-relaxed">💳 Buying credit online is coming soon — for now, requests are reviewed by the administrator.</p>
+          <div id="paypalComingSoonNote" class="mt-5 border-t border-emerald-100 pt-3">
+            <p class="text-[10px] text-emerald-700/70 leading-relaxed">💳 Buying credit online is coming soon — for now, requests are reviewed by the administrator.</p>
+          </div>
+          <div id="paypalBuySection" class="hidden mt-5 border-t border-emerald-100 pt-4">
+            <p class="mb-2 text-[10px] font-bold uppercase tracking-[0.15em] text-emerald-700">Buy credit with PayPal</p>
+            <input id="paypalAmount" type="number" min="5" step="1" value="25" placeholder="Amount ($, min $5)" class="mb-3 h-11 w-full rounded-xl border border-emerald-200 bg-white px-4 text-sm text-slate-900 outline-none focus:border-emerald-500" />
+            <div id="paypalButtonContainer"></div>
+            <p id="paypalPurchaseMsg" class="mt-2 text-[11px]"></p>
+          </div>
         </div>
       </div>
     </div>
@@ -309,6 +317,7 @@ const navItems = [
 
 <script>
   import { supabase } from "../lib/supabase";
+  import { initPayPalCreditButton } from "../lib/paypalCreditWidget";
 
   type Truck = {
     id: string; equipment_type: string; lift_capacity_tons: number; working_height_ft: number;
@@ -669,6 +678,15 @@ const navItems = [
       if (owner.status === 'pending') { show('statePending'); return; }
       if (owner.status === 'rejected') { show('stateRejected'); return; }
       refreshCreditBalance();
+      initPayPalCreditButton({
+        supabase,
+        comingSoonNoteId: 'paypalComingSoonNote',
+        buySectionId: 'paypalBuySection',
+        amountInputId: 'paypalAmount',
+        buttonContainerId: 'paypalButtonContainer',
+        msgId: 'paypalPurchaseMsg',
+        onSuccess: refreshCreditBalance,
+      });
     } else {
       // Nema truck_owners reda (npr. nalog napravljen pre ove migracije) —
       // ne blokiramo, samo popuni email iz sesije.

@@ -554,6 +554,42 @@ const { data: creditTruckOwners } = await (supabaseAdmin ?? supabase)
               <li class="flex items-center gap-2"><span class="w-1.5 h-1.5 rounded-full bg-green-500"></span>Fleet owner login (/truck-login)</li>
             </ul>
           </div>
+
+          <div class="border-t border-slate-100 pt-6">
+            <h2 class="text-sm font-bold text-slate-900 uppercase tracking-wider mb-2">PayPal Credit Purchases</h2>
+            <p class="mb-6 text-[11px] leading-5 text-slate-500">Lets contractors and truck owners buy their own credit from the Profile tab, instead of only submitting a top-up request. Get credentials from your <a href="https://developer.paypal.com/dashboard/applications" target="_blank" class="text-blue-600 hover:underline">PayPal Developer Dashboard</a>.</p>
+
+            <form id="paypalSettingsForm" class="space-y-4">
+              <label class="flex items-center justify-between gap-4 rounded-xl border border-amber-200 bg-amber-50/50 p-4">
+                <span><span class="block text-xs font-bold text-slate-900">Enable PayPal purchases</span><span class="mt-1 block text-[11px] text-slate-500">Shows the "Buy credit with PayPal" button on both dashboards.</span></span>
+                <input id="paypalEnabled" type="checkbox" class="h-5 w-5 accent-green-600" />
+              </label>
+
+              <div>
+                <label class="mb-2 block text-[10px] font-bold uppercase tracking-wider text-slate-600">Mode</label>
+                <select id="paypalMode" class="w-full max-w-xs rounded-xl border border-slate-200 p-3 text-sm">
+                  <option value="sandbox">Sandbox (test payments, no real money)</option>
+                  <option value="live">Live (real payments)</option>
+                </select>
+              </div>
+
+              <div>
+                <label class="mb-2 block text-[10px] font-bold uppercase tracking-wider text-slate-600">Client ID</label>
+                <input id="paypalClientId" type="text" placeholder="AZ...client-id" class="w-full rounded-xl border border-slate-200 p-3 text-sm font-mono" />
+              </div>
+
+              <div>
+                <label class="mb-2 block text-[10px] font-bold uppercase tracking-wider text-slate-600">Client Secret</label>
+                <input id="paypalClientSecret" type="password" placeholder="Leave blank to keep the current secret" class="w-full rounded-xl border border-slate-200 p-3 text-sm font-mono" />
+                <p class="mt-2 text-[9px] text-amber-700 bg-amber-50 px-3 py-2 rounded-lg">⚠️ Stored in the database, never shown back once saved. Leave blank when just changing other fields.</p>
+              </div>
+
+              <button id="savePaypalBtn" type="submit" class="h-11 rounded-xl bg-slate-950 px-6 text-xs font-bold uppercase tracking-wider text-white hover:bg-green-700 transition-colors">
+                Save PayPal Settings
+              </button>
+              <p id="paypalMsg" class="text-[11px]"></p>
+            </form>
+          </div>
         </div>
       </div>
 
@@ -627,6 +663,7 @@ const { data: creditTruckOwners } = await (supabaseAdmin ?? supabase)
   tabOAuth?.addEventListener('click', () => {
     switchTab(tabOAuth, secOAuth!);
     loadOAuthSettings();
+    loadPaypalSettings();
   });
 
   function escapeHtml(value: unknown) {
@@ -923,6 +960,58 @@ const { data: creditTruckOwners } = await (supabaseAdmin ?? supabase)
       saveBtn.disabled = false;
       saveBtn.textContent = 'Save OAuth Settings';
     }, 2000);
+  });
+
+  async function loadPaypalSettings() {
+    const msg = document.getElementById('paypalMsg')!;
+    const response = await adminFetch('/api/paypal-settings');
+    const result = await response.json().catch(() => ({}));
+    if (!response.ok || !result.ok) {
+      msg.textContent = '⚠️ Could not load PayPal settings (migration required?).';
+      msg.className = 'text-[11px] text-amber-600 mt-2';
+      return;
+    }
+    const s = result.settings || {};
+    (document.getElementById('paypalEnabled') as HTMLInputElement).checked = Boolean(s.paypal_enabled);
+    (document.getElementById('paypalMode') as HTMLSelectElement).value = s.paypal_mode || 'sandbox';
+    (document.getElementById('paypalClientId') as HTMLInputElement).value = s.paypal_client_id || '';
+    (document.getElementById('paypalClientSecret') as HTMLInputElement).value = '';
+    (document.getElementById('paypalClientSecret') as HTMLInputElement).placeholder = s.has_client_secret
+      ? 'Set — leave blank to keep it'
+      : 'Leave blank to keep the current secret';
+    msg.textContent = '';
+  }
+
+  document.getElementById('paypalSettingsForm')?.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const saveBtn = document.getElementById('savePaypalBtn') as HTMLButtonElement;
+    const msg = document.getElementById('paypalMsg')!;
+    saveBtn.disabled = true;
+    saveBtn.textContent = 'Saving...';
+
+    const payload = {
+      paypal_enabled: (document.getElementById('paypalEnabled') as HTMLInputElement).checked,
+      paypal_mode: (document.getElementById('paypalMode') as HTMLSelectElement).value,
+      paypal_client_id: (document.getElementById('paypalClientId') as HTMLInputElement).value.trim(),
+      paypal_client_secret: (document.getElementById('paypalClientSecret') as HTMLInputElement).value.trim(),
+    };
+
+    const response = await adminFetch('/api/paypal-settings', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload),
+    });
+    const result = await response.json().catch(() => ({}));
+    if (response.ok && result.ok) {
+      msg.textContent = '✓ PayPal settings saved.';
+      msg.className = 'text-[11px] text-green-600 mt-2';
+      await loadPaypalSettings();
+    } else {
+      msg.textContent = '❌ ' + (result.error || 'Failed to save PayPal settings.');
+      msg.className = 'text-[11px] text-red-600 mt-2';
+    }
+    saveBtn.disabled = false;
+    saveBtn.textContent = 'Save PayPal Settings';
   });
 
   document.getElementById('creditSettingsForm')?.addEventListener('submit', async (e) => {

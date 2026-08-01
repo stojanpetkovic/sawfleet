@@ -27,10 +27,59 @@ const { data: permitTeasers } = await (supabaseAdmin ?? supabase)
   .gte('discovered_at', thirtyDaysAgo)
   .order('discovered_at', { ascending: false })
   .limit(6);
+
+// 3. Live-hero stat + activity ticker: how many real opportunities exist
+// right now, and a rotating pool (permit leads + website leads, last 30 days,
+// no owner/contact fields) to power the "something's always happening" popup.
+const [{ count: newLeadsCount }, { count: qualifiedPermitCount }, { data: recentPermitsForFeed }, { data: recentLeadsForFeed }] = await Promise.all([
+  (supabaseAdmin ?? supabase).from('leads').select('*', { count: 'exact', head: true }).eq('status', 'new'),
+  (supabaseAdmin ?? supabase).from('permit_leads').select('*', { count: 'exact', head: true }).eq('permit_status', 'qualified').is('archived_at', null).gte('discovered_at', thirtyDaysAgo),
+  (supabaseAdmin ?? supabase).from('permit_leads').select('jurisdiction, permit_type, discovered_at').eq('permit_status', 'qualified').is('archived_at', null).gte('discovered_at', thirtyDaysAgo).order('discovered_at', { ascending: false }).limit(20),
+  (supabaseAdmin ?? supabase).from('leads').select('county, created_at').gte('created_at', thirtyDaysAgo).order('created_at', { ascending: false }).limit(10),
+]);
+
+const liveOpportunityCount = (newLeadsCount || 0) + (qualifiedPermitCount || 0);
+
+const activityFeed = [
+  ...(recentPermitsForFeed || []).map((p) => ({
+    title: 'New permit filed',
+    subtitle: `${p.permit_type || 'Tree service permit'} · ${p.jurisdiction || 'South Florida'}`,
+    at: p.discovered_at,
+  })),
+  ...(recentLeadsForFeed || []).map((l) => ({
+    title: 'New service request',
+    subtitle: `Tree service inquiry · ${l.county || 'South Florida'}`,
+    at: l.created_at,
+  })),
+].sort((a, b) => new Date(b.at).getTime() - new Date(a.at).getTime());
 ---
 
 <MainLayout title="Join the Contractor Network | SF Tree Removal" description="Apply for contractor access, configure your South Florida service territory and review homeowner tree-service opportunities from one dashboard.">
   <Header />
+
+  <!-- Live activity toast — cycles through real recent leads/permits so the
+       page feels alive. Honest relative timestamps, never claims "just now"
+       for old data. -->
+  <div id="activityToast" class="pointer-events-none fixed bottom-4 left-4 z-[60] hidden max-w-[min(22rem,calc(100vw-2rem))] sm:bottom-6 sm:left-6" aria-live="polite">
+    <a href="#contractorForm" id="activityToastLink" class="pointer-events-auto group flex items-start gap-3 rounded-2xl border border-slate-200 bg-white/95 p-4 shadow-2xl ring-1 ring-black/5 backdrop-blur-xl transition hover:-translate-y-0.5 hover:border-green-300 hover:shadow-[0_20px_40px_-12px_rgba(34,197,94,0.35)]">
+      <span class="relative mt-0.5 flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-green-100">
+        <span class="relative flex h-2.5 w-2.5">
+          <span class="absolute inline-flex h-full w-full animate-ping rounded-full bg-green-500 opacity-75"></span>
+          <span class="relative inline-flex h-2.5 w-2.5 rounded-full bg-green-500"></span>
+        </span>
+      </span>
+      <div class="min-w-0 flex-1">
+        <p id="activityToastTitle" class="text-xs font-bold text-slate-900"></p>
+        <p id="activityToastSubtitle" class="mt-0.5 truncate text-[11px] text-slate-500"></p>
+        <div class="mt-1 flex items-center justify-between gap-2">
+          <p id="activityToastTime" class="text-[10px] font-mono uppercase tracking-wider text-slate-400"></p>
+          <span class="text-[10px] font-bold uppercase tracking-wider text-green-700 opacity-0 transition group-hover:opacity-100">Apply →</span>
+        </div>
+      </div>
+      <button id="activityToastClose" type="button" aria-label="Dismiss" class="shrink-0 text-slate-300 transition hover:text-slate-500">✕</button>
+    </a>
+  </div>
+  <script type="application/json" id="activityFeedData" set:html={JSON.stringify(activityFeed)} />
 
   <!-- Svetla pozadina -->
   <main class="bg-white"> 
@@ -88,7 +137,17 @@ const { data: permitTeasers } = await (supabaseAdmin ?? supabase)
             Registration is free. Claiming an available lead uses account credits and unlocks the contact information submitted with that request.
           </p>
 
-          <div class="mt-10 grid gap-3 border-t border-white/15 pt-7 sm:grid-cols-3">
+          <div class="mt-10 grid grid-cols-2 gap-3 border-t border-white/15 pt-7 sm:grid-cols-4">
+            <div class="rounded-xl border border-green-400/30 bg-green-400/10 px-4 py-3 backdrop-blur">
+              <div class="flex items-center gap-1.5">
+                <span class="relative flex h-1.5 w-1.5">
+                  <span class="absolute inline-flex h-full w-full animate-ping rounded-full bg-green-400 opacity-75"></span>
+                  <span class="relative inline-flex h-1.5 w-1.5 rounded-full bg-green-400"></span>
+                </span>
+                <strong class="block text-lg font-bold text-white">{liveOpportunityCount}</strong>
+              </div>
+              <span class="mt-1 block text-[9px] font-bold uppercase tracking-[0.16em] text-green-300">Live opportunities</span>
+            </div>
             {[
               { value: `${territories?.length || 0}`, label: "Active territories" },
               { value: "Free", label: "Application" },
@@ -456,4 +515,79 @@ const { data: permitTeasers } = await (supabaseAdmin ?? supabase)
       body: JSON.stringify({ userId }),
     }).catch(() => {});
   });
+
+  // --- LIVE ACTIVITY TOAST ---
+  // Cycles through real recent leads/permits (fetched server-side) so the
+  // page feels alive without ever fabricating data. Timestamps are honest
+  // relative times ("2h ago"), not "just now" for old rows.
+  type ActivityItem = { title: string; subtitle: string; at: string };
+
+  function timeAgo(dateInput: string) {
+    const diff = Math.floor((Date.now() - new Date(dateInput).getTime()) / 1000);
+    if (diff < 60) return 'Just now';
+    if (diff < 3600) return `${Math.floor(diff / 60)}m ago`;
+    if (diff < 86400) return `${Math.floor(diff / 3600)}h ago`;
+    return `${Math.floor(diff / 86400)}d ago`;
+  }
+
+  function startActivityTicker() {
+    const dataEl = document.getElementById('activityFeedData');
+    const toast = document.getElementById('activityToast');
+    if (!dataEl || !toast) return;
+
+    let feed: ActivityItem[] = [];
+    try {
+      feed = JSON.parse(dataEl.textContent || '[]');
+    } catch {
+      return;
+    }
+    if (feed.length === 0) return;
+
+    const titleEl = document.getElementById('activityToastTitle')!;
+    const subtitleEl = document.getElementById('activityToastSubtitle')!;
+    const timeEl = document.getElementById('activityToastTime')!;
+    const closeBtn = document.getElementById('activityToastClose')!;
+
+    let index = 0;
+    let hideTimer: ReturnType<typeof setTimeout> | null = null;
+
+    function showNext() {
+      const item = feed[index % feed.length];
+      index++;
+
+      titleEl.textContent = item.title;
+      subtitleEl.textContent = item.subtitle;
+      timeEl.textContent = timeAgo(item.at);
+
+      toast!.classList.remove('hidden');
+      toast!.style.opacity = '0';
+      toast!.style.transform = 'translateY(12px)';
+      toast!.style.transition = 'opacity 0.4s ease, transform 0.4s ease';
+      setTimeout(() => {
+        toast!.style.opacity = '1';
+        toast!.style.transform = 'translateY(0)';
+      }, 20);
+
+      if (hideTimer) clearTimeout(hideTimer);
+      hideTimer = setTimeout(hideCurrent, 6000);
+    }
+
+    function hideCurrent() {
+      toast!.style.opacity = '0';
+      toast!.style.transform = 'translateY(12px)';
+      setTimeout(() => toast!.classList.add('hidden'), 400);
+    }
+
+    closeBtn.addEventListener('click', (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+      if (hideTimer) clearTimeout(hideTimer);
+      hideCurrent();
+    });
+
+    setTimeout(showNext, 3000);
+    setInterval(showNext, 10000);
+  }
+
+  startActivityTicker();
 </script>
