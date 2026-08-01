@@ -432,6 +432,16 @@ const permitSettings = parsePermitSettings(tracking?.global_scripts);
 
             <div class="rounded-xl border border-blue-100 bg-blue-50 p-4 text-[11px] leading-5 text-blue-800"><strong>Manual top-ups:</strong> add or remove credits for a specific contractor or truck owner from their detail page in the admin panel.</div>
 
+            <div class="border-t border-zinc-100 pt-6">
+              <h3 class="mb-2 text-xs font-bold uppercase tracking-wider text-slate-900">Permit Lead Marketplace</h3>
+              <p class="mb-4 text-[11px] leading-5 text-slate-500">Lets contractors browse scraped permit leads directly (location + job type only) and pay credit to unlock the owner's contact info — separate from claiming a regular website lead, and not exclusive: multiple contractors may each unlock the same permit lead.</p>
+              <label class="flex items-center justify-between gap-4 rounded-xl border border-amber-200 bg-amber-50/50 p-4">
+                <span><span class="block text-xs font-bold text-slate-900">Enable permit lead unlocking</span><span class="mt-1 block text-[11px] text-slate-500">Disabled by default. Shows a "Permit Leads" tab in the contractor dashboard and a teaser on the registration page.</span></span>
+                <input id="permitUnlockEnabled" type="checkbox" class="h-5 w-5 accent-green-600" />
+              </label>
+              <label class="mt-4 block"><span class="mb-2 block text-[10px] font-bold uppercase tracking-wider text-slate-600">Permit lead unlock cost ($)</span><input id="permitUnlockCost" type="number" min="0" step="1" value="5" class="w-full max-w-xs rounded-xl border border-slate-200 p-3 text-sm" /></label>
+            </div>
+
             <button id="saveCreditsBtn" type="submit" class="h-12 rounded-xl bg-slate-950 px-7 text-xs font-bold uppercase tracking-wider text-white hover:bg-green-700">Save credit settings</button>
           </form>
         </div>
@@ -656,6 +666,8 @@ const permitSettings = parsePermitSettings(tracking?.global_scripts);
     (document.getElementById('creditsAutoRefillEnabled') as HTMLInputElement).checked = s.auto_refill_enabled;
     (document.getElementById('creditsAutoRefillAmount') as HTMLInputElement).value = s.auto_refill_amount;
     (document.getElementById('creditsAutoRefillInterval') as HTMLInputElement).value = s.auto_refill_interval_days;
+    (document.getElementById('permitUnlockEnabled') as HTMLInputElement).checked = s.permit_lead_unlock_enabled;
+    (document.getElementById('permitUnlockCost') as HTMLInputElement).value = s.permit_lead_unlock_cost;
   }
 
   // --- EXTERNAL LEAD ROUTING (partner site → contractors/truck owners) ---
@@ -860,6 +872,8 @@ const permitSettings = parsePermitSettings(tracking?.global_scripts);
       auto_refill_enabled: (document.getElementById('creditsAutoRefillEnabled') as HTMLInputElement).checked,
       auto_refill_amount: Number((document.getElementById('creditsAutoRefillAmount') as HTMLInputElement).value || 0),
       auto_refill_interval_days: Number((document.getElementById('creditsAutoRefillInterval') as HTMLInputElement).value || 30),
+      permit_lead_unlock_enabled: (document.getElementById('permitUnlockEnabled') as HTMLInputElement).checked,
+      permit_lead_unlock_cost: Number((document.getElementById('permitUnlockCost') as HTMLInputElement).value || 0),
     };
     const response = await adminFetch('/api/credit-settings', {
       method: 'POST',

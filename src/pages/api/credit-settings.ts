@@ -34,6 +34,8 @@ export async function POST({ request }: { request: Request }) {
     auto_refill_enabled: Boolean(body.auto_refill_enabled),
     auto_refill_amount: Math.max(0, Math.round(Number(body.auto_refill_amount) || 0)),
     auto_refill_interval_days: Math.max(1, Math.round(Number(body.auto_refill_interval_days) || 30)),
+    permit_lead_unlock_enabled: Boolean(body.permit_lead_unlock_enabled),
+    permit_lead_unlock_cost: Math.max(0, Number(body.permit_lead_unlock_cost) || 0),
     updated_at: new Date().toISOString(),
   };
 

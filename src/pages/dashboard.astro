@@ -1,7 +1,7 @@
 ---
 import ContractorLayout from "../layouts/ContractorLayout.astro";
 import { supabase } from "../lib/supabase";
-import { Inbox, CheckCircle2, Truck, UserCircle } from "lucide-astro";
+import { Inbox, CheckCircle2, Truck, FileText, UserCircle } from "lucide-astro";
 
 const { data: territories } = await supabase
   .from('service_territories')
@@ -12,6 +12,7 @@ const navItems = [
   { label: 'Available', tab: 'available', icon: Inbox },
   { label: 'Claimed', tab: 'claimed', icon: CheckCircle2 },
   { label: 'Truck network', tab: 'trucks', icon: Truck },
+  { label: 'Permit Leads', tab: 'permits', icon: FileText },
   { label: 'Profile', tab: 'profile', icon: UserCircle },
 ];
 ---
@@ -85,6 +86,21 @@ const navItems = [
       </div>
       <div id="recommendedTrucksContainer" class="grid gap-4 lg:grid-cols-2"></div>
       <div id="noRecommendedTrucks" class="hidden p-8 border border-slate-200 border-dashed rounded-2xl text-center text-sm text-slate-400">No approved truck partners are currently available in your territory.</div>
+    </section>
+
+    <section id="panelPermits" class="hidden">
+      <div class="mb-5">
+        <span class="text-[10px] font-mono font-bold uppercase tracking-[0.2em] text-indigo-700">// Public permit filings</span>
+        <h2 class="mt-2 text-xl font-bold text-slate-950">Permit leads</h2>
+        <p class="mt-1 text-sm text-slate-500">Scraped from public permit records. Unlock any lead's owner contact for a small credit — unlocking is per-account, so more than one contractor may unlock the same lead.</p>
+      </div>
+      <div id="permitsDisabledNotice" class="hidden p-8 border border-slate-200 border-dashed rounded-2xl text-center">
+        <p class="text-slate-400 text-sm">Permit lead unlocking isn't enabled yet.</p>
+      </div>
+      <div id="permitLeadsContainer" class="space-y-4"></div>
+      <div id="noPermitLeads" class="hidden p-8 border border-slate-200 border-dashed rounded-2xl text-center">
+        <p class="text-slate-400 text-sm">No qualified permit leads right now.</p>
+      </div>
     </section>
 
     <section id="panelProfile" class="hidden">
@@ -286,21 +302,25 @@ const navItems = [
   type ClaimedLead = { id: string; county: string; phone: string; email: string | null; details: string; claimed_at: string | null; created_at: string };
   type RecommendedTruck = { truck_id: string; company_name: string | null; contact_name: string | null; phone: string | null; email: string | null; equipment_type: string; lift_capacity_tons: number | null; working_height_ft: number | null; access_type: string | null; listing_type: string | null; location: string };
   type RoutedExternalLead = { id: string; source_domain: string | null; full_name: string | null; email: string | null; phone: string | null; message: string | null; created_at: string; claimed_by_id: string | null };
+  type PermitLeadRow = { id: string; jurisdiction: string | null; permit_type: string | null; permit_description: string | null; permit_date: string | null; discovered_at: string | null; owner_name?: string | null; owner_phone?: string | null; owner_email?: string | null; address?: string | null };
 
   let contractorId: string | null = null;
   let pollTimer: ReturnType<typeof setInterval> | null = null;
   let knownAvailableIds = new Set<string>();
   let knownRoutedIds = new Set<string>();
   let lastAvailableCount = 0;
+  let permitUnlockCost = 0;
+  const unlockedPermitIds = new Set<string>();
 
   // Menja koji panel je vidljiv. NE dispatch-uje event — samo reaguje na
   // 'layout:tab-change' (koji šalje ContractorLayout na klik, ili mi sami
   // kad treba programski da promenimo tab, npr. iz notifikacije).
-  function setActiveTab(tab: 'available' | 'claimed' | 'trucks' | 'profile') {
+  function setActiveTab(tab: 'available' | 'claimed' | 'trucks' | 'permits' | 'profile') {
     const panels: Record<string, HTMLElement> = {
       available: document.getElementById('panelAvailable')!,
       claimed: document.getElementById('panelClaimed')!,
       trucks: document.getElementById('panelTrucks')!,
+      permits: document.getElementById('panelPermits')!,
       profile: document.getElementById('panelProfile')!,
     };
     Object.entries(panels).forEach(([key, panel]) => {
@@ -308,7 +328,7 @@ const navItems = [
     });
   }
 
-  function goToTab(tab: 'available' | 'claimed' | 'trucks' | 'profile') {
+  function goToTab(tab: 'available' | 'claimed' | 'trucks' | 'permits' | 'profile') {
     document.dispatchEvent(new CustomEvent('layout:tab-change', { detail: { tab } }));
   }
 
@@ -651,6 +671,111 @@ const navItems = [
     empty.classList.toggle('hidden', trucks.length > 0);
   }
 
+  function renderPermitLeadCard(row: PermitLeadRow, unlocked: boolean) {
+    const wrapper = document.createElement('article');
+    wrapper.id = `permit-${row.id}`;
+    wrapper.className = `rounded-2xl border p-4 md:p-6 shadow-sm ${unlocked ? 'border-indigo-200 bg-gradient-to-br from-white to-indigo-50/40' : 'border-slate-200 bg-white'}`;
+    const contactLine = unlocked
+      ? `<p class="mt-3 text-sm text-slate-700">${row.owner_name || 'Unnamed owner'}</p>
+         <div class="mt-2 flex flex-wrap gap-3 text-[11px] font-mono">
+           ${row.owner_phone ? `<a href="tel:${row.owner_phone}" class="text-slate-600 hover:text-indigo-700 underline decoration-dotted underline-offset-2">${row.owner_phone}</a>` : ''}
+           ${row.owner_email ? `<a href="mailto:${row.owner_email}" class="text-slate-600 hover:text-indigo-700 underline decoration-dotted underline-offset-2">${row.owner_email}</a>` : ''}
+         </div>
+         ${row.address ? `<p class="mt-2 text-xs text-slate-500">${row.address}</p>` : ''}`
+      : `<p class="mt-3 flex items-center gap-1.5 text-[10px] font-mono text-slate-500">🔒 Owner contact locked</p>`;
+    wrapper.innerHTML = `
+      <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
+        <div class="min-w-0 flex-1">
+          <div class="flex flex-wrap items-center gap-2">
+            <span class="text-[9px] font-mono text-indigo-700 uppercase tracking-widest">${row.jurisdiction || 'South Florida'}</span>
+            <span class="text-[9px] font-mono text-zinc-400">// ${row.permit_date ? new Date(row.permit_date).toLocaleDateString() : timeAgo(row.discovered_at || '')}</span>
+          </div>
+          <p class="mt-2 text-sm font-bold text-slate-900">${row.permit_type || 'Tree service permit'}</p>
+          ${row.permit_description ? `<p class="mt-1 text-xs text-slate-500 max-w-md">${row.permit_description}</p>` : ''}
+          ${contactLine}
+        </div>
+        ${!unlocked ? `
+          <button data-permit-id="${row.id}" class="unlock-permit-btn w-full md:w-auto shrink-0 px-6 py-3 md:py-4 bg-indigo-600 text-white text-[10px] font-bold uppercase tracking-widest rounded-xl hover:bg-indigo-700 transition-all active:scale-95 whitespace-nowrap">
+            Unlock — $${permitUnlockCost} credit
+          </button>
+        ` : `
+          <span class="w-full md:w-auto shrink-0 px-6 py-3 md:py-4 bg-indigo-50 text-indigo-700 border border-indigo-200 text-[10px] font-bold uppercase tracking-widest rounded-xl text-center whitespace-nowrap">Unlocked</span>
+        `}
+      </div>
+    `;
+    if (!unlocked) {
+      wrapper.querySelector('.unlock-permit-btn')?.addEventListener('click', (e) => unlockPermitLead(row.id, e.currentTarget as HTMLButtonElement));
+    }
+    return wrapper;
+  }
+
+  async function unlockPermitLead(permitLeadId: string, btn: HTMLButtonElement) {
+    btn.disabled = true;
+    btn.textContent = 'Unlocking...';
+    const { error } = await supabase.rpc('unlock_permit_lead', { p_permit_lead_id: permitLeadId });
+    if (error) {
+      const message = error.message?.includes('insufficient_credits')
+        ? 'Not enough credit balance to unlock this lead.'
+        : error.message?.includes('feature_disabled')
+        ? 'Permit lead unlocking is currently disabled.'
+        : 'Could not unlock this lead.';
+      toast(message, 'error');
+      btn.disabled = false;
+      btn.textContent = `Unlock — $${permitUnlockCost} credit`;
+      return;
+    }
+    toast('Lead unlocked.', 'success');
+    unlockedPermitIds.add(permitLeadId);
+    await Promise.all([refreshCreditBalance(), loadPermitLeadsMarketplace()]);
+  }
+
+  async function loadPermitLeadsMarketplace() {
+    const { data: settings } = await supabase.rpc('get_permit_lead_unlock_settings');
+    const permitSettings = Array.isArray(settings) ? settings[0] : settings;
+    const disabledNotice = document.getElementById('permitsDisabledNotice')!;
+    const container = document.getElementById('permitLeadsContainer')!;
+    const empty = document.getElementById('noPermitLeads')!;
+
+    if (!permitSettings?.enabled) {
+      disabledNotice.classList.remove('hidden');
+      container.innerHTML = '';
+      empty.classList.add('hidden');
+      return;
+    }
+    disabledNotice.classList.add('hidden');
+    permitUnlockCost = Number(permitSettings.cost || 0);
+
+    const [{ data: marketplace }, { data: unlocks }] = await Promise.all([
+      supabase.from('permit_leads_marketplace').select('*').order('discovered_at', { ascending: false }),
+      supabase.from('permit_lead_unlocks').select('permit_lead_id'),
+    ]);
+
+    unlockedPermitIds.clear();
+    (unlocks || []).forEach((u: { permit_lead_id: string }) => unlockedPermitIds.add(u.permit_lead_id));
+
+    const rows: PermitLeadRow[] = marketplace || [];
+    empty.classList.toggle('hidden', rows.length > 0);
+
+    if (rows.length === 0) {
+      container.innerHTML = '';
+      return;
+    }
+
+    const unlockedIds = rows.filter((r) => unlockedPermitIds.has(r.id)).map((r) => r.id);
+    let fullRowsById = new Map<string, PermitLeadRow>();
+    if (unlockedIds.length > 0) {
+      const { data: fullRows } = await supabase.from('permit_leads').select('*').in('id', unlockedIds);
+      (fullRows || []).forEach((r: PermitLeadRow) => fullRowsById.set(r.id, r));
+    }
+
+    container.innerHTML = '';
+    rows.forEach((row) => {
+      const unlocked = unlockedPermitIds.has(row.id);
+      const fullRow = unlocked ? (fullRowsById.get(row.id) || row) : row;
+      container.appendChild(renderPermitLeadCard(fullRow, unlocked));
+    });
+  }
+
   async function claimLead(leadId: string, btn: HTMLButtonElement) {
     btn.disabled = true;
     const originalText = btn.textContent;
@@ -989,7 +1114,7 @@ const navItems = [
 
     show('stateActive');
     goToTab('available');
-    await Promise.all([loadAvailableLeads(), loadClaimedLeads(), loadRecommendedTrucks()]);
+    await Promise.all([loadAvailableLeads(), loadClaimedLeads(), loadRecommendedTrucks(), loadPermitLeadsMarketplace()]);
 
     pollTimer = setInterval(loadAvailableLeads, 8000); // Proverava svakih 8 sekundi
   }

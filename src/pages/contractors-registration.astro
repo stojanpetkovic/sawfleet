@@ -6,13 +6,27 @@ import ContractorBottomNav from "../components/layout/ContractorBottomNav.astro"
 import Footer from "../components/layout/Footer.astro";
 import FormDisclaimer from "../components/FormDisclaimer.astro";
 import { supabase } from "../lib/supabase";
-import { ArrowRight, BadgeCheck, BriefcaseBusiness, CheckCircle2, ClipboardCheck, Coins, Eye, LayoutDashboard, MapPinned, PhoneCall, ShieldCheck, UserCheck } from "lucide-astro";
+import { supabaseAdmin } from "../lib/supabaseAdmin";
+import { ArrowRight, BadgeCheck, BriefcaseBusiness, CheckCircle2, ClipboardCheck, Coins, Eye, LayoutDashboard, Lock, MapPinned, PhoneCall, ShieldCheck, UserCheck } from "lucide-astro";
 
 // 1. Učitavamo teritorije iz baze za formu
 const { data: territories } = await supabase
   .from('service_territories')
   .select('*')
   .order('name', { ascending: true });
+
+// 2. Teaser sa poslednjih kvalifikovanih permit lidova (bez kontakt podataka —
+// koristimo supabaseAdmin da zaobiđemo RLS jer ova strana treba da radi i bez
+// prijave, isti obrazac kao contractors/[slug].astro).
+const thirtyDaysAgo = new Date(Date.now() - 30 * 24 * 60 * 60 * 1000).toISOString();
+const { data: permitTeasers } = await (supabaseAdmin ?? supabase)
+  .from('permit_leads')
+  .select('jurisdiction, permit_type, permit_description, permit_date')
+  .eq('permit_status', 'qualified')
+  .is('archived_at', null)
+  .gte('discovered_at', thirtyDaysAgo)
+  .order('discovered_at', { ascending: false })
+  .limit(6);
 ---
 
 <MainLayout title="Join the Contractor Network | SF Tree Removal" description="Apply for contractor access, configure your South Florida service territory and review homeowner tree-service opportunities from one dashboard.">
@@ -203,6 +217,45 @@ const { data: territories } = await supabase
         </div>
       </div>
     </section>
+
+    {permitTeasers && permitTeasers.length > 0 && (
+      <section id="permit-leads-teaser" class="relative scroll-mt-20 overflow-hidden border-t-4 border-green-500 bg-slate-950 px-4 py-16 sm:px-8 sm:py-20 lg:scroll-mt-24 lg:py-24">
+        <div class="pointer-events-none absolute -right-32 -top-32 h-96 w-96 rounded-full bg-green-500/10 blur-[110px]" aria-hidden="true"></div>
+        <div class="relative z-10 mx-auto max-w-[1200px]">
+          <div class="flex flex-col items-start gap-6 lg:flex-row lg:items-end lg:justify-between">
+            <div>
+              <div class="inline-flex items-center gap-2 rounded-full border border-green-400/30 bg-green-400/10 px-3 py-1.5">
+                <span class="relative flex h-2 w-2"><span class="absolute inline-flex h-full w-full animate-ping rounded-full bg-green-400 opacity-75"></span><span class="relative inline-flex h-2 w-2 rounded-full bg-green-400"></span></span>
+                <span class="text-[10px] font-mono font-bold uppercase tracking-[0.2em] text-green-300">Live · updated automatically</span>
+              </div>
+              <h2 class="mt-4 text-3xl font-bold tracking-tighter text-white sm:text-4xl">{permitTeasers.length} new permit-driven project{permitTeasers.length === 1 ? "" : "s"}, right now.</h2>
+              <p class="mt-3 max-w-xl text-sm leading-7 text-slate-400">We scan public permit filings for tree work across South Florida. Register free to unlock full owner contact details on any of these — and every new one that comes in.</p>
+              <p class="mt-2 max-w-xl text-[11px] text-slate-500">Sourced from public county &amp; city permit records — public information, not scraped or purchased data.</p>
+            </div>
+            <a href="#contractorForm" class="inline-flex h-14 w-full shrink-0 items-center justify-center gap-2 rounded-xl bg-green-500 px-8 text-sm font-bold uppercase tracking-wider text-slate-950 shadow-[0_12px_30px_-10px_rgba(34,197,94,0.6)] transition hover:bg-green-400 lg:w-auto">
+              Register free — unlock these leads <ArrowRight size={16} />
+            </a>
+          </div>
+
+          <div class="mt-10 grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+            {permitTeasers.map((permit) => (
+              <a href="#contractorForm" class="group block rounded-2xl border border-white/10 bg-white/[0.04] p-5 backdrop-blur-sm transition hover:border-green-400/40 hover:bg-white/[0.07]">
+                <div class="flex items-center gap-2">
+                  <span class="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-white/10 text-slate-300"><Lock size={16} strokeWidth={1.8} /></span>
+                  <span class="text-[10px] font-mono font-bold uppercase tracking-widest text-slate-400">{permit.jurisdiction || "South Florida"}</span>
+                </div>
+                <p class="mt-4 text-sm font-bold text-white">{permit.permit_type || "Tree service permit"}</p>
+                {permit.permit_description && <p class="mt-2 text-xs leading-5 text-slate-400 line-clamp-2">{permit.permit_description}</p>}
+                <p class="mt-4 select-none blur-[5px] text-[11px] text-slate-500">Owner name · (555) 000-0000 · owner@email.com</p>
+                <p class="mt-3 text-[10px] font-bold uppercase tracking-wider text-green-400 group-hover:text-green-300">Register to unlock →</p>
+              </a>
+            ))}
+          </div>
+
+          <p class="mt-10 text-center text-xs text-slate-500">No account? Takes under a minute — see contact info the moment you're approved.</p>
+        </div>
+      </section>
+    )}
 
     <!-- ============================================== -->
     <!-- 3. WORKFLOW ARCHITECTURE (HOW IT WORKS) -->
