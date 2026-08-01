@@ -2,6 +2,7 @@
 export const prerender = false;
 import AdminLayout from "../../layouts/AdminLayout.astro";
 import { supabase } from "../../lib/supabase";
+import { supabaseAdmin } from "../../lib/supabaseAdmin";
 import { parsePermitSettings } from "../../lib/permitData";
 
 // Dohvatamo teritorije
@@ -18,6 +19,23 @@ const { data: tracking } = await supabase
   .single();
 
 const permitSettings = parsePermitSettings(tracking?.global_scripts);
+
+// Za "Bulk Credit Grant" — liste za dugmad "svi" i za ručni izbor konkretnih
+// naloga. Koristi supabaseAdmin (service role) jer frontmatter (SSR) nema
+// pristup admin browser sesiji, pa bi anon `supabase` klijent, vezan za RLS,
+// vratio prazan niz.
+const { data: creditContractors } = await (supabaseAdmin ?? supabase)
+  .from('contractors')
+  .select('user_id, company_name, contact_name, credit_balance')
+  .eq('status', 'active')
+  .not('user_id', 'is', null)
+  .order('company_name', { ascending: true });
+
+const { data: creditTruckOwners } = await (supabaseAdmin ?? supabase)
+  .from('truck_owners')
+  .select('id, company_name, contact_name, credit_balance')
+  .eq('status', 'approved')
+  .order('company_name', { ascending: true });
 ---
 
 <AdminLayout>
@@ -431,6 +449,53 @@ const permitSettings = parsePermitSettings(tracking?.global_scripts);
             </div>
 
             <div class="rounded-xl border border-blue-100 bg-blue-50 p-4 text-[11px] leading-5 text-blue-800"><strong>Manual top-ups:</strong> add or remove credits for a specific contractor or truck owner from their detail page in the admin panel.</div>
+
+            <div class="border-t border-zinc-100 pt-6">
+              <h3 class="mb-2 text-xs font-bold uppercase tracking-wider text-slate-900">Bulk Credit Grant</h3>
+              <p class="mb-4 text-[11px] leading-5 text-slate-500">Add (or remove, with a negative amount) credit to every active contractor, every approved truck owner, or a specific list you pick below. Logged the same way as a manual top-up.</p>
+
+              <div class="grid gap-4 sm:grid-cols-2">
+                <label><span class="mb-2 block text-[10px] font-bold uppercase tracking-wider text-slate-600">Amount ($)</span><input id="bulkCreditAmount" type="number" step="1" placeholder="e.g. 10 or -5" class="w-full rounded-xl border border-slate-200 p-3 text-sm" /></label>
+                <label><span class="mb-2 block text-[10px] font-bold uppercase tracking-wider text-slate-600">Note (optional)</span><input id="bulkCreditNote" type="text" maxlength="200" placeholder="e.g. Launch promo" class="w-full rounded-xl border border-slate-200 p-3 text-sm" /></label>
+              </div>
+
+              <div class="mt-4 flex flex-wrap gap-3">
+                <button id="bulkCreditAllContractors" type="button" class="h-11 rounded-xl bg-slate-950 px-5 text-[11px] font-bold uppercase tracking-wider text-white hover:bg-green-700">Add to all contractors ({creditContractors?.length ?? 0})</button>
+                <button id="bulkCreditAllTruckOwners" type="button" class="h-11 rounded-xl bg-slate-950 px-5 text-[11px] font-bold uppercase tracking-wider text-white hover:bg-green-700">Add to all truck owners ({creditTruckOwners?.length ?? 0})</button>
+              </div>
+
+              <div class="mt-6 rounded-xl border border-slate-200 p-4">
+                <div class="flex items-center justify-between gap-4">
+                  <span class="text-[11px] font-bold uppercase tracking-wider text-slate-700">Or pick specific accounts</span>
+                  <input id="bulkCreditSearch" type="text" placeholder="Search by name…" class="w-48 rounded-lg border border-slate-200 p-2 text-xs" />
+                </div>
+                <div id="bulkCreditAccountList" class="mt-3 max-h-64 space-y-1 overflow-y-auto">
+                  {(creditContractors || []).map((c) => (
+                    <label class="bulk-credit-row flex items-center gap-3 rounded-lg px-2 py-1.5 text-xs hover:bg-slate-50" data-name={`${c.company_name || ''} ${c.contact_name || ''}`.toLowerCase()}>
+                      <input type="checkbox" class="bulk-credit-checkbox h-4 w-4 accent-green-600" data-account-type="contractor" data-account-id={c.user_id} />
+                      <span class="flex-1 truncate">{c.company_name || c.contact_name || 'Unnamed'} <span class="text-slate-400">· contractor · ${c.credit_balance ?? 0}</span></span>
+                    </label>
+                  ))}
+                  {(creditTruckOwners || []).map((t) => (
+                    <label class="bulk-credit-row flex items-center gap-3 rounded-lg px-2 py-1.5 text-xs hover:bg-slate-50" data-name={`${t.company_name || ''} ${t.contact_name || ''}`.toLowerCase()}>
+                      <input type="checkbox" class="bulk-credit-checkbox h-4 w-4 accent-green-600" data-account-type="truck_owner" data-account-id={t.id} />
+                      <span class="flex-1 truncate">{t.company_name || t.contact_name || 'Unnamed'} <span class="text-slate-400">· truck owner · ${t.credit_balance ?? 0}</span></span>
+                    </label>
+                  ))}
+                  {(!creditContractors || creditContractors.length === 0) && (!creditTruckOwners || creditTruckOwners.length === 0) && (
+                    <p class="px-2 py-1.5 text-xs text-slate-400">No active contractors or approved truck owners yet.</p>
+                  )}
+                </div>
+                <div id="bulkCreditPagination" class="mt-2 hidden items-center justify-between gap-3">
+                  <button id="bulkCreditPrevPage" type="button" class="rounded-lg border border-slate-200 px-3 py-1.5 text-[10px] font-bold uppercase tracking-wider text-slate-600 hover:bg-slate-50 disabled:cursor-not-allowed disabled:opacity-40">← Prev</button>
+                  <span id="bulkCreditPageInfo" class="text-[10px] text-slate-500"></span>
+                  <button id="bulkCreditNextPage" type="button" class="rounded-lg border border-slate-200 px-3 py-1.5 text-[10px] font-bold uppercase tracking-wider text-slate-600 hover:bg-slate-50 disabled:cursor-not-allowed disabled:opacity-40">Next →</button>
+                </div>
+                <button id="bulkCreditSelectedBtn" type="button" class="mt-3 h-10 rounded-xl bg-green-600 px-5 text-[11px] font-bold uppercase tracking-wider text-white hover:bg-green-500">Add to selected (<span id="bulkCreditSelectedCount">0</span>)</button>
+              </div>
+
+              <p id="bulkCreditMsg" class="mt-3 text-[11px]"></p>
+            </div>
 
             <div class="border-t border-zinc-100 pt-6">
               <h3 class="mb-2 text-xs font-bold uppercase tracking-wider text-slate-900">Permit Lead Marketplace</h3>
@@ -883,6 +948,94 @@ const permitSettings = parsePermitSettings(tracking?.global_scripts);
     const result = await response.json().catch(() => ({}));
     saveBtn.textContent = response.ok && result.ok ? 'Saved ✓' : 'Save failed';
     setTimeout(() => { saveBtn.textContent = 'Save credit settings'; saveBtn.disabled = false; }, 1800);
+  });
+
+  // --- BULK CREDIT GRANT ---
+  const bulkCreditMsg = document.getElementById('bulkCreditMsg')!;
+  const bulkCreditCheckboxes = Array.from(document.querySelectorAll<HTMLInputElement>('.bulk-credit-checkbox'));
+  const bulkCreditSelectedCount = document.getElementById('bulkCreditSelectedCount')!;
+
+  function updateBulkCreditSelectedCount() {
+    bulkCreditSelectedCount.textContent = String(bulkCreditCheckboxes.filter((cb) => cb.checked).length);
+  }
+  bulkCreditCheckboxes.forEach((cb) => cb.addEventListener('change', updateBulkCreditSelectedCount));
+
+  // --- Paginacija liste naloga (10 po strani), primenjena NAKON pretrage ---
+  const BULK_CREDIT_PAGE_SIZE = 10;
+  const allBulkCreditRows = Array.from(document.querySelectorAll<HTMLElement>('.bulk-credit-row'));
+  let bulkCreditPage = 0;
+
+  function renderBulkCreditPage() {
+    const q = (document.getElementById('bulkCreditSearch') as HTMLInputElement)?.value.trim().toLowerCase() || '';
+    const matching = allBulkCreditRows.filter((row) => !q || (row.dataset.name || '').includes(q));
+    const totalPages = Math.max(1, Math.ceil(matching.length / BULK_CREDIT_PAGE_SIZE));
+    bulkCreditPage = Math.min(bulkCreditPage, totalPages - 1);
+    const start = bulkCreditPage * BULK_CREDIT_PAGE_SIZE;
+    const visible = new Set(matching.slice(start, start + BULK_CREDIT_PAGE_SIZE));
+
+    allBulkCreditRows.forEach((row) => { row.style.display = matching.includes(row) && visible.has(row) ? '' : 'none'; });
+
+    const pagination = document.getElementById('bulkCreditPagination')!;
+    pagination.classList.toggle('hidden', matching.length <= BULK_CREDIT_PAGE_SIZE);
+    pagination.classList.toggle('flex', matching.length > BULK_CREDIT_PAGE_SIZE);
+    document.getElementById('bulkCreditPageInfo')!.textContent = `Page ${bulkCreditPage + 1} of ${totalPages} (${matching.length} match${matching.length === 1 ? '' : 'es'})`;
+    (document.getElementById('bulkCreditPrevPage') as HTMLButtonElement).disabled = bulkCreditPage === 0;
+    (document.getElementById('bulkCreditNextPage') as HTMLButtonElement).disabled = bulkCreditPage >= totalPages - 1;
+  }
+
+  document.getElementById('bulkCreditSearch')?.addEventListener('input', () => {
+    bulkCreditPage = 0;
+    renderBulkCreditPage();
+  });
+  document.getElementById('bulkCreditPrevPage')?.addEventListener('click', () => { bulkCreditPage--; renderBulkCreditPage(); });
+  document.getElementById('bulkCreditNextPage')?.addEventListener('click', () => { bulkCreditPage++; renderBulkCreditPage(); });
+  renderBulkCreditPage();
+
+  async function runBulkCreditGrant(target: 'all_contractors' | 'all_truck_owners' | 'selected', accounts?: { accountType: string; accountId: string }[]) {
+    const amount = Number((document.getElementById('bulkCreditAmount') as HTMLInputElement).value);
+    if (!amount) {
+      bulkCreditMsg.textContent = 'Enter a non-zero amount first.';
+      bulkCreditMsg.className = 'mt-3 text-[11px] text-red-600';
+      return;
+    }
+    const note = (document.getElementById('bulkCreditNote') as HTMLInputElement).value.trim();
+    const count = target === 'selected' ? (accounts?.length || 0) : null;
+    const confirmMsg = target === 'selected'
+      ? `Add $${amount} credit to ${count} selected account${count === 1 ? '' : 's'}?`
+      : `Add $${amount} credit to ${target === 'all_contractors' ? 'ALL active contractors' : 'ALL approved truck owners'}?`;
+    if (!confirm(confirmMsg)) return;
+
+    bulkCreditMsg.textContent = 'Applying...';
+    bulkCreditMsg.className = 'mt-3 text-[11px] text-slate-500';
+
+    const response = await adminFetch('/api/credit-bulk-adjust', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ target, accounts, amount, note: note || undefined }),
+    });
+    const result = await response.json().catch(() => ({}));
+    if (response.ok && result.ok) {
+      bulkCreditMsg.textContent = `✅ Updated ${result.updated}/${result.total} account${result.total === 1 ? '' : 's'}.` + (result.failed ? ` ${result.failed} failed.` : '');
+      bulkCreditMsg.className = 'mt-3 text-[11px] text-green-700';
+      setTimeout(() => window.location.reload(), 1200);
+    } else {
+      bulkCreditMsg.textContent = '❌ ' + (result.error || 'Failed to apply bulk credit.');
+      bulkCreditMsg.className = 'mt-3 text-[11px] text-red-600';
+    }
+  }
+
+  document.getElementById('bulkCreditAllContractors')?.addEventListener('click', () => runBulkCreditGrant('all_contractors'));
+  document.getElementById('bulkCreditAllTruckOwners')?.addEventListener('click', () => runBulkCreditGrant('all_truck_owners'));
+  document.getElementById('bulkCreditSelectedBtn')?.addEventListener('click', () => {
+    const accounts = bulkCreditCheckboxes
+      .filter((cb) => cb.checked)
+      .map((cb) => ({ accountType: cb.dataset.accountType!, accountId: cb.dataset.accountId! }));
+    if (accounts.length === 0) {
+      bulkCreditMsg.textContent = 'Select at least one account.';
+      bulkCreditMsg.className = 'mt-3 text-[11px] text-red-600';
+      return;
+    }
+    runBulkCreditGrant('selected', accounts);
   });
 
   // --- ČUVANJE NOTIFIKACIONIH EMAIL ADRESA ---

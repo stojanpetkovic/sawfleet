@@ -174,10 +174,27 @@ const navItems = [
         <h1 class="mt-2 text-2xl font-bold tracking-tight text-slate-950 sm:text-3xl">Lead workspace</h1>
         <p class="mt-2 max-w-2xl text-sm text-slate-500">Jobs in territories covered by your approved, available trucks. Apply to offer equipment support.</p>
       </div>
-      <div id="truckStatsGrid" class="grid grid-cols-2 gap-4">
-        <div class="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm"><p class="text-[9px] font-bold uppercase tracking-[0.18em] text-slate-400">Available</p><p id="truckLeadCount" class="mt-3 text-3xl font-bold tabular-nums text-slate-950">-</p></div>
-        <div class="rounded-2xl border border-blue-200 bg-blue-50/50 p-5 shadow-sm"><p class="text-[9px] font-bold uppercase tracking-[0.18em] text-blue-700">Applied</p><p id="truckApplicationCount" class="mt-3 text-3xl font-bold tabular-nums text-slate-950">-</p></div>
-        <div id="truckCreditsCard" class="hidden rounded-2xl border border-green-200 bg-green-50/50 p-5 shadow-sm"><p class="text-[9px] font-bold uppercase tracking-[0.18em] text-green-700">Credits</p><p id="truckCreditBalance" class="mt-3 text-3xl font-bold tabular-nums text-slate-950">-</p></div>
+      <div id="truckStatsGrid" class="grid grid-cols-2 gap-4 lg:grid-cols-4">
+        <div class="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
+          <p class="text-[9px] font-bold uppercase tracking-[0.18em] text-slate-400">Available</p>
+          <p id="truckLeadCount" class="mt-3 text-3xl font-bold tabular-nums text-slate-950">-</p>
+          <p class="mt-1 text-xs text-slate-500">Matched to your territory</p>
+        </div>
+        <div class="rounded-2xl border border-blue-200 bg-gradient-to-br from-white to-blue-50/70 p-5 shadow-sm">
+          <p class="text-[9px] font-bold uppercase tracking-[0.18em] text-blue-700">Applied</p>
+          <p id="truckApplicationCount" class="mt-3 text-3xl font-bold tabular-nums text-slate-950">-</p>
+          <p class="mt-1 text-xs text-slate-500">Total submitted offers</p>
+        </div>
+        <div class="rounded-2xl border border-violet-200 bg-gradient-to-br from-white to-violet-50/70 p-5 shadow-sm">
+          <p class="text-[9px] font-bold uppercase tracking-[0.18em] text-violet-700">Approved trucks</p>
+          <p id="truckApprovedCount" class="mt-3 text-3xl font-bold tabular-nums text-slate-950">-</p>
+          <p class="mt-1 text-xs text-slate-500">Ready to be dispatched</p>
+        </div>
+        <div id="truckCreditsCard" class="hidden rounded-2xl border border-green-200 bg-gradient-to-br from-white to-green-50/70 p-5 shadow-sm">
+          <p class="text-[9px] font-bold uppercase tracking-[0.18em] text-green-700">Credits</p>
+          <p id="truckCreditBalance" class="mt-3 text-3xl font-bold tabular-nums text-slate-950">-</p>
+          <button id="truckCreditsLink" class="mt-1 text-xs font-bold text-green-700 hover:text-green-800">Manage on Profile →</button>
+        </div>
       </div>
       <div id="truckLeadsContainer" class="space-y-4"></div>
       <div id="noTruckLeads" class="hidden rounded-2xl border border-dashed border-slate-300 p-10 text-center text-sm text-slate-400">No matching leads are available right now.</div>
@@ -672,9 +689,11 @@ const navItems = [
     const list: Truck[] = trucks || [];
     ownerTrucks = list;
     const pendingCount = list.filter((t) => t.approval_status !== 'approved' && t.approval_status !== 'rejected').length;
+    const approvedCount = list.filter((t) => t.approval_status === 'approved').length;
     document.getElementById('statTotal')!.textContent = list.length.toString();
-    document.getElementById('statApproved')!.textContent = list.filter((t) => t.approval_status === 'approved').length.toString();
+    document.getElementById('statApproved')!.textContent = approvedCount.toString();
     document.getElementById('statPending')!.textContent = pendingCount.toString();
+    document.getElementById('truckApprovedCount')!.textContent = approvedCount.toString();
 
     const container = document.getElementById('trucksContainer')!;
     container.innerHTML = '';
@@ -708,6 +727,9 @@ const navItems = [
     document.getElementById('addTruckModal')?.classList.add('hidden');
   }
 
+  document.getElementById('truckCreditsLink')?.addEventListener('click', () => {
+    document.dispatchEvent(new CustomEvent('layout:tab-change', { detail: { tab: 'profile' } }));
+  });
   document.getElementById('openAddTruckModal')?.addEventListener('click', openAddTruckModal);
   document.getElementById('cancelAddTruck')?.addEventListener('click', closeAddTruckModal);
   document.getElementById('closeAddTruckModal')?.addEventListener('click', closeAddTruckModal);
