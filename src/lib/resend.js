@@ -113,6 +113,17 @@ export function customerTrackingEmailHtml({ county, dashboardUrl, accountUrl }) 
   </div>`;
 }
 
+export function verifySignupEmailHtml({ name, verifyUrl }) {
+  return `
+  <div style="font-family: -apple-system, sans-serif; max-width: 480px; margin: 0 auto; background:#FFFFFF; color:#0F172A; padding:32px; border-radius:16px; border:1px solid #E7EAE8;">
+    <p style="font-size:10px; letter-spacing:2px; text-transform:uppercase; color:#16803C; font-weight:bold; margin:0 0 12px;">// Confirm Your Email</p>
+    <h1 style="font-size:22px; margin:0 0 16px;">One step left</h1>
+    <p style="color:#475569; font-size:14px; line-height:1.6;">Hi${name ? " " + name : ""}, confirm your email to submit your application for review.</p>
+    <a href="${verifyUrl}" style="display:inline-block; margin-top:8px; background:#22C55E; color:#FFFFFF; text-decoration:none; font-weight:bold; font-size:13px; padding:12px 24px; border-radius:10px;">Confirm email →</a>
+    <p style="color:#94A3B8; font-size:11px; margin-top:20px; line-height:1.5;">This link expires in 48 hours. If you didn't request this, you can ignore this email.</p>
+  </div>`;
+}
+
 export function routedExternalLeadEmailHtml({ recipientName, sourceDomain, fullName, message, dashboardUrl }) {
   return `
   <div style="font-family: -apple-system, sans-serif; max-width: 480px; margin: 0 auto; background:#FFFFFF; color:#0F172A; padding:32px; border-radius:16px; border:1px solid #E7EAE8;">

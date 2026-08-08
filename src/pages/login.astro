@@ -16,14 +16,16 @@ import MainLayout from "../layouts/MainLayout.astro";
       <div class="mb-8 text-center">
         <span class="text-[10px] font-mono font-bold uppercase tracking-[0.3em] text-green-700">// System Access</span>
         <h1 class="mt-4 text-3xl font-bold text-slate-900 tracking-tighter">SF Tree Removal Portal</h1>
-        <p class="mt-2 text-sm text-zinc-500">Authenticate to manage fleet operations.</p>
+        <p class="mt-2 text-sm text-zinc-500">One sign-in for contractors and fleet owners.</p>
       </div>
+
+      <div id="verifyBanner" class="hidden mb-4 rounded-2xl border p-4 text-sm"></div>
 
       <div class="rounded-3xl border border-slate-200 bg-white p-8 shadow-soft-lg">
         <form id="loginForm" class="space-y-5">
           <div>
             <label class="mb-2 block text-[10px] font-bold uppercase tracking-[0.15em] text-slate-600">Email Address</label>
-            <input type="email" name="email" required placeholder="admin@sftreeremoval.com" class="h-12 w-full rounded-xl border border-slate-300 bg-slate-50 px-4 text-sm text-slate-900 outline-none focus:border-green-500 transition-all placeholder:text-slate-400"/>
+            <input type="email" name="email" required placeholder="you@company.com" class="h-12 w-full rounded-xl border border-slate-300 bg-slate-50 px-4 text-sm text-slate-900 outline-none focus:border-green-500 transition-all placeholder:text-slate-400"/>
           </div>
           <div>
             <label class="mb-2 block text-[10px] font-bold uppercase tracking-[0.15em] text-slate-600">Password</label>
@@ -52,11 +54,11 @@ import MainLayout from "../layouts/MainLayout.astro";
       </div>
 
       <p class="mt-6 text-center text-xs text-zinc-500">
-        Don't have a contractor account? <a href="/contractors-registration" class="text-green-700 hover:text-green-700 font-bold">Register here</a>
+        Don't have an account? <a href="/contractors-registration" class="text-green-700 hover:text-green-700 font-bold">Register as contractor</a> · <a href="/truck-registration" class="text-green-700 hover:text-green-700 font-bold">Register fleet</a>
       </p>
 
       <div class="mt-4 flex items-center justify-center gap-4 text-[10px] font-mono uppercase tracking-widest text-zinc-400">
-        <a href="/truck-login" class="hover:text-zinc-700">Fleet owner login</a>
+        <a href="/my-account" class="hover:text-zinc-700">Customer tracking</a>
         <span>·</span>
         <a href="/admin/login" class="hover:text-zinc-700">Staff login</a>
       </div>
@@ -76,10 +78,48 @@ import MainLayout from "../layouts/MainLayout.astro";
   const form = document.getElementById('loginForm') as HTMLFormElement;
   const btn = document.getElementById('submitBtn') as HTMLButtonElement;
 
+  // -- "check your email" / "you're all set" banner from /api/verify-signup --
+  const verifyStatus = new URLSearchParams(window.location.search).get('verify');
+  if (verifyStatus) {
+    const banner = document.getElementById('verifyBanner')!;
+    const copy: Record<string, { text: string; tone: 'success' | 'error' }> = {
+      success: { text: '✅ Email confirmed — your application is now waiting on admin review. You can sign in once approved.', tone: 'success' },
+      invalid: { text: '⚠️ That confirmation link is invalid. If you already applied, try registering again.', tone: 'error' },
+      expired: { text: '⚠️ That confirmation link expired. Please register again to get a new one.', tone: 'error' },
+      error: { text: '⚠️ Something went wrong confirming your email. Please contact the administrator.', tone: 'error' },
+    };
+    const entry = copy[verifyStatus];
+    if (entry) {
+      banner.textContent = entry.text;
+      banner.className = `mb-4 rounded-2xl border p-4 text-sm ${entry.tone === 'success' ? 'border-green-200 bg-green-50 text-green-800' : 'border-amber-200 bg-amber-50 text-amber-800'}`;
+    }
+  }
+
+  // Tries each known role in turn and redirects to the matching dashboard.
+  // Returns false if the signed-in account isn't linked to any role here
+  // (e.g. it's a customer or staff account, or not approved yet).
+  async function resolveRoleAndRedirect(): Promise<boolean> {
+    // link_contractor_account returns a single `contractors` row type, not
+    // SETOF — on no match it comes back as a non-null object with every
+    // field null (Postgres composite-type semantics), so we must check a
+    // real column, not the object itself, or every non-contractor account
+    // (e.g. every truck owner) would false-positive here.
+    const { data: contractor } = await supabase.rpc('link_contractor_account');
+    if (contractor?.id) {
+      window.location.assign('/dashboard');
+      return true;
+    }
+    const { data: trucks } = await supabase.rpc('link_truck_owner_account');
+    if (trucks && trucks.length > 0) {
+      window.location.assign('/truck-dashboard');
+      return true;
+    }
+    return false;
+  }
+
   form.addEventListener('submit', async (e) => {
     e.preventDefault();
 
-    // Visual feedback
     btn.innerText = "Authenticating...";
     btn.disabled = true;
     btn.classList.add('opacity-70');
@@ -95,16 +135,12 @@ import MainLayout from "../layouts/MainLayout.astro";
       btn.innerText = "Sign In →";
       btn.disabled = false;
       btn.classList.remove('opacity-70');
-    } else {
-      // This is the contractor portal — link the account to their profile.
-      const { data: contractor } = await supabase.rpc('link_contractor_account');
-      if (contractor) {
-        window.location.assign('/dashboard');
-        return;
-      }
+      return;
+    }
 
-      // Not a contractor account — point them to the right portal.
-      alert("This account isn't registered as a contractor. If you're staff, use /admin/login. If you're a fleet owner, use /truck-login.");
+    const matched = await resolveRoleAndRedirect();
+    if (!matched) {
+      alert("This account isn't registered as a contractor or fleet owner. Customers can track requests at /my-account; staff should use /admin/login.");
       await supabase.auth.signOut();
       btn.innerText = "Sign In →";
       btn.disabled = false;
@@ -132,7 +168,7 @@ import MainLayout from "../layouts/MainLayout.astro";
     const googleBtn = document.getElementById('googleLoginBtn') as HTMLButtonElement;
     googleBtn.disabled = true;
     googleBtn.innerText = 'Signing in...';
-    
+
     const { error } = await supabase.auth.signInWithOAuth({
       provider: 'google',
       options: {
@@ -147,16 +183,20 @@ import MainLayout from "../layouts/MainLayout.astro";
     }
   });
 
-  // Check if this is OAuth callback and redirect to dashboard
+  // Check if this is an OAuth callback and route to the right dashboard.
   if (new URLSearchParams(window.location.search).has('oauth_callback') || hasOAuthHash(window.location.hash)) {
     (async () => {
       await new Promise(resolve => setTimeout(resolve, 700));
       const { data: { session } } = await supabase.auth.getSession();
-      if (session) {
-        const cleanUrl = new URL(window.location.href);
-        cleanUrl.hash = '';
-        window.history.replaceState({}, '', cleanUrl.toString());
-        window.location.assign('/portal');
+      if (!session) return;
+      const cleanUrl = new URL(window.location.href);
+      cleanUrl.hash = '';
+      window.history.replaceState({}, '', cleanUrl.toString());
+
+      const matched = await resolveRoleAndRedirect();
+      if (!matched) {
+        await supabase.auth.signOut();
+        alert("This account isn't registered as a contractor or fleet owner. Customers can track requests at /my-account; staff should use /admin/login.");
       }
     })();
   }

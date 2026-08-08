@@ -448,72 +448,36 @@ const activityFeed = [
     const email = (formData.get('email') as string).trim().toLowerCase();
     const password = formData.get('password') as string;
 
-    // 1) Create the login account
-    const { data: signUpData, error: signUpError } = await supabase.auth.signUp({
-      email,
-      password,
-      options: { emailRedirectTo: `${window.location.origin}/login` },
+    const res = await fetch('/api/signup', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ role: 'contractor', email, password, companyName: company_name, contactName: contact_name, phone, territory, source: trafficSource }),
     });
+    const result = await res.json().catch(() => ({}));
 
-    if (signUpError) {
-      errorMsg.textContent = signUpError.message.includes('already registered')
+    if (!res.ok || !result.ok) {
+      errorMsg.textContent = result.error === 'email_already_registered'
         ? 'This email is already registered. Try signing in instead.'
-        : 'Error: ' + signUpError.message;
+        : 'Error: ' + (result.message || result.error || 'Could not create account.');
       errorMsg.classList.remove('hidden');
       btn.disabled = false;
       btn.innerText = "Apply For Network Access →";
       return;
     }
 
-    const userId = signUpData.user?.id;
-
-    // Isti signal kao kod truck ownera: ako je email već postojao ali
-    // nije potvrđen, Supabase (namerno) vraća user objekat sa praznim
-    // identities nizom umesto greške. Taj id ne bi prošao FK proveru.
-    const looksUnconfirmedRetry = Array.isArray(signUpData.user?.identities) && signUpData.user!.identities!.length === 0;
-
-    if (looksUnconfirmedRetry) {
-      errorMsg.textContent = 'This email is already registered but not yet confirmed. Check your inbox for the confirmation link, or try signing in.';
-      errorMsg.classList.remove('hidden');
-      btn.disabled = false;
-      btn.innerText = "Apply For Network Access →";
+    if (result.requiresVerification) {
+      successDetail.textContent = `We sent a confirmation link to ${email}. Click it to submit your application for review.`;
+      formCard.classList.add('hidden');
+      successCard.classList.remove('hidden');
       return;
     }
 
-    // 2) Napravi profil firme preko servera (service_role) — ne zavisi
-    // od toga da li postoji aktivna sesija odmah posle signUp-a.
-    let insertError: { message: string } | null = null;
-    if (userId) {
-      const res = await fetch('/api/create-contractor-profile', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ userId, email, companyName: company_name, contactName: contact_name, phone, territory, source: trafficSource }),
-      });
-      const result = await res.json();
-      if (!res.ok) insertError = { message: result.message || result.error || 'Unknown error' };
-    }
-
-    if (insertError) {
-      errorMsg.textContent = 'Your account was created, but the company profile could not be saved (' + insertError.message + '). Please contact the administrator.';
-      errorMsg.classList.remove('hidden');
-      btn.disabled = false;
-      btn.innerText = "Apply For Network Access →";
-      return;
-    }
-
-    if (!signUpData.session) {
-      successDetail.textContent = 'First confirm your email (we sent you a link), then wait for an administrator to approve your application.';
-    }
+    // Account is confirmed already — sign in so they land in an active
+    // session instead of being told to go log in separately.
+    await supabase.auth.signInWithPassword({ email, password });
 
     formCard.classList.add('hidden');
     successCard.classList.remove('hidden');
-
-    fetch('/api/notify-new-contractor', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      keepalive: true,
-      body: JSON.stringify({ userId }),
-    }).catch(() => {});
   });
 
   // --- LIVE ACTIVITY TOAST ---

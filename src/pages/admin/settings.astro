@@ -85,6 +85,10 @@ const { data: creditTruckOwners } = await (supabaseAdmin ?? supabase)
           <span class="indicator w-2 h-2 rounded-full bg-zinc-200"></span>
           Integrations
         </button>
+        <button id="tabBtn-accountSecurity" class="tab-btn flex-shrink-0 lg:w-full text-left px-4 py-3 text-zinc-500 hover:bg-zinc-100/50 hover:text-slate-900 rounded-lg text-[11px] font-bold uppercase tracking-wider transition-all border border-transparent flex items-center gap-3">
+          <span class="indicator w-2 h-2 rounded-full bg-zinc-200"></span>
+          Account Security
+        </button>
       </div>
 
       <!-- DESNI SADRŽAJ -->
@@ -591,6 +595,22 @@ const { data: creditTruckOwners } = await (supabaseAdmin ?? supabase)
             </form>
           </div>
         </div>
+
+        <!-- ACCOUNT SECURITY -->
+        <div id="section-accountSecurity" class="tab-section hidden bg-white border border-slate-200 p-6 md:p-8 rounded-2xl shadow-sm">
+          <h2 class="text-sm font-bold text-slate-900 uppercase tracking-wider mb-2">Account Security</h2>
+          <p class="mb-6 text-[11px] leading-5 text-slate-500">Controls signup for contractors and fleet owners. Customers already use a passwordless email link, so this doesn't apply to them.</p>
+
+          <form id="accountSecurityForm" class="space-y-6">
+            <label class="flex items-center justify-between gap-4 rounded-xl border border-amber-200 bg-amber-50/50 p-4">
+              <span><span class="block text-xs font-bold text-slate-900">Require email verification</span><span class="mt-1 block text-[11px] text-slate-500">Disabled by default. When on, a new contractor/fleet-owner signup must click a confirmation link before their application even reaches your approval queue.</span></span>
+              <input id="emailVerificationRequired" type="checkbox" class="h-5 w-5 accent-green-600" />
+            </label>
+
+            <button id="saveAccountSecurityBtn" type="submit" class="h-12 rounded-xl bg-slate-950 px-7 text-xs font-bold uppercase tracking-wider text-white hover:bg-green-700">Save Account Security</button>
+            <p id="accountSecurityMsg" class="text-[11px]"></p>
+          </form>
+        </div>
       </div>
 
     </div>
@@ -623,9 +643,11 @@ const { data: creditTruckOwners } = await (supabaseAdmin ?? supabase)
   const secTruckOutreach = document.getElementById('section-truckOutreach');
   const secCredits = document.getElementById('section-credits');
   const secOAuth = document.getElementById('section-oauth');
+  const tabAccountSecurity = document.getElementById('tabBtn-accountSecurity');
+  const secAccountSecurity = document.getElementById('section-accountSecurity');
 
-  const allTabs = [tabTerritories, tabTracking, tabNotifications, tabExternalLeadRouting, tabPermit, tabTruckOutreach, tabCredits, tabOAuth] as HTMLElement[];
-  const allSections = [secTerritories, secTracking, secNotifications, secExternalLeadRouting, secPermit, secTruckOutreach, secCredits, secOAuth] as HTMLElement[];
+  const allTabs = [tabTerritories, tabTracking, tabNotifications, tabExternalLeadRouting, tabPermit, tabTruckOutreach, tabCredits, tabOAuth, tabAccountSecurity] as HTMLElement[];
+  const allSections = [secTerritories, secTracking, secNotifications, secExternalLeadRouting, secPermit, secTruckOutreach, secCredits, secOAuth, secAccountSecurity] as HTMLElement[];
 
   function switchTab(activeTab: HTMLElement, showSec: HTMLElement) {
     allTabs.forEach((tab) => {
@@ -664,6 +686,10 @@ const { data: creditTruckOwners } = await (supabaseAdmin ?? supabase)
     switchTab(tabOAuth, secOAuth!);
     loadOAuthSettings();
     loadPaypalSettings();
+  });
+  tabAccountSecurity?.addEventListener('click', () => {
+    switchTab(tabAccountSecurity, secAccountSecurity!);
+    loadAccountSecurity();
   });
 
   function escapeHtml(value: unknown) {
@@ -1012,6 +1038,47 @@ const { data: creditTruckOwners } = await (supabaseAdmin ?? supabase)
     }
     saveBtn.disabled = false;
     saveBtn.textContent = 'Save PayPal Settings';
+  });
+
+  async function loadAccountSecurity() {
+    const msg = document.getElementById('accountSecurityMsg')!;
+    const response = await adminFetch('/api/account-security-settings');
+    const result = await response.json().catch(() => ({}));
+    if (!response.ok || !result.ok) {
+      msg.textContent = '⚠️ Could not load account security settings (migration required?).';
+      msg.className = 'text-[11px] text-amber-600 mt-2';
+      return;
+    }
+    (document.getElementById('emailVerificationRequired') as HTMLInputElement).checked = Boolean(result.settings?.email_verification_required);
+    msg.textContent = '';
+  }
+
+  document.getElementById('accountSecurityForm')?.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const saveBtn = document.getElementById('saveAccountSecurityBtn') as HTMLButtonElement;
+    const msg = document.getElementById('accountSecurityMsg')!;
+    saveBtn.disabled = true;
+    saveBtn.textContent = 'Saving...';
+
+    const payload = {
+      email_verification_required: (document.getElementById('emailVerificationRequired') as HTMLInputElement).checked,
+    };
+
+    const response = await adminFetch('/api/account-security-settings', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload),
+    });
+    const result = await response.json().catch(() => ({}));
+    if (response.ok && result.ok) {
+      msg.textContent = '✓ Account security settings saved.';
+      msg.className = 'text-[11px] text-green-600 mt-2';
+    } else {
+      msg.textContent = '❌ ' + (result.error || 'Failed to save account security settings.');
+      msg.className = 'text-[11px] text-red-600 mt-2';
+    }
+    saveBtn.disabled = false;
+    saveBtn.textContent = 'Save Account Security';
   });
 
   document.getElementById('creditSettingsForm')?.addEventListener('submit', async (e) => {

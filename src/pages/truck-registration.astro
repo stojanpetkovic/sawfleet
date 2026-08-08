@@ -133,7 +133,7 @@ import { ArrowRight, BadgeCheck, CheckCircle2, ClipboardCheck, Coins, Gauge, Lay
                 <span id="submitBtnLabel">Create Account →</span>
               </button>
               <p class="text-center text-[10px] text-slate-400 pt-1">
-                Already registered? <a href="/truck-login" class="text-slate-700 hover:text-slate-900 underline">Fleet Owner Login</a>
+                Already registered? <a href="/login" class="text-slate-700 hover:text-slate-900 underline">Fleet Owner Login</a>
               </p>
             </form>
           </section>
@@ -202,7 +202,7 @@ import { ArrowRight, BadgeCheck, CheckCircle2, ClipboardCheck, Coins, Gauge, Lay
           <span class="text-[9px] font-bold uppercase tracking-[0.18em] text-slate-500">New fleet or existing account</span>
           <div class="mt-5 flex flex-col gap-3">
             <a href="#ownerForm" class="inline-flex h-12 items-center justify-center gap-2 rounded-xl bg-green-700 px-5 text-[10px] font-bold uppercase tracking-[0.15em] text-white hover:bg-green-800">Create fleet account <ArrowRight size={14} /></a>
-            <a href="/truck-login" class="inline-flex h-12 items-center justify-center rounded-xl border border-slate-200 bg-white px-5 text-[10px] font-bold uppercase tracking-[0.15em] text-slate-700 hover:border-slate-300">Fleet owner sign in</a>
+            <a href="/login" class="inline-flex h-12 items-center justify-center rounded-xl border border-slate-200 bg-white px-5 text-[10px] font-bold uppercase tracking-[0.15em] text-slate-700 hover:border-slate-300">Fleet owner sign in</a>
           </div>
         </div>
       </div>
@@ -260,73 +260,43 @@ import { ArrowRight, BadgeCheck, CheckCircle2, ClipboardCheck, Coins, Gauge, Lay
     const email = (fd.get('email') as string).trim().toLowerCase();
     const password = fd.get('password') as string;
 
-    const { data: signUpData, error: signUpError } = await supabase.auth.signUp({
-      email,
-      password,
-      options: { emailRedirectTo: `${window.location.origin}/truck-login` },
+    const res = await fetch('/api/signup', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        role: 'truck_owner',
+        email,
+        password,
+        companyName: fd.get('companyName') || null,
+        contactName: fd.get('contactName'),
+        phone: fd.get('phone'),
+        claimSlug,
+      }),
     });
+    const result = await res.json().catch(() => ({}));
 
-    if (signUpError) {
-      alert(signUpError.message.includes('already registered')
-        ? 'This email is already registered. Sign in at /truck-login instead.'
-        : 'Error: ' + signUpError.message);
+    if (!res.ok || !result.ok) {
+      if (result.error === 'email_already_registered') {
+        alert('This email is already registered. Sign in at /login instead.');
+      } else {
+        alert('Error: ' + (result.message || result.error || 'Could not create account.'));
+      }
       btn.disabled = false;
       btnLabel.textContent = 'Create Account →';
       return;
     }
 
-    const ownerId = signUpData.user?.id;
-
-    // Supabase namerno NE baca grešku kad se signUp ponovo pošalje za
-    // email koji već postoji ali još nije potvrđen (da ne otkrije da
-    // nalog postoji) — umesto toga vraća user objekat sa praznim
-    // identities nizom, i taj id NE odgovara stvarnom redu u auth.users.
-    // Ako bismo tim id-jem pokušali upis u truck_owners, pukne na
-    // foreign key constraint. Prepoznajemo ovo OVDE i jasno objašnjavamo
-    // umesto nejasne greške posle.
-    const looksUnconfirmedRetry = Array.isArray(signUpData.user?.identities) && signUpData.user!.identities!.length === 0;
-
-    if (looksUnconfirmedRetry) {
-      alert('This email is already registered but not yet confirmed. Check your inbox for the confirmation link, or use "Forgot password" on the login page if you need a new one.');
-      window.location.href = '/truck-login';
+    if (result.requiresVerification) {
+      btnLabel.textContent = 'Check your email →';
+      const header = form.previousElementSibling;
+      const intro = header?.querySelector('p');
+      if (intro) intro.textContent = `We sent a confirmation link to ${email}. Click it to submit your application for review.`;
       return;
     }
 
-    // Napravi profil vlasnika preko servera (service_role) — ne zavisi
-    // od toga da li postoji aktivna sesija odmah posle signUp-a. Ako je
-    // u Supabase Auth uključeno "Confirm email", signUp NE vraća sesiju
-    // dok korisnik ne potvrdi mejl, pa bi direktan insert sa browser
-    // klijenta pukao na RLS (auth.uid() bio bi null).
-    if (ownerId) {
-      try {
-        const res = await fetch('/api/create-owner-profile', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            ownerId,
-            email,
-            companyName: fd.get('companyName') || null,
-            contactName: fd.get('contactName'),
-            phone: fd.get('phone'),
-            claimSlug,
-          }),
-        });
-        const result = await res.json();
-        if (!res.ok) {
-          alert('Account created, but saving your profile failed: ' + (result.message || result.error) + '\nYou can still log in and add trucks.');
-        }
-      } catch (err) {
-        alert('Account created, but saving your profile failed. You can still log in and add trucks.');
-      }
-    }
-
-    // Obavesti admine mejlom o novoj prijavi vlasnika (best effort — ne
-    // blokira redirect ako padne)
-    fetch('/api/notify-new-truck-owner', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ ownerId }),
-    }).catch((err) => console.error('notify-new-truck-owner failed:', err));
+    // Account is confirmed already — sign in and go straight to the
+    // dashboard instead of leaving them at the login form.
+    await supabase.auth.signInWithPassword({ email, password });
 
     // REDIRECT TO THANK YOU PAGE (fires pixel/ads conversion)
     window.location.href = '/thank-you';
