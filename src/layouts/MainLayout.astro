@@ -8,6 +8,7 @@ interface Props {
   description?: string;
   image?: string;
   structuredData?: Record<string, unknown> | Record<string, unknown>[];
+  noindex?: boolean;
 }
 
 const {
@@ -15,6 +16,7 @@ const {
   description = "Connect homeowners with trusted local tree service professionals and grapple saw truck operators across South Florida.",
   image = "/og-image.jpg", // Putanja do slike koja će se prikazati kada neko podeli link na Viberu/WhatsAppu/FB-u
   structuredData,
+  noindex = false,
 } = Astro.props;
 
 // Generisanje kanoničnog URL-a za SEO (sprečava duplicate content penale)
@@ -79,8 +81,8 @@ const { data: tracking } = await supabase
   <meta name="description" content={description} />
   <link rel="canonical" href={canonicalURL} />
   
-  <!-- Robot instrukcije (dozvoljavamo indeksiranje) -->
-  <meta name="robots" content="index, follow" />
+  <!-- Robot instrukcije -->
+  <meta name="robots" content={noindex ? "noindex, follow" : "index, follow"} />
 
   <!-- ============================================== -->
   <!-- OPEN GRAPH / FACEBOOK (Za deljenje linkova) -->
