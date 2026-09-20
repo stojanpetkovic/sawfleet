@@ -3,37 +3,35 @@ const currentYear = new Date().getFullYear();
 
 const links = {
   product: [
-    { title: "Services", href: "/services" },
-    { title: "Service Areas", href: "/service-areas" },
-    { title: "Tree Removal by City", href: "/tree-removal" },
+    { title: "Permit Leads", href: "/permit-leads" },
+    { title: "Contractor Directory", href: "/contractors" },
     { title: "Blog", href: "/blog" },
-    { title: "Request Estimate", href: "/#quote" }
-  ],
-  contractors: [
-    { title: "Join Network", href: "/contractors-registration" },
-    { title: "Truck Directory", href: "/truck-directory" },
-    { title: "Claim Truck Profile", href: "/truck-directory#claim-profile" },
-    { title: "How It Works", href: "/contractors-registration#how-it-works" },
-    { title: "Partner Portal", href: "/login" }
   ],
   legal: [
     { title: "Privacy Policy", href: "/privacy" },
     { title: "Terms of Service", href: "/terms" },
-    { title: "Compliance", href: "/compliance" }
   ]
 };
 ---
 
 <footer class="relative overflow-hidden bg-slate-950 font-sans pb-28 lg:pb-10 pt-10 sm:pt-12 selection:bg-green-400 selection:text-slate-950">
-  <div class="pointer-events-none absolute -right-32 -top-40 h-96 w-96 rounded-full bg-green-500/[0.06] blur-[100px]"></div>
-  <div class="mx-auto max-w-7xl px-6 lg:px-8">
-    <div class="mb-12 flex flex-col justify-between gap-6 rounded-2xl border border-white/10 bg-white/[0.04] p-5 sm:flex-row sm:items-center sm:p-7">
+  <div class="pointer-events-none absolute inset-0 opacity-[0.25]" aria-hidden="true" style="background-image: radial-gradient(circle, rgba(255,255,255,0.14) 1px, transparent 1px); background-size: 26px 26px;"></div>
+  <div class="pointer-events-none absolute -right-32 -top-40 h-96 w-96 rounded-full bg-green-500/[0.08] blur-[110px]"></div>
+  <div class="pointer-events-none absolute -bottom-32 -left-24 h-72 w-72 rounded-full bg-emerald-500/[0.06] blur-[100px]"></div>
+  <div class="relative z-10 mx-auto max-w-7xl px-6 lg:px-8">
+    <div class="mb-12 flex flex-col justify-between gap-6 rounded-2xl border border-white/10 bg-white/[0.04] p-5 backdrop-blur sm:flex-row sm:items-center sm:p-7">
       <div>
-        <span class="text-[9px] font-mono font-bold uppercase tracking-[0.22em] text-green-400">// Start your request</span>
-        <h2 class="mt-2 text-xl font-bold tracking-tight text-white sm:text-2xl">Need help with a tree project?</h2>
-        <p class="mt-2 max-w-xl text-xs leading-relaxed text-slate-400">Share the location and project details once. We'll route the request to relevant professionals serving your area.</p>
+        <div class="flex items-center gap-2">
+          <span class="relative flex h-1.5 w-1.5">
+            <span class="absolute inline-flex h-full w-full animate-ping rounded-full bg-green-400 opacity-75"></span>
+            <span class="relative inline-flex h-1.5 w-1.5 rounded-full bg-green-400"></span>
+          </span>
+          <span class="text-[9px] font-mono font-bold uppercase tracking-[0.22em] text-green-400">// Public permit records</span>
+        </div>
+        <h2 class="mt-2 text-xl font-bold tracking-tight text-white sm:text-2xl">Looking for new jobs in your area?</h2>
+        <p class="mt-2 max-w-xl text-xs leading-relaxed text-slate-400">Browse property owners who recently filed a tree-related permit application, with contact details included.</p>
       </div>
-      <a href="/#quote" class="inline-flex h-11 w-full shrink-0 items-center justify-center rounded-xl bg-green-600 px-5 text-[10px] font-bold uppercase tracking-[0.16em] text-white shadow-[0_12px_30px_-14px_rgba(34,197,94,0.8)] transition hover:bg-green-500 sm:w-auto">Request Free Estimate →</a>
+      <a href="/permit-leads" class="inline-flex h-11 w-full shrink-0 items-center justify-center rounded-xl bg-green-600 px-5 text-[10px] font-bold uppercase tracking-[0.16em] text-white shadow-[0_12px_30px_-14px_rgba(34,197,94,0.8)] transition hover:bg-green-500 sm:w-auto">Browse Permit Leads →</a>
     </div>
 
     <div class="xl:grid xl:grid-cols-3 xl:gap-12">
@@ -44,13 +42,13 @@ const links = {
           <img src="/logo/logo.svg" alt="SF Tree Removal" class="h-auto w-full max-w-[165px]" loading="lazy" />
         </a>
         <p class="text-xs text-slate-400 max-w-sm leading-relaxed">
-          A South Florida dispatch platform connecting property owners with independent tree-service professionals and fleet operators.
+          A public portal tracking tree-related permit filings and tree care contractors across South Florida — free to browse, updated regularly.
         </p>
-        <div class="inline-flex items-center gap-2 rounded-full border border-green-400/20 bg-green-400/10 px-3 py-1.5 text-[9px] font-mono font-bold uppercase tracking-[0.14em] text-green-300"><span class="h-1.5 w-1.5 rounded-full bg-green-400"></span> South Florida network</div>
+        <div class="inline-flex items-center gap-2 rounded-full border border-green-400/20 bg-green-400/10 px-3 py-1.5 text-[9px] font-mono font-bold uppercase tracking-[0.14em] text-green-300"><span class="h-1.5 w-1.5 rounded-full bg-green-400"></span> Public data, updated regularly</div>
       </div>
 
       <!-- Desna strana -->
-      <div class="mt-12 grid grid-cols-2 gap-8 xl:col-span-2 xl:mt-0 sm:grid-cols-3">
+      <div class="mt-12 grid grid-cols-2 gap-8 xl:col-span-2 xl:mt-0">
 
         {Object.entries(links).map(([key, category]) => (
           <div>
@@ -80,7 +78,6 @@ const links = {
       <div class="flex items-center gap-4 text-[9px] font-mono uppercase tracking-[0.12em] text-slate-500">
         <a href="/privacy" class="hover:text-slate-300 transition-colors">Privacy</a>
         <a href="/terms" class="hover:text-slate-300 transition-colors">Terms</a>
-        <a href="/support" class="hover:text-slate-300 transition-colors">Support</a>
       </div>
     </div>
   </div>

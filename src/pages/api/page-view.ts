@@ -2,7 +2,7 @@ export const prerender = false;
 
 import { supabaseAdmin } from "../../lib/supabaseAdmin";
 
-const excludedPrefixes = ["/admin", "/api", "/dashboard", "/portal", "/login", "/register", "/reset-password", "/truck-dashboard", "/truck-login"];
+const excludedPrefixes = ["/admin", "/api", "/portal", "/reset-password"];
 
 function json(body: unknown, status = 200) {
   return new Response(JSON.stringify(body), {

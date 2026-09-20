@@ -38,8 +38,6 @@ export async function POST({ request }: { request: Request }) {
       externalAutoPublish: body.externalAutoPublish === undefined ? current.externalAutoPublish : !!body.externalAutoPublish,
       externalAutoPublishDomains: Array.isArray(body.externalAutoPublishDomains) ? body.externalAutoPublishDomains.filter(Boolean).map(String) : current.externalAutoPublishDomains,
       externalMinQualityScore: Math.max(0, Math.min(100, Number(body.externalMinQualityScore ?? current.externalMinQualityScore))),
-      notifyContractorsOnPublish: body.notifyContractorsOnPublish === undefined ? current.notifyContractorsOnPublish : body.notifyContractorsOnPublish !== false,
-      notifyTruckOwnersOnPublish: body.notifyTruckOwnersOnPublish === undefined ? current.notifyTruckOwnersOnPublish : body.notifyTruckOwnersOnPublish !== false,
       permitManualPublishRequiresConfirmation: body.permitManualPublishRequiresConfirmation === undefined ? current.permitManualPublishRequiresConfirmation : body.permitManualPublishRequiresConfirmation !== false,
       permitMaxEmailAttempts: Math.max(1, Math.min(10, Number(body.permitMaxEmailAttempts ?? current.permitMaxEmailAttempts))),
       permitDailyEmailLimit: Math.max(1, Math.min(100, Number(body.permitDailyEmailLimit ?? current.permitDailyEmailLimit))),

@@ -4,14 +4,9 @@ import '../styles/app.css';
 import {
   LayoutDashboard,
   Inbox,
-  Users,
-  Truck,
-  UserCog2,
   Globe2,
   BarChart3,
   Settings2,
-  Wallet,
-  Star,
   Newspaper,
   Menu as MenuIcon,
 } from "lucide-astro";
@@ -23,13 +18,6 @@ const menuItems = [
   { name: 'Website Leads', path: '/admin/service-leads', icon: Inbox },
   { name: 'Permit Leads', path: '/admin/permit-leads', icon: Globe2 },
   { name: 'External Leads', path: '/admin/external-leads', icon: Globe2 },
-  { name: 'Contractors', path: '/admin/contractors', icon: Users },
-  { name: 'Customers', path: '/admin/customers', icon: Users },
-  { name: 'Grapple Saw Trucks', path: '/admin/grapple-saw-trucks', icon: Truck },
-  { name: 'Unclaimed Directory', path: '/admin/unclaimed-trucks', icon: Truck },
-  { name: 'Truck Owners', path: '/admin/truck-owners', icon: UserCog2 },
-  { name: 'Finances', path: '/admin/finances', icon: Wallet },
-  { name: 'Reviews', path: '/admin/reviews', icon: Star },
   { name: 'Blog', path: '/admin/blog', icon: Newspaper },
   { name: 'Analytics', path: '/admin/analytics', icon: BarChart3 }
 ];
@@ -118,10 +106,6 @@ const tabItems = menuItems.slice(0, 4);
                   <a href="/admin/service-leads" class="flex items-center justify-between px-3 py-2 rounded-lg hover:bg-slate-50 transition-colors"><span class="text-xs text-slate-600">New Leads</span><span id="badge-leads" class="text-[10px] font-mono text-green-700 bg-green-50 px-2 py-0.5 rounded">0</span></a>
                   <a href="/admin/external-leads" class="flex items-center justify-between px-3 py-2 rounded-lg hover:bg-slate-50 transition-colors"><span class="text-xs text-slate-600">New External Leads</span><span id="badge-external" class="text-[10px] font-mono text-teal-600 bg-teal-50 px-2 py-0.5 rounded">0</span></a>
                   <a href="/admin/permit-leads" class="flex items-center justify-between px-3 py-2 rounded-lg hover:bg-slate-50 transition-colors"><span class="text-xs text-slate-600">New Permit Leads (24h)</span><span id="badge-permits" class="text-[10px] font-mono text-indigo-600 bg-indigo-50 px-2 py-0.5 rounded">0</span></a>
-                  <a href="/admin/contractors" class="flex items-center justify-between px-3 py-2 rounded-lg hover:bg-slate-50 transition-colors"><span class="text-xs text-slate-600">Pending Contractors</span><span id="badge-contractors" class="text-[10px] font-mono text-blue-600 bg-blue-50 px-2 py-0.5 rounded">0</span></a>
-                  <a href="/admin/truck-owners" class="flex items-center justify-between px-3 py-2 rounded-lg hover:bg-slate-50 transition-colors"><span class="text-xs text-slate-600">Pending Owners</span><span id="badge-owners" class="text-[10px] font-mono text-amber-600 bg-amber-50 px-2 py-0.5 rounded">0</span></a>
-                  <a href="/admin/grapple-saw-trucks" class="flex items-center justify-between px-3 py-2 rounded-lg hover:bg-slate-50 transition-colors"><span class="text-xs text-slate-600">Pending Assets</span><span id="badge-trucks" class="text-[10px] font-mono text-purple-600 bg-purple-50 px-2 py-0.5 rounded">0</span></a>
-                  <a href="/admin/finances" class="flex items-center justify-between px-3 py-2 rounded-lg hover:bg-slate-50 transition-colors"><span class="text-xs text-slate-600">Credit Requests</span><span id="badge-credits" class="text-[10px] font-mono text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded">0</span></a>
                 </div>
               </div>
             </div>
@@ -208,11 +192,7 @@ const tabItems = menuItems.slice(0, 4);
         const { count: leads } = await supabase.from('leads').select('*', { count: 'exact', head: true }).eq('status', 'new');
         const { count: external } = await supabase.from('external_leads').select('*', { count: 'exact', head: true }).eq('status', 'new');
         const { count: permits } = await supabase.from('permit_leads').select('*', { count: 'exact', head: true }).gte('created_at', since24h);
-        const { count: contr } = await supabase.from('contractors').select('*', { count: 'exact', head: true }).eq('status', 'pending');
-        const { count: owners } = await supabase.from('truck_owners').select('*', { count: 'exact', head: true }).eq('status', 'pending');
-        const { count: trucks } = await supabase.from('grapple_saw_trucks').select('*', { count: 'exact', head: true }).eq('approval_status', 'pending');
-        const { count: creditRequests } = await supabase.from('credit_requests').select('*', { count: 'exact', head: true }).eq('status', 'pending');
-        const total = (leads || 0) + (external || 0) + (permits || 0) + (contr || 0) + (owners || 0) + (trucks || 0) + (creditRequests || 0);
+        const total = (leads || 0) + (external || 0) + (permits || 0);
         const badge = document.getElementById('notificationBadge');
         if (badge) {
           if (total > 0) { badge.textContent = total.toString(); badge.classList.remove('hidden'); }
@@ -221,10 +201,6 @@ const tabItems = menuItems.slice(0, 4);
         document.getElementById('badge-leads')!.textContent = (leads || 0).toString();
         document.getElementById('badge-external')!.textContent = (external || 0).toString();
         document.getElementById('badge-permits')!.textContent = (permits || 0).toString();
-        document.getElementById('badge-contractors')!.textContent = (contr || 0).toString();
-        document.getElementById('badge-owners')!.textContent = (owners || 0).toString();
-        document.getElementById('badge-trucks')!.textContent = (trucks || 0).toString();
-        document.getElementById('badge-credits')!.textContent = (creditRequests || 0).toString();
       }
       document.addEventListener('astro:page-load', fetchNotifications);
       setInterval(fetchNotifications, 30000);

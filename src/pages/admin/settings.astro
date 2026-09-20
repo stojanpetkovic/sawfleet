@@ -2,7 +2,6 @@
 export const prerender = false;
 import AdminLayout from "../../layouts/AdminLayout.astro";
 import { supabase } from "../../lib/supabase";
-import { supabaseAdmin } from "../../lib/supabaseAdmin";
 import { parsePermitSettings } from "../../lib/permitData";
 
 // Dohvatamo teritorije
@@ -19,23 +18,6 @@ const { data: tracking } = await supabase
   .single();
 
 const permitSettings = parsePermitSettings(tracking?.global_scripts);
-
-// Za "Bulk Credit Grant" — liste za dugmad "svi" i za ručni izbor konkretnih
-// naloga. Koristi supabaseAdmin (service role) jer frontmatter (SSR) nema
-// pristup admin browser sesiji, pa bi anon `supabase` klijent, vezan za RLS,
-// vratio prazan niz.
-const { data: creditContractors } = await (supabaseAdmin ?? supabase)
-  .from('contractors')
-  .select('user_id, company_name, contact_name, credit_balance')
-  .eq('status', 'active')
-  .not('user_id', 'is', null)
-  .order('company_name', { ascending: true });
-
-const { data: creditTruckOwners } = await (supabaseAdmin ?? supabase)
-  .from('truck_owners')
-  .select('id, company_name, contact_name, credit_balance')
-  .eq('status', 'approved')
-  .order('company_name', { ascending: true });
 ---
 
 <AdminLayout>
@@ -65,29 +47,13 @@ const { data: creditTruckOwners } = await (supabaseAdmin ?? supabase)
           <span class="indicator w-2 h-2 rounded-full bg-zinc-200"></span>
           Notifications
         </button>
-        <button id="tabBtn-externalLeadRouting" class="tab-btn flex-shrink-0 lg:w-full text-left px-4 py-3 text-zinc-500 hover:bg-zinc-100/50 hover:text-slate-900 rounded-lg text-[11px] font-bold uppercase tracking-wider transition-all border border-transparent flex items-center gap-3">
-          <span class="indicator w-2 h-2 rounded-full bg-zinc-200"></span>
-          External Leads
-        </button>
         <button id="tabBtn-permit" class="tab-btn flex-shrink-0 lg:w-full text-left px-4 py-3 text-zinc-500 hover:bg-zinc-100/50 hover:text-slate-900 rounded-lg text-[11px] font-bold uppercase tracking-wider transition-all border border-transparent flex items-center gap-3">
           <span class="indicator w-2 h-2 rounded-full bg-zinc-200"></span>
           Workflow Automation
         </button>
-        <button id="tabBtn-truckOutreach" class="tab-btn flex-shrink-0 lg:w-full text-left px-4 py-3 text-zinc-500 hover:bg-zinc-100/50 hover:text-slate-900 rounded-lg text-[11px] font-bold uppercase tracking-wider transition-all border border-transparent flex items-center gap-3">
-          <span class="indicator w-2 h-2 rounded-full bg-zinc-200"></span>
-          Truck Profile Outreach
-        </button>
-        <button id="tabBtn-credits" class="tab-btn flex-shrink-0 lg:w-full text-left px-4 py-3 text-zinc-500 hover:bg-zinc-100/50 hover:text-slate-900 rounded-lg text-[11px] font-bold uppercase tracking-wider transition-all border border-transparent flex items-center gap-3">
-          <span class="indicator w-2 h-2 rounded-full bg-zinc-200"></span>
-          Credits
-        </button>
         <button id="tabBtn-oauth" class="tab-btn flex-shrink-0 lg:w-full text-left px-4 py-3 text-zinc-500 hover:bg-zinc-100/50 hover:text-slate-900 rounded-lg text-[11px] font-bold uppercase tracking-wider transition-all border border-transparent flex items-center gap-3">
           <span class="indicator w-2 h-2 rounded-full bg-zinc-200"></span>
           Integrations
-        </button>
-        <button id="tabBtn-accountSecurity" class="tab-btn flex-shrink-0 lg:w-full text-left px-4 py-3 text-zinc-500 hover:bg-zinc-100/50 hover:text-slate-900 rounded-lg text-[11px] font-bold uppercase tracking-wider transition-all border border-transparent flex items-center gap-3">
-          <span class="indicator w-2 h-2 rounded-full bg-zinc-200"></span>
-          Account Security
         </button>
       </div>
 
@@ -208,82 +174,24 @@ const { data: creditTruckOwners } = await (supabaseAdmin ?? supabase)
           </form>
         </div>
 
-        <!-- EXTERNAL LEADS — PARTNER ROUTING -->
-        <div id="section-externalLeadRouting" class="tab-section hidden bg-white border border-slate-200 p-6 md:p-8 rounded-2xl shadow-sm">
-          <div class="border-b border-zinc-100 pb-5 mb-6">
-            <h2 class="text-sm font-bold text-slate-900 uppercase tracking-wider mb-2">External Lead Routing</h2>
-            <p class="text-[11px] text-zinc-500">Per partner site (e.g. treejaws.com), pick a standing list of contractors/truck owners who should get an instant email and see the lead unblurred — free to accept — the moment it arrives. If nobody on the list takes it, publish it manually to Website Leads from /admin/external-leads as usual.</p>
-          </div>
-
-          <div id="externalLeadRoutingRules" class="space-y-3 mb-8">
-            <p class="text-xs text-slate-400">Loading rules…</p>
-          </div>
-
-          <form id="externalLeadRoutingForm" class="space-y-6 border-t border-zinc-100 pt-6">
-            <input type="hidden" id="routingRuleId" value="" />
-            <div>
-              <label class="mb-2 block text-[10px] font-bold uppercase tracking-wider text-slate-600">Source domain</label>
-              <input id="routingDomain" type="text" placeholder="treejaws.com" class="w-full rounded-xl border border-slate-200 p-3 text-sm font-mono" />
-            </div>
-
-            <label class="flex items-center justify-between gap-4 rounded-xl border border-slate-200 bg-slate-50 p-4">
-              <span class="block text-xs font-bold text-slate-900">Enabled</span>
-              <input id="routingEnabled" type="checkbox" class="h-5 w-5 accent-green-600" checked />
-            </label>
-
-            <div>
-              <label class="mb-2 block text-[10px] font-bold uppercase tracking-wider text-slate-600">Active contractors</label>
-              <div id="routingContractorList" class="max-h-48 overflow-y-auto rounded-xl border border-slate-200 p-3 space-y-1.5">
-                <p class="text-xs text-slate-400">Loading…</p>
-              </div>
-            </div>
-
-            <div>
-              <label class="mb-2 block text-[10px] font-bold uppercase tracking-wider text-slate-600">Approved truck owners</label>
-              <div id="routingTruckOwnerList" class="max-h-48 overflow-y-auto rounded-xl border border-slate-200 p-3 space-y-1.5">
-                <p class="text-xs text-slate-400">Loading…</p>
-              </div>
-            </div>
-
-            <div class="flex items-center gap-3">
-              <button id="saveRoutingBtn" type="submit" class="h-12 rounded-xl bg-slate-950 px-7 text-xs font-bold uppercase tracking-wider text-white hover:bg-green-700">Save rule</button>
-              <button id="cancelRoutingEditBtn" type="button" class="hidden h-12 rounded-xl border border-slate-200 px-6 text-xs font-bold uppercase tracking-wider text-slate-600 hover:bg-slate-50">Cancel edit</button>
-            </div>
-          </form>
-        </div>
-
         <div id="section-permit" class="tab-section hidden bg-white border border-slate-200 p-6 md:p-8 rounded-2xl shadow-sm">
           <div class="border-b border-zinc-100 pb-5 mb-6">
             <h2 class="text-sm font-bold text-slate-900 uppercase tracking-wider mb-2">Lead Workflow Automation</h2>
-            <p class="text-[11px] text-zinc-500">Control publishing into Website Leads, contractor notifications, external source rules and permit outreach.</p>
+            <p class="text-[11px] text-zinc-500">Control publishing into Website Leads, external source rules and permit outreach.</p>
           </div>
 
           <form id="permitAutomationForm" class="space-y-6">
             <div class="rounded-2xl border border-slate-200 bg-slate-50 p-5 space-y-4">
               <div>
                 <p class="text-[10px] font-bold uppercase tracking-[0.2em] text-slate-700">Website Lead Publishing</p>
-                <p class="mt-1 text-[11px] text-slate-500">Website Leads are the only opportunities visible to registered contractors.</p>
+                <p class="mt-1 text-[11px] text-slate-500">Website Leads appear in the admin Website Leads queue for your team to follow up.</p>
               </div>
               <label class="flex items-center justify-between rounded-xl border border-zinc-200 bg-white p-4">
                 <span>
                   <span class="block text-xs font-bold text-slate-900">Publish frontend requests automatically</span>
-                  <span class="block text-[11px] text-zinc-500">Make customer-submitted requests immediately available to matching contractors.</span>
+                  <span class="block text-[11px] text-zinc-500">Make customer-submitted requests immediately available in Website Leads.</span>
                 </span>
                 <input type="checkbox" id="frontendAutoPublish" class="h-5 w-5 accent-green-600" checked={permitSettings.frontendAutoPublish} />
-              </label>
-              <label class="flex items-center justify-between rounded-xl border border-zinc-200 bg-white p-4">
-                <span>
-                  <span class="block text-xs font-bold text-slate-900">Notify contractors when published</span>
-                  <span class="block text-[11px] text-zinc-500">Email active contractors whose territory matches the Website Lead.</span>
-                </span>
-                <input type="checkbox" id="notifyContractorsOnPublish" class="h-5 w-5 accent-green-600" checked={permitSettings.notifyContractorsOnPublish} />
-              </label>
-              <label class="flex items-center justify-between rounded-xl border border-zinc-200 bg-white p-4">
-                <span>
-                  <span class="block text-xs font-bold text-slate-900">Notify truck owners when published</span>
-                  <span class="block text-[11px] text-zinc-500">Email approved fleet owners with available equipment in the lead territory.</span>
-                </span>
-                <input type="checkbox" id="notifyTruckOwnersOnPublish" class="h-5 w-5 accent-blue-600" checked={permitSettings.notifyTruckOwnersOnPublish} />
               </label>
             </div>
 
@@ -402,120 +310,6 @@ const { data: creditTruckOwners } = await (supabaseAdmin ?? supabase)
           </form>
         </div>
 
-        <div id="section-truckOutreach" class="tab-section hidden space-y-6">
-          <div class="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm md:p-8">
-            <div class="flex flex-col justify-between gap-4 border-b border-slate-100 pb-5 sm:flex-row sm:items-start">
-              <div><h2 class="text-sm font-bold uppercase tracking-wider text-slate-900">Unclaimed Truck Profile Outreach</h2><p class="mt-2 max-w-2xl text-[11px] leading-5 text-slate-500">Controlled invitations to public business emails. Automation suppresses duplicates, bounces, complaints and unsubscribed addresses.</p></div>
-              <span id="truckOutreachState" class="rounded-full bg-slate-100 px-3 py-1.5 text-[9px] font-bold uppercase tracking-wider text-slate-500">Loading</span>
-            </div>
-            <form id="truckOutreachForm" class="mt-6 space-y-6">
-              <label class="flex items-center justify-between gap-4 rounded-xl border border-amber-200 bg-amber-50/50 p-4"><span><span class="block text-xs font-bold text-slate-900">Enable scheduled outreach</span><span class="mt-1 block text-[11px] text-slate-500">Disabled by default. When enabled, the existing automation cron processes one rate-limited batch.</span></span><input id="truckOutreachEnabled" type="checkbox" class="h-5 w-5 accent-green-600" /></label>
-              <div class="grid gap-4 sm:grid-cols-3">
-                <label><span class="mb-2 block text-[10px] font-bold uppercase tracking-wider text-slate-600">Daily email limit</span><input id="truckOutreachDailyLimit" type="number" min="1" max="100" value="10" class="w-full rounded-xl border border-slate-200 p-3 text-sm" /></label>
-                <label><span class="mb-2 block text-[10px] font-bold uppercase tracking-wider text-slate-600">Days between contacts</span><input id="truckOutreachCooldown" type="number" min="3" max="365" value="14" class="w-full rounded-xl border border-slate-200 p-3 text-sm" /></label>
-                <label><span class="mb-2 block text-[10px] font-bold uppercase tracking-wider text-slate-600">Max attempts / profile</span><input id="truckOutreachAttempts" type="number" min="1" max="5" value="2" class="w-full rounded-xl border border-slate-200 p-3 text-sm" /></label>
-              </div>
-              <label class="block"><span class="mb-2 block text-[10px] font-bold uppercase tracking-wider text-slate-600">Email subject</span><input id="truckOutreachSubject" type="text" class="w-full rounded-xl border border-slate-200 p-3 text-sm" /></label>
-              <label class="block"><span class="mb-2 block text-[10px] font-bold uppercase tracking-wider text-slate-600">Email content</span><textarea id="truckOutreachTemplate" rows="12" class="w-full rounded-xl border border-slate-200 p-4 font-mono text-xs"></textarea><span class="mt-2 block text-[10px] text-slate-400">{'Variables: {{contactName}}, {{companyName}}, {{equipmentName}}, {{location}}, {{claimUrl}}'}</span></label>
-              <div class="rounded-xl border border-blue-100 bg-blue-50 p-4 text-[11px] leading-5 text-blue-800"><strong>Anti-spam protection:</strong> one email address per batch, daily cap, cooldown, maximum attempts, permanent suppression after bounce/complaint/unsubscribe and a one-click unsubscribe link in every message.</div>
-              <div class="flex flex-col gap-3 sm:flex-row"><button id="saveTruckOutreach" type="submit" class="h-12 rounded-xl bg-slate-950 px-7 text-xs font-bold uppercase tracking-wider text-white hover:bg-green-700">Save outreach settings</button><button id="runTruckOutreach" type="button" class="h-12 rounded-xl border border-slate-200 px-7 text-xs font-bold uppercase tracking-wider text-slate-700 hover:border-green-300 hover:text-green-700">Run safe batch now</button></div>
-            </form>
-          </div>
-          <div class="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm md:p-8">
-            <div class="flex items-center justify-between"><div><h3 class="text-sm font-bold text-slate-900">Recent delivery activity</h3><p class="mt-1 text-[10px] text-slate-400">Sent, delivered, opened, clicked and suppression events</p></div><button id="refreshTruckOutreach" class="text-[10px] font-bold uppercase tracking-wider text-green-700">Refresh</button></div>
-            <div id="truckOutreachActivity" class="mt-5 space-y-2"><p class="text-xs text-slate-400">No activity loaded.</p></div>
-          </div>
-        </div>
-
-        <!-- KREDIT SISTEM (Credits) -->
-        <div id="section-credits" class="tab-section hidden bg-white border border-slate-200 p-6 md:p-8 rounded-2xl shadow-sm">
-          <h2 class="text-sm font-bold text-slate-900 uppercase tracking-wider mb-2">Contractor & Truck Owner Credits</h2>
-          <p class="mb-6 text-[11px] leading-5 text-slate-500">Contractors spend $1 credits to claim a website lead; truck owners spend $1 credits to apply for a job. Set the price per lead and how (if at all) balances refill automatically.</p>
-
-          <form id="creditSettingsForm" class="space-y-6">
-            <label class="flex items-center justify-between gap-4 rounded-xl border border-amber-200 bg-amber-50/50 p-4">
-              <span><span class="block text-xs font-bold text-slate-900">Enable credit system</span><span class="mt-1 block text-[11px] text-slate-500">Disabled by default. When off, claiming/applying is free and no balance checks happen.</span></span>
-              <input id="creditsEnabled" type="checkbox" class="h-5 w-5 accent-green-600" />
-            </label>
-
-            <div class="grid gap-4 sm:grid-cols-2">
-              <label><span class="mb-2 block text-[10px] font-bold uppercase tracking-wider text-slate-600">Contractor cost per lead claim ($)</span><input id="creditsContractorCost" type="number" min="0" step="1" value="1" class="w-full rounded-xl border border-slate-200 p-3 text-sm" /></label>
-              <label><span class="mb-2 block text-[10px] font-bold uppercase tracking-wider text-slate-600">Truck owner cost per application ($)</span><input id="creditsTruckCost" type="number" min="0" step="1" value="1" class="w-full rounded-xl border border-slate-200 p-3 text-sm" /></label>
-            </div>
-
-            <label class="flex items-center justify-between gap-4 rounded-xl border border-slate-200 bg-slate-50 p-4">
-              <span><span class="block text-xs font-bold text-slate-900">Automatic refill</span><span class="mt-1 block text-[11px] text-slate-500">Applies uniformly to every active contractor and approved truck owner.</span></span>
-              <input id="creditsAutoRefillEnabled" type="checkbox" class="h-5 w-5 accent-green-600" />
-            </label>
-            <div class="grid gap-4 sm:grid-cols-2">
-              <label><span class="mb-2 block text-[10px] font-bold uppercase tracking-wider text-slate-600">Refill amount ($)</span><input id="creditsAutoRefillAmount" type="number" min="0" step="1" value="10" class="w-full rounded-xl border border-slate-200 p-3 text-sm" /></label>
-              <label><span class="mb-2 block text-[10px] font-bold uppercase tracking-wider text-slate-600">Every (days)</span><input id="creditsAutoRefillInterval" type="number" min="1" value="30" class="w-full rounded-xl border border-slate-200 p-3 text-sm" /></label>
-            </div>
-
-            <div class="rounded-xl border border-blue-100 bg-blue-50 p-4 text-[11px] leading-5 text-blue-800"><strong>Manual top-ups:</strong> add or remove credits for a specific contractor or truck owner from their detail page in the admin panel.</div>
-
-            <div class="border-t border-zinc-100 pt-6">
-              <h3 class="mb-2 text-xs font-bold uppercase tracking-wider text-slate-900">Bulk Credit Grant</h3>
-              <p class="mb-4 text-[11px] leading-5 text-slate-500">Add (or remove, with a negative amount) credit to every active contractor, every approved truck owner, or a specific list you pick below. Logged the same way as a manual top-up.</p>
-
-              <div class="grid gap-4 sm:grid-cols-2">
-                <label><span class="mb-2 block text-[10px] font-bold uppercase tracking-wider text-slate-600">Amount ($)</span><input id="bulkCreditAmount" type="number" step="1" placeholder="e.g. 10 or -5" class="w-full rounded-xl border border-slate-200 p-3 text-sm" /></label>
-                <label><span class="mb-2 block text-[10px] font-bold uppercase tracking-wider text-slate-600">Note (optional)</span><input id="bulkCreditNote" type="text" maxlength="200" placeholder="e.g. Launch promo" class="w-full rounded-xl border border-slate-200 p-3 text-sm" /></label>
-              </div>
-
-              <div class="mt-4 flex flex-wrap gap-3">
-                <button id="bulkCreditAllContractors" type="button" class="h-11 rounded-xl bg-slate-950 px-5 text-[11px] font-bold uppercase tracking-wider text-white hover:bg-green-700">Add to all contractors ({creditContractors?.length ?? 0})</button>
-                <button id="bulkCreditAllTruckOwners" type="button" class="h-11 rounded-xl bg-slate-950 px-5 text-[11px] font-bold uppercase tracking-wider text-white hover:bg-green-700">Add to all truck owners ({creditTruckOwners?.length ?? 0})</button>
-              </div>
-
-              <div class="mt-6 rounded-xl border border-slate-200 p-4">
-                <div class="flex items-center justify-between gap-4">
-                  <span class="text-[11px] font-bold uppercase tracking-wider text-slate-700">Or pick specific accounts</span>
-                  <input id="bulkCreditSearch" type="text" placeholder="Search by name…" class="w-48 rounded-lg border border-slate-200 p-2 text-xs" />
-                </div>
-                <div id="bulkCreditAccountList" class="mt-3 max-h-64 space-y-1 overflow-y-auto">
-                  {(creditContractors || []).map((c) => (
-                    <label class="bulk-credit-row flex items-center gap-3 rounded-lg px-2 py-1.5 text-xs hover:bg-slate-50" data-name={`${c.company_name || ''} ${c.contact_name || ''}`.toLowerCase()}>
-                      <input type="checkbox" class="bulk-credit-checkbox h-4 w-4 accent-green-600" data-account-type="contractor" data-account-id={c.user_id} />
-                      <span class="flex-1 truncate">{c.company_name || c.contact_name || 'Unnamed'} <span class="text-slate-400">· contractor · ${c.credit_balance ?? 0}</span></span>
-                    </label>
-                  ))}
-                  {(creditTruckOwners || []).map((t) => (
-                    <label class="bulk-credit-row flex items-center gap-3 rounded-lg px-2 py-1.5 text-xs hover:bg-slate-50" data-name={`${t.company_name || ''} ${t.contact_name || ''}`.toLowerCase()}>
-                      <input type="checkbox" class="bulk-credit-checkbox h-4 w-4 accent-green-600" data-account-type="truck_owner" data-account-id={t.id} />
-                      <span class="flex-1 truncate">{t.company_name || t.contact_name || 'Unnamed'} <span class="text-slate-400">· truck owner · ${t.credit_balance ?? 0}</span></span>
-                    </label>
-                  ))}
-                  {(!creditContractors || creditContractors.length === 0) && (!creditTruckOwners || creditTruckOwners.length === 0) && (
-                    <p class="px-2 py-1.5 text-xs text-slate-400">No active contractors or approved truck owners yet.</p>
-                  )}
-                </div>
-                <div id="bulkCreditPagination" class="mt-2 hidden items-center justify-between gap-3">
-                  <button id="bulkCreditPrevPage" type="button" class="rounded-lg border border-slate-200 px-3 py-1.5 text-[10px] font-bold uppercase tracking-wider text-slate-600 hover:bg-slate-50 disabled:cursor-not-allowed disabled:opacity-40">← Prev</button>
-                  <span id="bulkCreditPageInfo" class="text-[10px] text-slate-500"></span>
-                  <button id="bulkCreditNextPage" type="button" class="rounded-lg border border-slate-200 px-3 py-1.5 text-[10px] font-bold uppercase tracking-wider text-slate-600 hover:bg-slate-50 disabled:cursor-not-allowed disabled:opacity-40">Next →</button>
-                </div>
-                <button id="bulkCreditSelectedBtn" type="button" class="mt-3 h-10 rounded-xl bg-green-600 px-5 text-[11px] font-bold uppercase tracking-wider text-white hover:bg-green-500">Add to selected (<span id="bulkCreditSelectedCount">0</span>)</button>
-              </div>
-
-              <p id="bulkCreditMsg" class="mt-3 text-[11px]"></p>
-            </div>
-
-            <div class="border-t border-zinc-100 pt-6">
-              <h3 class="mb-2 text-xs font-bold uppercase tracking-wider text-slate-900">Permit Lead Marketplace</h3>
-              <p class="mb-4 text-[11px] leading-5 text-slate-500">Lets contractors browse scraped permit leads directly (location + job type only) and pay credit to unlock the owner's contact info — separate from claiming a regular website lead, and not exclusive: multiple contractors may each unlock the same permit lead.</p>
-              <label class="flex items-center justify-between gap-4 rounded-xl border border-amber-200 bg-amber-50/50 p-4">
-                <span><span class="block text-xs font-bold text-slate-900">Enable permit lead unlocking</span><span class="mt-1 block text-[11px] text-slate-500">Disabled by default. Shows a "Permit Leads" tab in the contractor dashboard and a teaser on the registration page.</span></span>
-                <input id="permitUnlockEnabled" type="checkbox" class="h-5 w-5 accent-green-600" />
-              </label>
-              <label class="mt-4 block"><span class="mb-2 block text-[10px] font-bold uppercase tracking-wider text-slate-600">Permit lead unlock cost ($)</span><input id="permitUnlockCost" type="number" min="0" step="1" value="5" class="w-full max-w-xs rounded-xl border border-slate-200 p-3 text-sm" /></label>
-            </div>
-
-            <button id="saveCreditsBtn" type="submit" class="h-12 rounded-xl bg-slate-950 px-7 text-xs font-bold uppercase tracking-wider text-white hover:bg-green-700">Save credit settings</button>
-          </form>
-        </div>
-
-        <!-- OAUTH & INTEGRATIONS -->
         <div id="section-oauth" class="tab-section hidden bg-white border border-slate-200 p-6 md:p-8 rounded-2xl shadow-sm space-y-6">
           <div>
             <h2 class="text-sm font-bold text-slate-900 uppercase tracking-wider mb-2">Google OAuth Configuration</h2>
@@ -553,64 +347,11 @@ const { data: creditTruckOwners } = await (supabaseAdmin ?? supabase)
           <div class="border-t border-slate-100 pt-6">
             <h3 class="text-xs font-bold text-slate-900 uppercase tracking-wider mb-3">Active on portals:</h3>
             <ul class="space-y-2 text-[10px] text-slate-600">
-              <li class="flex items-center gap-2"><span class="w-1.5 h-1.5 rounded-full bg-green-500"></span>Contractor login (/login)</li>
               <li class="flex items-center gap-2"><span class="w-1.5 h-1.5 rounded-full bg-green-500"></span>Admin login (/admin/login)</li>
-              <li class="flex items-center gap-2"><span class="w-1.5 h-1.5 rounded-full bg-green-500"></span>Fleet owner login (/truck-login)</li>
             </ul>
           </div>
-
-          <div class="border-t border-slate-100 pt-6">
-            <h2 class="text-sm font-bold text-slate-900 uppercase tracking-wider mb-2">PayPal Credit Purchases</h2>
-            <p class="mb-6 text-[11px] leading-5 text-slate-500">Lets contractors and truck owners buy their own credit from the Profile tab, instead of only submitting a top-up request. Get credentials from your <a href="https://developer.paypal.com/dashboard/applications" target="_blank" class="text-blue-600 hover:underline">PayPal Developer Dashboard</a>.</p>
-
-            <form id="paypalSettingsForm" class="space-y-4">
-              <label class="flex items-center justify-between gap-4 rounded-xl border border-amber-200 bg-amber-50/50 p-4">
-                <span><span class="block text-xs font-bold text-slate-900">Enable PayPal purchases</span><span class="mt-1 block text-[11px] text-slate-500">Shows the "Buy credit with PayPal" button on both dashboards.</span></span>
-                <input id="paypalEnabled" type="checkbox" class="h-5 w-5 accent-green-600" />
-              </label>
-
-              <div>
-                <label class="mb-2 block text-[10px] font-bold uppercase tracking-wider text-slate-600">Mode</label>
-                <select id="paypalMode" class="w-full max-w-xs rounded-xl border border-slate-200 p-3 text-sm">
-                  <option value="sandbox">Sandbox (test payments, no real money)</option>
-                  <option value="live">Live (real payments)</option>
-                </select>
-              </div>
-
-              <div>
-                <label class="mb-2 block text-[10px] font-bold uppercase tracking-wider text-slate-600">Client ID</label>
-                <input id="paypalClientId" type="text" placeholder="AZ...client-id" class="w-full rounded-xl border border-slate-200 p-3 text-sm font-mono" />
-              </div>
-
-              <div>
-                <label class="mb-2 block text-[10px] font-bold uppercase tracking-wider text-slate-600">Client Secret</label>
-                <input id="paypalClientSecret" type="password" placeholder="Leave blank to keep the current secret" class="w-full rounded-xl border border-slate-200 p-3 text-sm font-mono" />
-                <p class="mt-2 text-[9px] text-amber-700 bg-amber-50 px-3 py-2 rounded-lg">⚠️ Stored in the database, never shown back once saved. Leave blank when just changing other fields.</p>
-              </div>
-
-              <button id="savePaypalBtn" type="submit" class="h-11 rounded-xl bg-slate-950 px-6 text-xs font-bold uppercase tracking-wider text-white hover:bg-green-700 transition-colors">
-                Save PayPal Settings
-              </button>
-              <p id="paypalMsg" class="text-[11px]"></p>
-            </form>
-          </div>
         </div>
 
-        <!-- ACCOUNT SECURITY -->
-        <div id="section-accountSecurity" class="tab-section hidden bg-white border border-slate-200 p-6 md:p-8 rounded-2xl shadow-sm">
-          <h2 class="text-sm font-bold text-slate-900 uppercase tracking-wider mb-2">Account Security</h2>
-          <p class="mb-6 text-[11px] leading-5 text-slate-500">Controls signup for contractors and fleet owners. Customers already use a passwordless email link, so this doesn't apply to them.</p>
-
-          <form id="accountSecurityForm" class="space-y-6">
-            <label class="flex items-center justify-between gap-4 rounded-xl border border-amber-200 bg-amber-50/50 p-4">
-              <span><span class="block text-xs font-bold text-slate-900">Require email verification</span><span class="mt-1 block text-[11px] text-slate-500">Disabled by default. When on, a new contractor/fleet-owner signup must click a confirmation link before their application even reaches your approval queue.</span></span>
-              <input id="emailVerificationRequired" type="checkbox" class="h-5 w-5 accent-green-600" />
-            </label>
-
-            <button id="saveAccountSecurityBtn" type="submit" class="h-12 rounded-xl bg-slate-950 px-7 text-xs font-bold uppercase tracking-wider text-white hover:bg-green-700">Save Account Security</button>
-            <p id="accountSecurityMsg" class="text-[11px]"></p>
-          </form>
-        </div>
       </div>
 
     </div>
@@ -630,24 +371,16 @@ const { data: creditTruckOwners } = await (supabaseAdmin ?? supabase)
   const tabTerritories = document.getElementById('tabBtn-territories');
   const tabTracking = document.getElementById('tabBtn-tracking');
   const tabNotifications = document.getElementById('tabBtn-notifications');
-  const tabExternalLeadRouting = document.getElementById('tabBtn-externalLeadRouting');
   const tabPermit = document.getElementById('tabBtn-permit');
-  const tabTruckOutreach = document.getElementById('tabBtn-truckOutreach');
-  const tabCredits = document.getElementById('tabBtn-credits');
   const tabOAuth = document.getElementById('tabBtn-oauth');
   const secTerritories = document.getElementById('section-territories');
   const secTracking = document.getElementById('section-tracking');
   const secNotifications = document.getElementById('section-notifications');
-  const secExternalLeadRouting = document.getElementById('section-externalLeadRouting');
   const secPermit = document.getElementById('section-permit');
-  const secTruckOutreach = document.getElementById('section-truckOutreach');
-  const secCredits = document.getElementById('section-credits');
   const secOAuth = document.getElementById('section-oauth');
-  const tabAccountSecurity = document.getElementById('tabBtn-accountSecurity');
-  const secAccountSecurity = document.getElementById('section-accountSecurity');
 
-  const allTabs = [tabTerritories, tabTracking, tabNotifications, tabExternalLeadRouting, tabPermit, tabTruckOutreach, tabCredits, tabOAuth, tabAccountSecurity] as HTMLElement[];
-  const allSections = [secTerritories, secTracking, secNotifications, secExternalLeadRouting, secPermit, secTruckOutreach, secCredits, secOAuth, secAccountSecurity] as HTMLElement[];
+  const allTabs = [tabTerritories, tabTracking, tabNotifications, tabPermit, tabOAuth] as HTMLElement[];
+  const allSections = [secTerritories, secTracking, secNotifications, secPermit, secOAuth] as HTMLElement[];
 
   function switchTab(activeTab: HTMLElement, showSec: HTMLElement) {
     allTabs.forEach((tab) => {
@@ -669,27 +402,10 @@ const { data: creditTruckOwners } = await (supabaseAdmin ?? supabase)
   tabTerritories?.addEventListener('click', () => switchTab(tabTerritories, secTerritories!));
   tabTracking?.addEventListener('click', () => switchTab(tabTracking, secTracking!));
   tabNotifications?.addEventListener('click', () => switchTab(tabNotifications, secNotifications!));
-  tabExternalLeadRouting?.addEventListener('click', () => {
-    switchTab(tabExternalLeadRouting, secExternalLeadRouting!);
-    loadExternalLeadRouting();
-  });
   tabPermit?.addEventListener('click', () => switchTab(tabPermit, secPermit!));
-  tabTruckOutreach?.addEventListener('click', () => {
-    switchTab(tabTruckOutreach, secTruckOutreach!);
-    loadTruckOutreach();
-  });
-  tabCredits?.addEventListener('click', () => {
-    switchTab(tabCredits, secCredits!);
-    loadCreditSettings();
-  });
   tabOAuth?.addEventListener('click', () => {
     switchTab(tabOAuth, secOAuth!);
     loadOAuthSettings();
-    loadPaypalSettings();
-  });
-  tabAccountSecurity?.addEventListener('click', () => {
-    switchTab(tabAccountSecurity, secAccountSecurity!);
-    loadAccountSecurity();
   });
 
   function escapeHtml(value: unknown) {
@@ -701,214 +417,6 @@ const { data: creditTruckOwners } = await (supabaseAdmin ?? supabase)
     const token = data.session?.access_token;
     return fetch(url, { ...init, headers: { ...(init.headers || {}), ...(token ? { Authorization: `Bearer ${token}` } : {}) } });
   }
-
-  async function loadTruckOutreach() {
-    const state = document.getElementById('truckOutreachState')!;
-    const response = await adminFetch('/api/truck-outreach/settings');
-    const result = await response.json().catch(() => ({}));
-    if (!response.ok || !result.ok) {
-      state.textContent = 'Migration required';
-      state.className = 'rounded-full bg-amber-50 px-3 py-1.5 text-[9px] font-bold uppercase tracking-wider text-amber-700';
-      return;
-    }
-    const settings = result.settings;
-    (document.getElementById('truckOutreachEnabled') as HTMLInputElement).checked = settings.enabled;
-    (document.getElementById('truckOutreachDailyLimit') as HTMLInputElement).value = settings.daily_limit;
-    (document.getElementById('truckOutreachCooldown') as HTMLInputElement).value = settings.cooldown_days;
-    (document.getElementById('truckOutreachAttempts') as HTMLInputElement).value = settings.max_attempts;
-    (document.getElementById('truckOutreachSubject') as HTMLInputElement).value = settings.subject;
-    (document.getElementById('truckOutreachTemplate') as HTMLTextAreaElement).value = settings.email_template;
-    state.textContent = settings.enabled ? 'Automation enabled' : 'Automation paused';
-    state.className = `rounded-full px-3 py-1.5 text-[9px] font-bold uppercase tracking-wider ${settings.enabled ? 'bg-green-50 text-green-700' : 'bg-slate-100 text-slate-500'}`;
-    const activity = document.getElementById('truckOutreachActivity')!;
-    activity.innerHTML = result.activity?.length ? result.activity.map((row: any) => {
-      const profile = row.unclaimed_truck_directory?.company_name || 'Truck profile';
-      const tone = ['bounced','complained','failed','unsubscribed'].includes(row.status) ? 'text-red-700 bg-red-50' : ['opened','clicked','delivered'].includes(row.status) ? 'text-green-700 bg-green-50' : 'text-blue-700 bg-blue-50';
-      return `<div class="flex flex-col justify-between gap-2 rounded-xl border border-slate-100 p-3 sm:flex-row sm:items-center"><div><strong class="text-xs text-slate-800">${escapeHtml(profile)}</strong><p class="mt-1 text-[10px] text-slate-400">${escapeHtml(row.email)} · ${new Date(row.created_at).toLocaleString()}</p></div><span class="w-fit rounded-full px-2.5 py-1 text-[9px] font-bold uppercase ${tone}">${escapeHtml(row.status)}</span></div>`;
-    }).join('') : '<p class="text-xs text-slate-400">No outreach has been sent yet.</p>';
-  }
-
-  document.getElementById('truckOutreachForm')?.addEventListener('submit', async (event) => {
-    event.preventDefault();
-    const button = document.getElementById('saveTruckOutreach') as HTMLButtonElement;
-    button.disabled = true; button.textContent = 'Saving…';
-    const payload = {
-      enabled: (document.getElementById('truckOutreachEnabled') as HTMLInputElement).checked,
-      daily_limit: Number((document.getElementById('truckOutreachDailyLimit') as HTMLInputElement).value),
-      cooldown_days: Number((document.getElementById('truckOutreachCooldown') as HTMLInputElement).value),
-      max_attempts: Number((document.getElementById('truckOutreachAttempts') as HTMLInputElement).value),
-      subject: (document.getElementById('truckOutreachSubject') as HTMLInputElement).value,
-      email_template: (document.getElementById('truckOutreachTemplate') as HTMLTextAreaElement).value,
-    };
-    const response = await adminFetch('/api/truck-outreach/settings', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) });
-    const result = await response.json().catch(() => ({}));
-    button.textContent = response.ok && result.ok ? 'Saved ✓' : 'Save failed';
-    setTimeout(() => { button.textContent = 'Save outreach settings'; button.disabled = false; }, 1800);
-    if (response.ok) loadTruckOutreach();
-  });
-  document.getElementById('runTruckOutreach')?.addEventListener('click', async () => {
-    if (!confirm('Run one rate-limited outreach batch now? Daily limits and suppression rules still apply.')) return;
-    const button = document.getElementById('runTruckOutreach') as HTMLButtonElement;
-    button.disabled = true; button.textContent = 'Running…';
-    try {
-      const response = await adminFetch('/api/truck-outreach/run', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: '{}',
-      });
-      const responseText = await response.text();
-      let result: any = {};
-      try {
-        result = responseText ? JSON.parse(responseText) : {};
-      } catch {
-        result = {};
-      }
-
-      if (response.ok && result.ok) {
-        const skipped = result.skipped ? ` (${String(result.skipped).replaceAll('_', ' ')})` : '';
-        alert(`Batch complete: ${result.sent || 0} sent, ${result.failed || 0} failed${skipped}.`);
-      } else {
-        const serverMessage = result.detail || result.error;
-        const fallback = responseText && responseText.length < 240 ? responseText : `HTTP ${response.status}`;
-        alert(`Batch failed: ${serverMessage || fallback || 'No response from server'}`);
-      }
-    } catch (error) {
-      alert(`Batch failed: ${error instanceof Error ? error.message : 'Network request failed'}`);
-    } finally {
-      button.disabled = false;
-      button.textContent = 'Run safe batch now';
-      loadTruckOutreach();
-    }
-  });
-  document.getElementById('refreshTruckOutreach')?.addEventListener('click', loadTruckOutreach);
-
-  // --- KREDIT SISTEM ---
-  async function loadCreditSettings() {
-    const response = await adminFetch('/api/credit-settings');
-    const result = await response.json().catch(() => ({}));
-    if (!response.ok || !result.ok || !result.settings) return;
-    const s = result.settings;
-    (document.getElementById('creditsEnabled') as HTMLInputElement).checked = s.enabled;
-    (document.getElementById('creditsContractorCost') as HTMLInputElement).value = s.contractor_lead_cost;
-    (document.getElementById('creditsTruckCost') as HTMLInputElement).value = s.truck_lead_cost;
-    (document.getElementById('creditsAutoRefillEnabled') as HTMLInputElement).checked = s.auto_refill_enabled;
-    (document.getElementById('creditsAutoRefillAmount') as HTMLInputElement).value = s.auto_refill_amount;
-    (document.getElementById('creditsAutoRefillInterval') as HTMLInputElement).value = s.auto_refill_interval_days;
-    (document.getElementById('permitUnlockEnabled') as HTMLInputElement).checked = s.permit_lead_unlock_enabled;
-    (document.getElementById('permitUnlockCost') as HTMLInputElement).value = s.permit_lead_unlock_cost;
-  }
-
-  // --- EXTERNAL LEAD ROUTING (partner site → contractors/truck owners) ---
-  let routingContractors: { user_id: string; company_name: string | null; contact_name: string | null }[] = [];
-  let routingTruckOwners: { id: string; company_name: string | null; contact_name: string | null }[] = [];
-
-  function renderRoutingCheckboxes(container: HTMLElement, items: { id: string; label: string }[], name: string, checkedIds: string[]) {
-    container.innerHTML = items.length
-      ? items.map((item) => `
-        <label class="flex items-center gap-2 text-xs text-slate-700">
-          <input type="checkbox" name="${name}" value="${item.id}" class="h-4 w-4 accent-green-600" ${checkedIds.includes(item.id) ? 'checked' : ''} />
-          ${escapeHtml(item.label)}
-        </label>`).join('')
-      : '<p class="text-xs text-slate-400">None found.</p>';
-  }
-
-  function resetRoutingForm() {
-    (document.getElementById('routingRuleId') as HTMLInputElement).value = '';
-    (document.getElementById('routingDomain') as HTMLInputElement).value = '';
-    (document.getElementById('routingEnabled') as HTMLInputElement).checked = true;
-    renderRoutingCheckboxes(document.getElementById('routingContractorList')!, routingContractors.map((c) => ({ id: c.user_id, label: c.company_name || c.contact_name || c.user_id })), 'routingContractor', []);
-    renderRoutingCheckboxes(document.getElementById('routingTruckOwnerList')!, routingTruckOwners.map((o) => ({ id: o.id, label: o.company_name || o.contact_name || o.id })), 'routingTruckOwner', []);
-    document.getElementById('cancelRoutingEditBtn')?.classList.add('hidden');
-  }
-
-  async function loadExternalLeadRouting() {
-    const response = await adminFetch('/api/external-lead-routing');
-    const result = await response.json().catch(() => ({}));
-    const rulesEl = document.getElementById('externalLeadRoutingRules')!;
-    if (!response.ok || !result.ok) {
-      rulesEl.innerHTML = '<p class="text-xs text-red-600">Could not load routing rules.</p>';
-      return;
-    }
-
-    routingContractors = result.contractors || [];
-    routingTruckOwners = result.truckOwners || [];
-
-    const rules = result.rules || [];
-    rulesEl.innerHTML = rules.length ? rules.map((r: any) => {
-      const contractorNames = (r.contractor_ids || []).map((id: string) => routingContractors.find((c) => c.user_id === id)?.company_name || 'Unknown').join(', ') || '—';
-      const truckOwnerNames = (r.truck_owner_ids || []).map((id: string) => routingTruckOwners.find((o) => o.id === id)?.company_name || 'Unknown').join(', ') || '—';
-      return `
-        <div class="flex flex-col gap-2 rounded-xl border border-slate-200 p-4 sm:flex-row sm:items-center sm:justify-between" data-rule-id="${r.id}">
-          <div class="min-w-0">
-            <p class="text-xs font-bold text-slate-900">${escapeHtml(r.source_domain)} <span class="ml-2 rounded-full px-2 py-0.5 text-[9px] font-bold uppercase ${r.enabled ? 'bg-green-50 text-green-700' : 'bg-slate-100 text-slate-500'}">${r.enabled ? 'Enabled' : 'Disabled'}</span></p>
-            <p class="mt-1 text-[10px] text-slate-400">Contractors: ${escapeHtml(contractorNames)}</p>
-            <p class="text-[10px] text-slate-400">Truck owners: ${escapeHtml(truckOwnerNames)}</p>
-          </div>
-          <div class="flex shrink-0 gap-2">
-            <button class="edit-routing-rule h-8 rounded-lg border border-slate-200 px-3 text-[10px] font-bold uppercase tracking-wider text-slate-600 hover:bg-slate-50" data-rule-id="${r.id}">Edit</button>
-            <button class="delete-routing-rule h-8 rounded-lg border border-red-200 px-3 text-[10px] font-bold uppercase tracking-wider text-red-600 hover:bg-red-50" data-rule-id="${r.id}">Delete</button>
-          </div>
-        </div>`;
-    }).join('') : '<p class="text-xs text-slate-400">No routing rules yet — add one below.</p>';
-
-    resetRoutingForm();
-
-    rulesEl.querySelectorAll<HTMLButtonElement>('.edit-routing-rule').forEach((btn) => {
-      btn.addEventListener('click', () => {
-        const rule = rules.find((r: any) => r.id === btn.dataset.ruleId);
-        if (!rule) return;
-        (document.getElementById('routingRuleId') as HTMLInputElement).value = rule.id;
-        (document.getElementById('routingDomain') as HTMLInputElement).value = rule.source_domain;
-        (document.getElementById('routingEnabled') as HTMLInputElement).checked = rule.enabled;
-        renderRoutingCheckboxes(document.getElementById('routingContractorList')!, routingContractors.map((c) => ({ id: c.user_id, label: c.company_name || c.contact_name || c.user_id })), 'routingContractor', rule.contractor_ids || []);
-        renderRoutingCheckboxes(document.getElementById('routingTruckOwnerList')!, routingTruckOwners.map((o) => ({ id: o.id, label: o.company_name || o.contact_name || o.id })), 'routingTruckOwner', rule.truck_owner_ids || []);
-        document.getElementById('cancelRoutingEditBtn')?.classList.remove('hidden');
-        document.getElementById('routingDomain')?.scrollIntoView({ behavior: 'smooth', block: 'center' });
-      });
-    });
-
-    rulesEl.querySelectorAll<HTMLButtonElement>('.delete-routing-rule').forEach((btn) => {
-      btn.addEventListener('click', async () => {
-        if (!confirm('Delete this routing rule? Contractors/truck owners on this list will stop getting priority leads from this domain.')) return;
-        await adminFetch(`/api/external-lead-routing?id=${btn.dataset.ruleId}`, { method: 'DELETE' });
-        loadExternalLeadRouting();
-      });
-    });
-  }
-
-  document.getElementById('cancelRoutingEditBtn')?.addEventListener('click', resetRoutingForm);
-
-  document.getElementById('externalLeadRoutingForm')?.addEventListener('submit', async (e) => {
-    e.preventDefault();
-    const saveBtn = document.getElementById('saveRoutingBtn') as HTMLButtonElement;
-    saveBtn.disabled = true;
-    saveBtn.textContent = 'Saving...';
-
-    const payload = {
-      source_domain: (document.getElementById('routingDomain') as HTMLInputElement).value.trim(),
-      enabled: (document.getElementById('routingEnabled') as HTMLInputElement).checked,
-      contractor_ids: Array.from(document.querySelectorAll('input[name="routingContractor"]:checked')).map((el) => (el as HTMLInputElement).value),
-      truck_owner_ids: Array.from(document.querySelectorAll('input[name="routingTruckOwner"]:checked')).map((el) => (el as HTMLInputElement).value),
-    };
-
-    const response = await adminFetch('/api/external-lead-routing', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(payload),
-    });
-    const result = await response.json().catch(() => ({}));
-
-    if (!response.ok || !result.ok) {
-      alert(`Error saving routing rule: ${result.error || 'unknown error'}`);
-      saveBtn.textContent = 'Save rule';
-      saveBtn.disabled = false;
-      return;
-    }
-
-    saveBtn.textContent = 'Saved Successfully ✓';
-    setTimeout(() => { saveBtn.textContent = 'Save rule'; saveBtn.disabled = false; }, 2000);
-    loadExternalLeadRouting();
-  });
 
   async function loadOAuthSettings() {
     const form = document.getElementById('oauthSettingsForm') as HTMLFormElement;
@@ -988,213 +496,6 @@ const { data: creditTruckOwners } = await (supabaseAdmin ?? supabase)
     }, 2000);
   });
 
-  async function loadPaypalSettings() {
-    const msg = document.getElementById('paypalMsg')!;
-    const response = await adminFetch('/api/paypal-settings');
-    const result = await response.json().catch(() => ({}));
-    if (!response.ok || !result.ok) {
-      msg.textContent = '⚠️ Could not load PayPal settings (migration required?).';
-      msg.className = 'text-[11px] text-amber-600 mt-2';
-      return;
-    }
-    const s = result.settings || {};
-    (document.getElementById('paypalEnabled') as HTMLInputElement).checked = Boolean(s.paypal_enabled);
-    (document.getElementById('paypalMode') as HTMLSelectElement).value = s.paypal_mode || 'sandbox';
-    (document.getElementById('paypalClientId') as HTMLInputElement).value = s.paypal_client_id || '';
-    (document.getElementById('paypalClientSecret') as HTMLInputElement).value = '';
-    (document.getElementById('paypalClientSecret') as HTMLInputElement).placeholder = s.has_client_secret
-      ? 'Set — leave blank to keep it'
-      : 'Leave blank to keep the current secret';
-    msg.textContent = '';
-  }
-
-  document.getElementById('paypalSettingsForm')?.addEventListener('submit', async (e) => {
-    e.preventDefault();
-    const saveBtn = document.getElementById('savePaypalBtn') as HTMLButtonElement;
-    const msg = document.getElementById('paypalMsg')!;
-    saveBtn.disabled = true;
-    saveBtn.textContent = 'Saving...';
-
-    const payload = {
-      paypal_enabled: (document.getElementById('paypalEnabled') as HTMLInputElement).checked,
-      paypal_mode: (document.getElementById('paypalMode') as HTMLSelectElement).value,
-      paypal_client_id: (document.getElementById('paypalClientId') as HTMLInputElement).value.trim(),
-      paypal_client_secret: (document.getElementById('paypalClientSecret') as HTMLInputElement).value.trim(),
-    };
-
-    const response = await adminFetch('/api/paypal-settings', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(payload),
-    });
-    const result = await response.json().catch(() => ({}));
-    if (response.ok && result.ok) {
-      msg.textContent = '✓ PayPal settings saved.';
-      msg.className = 'text-[11px] text-green-600 mt-2';
-      await loadPaypalSettings();
-    } else {
-      msg.textContent = '❌ ' + (result.error || 'Failed to save PayPal settings.');
-      msg.className = 'text-[11px] text-red-600 mt-2';
-    }
-    saveBtn.disabled = false;
-    saveBtn.textContent = 'Save PayPal Settings';
-  });
-
-  async function loadAccountSecurity() {
-    const msg = document.getElementById('accountSecurityMsg')!;
-    const response = await adminFetch('/api/account-security-settings');
-    const result = await response.json().catch(() => ({}));
-    if (!response.ok || !result.ok) {
-      msg.textContent = '⚠️ Could not load account security settings (migration required?).';
-      msg.className = 'text-[11px] text-amber-600 mt-2';
-      return;
-    }
-    (document.getElementById('emailVerificationRequired') as HTMLInputElement).checked = Boolean(result.settings?.email_verification_required);
-    msg.textContent = '';
-  }
-
-  document.getElementById('accountSecurityForm')?.addEventListener('submit', async (e) => {
-    e.preventDefault();
-    const saveBtn = document.getElementById('saveAccountSecurityBtn') as HTMLButtonElement;
-    const msg = document.getElementById('accountSecurityMsg')!;
-    saveBtn.disabled = true;
-    saveBtn.textContent = 'Saving...';
-
-    const payload = {
-      email_verification_required: (document.getElementById('emailVerificationRequired') as HTMLInputElement).checked,
-    };
-
-    const response = await adminFetch('/api/account-security-settings', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(payload),
-    });
-    const result = await response.json().catch(() => ({}));
-    if (response.ok && result.ok) {
-      msg.textContent = '✓ Account security settings saved.';
-      msg.className = 'text-[11px] text-green-600 mt-2';
-    } else {
-      msg.textContent = '❌ ' + (result.error || 'Failed to save account security settings.');
-      msg.className = 'text-[11px] text-red-600 mt-2';
-    }
-    saveBtn.disabled = false;
-    saveBtn.textContent = 'Save Account Security';
-  });
-
-  document.getElementById('creditSettingsForm')?.addEventListener('submit', async (e) => {
-    e.preventDefault();
-    const saveBtn = document.getElementById('saveCreditsBtn') as HTMLButtonElement;
-    saveBtn.disabled = true;
-    saveBtn.textContent = 'Saving...';
-    const payload = {
-      enabled: (document.getElementById('creditsEnabled') as HTMLInputElement).checked,
-      contractor_lead_cost: Number((document.getElementById('creditsContractorCost') as HTMLInputElement).value || 0),
-      truck_lead_cost: Number((document.getElementById('creditsTruckCost') as HTMLInputElement).value || 0),
-      auto_refill_enabled: (document.getElementById('creditsAutoRefillEnabled') as HTMLInputElement).checked,
-      auto_refill_amount: Number((document.getElementById('creditsAutoRefillAmount') as HTMLInputElement).value || 0),
-      auto_refill_interval_days: Number((document.getElementById('creditsAutoRefillInterval') as HTMLInputElement).value || 30),
-      permit_lead_unlock_enabled: (document.getElementById('permitUnlockEnabled') as HTMLInputElement).checked,
-      permit_lead_unlock_cost: Number((document.getElementById('permitUnlockCost') as HTMLInputElement).value || 0),
-    };
-    const response = await adminFetch('/api/credit-settings', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(payload),
-    });
-    const result = await response.json().catch(() => ({}));
-    saveBtn.textContent = response.ok && result.ok ? 'Saved ✓' : 'Save failed';
-    setTimeout(() => { saveBtn.textContent = 'Save credit settings'; saveBtn.disabled = false; }, 1800);
-  });
-
-  // --- BULK CREDIT GRANT ---
-  const bulkCreditMsg = document.getElementById('bulkCreditMsg')!;
-  const bulkCreditCheckboxes = Array.from(document.querySelectorAll<HTMLInputElement>('.bulk-credit-checkbox'));
-  const bulkCreditSelectedCount = document.getElementById('bulkCreditSelectedCount')!;
-
-  function updateBulkCreditSelectedCount() {
-    bulkCreditSelectedCount.textContent = String(bulkCreditCheckboxes.filter((cb) => cb.checked).length);
-  }
-  bulkCreditCheckboxes.forEach((cb) => cb.addEventListener('change', updateBulkCreditSelectedCount));
-
-  // --- Paginacija liste naloga (10 po strani), primenjena NAKON pretrage ---
-  const BULK_CREDIT_PAGE_SIZE = 10;
-  const allBulkCreditRows = Array.from(document.querySelectorAll<HTMLElement>('.bulk-credit-row'));
-  let bulkCreditPage = 0;
-
-  function renderBulkCreditPage() {
-    const q = (document.getElementById('bulkCreditSearch') as HTMLInputElement)?.value.trim().toLowerCase() || '';
-    const matching = allBulkCreditRows.filter((row) => !q || (row.dataset.name || '').includes(q));
-    const totalPages = Math.max(1, Math.ceil(matching.length / BULK_CREDIT_PAGE_SIZE));
-    bulkCreditPage = Math.min(bulkCreditPage, totalPages - 1);
-    const start = bulkCreditPage * BULK_CREDIT_PAGE_SIZE;
-    const visible = new Set(matching.slice(start, start + BULK_CREDIT_PAGE_SIZE));
-
-    allBulkCreditRows.forEach((row) => { row.style.display = matching.includes(row) && visible.has(row) ? '' : 'none'; });
-
-    const pagination = document.getElementById('bulkCreditPagination')!;
-    pagination.classList.toggle('hidden', matching.length <= BULK_CREDIT_PAGE_SIZE);
-    pagination.classList.toggle('flex', matching.length > BULK_CREDIT_PAGE_SIZE);
-    document.getElementById('bulkCreditPageInfo')!.textContent = `Page ${bulkCreditPage + 1} of ${totalPages} (${matching.length} match${matching.length === 1 ? '' : 'es'})`;
-    (document.getElementById('bulkCreditPrevPage') as HTMLButtonElement).disabled = bulkCreditPage === 0;
-    (document.getElementById('bulkCreditNextPage') as HTMLButtonElement).disabled = bulkCreditPage >= totalPages - 1;
-  }
-
-  document.getElementById('bulkCreditSearch')?.addEventListener('input', () => {
-    bulkCreditPage = 0;
-    renderBulkCreditPage();
-  });
-  document.getElementById('bulkCreditPrevPage')?.addEventListener('click', () => { bulkCreditPage--; renderBulkCreditPage(); });
-  document.getElementById('bulkCreditNextPage')?.addEventListener('click', () => { bulkCreditPage++; renderBulkCreditPage(); });
-  renderBulkCreditPage();
-
-  async function runBulkCreditGrant(target: 'all_contractors' | 'all_truck_owners' | 'selected', accounts?: { accountType: string; accountId: string }[]) {
-    const amount = Number((document.getElementById('bulkCreditAmount') as HTMLInputElement).value);
-    if (!amount) {
-      bulkCreditMsg.textContent = 'Enter a non-zero amount first.';
-      bulkCreditMsg.className = 'mt-3 text-[11px] text-red-600';
-      return;
-    }
-    const note = (document.getElementById('bulkCreditNote') as HTMLInputElement).value.trim();
-    const count = target === 'selected' ? (accounts?.length || 0) : null;
-    const confirmMsg = target === 'selected'
-      ? `Add $${amount} credit to ${count} selected account${count === 1 ? '' : 's'}?`
-      : `Add $${amount} credit to ${target === 'all_contractors' ? 'ALL active contractors' : 'ALL approved truck owners'}?`;
-    if (!confirm(confirmMsg)) return;
-
-    bulkCreditMsg.textContent = 'Applying...';
-    bulkCreditMsg.className = 'mt-3 text-[11px] text-slate-500';
-
-    const response = await adminFetch('/api/credit-bulk-adjust', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ target, accounts, amount, note: note || undefined }),
-    });
-    const result = await response.json().catch(() => ({}));
-    if (response.ok && result.ok) {
-      bulkCreditMsg.textContent = `✅ Updated ${result.updated}/${result.total} account${result.total === 1 ? '' : 's'}.` + (result.failed ? ` ${result.failed} failed.` : '');
-      bulkCreditMsg.className = 'mt-3 text-[11px] text-green-700';
-      setTimeout(() => window.location.reload(), 1200);
-    } else {
-      bulkCreditMsg.textContent = '❌ ' + (result.error || 'Failed to apply bulk credit.');
-      bulkCreditMsg.className = 'mt-3 text-[11px] text-red-600';
-    }
-  }
-
-  document.getElementById('bulkCreditAllContractors')?.addEventListener('click', () => runBulkCreditGrant('all_contractors'));
-  document.getElementById('bulkCreditAllTruckOwners')?.addEventListener('click', () => runBulkCreditGrant('all_truck_owners'));
-  document.getElementById('bulkCreditSelectedBtn')?.addEventListener('click', () => {
-    const accounts = bulkCreditCheckboxes
-      .filter((cb) => cb.checked)
-      .map((cb) => ({ accountType: cb.dataset.accountType!, accountId: cb.dataset.accountId! }));
-    if (accounts.length === 0) {
-      bulkCreditMsg.textContent = 'Select at least one account.';
-      bulkCreditMsg.className = 'mt-3 text-[11px] text-red-600';
-      return;
-    }
-    runBulkCreditGrant('selected', accounts);
-  });
-
-  // --- ČUVANJE NOTIFIKACIONIH EMAIL ADRESA ---
   document.getElementById('notificationsForm')?.addEventListener('submit', async (e) => {
     e.preventDefault();
     const saveNotifBtn = document.getElementById('saveNotificationsBtn') as HTMLButtonElement;
@@ -1267,8 +568,6 @@ const { data: creditTruckOwners } = await (supabaseAdmin ?? supabase)
       externalAutoPublish: (document.getElementById('externalAutoPublish') as HTMLInputElement).checked,
       externalAutoPublishDomains: (document.getElementById('externalAutoPublishDomains') as HTMLTextAreaElement).value.split(',').map((value) => value.trim()).filter(Boolean),
       externalMinQualityScore: Number((document.getElementById('externalMinQualityScore') as HTMLInputElement).value || 70),
-      notifyContractorsOnPublish: (document.getElementById('notifyContractorsOnPublish') as HTMLInputElement).checked,
-      notifyTruckOwnersOnPublish: (document.getElementById('notifyTruckOwnersOnPublish') as HTMLInputElement).checked,
       permitManualPublishRequiresConfirmation: (document.getElementById('permitManualPublishRequiresConfirmation') as HTMLInputElement).checked,
       permitMaxEmailAttempts: Number((document.getElementById('permitMaxEmailAttempts') as HTMLInputElement).value || 3),
       permitDailyEmailLimit: Number((document.getElementById('permitDailyEmailLimit') as HTMLInputElement).value || 10),

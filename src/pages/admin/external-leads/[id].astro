@@ -322,7 +322,7 @@ const extraFiltered = lead.extra
   document.getElementById('confirmMoveBtn')?.addEventListener('click', async () => {
     const county = (document.getElementById('moveCountySelect') as HTMLSelectElement).value;
     if (!county) { alert('Please select a territory first.'); return; }
-    if (!confirm('Publish this lead to contractors in Website Leads?')) return;
+    if (!confirm('Publish this lead to Website Leads?')) return;
 
     const btn = document.getElementById('confirmMoveBtn') as HTMLButtonElement;
     btn.disabled = true;

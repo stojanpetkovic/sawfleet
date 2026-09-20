@@ -9,7 +9,7 @@ export function GET() {
     <loc>${baseUrl}/sitemap-main.xml</loc>
   </sitemap>
   <sitemap>
-    <loc>${baseUrl}/sitemap-trucks.xml</loc>
+    <loc>${baseUrl}/sitemap-contractors.xml</loc>
   </sitemap>
   <sitemap>
     <loc>${baseUrl}/sitemap-blog.xml</loc>

@@ -1,10 +1,9 @@
 ---
 import {
   House,
-  Trees,
-  CirclePlus,
-  MapPinned,
-  MessageSquareWarning
+  ScrollText,
+  Building2,
+  BookOpen
 } from "lucide-astro";
 const currentPath = Astro.url.pathname;
 ---
@@ -21,44 +20,37 @@ const currentPath = Astro.url.pathname;
       </span>
     </a>
 
-    <!-- Services -->
-    <a href="/services" aria-current={currentPath === '/services' ? 'page' : undefined} class={`flex flex-col items-center justify-center w-12 h-full transition-colors duration-200 group ${currentPath === '/services' ? 'text-green-700' : 'text-slate-400 hover:text-slate-900'}`}>
-      <Trees size={20} strokeWidth={1.75} />
-      <span class="mt-1 text-[9px] font-mono uppercase tracking-wider">
-        Services
-      </span>
-    </a>
-
     <!-- Centralno Dugme -->
     <div class="absolute left-1/2 bottom-5 -translate-x-1/2 z-50">
       <a
-        href="#quote"
+        href="/permit-leads"
+        aria-current={currentPath === '/permit-leads' ? 'page' : undefined}
         class="flex h-14 w-14 items-center justify-center rounded-full border border-green-600/20 bg-white shadow-soft-lg transition-all duration-300 hover:scale-105 hover:border-green-600/40 active:scale-95 group"
-        aria-label="Request Quote"
+        aria-label="Permit Leads"
       >
-        <CirclePlus
-          size={26}
-          strokeWidth={1.5}
-          class="text-green-600 transition-transform duration-300 group-hover:rotate-90"
+        <ScrollText
+          size={24}
+          strokeWidth={1.75}
+          class="text-green-600"
         />
       </a>
     </div>
 
     <div class="w-14 h-full pointer-events-none" aria-hidden="true"></div>
 
-    <!-- Areas -->
-    <a href="/service-areas" aria-current={currentPath === '/service-areas' ? 'page' : undefined} class={`flex flex-col items-center justify-center w-12 h-full transition-colors duration-200 group ${currentPath === '/service-areas' ? 'text-green-700' : 'text-slate-400 hover:text-slate-900'}`}>
-      <MapPinned size={20} strokeWidth={1.75} />
+    <!-- Contractors -->
+    <a href="/contractors" aria-current={currentPath === '/contractors' ? 'page' : undefined} class={`flex flex-col items-center justify-center w-12 h-full transition-colors duration-200 group ${currentPath === '/contractors' ? 'text-green-700' : 'text-slate-400 hover:text-slate-900'}`}>
+      <Building2 size={20} strokeWidth={1.75} />
       <span class="mt-1 text-[9px] font-mono uppercase tracking-wider">
-        Areas
+        Directory
       </span>
     </a>
 
-    <!-- Support / Žalbe -->
-    <a href="/support" aria-current={currentPath === '/support' ? 'page' : undefined} class={`flex flex-col items-center justify-center w-12 h-full transition-colors duration-200 group ${currentPath === '/support' ? 'text-green-700' : 'text-slate-400 hover:text-slate-900'}`}>
-      <MessageSquareWarning size={20} strokeWidth={1.75} />
+    <!-- Blog -->
+    <a href="/blog" aria-current={currentPath === '/blog' ? 'page' : undefined} class={`flex flex-col items-center justify-center w-12 h-full transition-colors duration-200 group ${currentPath === '/blog' ? 'text-green-700' : 'text-slate-400 hover:text-slate-900'}`}>
+      <BookOpen size={20} strokeWidth={1.75} />
       <span class="mt-1 text-[9px] font-mono uppercase tracking-wider">
-        Support
+        Blog
       </span>
     </a>
 

@@ -35,7 +35,7 @@ import { Activity, CheckCircle2, CircleGauge, Clock3, Layers3, Printer, Target }
     <section class="space-y-6">
       <div class="flex items-end justify-between gap-4"><div><p class="text-[10px] font-bold uppercase tracking-[0.22em] text-green-700">Executive overview</p><h2 class="mt-1 text-lg font-bold text-slate-900">Service lead performance</h2></div><span id="service-period-label" class="text-[10px] font-mono text-slate-400">Selected period</span></div>
 
-      <div class="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-5">
+      <div class="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4">
         <article class="kpi-card kpi-card-primary">
           <div class="flex items-start justify-between"><span class="kpi-icon bg-slate-900 text-white"><Layers3 size={17} /></span><span class="kpi-label">Demand</span></div>
           <h2 id="kpi-demand" class="kpi-value">-</h2><p class="kpi-name">Total lead volume</p>
@@ -55,11 +55,6 @@ import { Activity, CheckCircle2, CircleGauge, Clock3, Layers3, Printer, Target }
           <div class="flex items-start justify-between"><span class="kpi-icon bg-amber-100 text-amber-700"><Clock3 size={17} /></span><span class="kpi-label text-amber-700">Pipeline</span></div>
           <h2 id="kpi-open" class="kpi-value">-</h2><p class="kpi-name">Open opportunities</p>
           <div class="kpi-trend text-slate-400">Awaiting a final outcome</div>
-        </article>
-        <article class="kpi-card">
-          <div class="flex items-start justify-between"><span class="kpi-icon bg-violet-100 text-violet-700"><CircleGauge size={17} /></span><span class="kpi-label text-violet-700">Supply</span></div>
-          <h2 id="kpi-readiness" class="kpi-value">-</h2><p class="kpi-name">Network readiness</p>
-          <div class="kpi-trend text-slate-400">Approved resources ÷ roster</div>
         </article>
       </div>
 
@@ -143,20 +138,15 @@ import { Activity, CheckCircle2, CircleGauge, Clock3, Layers3, Printer, Target }
     </section>
 
     <!-- ============================================================ -->
-    <!-- SECTION 2: MARKETPLACE ENGAGEMENT -->
+    <!-- SECTION 2: FRONTEND ACQUISITION -->
     <!-- ============================================================ -->
     <section class="space-y-6 pt-6 border-t border-slate-200">
-      <div><p class="text-[10px] font-bold uppercase tracking-[0.22em] text-blue-700">Marketplace health</p><h2 class="mt-1 text-lg font-bold text-slate-900">Contractor & truck engagement</h2><p class="mt-1 text-xs text-slate-500">How quickly and consistently the supply network responds to available leads.</p></div>
+      <div><p class="text-[10px] font-bold uppercase tracking-[0.22em] text-blue-700">Demand quality</p><h2 class="mt-1 text-lg font-bold text-slate-900">Frontend acquisition & operations</h2><p class="mt-1 text-xs text-slate-500">Where leads come from and how quickly they are resolved.</p></div>
 
-      <div class="grid grid-cols-2 gap-3 md:grid-cols-4 xl:grid-cols-8">
-        <div class="metric-tile"><span>Claim rate</span><strong id="eng-claim-rate">-</strong><small>contractor outcomes</small></div>
+      <div class="grid grid-cols-1 gap-3 sm:grid-cols-3">
+        <div class="metric-tile"><span>Claim rate</span><strong id="eng-claim-rate">-</strong><small>lead outcomes</small></div>
         <div class="metric-tile"><span>Avg. claim time</span><strong id="eng-claim-time">-</strong><small>publish → claim</small></div>
-        <div class="metric-tile"><span>Active contractors</span><strong id="eng-contractors">-</strong><small>claimed ≥ 1 lead</small></div>
         <div class="metric-tile metric-alert"><span>Unclaimed 24h+</span><strong id="eng-aged">-</strong><small>requires attention</small></div>
-        <div class="metric-tile"><span>Truck applications</span><strong id="eng-truck-apps">-</strong><small>selected period</small></div>
-        <div class="metric-tile"><span>Acceptance rate</span><strong id="eng-truck-rate">-</strong><small>accepted applications</small></div>
-        <div class="metric-tile"><span>Active owners</span><strong id="eng-owners">-</strong><small>applied ≥ 1 time</small></div>
-        <div class="metric-tile"><span>Apps / lead</span><strong id="eng-apps-lead">-</strong><small>truck competition</small></div>
       </div>
 
       <div class="grid grid-cols-1 gap-6 xl:grid-cols-5">
@@ -186,28 +176,6 @@ import { Activity, CheckCircle2, CircleGauge, Clock3, Layers3, Printer, Target }
           <div class="flex items-center justify-between"><div><p class="text-[9px] font-bold uppercase tracking-[0.2em] text-violet-700">Meta campaign efficiency</p><h3 id="meta-efficiency" class="mt-3 text-3xl font-bold tabular-nums text-slate-950">-</h3></div><span class="rounded-xl bg-violet-600 px-3 py-2 text-xs font-bold text-white">Meta</span></div>
           <div class="mt-5 grid grid-cols-3 gap-3 border-t border-violet-100 pt-4 text-center"><div><strong id="meta-leads" class="block tabular-nums text-slate-900">-</strong><small class="text-[9px] text-slate-500">Leads</small></div><div><strong id="meta-claimed" class="block tabular-nums text-slate-900">-</strong><small class="text-[9px] text-slate-500">Claimed</small></div><div><strong id="meta-campaigns" class="block tabular-nums text-slate-900">-</strong><small class="text-[9px] text-slate-500">Campaigns</small></div></div>
         </article>
-      </div>
-
-      <!-- Credit revenue + expenses KPIs -->
-      <div class="flex flex-col justify-between gap-2 sm:flex-row sm:items-end">
-        <div>
-          <p class="text-[10px] font-bold uppercase tracking-[0.22em] text-emerald-700">Money in / money out</p>
-          <h3 class="mt-1 text-base font-bold text-slate-900">Credits & expenses</h3>
-          <p class="mt-1 text-xs text-slate-500">$1 = 1 credit. Full ledger and expense entry live on the Finances page.</p>
-        </div>
-        <a href="/admin/finances" class="shrink-0 text-[10px] font-bold uppercase tracking-wider text-green-700 hover:text-green-800">Manage on Finances page →</a>
-      </div>
-      <div class="grid grid-cols-2 gap-4 sm:grid-cols-5">
-        <div class="metric-tile"><span>Credit revenue (period)</span><strong id="credit-revenue-period">$-</strong><small>Lead claims &amp; job applications</small></div>
-        <div class="metric-tile"><span>Refills / top-ups (period)</span><strong id="credit-refills-period">$-</strong><small>Auto-refill + manual top-ups</small></div>
-        <div class="metric-tile"><span>Expenses (period)</span><strong id="expenses-period-total">$-</strong><small>Meta, Google &amp; other ad spend</small></div>
-        <div class="metric-tile"><span>Net (period)</span><strong id="net-period-total">$-</strong><small>Revenue minus expenses</small></div>
-        <div class="metric-tile"><span>Outstanding balance</span><strong id="credit-outstanding-balance">$-</strong><small>Across all contractors &amp; truck owners</small></div>
-      </div>
-
-      <div class="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm md:p-7">
-        <div><h3 class="text-sm font-bold text-slate-900">Engagement funnel</h3><p class="mt-1 text-[10px] text-slate-400">Lead availability, contractor claims and truck-owner response</p></div>
-        <div class="mt-5 min-h-[240px]"><canvas id="engagementChart"></canvas></div>
       </div>
     </section>
 
@@ -262,47 +230,6 @@ import { Activity, CheckCircle2, CircleGauge, Clock3, Layers3, Printer, Target }
           <div class="relative w-full flex-1 min-h-[220px] flex items-center justify-center">
             <canvas id="extFormChart"></canvas>
           </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- ============================================================ -->
-    <!-- SECTION 4: NETWORK — Contractors / Truck Owners / Trucks -->
-    <!-- ============================================================ -->
-    <section class="space-y-6 pt-6 border-t border-slate-200">
-      <div><p class="text-[10px] font-bold uppercase tracking-[0.22em] text-violet-700">Supply health</p><h2 class="mt-1 text-lg font-bold text-slate-900">Network capacity</h2><p class="mt-1 text-xs text-slate-500">Current roster; independent of the date filter.</p></div>
-
-      <div class="grid grid-cols-1 md:grid-cols-3 gap-6 w-full">
-        <div class="bg-white border border-slate-200 p-6 rounded-2xl shadow-sm print:break-inside-avoid">
-          <p class="text-[10px] font-bold uppercase tracking-[0.2em] text-zinc-500 mb-4">Contractors</p>
-          <div class="grid grid-cols-3 gap-3 text-center">
-            <div><h3 id="net-contractors-total" class="text-xl font-mono font-bold text-slate-900">-</h3><p class="text-[9px] text-zinc-400 uppercase mt-1">Total</p></div>
-            <div><h3 id="net-contractors-active" class="text-xl font-mono font-bold text-green-700">-</h3><p class="text-[9px] text-zinc-400 uppercase mt-1">Active</p></div>
-            <div><h3 id="net-contractors-pending" class="text-xl font-mono font-bold text-amber-600">-</h3><p class="text-[9px] text-zinc-400 uppercase mt-1">Pending</p></div>
-          </div>
-        </div>
-        <div class="bg-white border border-slate-200 p-6 rounded-2xl shadow-sm print:break-inside-avoid">
-          <p class="text-[10px] font-bold uppercase tracking-[0.2em] text-zinc-500 mb-4">Truck Owners</p>
-          <div class="grid grid-cols-3 gap-3 text-center">
-            <div><h3 id="net-owners-total" class="text-xl font-mono font-bold text-slate-900">-</h3><p class="text-[9px] text-zinc-400 uppercase mt-1">Total</p></div>
-            <div><h3 id="net-owners-approved" class="text-xl font-mono font-bold text-green-700">-</h3><p class="text-[9px] text-zinc-400 uppercase mt-1">Approved</p></div>
-            <div><h3 id="net-owners-pending" class="text-xl font-mono font-bold text-amber-600">-</h3><p class="text-[9px] text-zinc-400 uppercase mt-1">Pending</p></div>
-          </div>
-        </div>
-        <div class="bg-white border border-slate-200 p-6 rounded-2xl shadow-sm print:break-inside-avoid">
-          <p class="text-[10px] font-bold uppercase tracking-[0.2em] text-zinc-500 mb-4">Grapple Saw Trucks</p>
-          <div class="grid grid-cols-3 gap-3 text-center">
-            <div><h3 id="net-trucks-total" class="text-xl font-mono font-bold text-slate-900">-</h3><p class="text-[9px] text-zinc-400 uppercase mt-1">Total</p></div>
-            <div><h3 id="net-trucks-approved" class="text-xl font-mono font-bold text-green-700">-</h3><p class="text-[9px] text-zinc-400 uppercase mt-1">Approved</p></div>
-            <div><h3 id="net-trucks-pending" class="text-xl font-mono font-bold text-amber-600">-</h3><p class="text-[9px] text-zinc-400 uppercase mt-1">Pending</p></div>
-          </div>
-        </div>
-      </div>
-
-      <div class="bg-white border border-slate-200 p-6 md:p-8 rounded-2xl shadow-sm print:break-inside-avoid">
-        <h3 class="text-[10px] font-bold uppercase tracking-[0.2em] text-zinc-500 mb-6">Network Status Breakdown</h3>
-        <div class="relative w-full min-h-[220px]">
-          <canvas id="networkChart"></canvas>
         </div>
       </div>
     </section>
@@ -369,8 +296,6 @@ import { Activity, CheckCircle2, CircleGauge, Clock3, Layers3, Printer, Target }
   let extLineChart: any = null;
   let extSiteChart: any = null;
   let extFormChart: any = null;
-  let engagementChart: any = null;
-  let networkChart: any = null;
 
   function dateLabels(days: number) {
     const labels: string[] = [];
@@ -453,7 +378,7 @@ import { Activity, CheckCircle2, CircleGauge, Clock3, Layers3, Printer, Target }
     document.getElementById('service-period-label')!.textContent = `Last ${days} days`;
 
     // ================= SERVICE LEADS =================
-    const { data: leads, error: leadsError } = await supabase.from('leads').select('id, created_at, status, source, claimed_at, contractor_id, origin_type, published_at').gte('created_at', previousIso);
+    const { data: leads, error: leadsError } = await supabase.from('leads').select('id, created_at, status, source, claimed_at, origin_type, published_at').gte('created_at', previousIso);
     if (leadsError) console.error('Analytics leads query failed:', leadsError.message);
     const { data: leadAttribution } = await supabase.from('leads').select('id,extra').gte('created_at', previousIso);
     const attributionByLead = new Map((leadAttribution || []).map((row: any) => [row.id, row.extra]));
@@ -641,13 +566,7 @@ import { Activity, CheckCircle2, CircleGauge, Clock3, Layers3, Printer, Target }
         ? territoryRows.map(([territory, values]) => `<tr class="border-b border-slate-50 text-xs"><td class="py-3 font-medium text-slate-700">${escapeHtml(territory)}</td><td class="py-3 text-right tabular-nums">${values.sent}</td><td class="py-3 text-right tabular-nums">${values.delivered}</td><td class="py-3 text-right tabular-nums">${values.clicked}</td><td class="py-3 text-right font-bold tabular-nums text-green-700">${values.converted}</td><td class="py-3 text-right font-bold tabular-nums ${values.issues ? 'text-red-600' : 'text-slate-400'}">${values.issues}</td></tr>`).join('')
         : '<tr><td colspan="6" class="py-8 text-center text-xs text-slate-400">No permit outreach data for this period yet.</td></tr>';
 
-    // ================= MARKETPLACE ENGAGEMENT =================
-    const { data: truckApplications } = await supabase
-      .from('truck_lead_applications')
-      .select('lead_id, truck_owner_id, status, created_at, updated_at')
-      .gte('created_at', previousIso);
-    const allTruckApplications = truckApplications || [];
-    const truckApps = allTruckApplications.filter((row: any) => new Date(row.created_at) >= date);
+    // ================= FRONTEND ACQUISITION & OPERATIONS =================
     const eligibleLeads = leadRows.filter((lead: any) => ['approved', 'claimed'].includes(lead.status));
     const claimedLeads = leadRows.filter((lead: any) => lead.status === 'claimed');
     const claimDurations = claimedLeads
@@ -658,21 +577,10 @@ import { Activity, CheckCircle2, CircleGauge, Clock3, Layers3, Printer, Target }
     const agedUnclaimed = leadRows.filter((lead: any) =>
       lead.status === 'approved' && Date.now() - new Date(lead.published_at || lead.created_at).getTime() >= 24 * 3600000
     );
-    const activeContractors = new Set(claimedLeads.map((lead: any) => lead.contractor_id).filter(Boolean)).size;
-    const activeOwners = new Set(truckApps.map((application: any) => application.truck_owner_id).filter(Boolean)).size;
-    const acceptedTruckApps = truckApps.filter((application: any) => application.status === 'accepted').length;
-    const consideredTruckApps = truckApps.filter((application: any) => application.status !== 'withdrawn').length;
-    const leadsWithTruckApps = new Set(truckApps.map((application: any) => application.lead_id).filter(Boolean));
-    const truckEligibleWithoutApps = eligibleLeads.filter((lead: any) => !leadsWithTruckApps.has(lead.id));
 
     setText('eng-claim-rate', `${rate(claimedLeads.length, eligibleLeads.length).toFixed(1)}%`);
     setText('eng-claim-time', claimDurations.length ? (averageClaimHours < 24 ? `${averageClaimHours.toFixed(1)}h` : `${(averageClaimHours / 24).toFixed(1)}d`) : '—');
-    setText('eng-contractors', activeContractors.toString());
     setText('eng-aged', agedUnclaimed.length.toString());
-    setText('eng-truck-apps', truckApps.length.toString());
-    setText('eng-truck-rate', `${rate(acceptedTruckApps, consideredTruckApps).toFixed(1)}%`);
-    setText('eng-owners', activeOwners.toString());
-    setText('eng-apps-lead', leadsWithTruckApps.size ? (truckApps.length / leadsWithTruckApps.size).toFixed(1) : '0.0');
 
     const websiteLeads = leadRows.filter((lead: any) => lead.origin_type === 'website' || lead.source === 'website');
     const attributedWebsiteLeads = websiteLeads.filter((lead: any) => {
@@ -738,32 +646,13 @@ import { Activity, CheckCircle2, CircleGauge, Clock3, Layers3, Printer, Target }
 
     const insights = [
       { count: agedUnclaimed.length, label: 'leads have been available for more than 24 hours', tone: agedUnclaimed.length ? 'amber' : 'green' },
-      { count: truckEligibleWithoutApps.length, label: 'available leads have no truck-owner application', tone: truckEligibleWithoutApps.length ? 'amber' : 'green' },
-      { count: eligibleLeads.length - claimedLeads.length, label: 'available leads remain unclaimed by contractors', tone: eligibleLeads.length > claimedLeads.length ? 'blue' : 'green' },
+      { count: eligibleLeads.length - claimedLeads.length, label: 'available leads remain unclaimed', tone: eligibleLeads.length > claimedLeads.length ? 'blue' : 'green' },
     ];
     const insightsElement = document.getElementById('engagement-insights');
     if (insightsElement) insightsElement.innerHTML = insights.map((item) => {
       const colors: Record<string, string> = { amber: 'bg-amber-50 text-amber-700 border-amber-100', blue: 'bg-blue-50 text-blue-700 border-blue-100', green: 'bg-green-50 text-green-700 border-green-100' };
       return `<div class="flex items-start gap-3 rounded-xl border p-3 ${colors[item.tone]}"><strong class="text-lg tabular-nums">${item.count}</strong><span class="pt-0.5 text-[10px] leading-4">${item.label}</span></div>`;
     }).join('');
-
-    const engagementCtx = document.getElementById('engagementChart') as HTMLCanvasElement;
-    if (engagementChart) engagementChart.destroy();
-    engagementChart = new Chart(engagementCtx, {
-      type: 'bar',
-      data: {
-        labels: ['Available leads', 'Contractor claims', 'Truck applications', 'Accepted truck apps'],
-        datasets: [{ label: 'Activity', data: [eligibleLeads.length, claimedLeads.length, truckApps.length, acceptedTruckApps], backgroundColor: ['#2563EB', '#16A34A', '#7C3AED', '#0D9488'], borderRadius: 7, maxBarThickness: 72 }],
-      },
-      options: {
-        responsive: true, maintainAspectRatio: false,
-        plugins: { legend: { display: false }, tooltip: TOOLTIP },
-        scales: {
-          y: { beginAtZero: true, ticks: { color: AXIS_TEXT, stepSize: 1, font: { family: 'monospace', size: 10 } }, grid: { color: GRID_COLOR }, border: { display: false } },
-          x: { ticks: { color: '#475569', font: { family: 'monospace', size: 10 } }, grid: { display: false }, border: { display: false } },
-        },
-      },
-    });
 
     // ================= EXTERNAL LEADS =================
     const { data: extAll } = await supabase.from('external_leads').select('created_at, status, source_domain, form_type, extra, website_lead_id').gte('created_at', previousIso);
@@ -823,27 +712,6 @@ import { Activity, CheckCircle2, CircleGauge, Clock3, Layers3, Printer, Target }
       options: { responsive: true, maintainAspectRatio: false, cutout: '72%', plugins: { legend: { position: 'bottom', labels: LEGEND_LABELS }, tooltip: TOOLTIP } },
     });
 
-    // ================= NETWORK (current roster, ne zavisi od date filtera) =================
-    const { data: contractors } = await supabase.from('contractors').select('status');
-    const { data: owners } = await supabase.from('truck_owners').select('status');
-    const { data: trucks } = await supabase.from('grapple_saw_trucks').select('approval_status');
-
-    const contractorRows = contractors || [];
-    const ownerRows = owners || [];
-    const truckRows = trucks || [];
-
-    const cActive = contractorRows.filter((c: any) => c.status === 'active').length;
-    const cPending = contractorRows.filter((c: any) => !c.status || c.status === 'pending').length;
-    const cRejected = contractorRows.filter((c: any) => c.status === 'rejected').length;
-
-    const oApproved = ownerRows.filter((o: any) => o.status === 'approved').length;
-    const oPending = ownerRows.filter((o: any) => !o.status || o.status === 'pending').length;
-    const oRejected = ownerRows.filter((o: any) => o.status === 'rejected').length;
-
-    const tApproved = truckRows.filter((t: any) => t.approval_status === 'approved').length;
-    const tPending = truckRows.filter((t: any) => !t.approval_status || t.approval_status === 'pending').length;
-    const tRejected = truckRows.filter((t: any) => t.approval_status === 'rejected').length;
-
     // ================= EXECUTIVE KPI LAYER =================
     const previousClaimed = previousLeadRows.filter((lead: any) => lead.status === 'claimed').length;
     const previousConversion = rate(previousClaimed, previousLeadRows.length);
@@ -854,13 +722,9 @@ import { Activity, CheckCircle2, CircleGauge, Clock3, Layers3, Printer, Target }
     const openPipeline = openService + openExternal;
     const closedPipeline = claimedCount + extRows.filter((lead: any) => ['approved', 'published', 'rejected'].includes(lead.status)).length;
     const closedRate = rate(closedPipeline, currentDemand);
-    const networkTotal = contractorRows.length + ownerRows.length + truckRows.length;
-    const networkApproved = cActive + oApproved + tApproved;
-    const readiness = rate(networkApproved, networkTotal);
 
     setText('kpi-demand', currentDemand.toString());
     setText('kpi-open', openPipeline.toString());
-    setText('kpi-readiness', `${readiness.toFixed(1)}%`);
     setText('kpi-daily', (currentDemand / days).toFixed(1));
     setText('pipeline-closed-rate', `${closedRate.toFixed(1)}%`);
     const pipelineProgress = document.getElementById('pipeline-progress');
@@ -891,82 +755,14 @@ import { Activity, CheckCircle2, CircleGauge, Clock3, Layers3, Printer, Target }
       }
     }
 
-    document.getElementById('net-contractors-total')!.textContent = contractorRows.length.toString();
-    document.getElementById('net-contractors-active')!.textContent = cActive.toString();
-    document.getElementById('net-contractors-pending')!.textContent = cPending.toString();
-
-    document.getElementById('net-owners-total')!.textContent = ownerRows.length.toString();
-    document.getElementById('net-owners-approved')!.textContent = oApproved.toString();
-    document.getElementById('net-owners-pending')!.textContent = oPending.toString();
-
-    document.getElementById('net-trucks-total')!.textContent = truckRows.length.toString();
-    document.getElementById('net-trucks-approved')!.textContent = tApproved.toString();
-    document.getElementById('net-trucks-pending')!.textContent = tPending.toString();
-
-    const networkCtx = document.getElementById('networkChart') as HTMLCanvasElement;
-    if (networkChart) networkChart.destroy();
-    networkChart = new Chart(networkCtx, {
-      type: 'bar',
-      data: {
-        labels: ['Contractors', 'Truck Owners', 'Trucks'],
-        datasets: [
-          { label: 'Approved', data: [cActive, oApproved, tApproved], backgroundColor: '#16A34A', borderRadius: 6 },
-          { label: 'Pending', data: [cPending, oPending, tPending], backgroundColor: '#D97706', borderRadius: 6 },
-          { label: 'Rejected', data: [cRejected, oRejected, tRejected], backgroundColor: '#DC2626', borderRadius: 6 },
-        ],
-      },
-      options: {
-        responsive: true, maintainAspectRatio: false,
-        plugins: { legend: { position: 'bottom', labels: LEGEND_LABELS }, tooltip: TOOLTIP },
-        scales: {
-          y: { beginAtZero: true, ticks: { color: AXIS_TEXT, stepSize: 1, font: { family: 'monospace', size: 10 } }, grid: { color: GRID_COLOR }, border: { display: false } },
-          x: { ticks: { color: '#334155', font: { family: 'monospace', size: 10, weight: 'bold' } }, grid: { display: false }, border: { display: false } },
-        },
-      },
-    });
-
-    // ================= CREDITS (revenue / refills / outstanding) =================
-    const { data: creditTxPeriod } = await supabase.from('credit_transactions').select('amount, reason').gte('created_at', sinceIso);
-    const revenuePeriod = (creditTxPeriod || []).filter((r: any) => ['lead_claim', 'truck_apply'].includes(r.reason)).reduce((sum: number, r: any) => sum + Math.abs(Number(r.amount || 0)), 0);
-    const refillsPeriod = (creditTxPeriod || []).filter((r: any) => ['admin_topup', 'auto_refill'].includes(r.reason)).reduce((sum: number, r: any) => sum + Number(r.amount || 0), 0);
-    const [{ data: creditContractors }, { data: creditOwners }] = await Promise.all([
-      supabase.from('contractors').select('credit_balance'),
-      supabase.from('truck_owners').select('credit_balance'),
-    ]);
-    const outstanding = (creditContractors || []).reduce((sum: number, c: any) => sum + Number(c.credit_balance || 0), 0)
-      + (creditOwners || []).reduce((sum: number, o: any) => sum + Number(o.credit_balance || 0), 0);
-    lastKnownCreditRevenue = revenuePeriod;
-    setText('credit-revenue-period', `$${revenuePeriod.toLocaleString()}`);
-    setText('credit-refills-period', `$${refillsPeriod.toLocaleString()}`);
-    setText('credit-outstanding-balance', `$${outstanding.toLocaleString()}`);
   }
 
   document.getElementById('analyticsFilter')?.addEventListener('change', async (e) => {
     const days = (e.target as HTMLSelectElement).value;
     await updateAnalytics(days);
-    await loadExpensesKpi(days);
   });
 
   document.addEventListener('DOMContentLoaded', async () => {
     await updateAnalytics('30');
-    await loadExpensesKpi('30');
   });
-
-  // Read-only KPI pull from expenses (full add/delete UI lives on /admin/finances)
-  let lastKnownCreditRevenue = 0;
-  async function loadExpensesKpi(daysStr: string) {
-    const date = new Date();
-    date.setDate(date.getDate() - parseInt(daysStr));
-    const from = date.toISOString().slice(0, 10);
-    try {
-      const { data: { session } } = await supabase.auth.getSession();
-      const res = await fetch(`/api/expenses?from=${from}`, { headers: { Authorization: `Bearer ${session?.access_token}` } });
-      const result = await res.json().catch(() => ({}));
-      const total = result.ok ? (result.expenses || []).reduce((sum: number, r: any) => sum + Number(r.amount || 0), 0) : 0;
-      setText('expenses-period-total', `$${total.toLocaleString()}`);
-      setText('net-period-total', `$${(lastKnownCreditRevenue - total).toLocaleString()}`);
-    } catch {
-      setText('expenses-period-total', '$0');
-    }
-  }
 </script>

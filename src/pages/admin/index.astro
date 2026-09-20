@@ -10,7 +10,7 @@ import AdminLayout from "../../layouts/AdminLayout.astro";
       <div>
         <span class="text-[10px] font-mono font-bold uppercase tracking-[0.22em] text-green-700">// Command center</span>
         <h1 class="mt-2 text-2xl font-bold tracking-tight text-slate-950 sm:text-3xl">Platform overview</h1>
-        <p class="mt-2 text-sm text-slate-500">Live operational snapshot across leads, contractors and fleet inventory.</p>
+        <p class="mt-2 text-sm text-slate-500">Live operational snapshot across leads and inquiries.</p>
       </div>
       <a href="/admin/analytics" class="inline-flex h-11 items-center justify-center rounded-xl border border-slate-200 bg-white px-4 text-[10px] font-bold uppercase tracking-[0.16em] text-slate-600 shadow-sm transition hover:border-slate-300 hover:text-slate-950">View analytics →</a>
     </div>
@@ -21,7 +21,7 @@ import AdminLayout from "../../layouts/AdminLayout.astro";
     <div class="flex-1 space-y-8 min-w-0 w-full">
 
       <!-- NEEDS ATTENTION — uvek vidljivo, ne zavisi od hover-a (bitno za mobilne) -->
-      <div id="attentionBar" class="hidden grid-cols-2 lg:grid-cols-4 gap-3">
+      <div id="attentionBar" class="hidden grid-cols-2 gap-3">
         <a href="/admin/service-leads?status=new" class="flex flex-col items-center justify-center gap-1 p-4 rounded-2xl border border-green-200 bg-green-50 hover:bg-green-100 transition-colors">
           <span id="attn-leads" class="text-2xl font-mono font-bold text-green-700">0</span>
           <span class="text-[9px] font-bold uppercase tracking-[0.15em] text-green-700/70 text-center">New Leads</span>
@@ -30,18 +30,10 @@ import AdminLayout from "../../layouts/AdminLayout.astro";
           <span id="attn-external" class="text-2xl font-mono font-bold text-teal-700">0</span>
           <span class="text-[9px] font-bold uppercase tracking-[0.15em] text-teal-700/70 text-center">New External Leads</span>
         </a>
-        <a href="/admin/contractors" class="flex flex-col items-center justify-center gap-1 p-4 rounded-2xl border border-blue-200 bg-blue-50 hover:bg-blue-100 transition-colors">
-          <span id="attn-contractors" class="text-2xl font-mono font-bold text-blue-600">0</span>
-          <span class="text-[9px] font-bold uppercase tracking-[0.15em] text-blue-600/70 text-center">Pending Contractors</span>
-        </a>
-        <a href="/admin/grapple-saw-trucks" class="flex flex-col items-center justify-center gap-1 p-4 rounded-2xl border border-purple-200 bg-purple-50 hover:bg-purple-100 transition-colors">
-          <span id="attn-trucks" class="text-2xl font-mono font-bold text-purple-600">0</span>
-          <span class="text-[9px] font-bold uppercase tracking-[0.15em] text-purple-600/70 text-center">Pending Assets</span>
-        </a>
       </div>
       
       <!-- STATISTIKA: KONSOLIDOVANA -->
-      <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-6 w-full">
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6 w-full">
         
         <!-- Karta 1: Leads Summary -->
         <div class="bg-white border border-slate-200 rounded-2xl p-6 flex flex-col w-full shadow-sm transition hover:-translate-y-0.5 hover:shadow-md">
@@ -109,59 +101,6 @@ import AdminLayout from "../../layouts/AdminLayout.astro";
           </div>
         </div>
 
-        <!-- Karta 3: Contractors Summary -->
-        <div class="bg-white border border-slate-200 rounded-2xl p-6 flex flex-col w-full shadow-sm transition hover:-translate-y-0.5 hover:shadow-md">
-          <div class="flex items-center justify-between pb-4 border-b border-zinc-100">
-            <p class="text-[9px] font-bold uppercase tracking-[0.2em] text-zinc-500">Contractors</p>
-            <a href="/admin/contractors" class="rounded-full border border-zinc-200 px-2.5 py-1 text-[9px] uppercase tracking-[0.1em] text-zinc-500 hover:text-slate-900 hover:border-zinc-300 transition-colors">Manage →</a>
-          </div>
-          
-          <div class="py-5 text-center border-b border-zinc-100">
-            <h2 id="count-c-total" class="text-4xl font-mono font-bold text-slate-900">-</h2>
-          </div>
-          
-          <div class="grid grid-cols-3 gap-2 pt-4">
-            <div class="text-center">
-              <p class="text-[7px] text-zinc-400 uppercase font-bold tracking-widest mb-2">Pending</p>
-              <p id="count-c-pending" class="text-xl font-mono font-bold text-zinc-700">-</p>
-            </div>
-            <div class="text-center">
-              <p class="text-[7px] text-zinc-400 uppercase font-bold tracking-widest mb-2">Active</p>
-              <p id="count-c-active" class="text-xl font-mono font-bold text-green-700">-</p>
-            </div>
-            <div class="text-center">
-              <p class="text-[7px] text-zinc-400 uppercase font-bold tracking-widest mb-2">Rejected</p>
-              <p id="count-c-rejected" class="text-xl font-mono font-bold text-red-600">-</p>
-            </div>
-          </div>
-        </div>
-
-        <!-- Karta 4: Trucks Summary -->
-        <div class="bg-white border border-slate-200 rounded-2xl p-6 flex flex-col w-full shadow-sm transition hover:-translate-y-0.5 hover:shadow-md">
-          <div class="flex items-center justify-between pb-4 border-b border-zinc-100">
-            <p class="text-[9px] font-bold uppercase tracking-[0.2em] text-zinc-500">Trucks</p>
-            <a href="/admin/grapple-saw-trucks" class="rounded-full border border-zinc-200 px-2.5 py-1 text-[9px] uppercase tracking-[0.1em] text-zinc-500 hover:text-slate-900 hover:border-zinc-300 transition-colors">Manage →</a>
-          </div>
-          
-          <div class="py-5 text-center border-b border-zinc-100">
-            <h2 id="count-t-total" class="text-4xl font-mono font-bold text-slate-900">-</h2>
-          </div>
-          
-          <div class="grid grid-cols-3 gap-2 pt-4">
-            <div class="text-center">
-              <p class="text-[7px] text-zinc-400 uppercase font-bold tracking-widest mb-2">Pending</p>
-              <p id="count-t-pending" class="text-xl font-mono font-bold text-zinc-700">-</p>
-            </div>
-            <div class="text-center">
-              <p class="text-[7px] text-zinc-400 uppercase font-bold tracking-widest mb-2">Approved</p>
-              <p id="count-t-approved" class="text-xl font-mono font-bold text-green-700">-</p>
-            </div>
-            <div class="text-center">
-              <p class="text-[7px] text-zinc-400 uppercase font-bold tracking-widest mb-2">Rejected</p>
-              <p id="count-t-rejected" class="text-xl font-mono font-bold text-red-600">-</p>
-            </div>
-          </div>
-        </div>
       </div>
 
       <!-- SEKCIJA: LEADS LISTA -->
@@ -200,76 +139,10 @@ import AdminLayout from "../../layouts/AdminLayout.astro";
         </div>
       </div>
 
-      <!-- SEKCIJA: CONTRACTORS LISTA -->
-      <div class="bg-white border border-zinc-100 rounded-2xl overflow-hidden">
-        <div class="p-5 border-b border-zinc-100 flex items-center justify-between">
-          <h3 class="text-[10px] font-bold uppercase tracking-[0.2em] text-slate-900">Recent Contractors</h3>
-          <a href="/admin/contractors" class="text-[9px] uppercase tracking-widest text-zinc-400 hover:text-slate-900 transition-colors">View all →</a>
-        </div>
-        <div id="contractorsTable" class="p-3 space-y-2">
-          <div class="p-6 text-center text-zinc-400 text-sm">Loading...</div>
-        </div>
-      </div>
-
-      <!-- SEKCIJA: CUSTOMERS LISTA -->
-      <div class="bg-white border border-zinc-100 rounded-2xl overflow-hidden">
-        <div class="p-5 border-b border-zinc-100 flex items-center justify-between">
-          <div>
-            <h3 class="text-[10px] font-bold uppercase tracking-[0.2em] text-slate-900">Recent Customers</h3>
-            <p class="mt-1 text-[10px] text-slate-400">Customers with accounts and service history</p>
-          </div>
-          <a href="/admin/customers" class="text-[9px] uppercase tracking-widest text-zinc-400 hover:text-slate-900 transition-colors">View all →</a>
-        </div>
-        <div id="customersTable" class="p-3 space-y-2">
-          <div class="p-6 text-center text-zinc-400 text-sm">Loading...</div>
-        </div>
-      </div>
-
-      <!-- SEKCIJA TRUCKS LISTA -->
-      <div class="bg-white border border-zinc-100 rounded-2xl overflow-hidden">
-        <div class="p-5 border-b border-zinc-100 flex items-center justify-between">
-          <h3 class="text-[10px] font-bold uppercase tracking-[0.2em] text-slate-900">Recent Trucks</h3>
-          <a href="/admin/grapple-saw-trucks" class="text-[9px] uppercase tracking-widest text-zinc-400 hover:text-slate-900 transition-colors">View all →</a>
-        </div>
-        <div id="trucksTable" class="p-3 space-y-2">
-          <div class="p-6 text-center text-zinc-400 text-sm">Loading...</div>
-        </div>
-      </div>
-
     </div>
 
     <!-- DESNA STRANA: Activity Sidebar -->
     <div class="w-full xl:w-[400px] shrink-0 mt-8 xl:mt-0 space-y-6">
-
-      <!-- Credits & Payments -->
-      <div class="bg-white border border-zinc-100 rounded-2xl w-full">
-        <div class="p-6 border-b border-zinc-100 flex items-center justify-between">
-          <div>
-            <h3 class="text-[10px] font-bold uppercase tracking-[0.2em] text-slate-900">Credits & Payments</h3>
-            <p class="mt-1 text-[10px] text-zinc-400">$1 = 1 credit</p>
-          </div>
-          <a href="/admin/finances" class="shrink-0 text-[9px] font-bold uppercase tracking-wider text-green-700 hover:text-green-800">View ledger →</a>
-        </div>
-        <div class="p-6 space-y-5">
-          <div class="grid grid-cols-2 gap-4">
-            <div>
-              <p class="text-[9px] font-bold uppercase tracking-[0.15em] text-zinc-400">Outstanding balance</p>
-              <p id="creditsOutstandingBalance" class="mt-1 text-2xl font-mono font-bold text-slate-900">$-</p>
-            </div>
-            <div>
-              <p class="text-[9px] font-bold uppercase tracking-[0.15em] text-zinc-400">Lifetime revenue</p>
-              <p id="creditsLifetimeRevenue" class="mt-1 text-2xl font-mono font-bold text-green-700">$-</p>
-            </div>
-          </div>
-
-          <div>
-            <p class="text-[9px] font-bold uppercase tracking-[0.15em] text-zinc-400 mb-3">Recent transactions</p>
-            <div id="creditsRecentTx" class="space-y-3">
-              <div class="text-[11px] font-mono text-zinc-500">Loading...</div>
-            </div>
-          </div>
-        </div>
-      </div>
 
       <div class="bg-white border border-zinc-100 rounded-2xl sticky top-8 w-full">
         <div class="p-6 border-b border-zinc-100">
@@ -289,22 +162,6 @@ import AdminLayout from "../../layouts/AdminLayout.astro";
           <div class="w-full">
             <h4 class="text-[9px] uppercase tracking-[0.2em] text-zinc-400 mb-6 border-b border-zinc-100/50 pb-2">Permit Log</h4>
             <div id="permitLogsContainer" class="space-y-6">
-              <div class="text-[11px] font-mono text-zinc-500">Loading logs...</div>
-            </div>
-          </div>
-
-          <!-- Contractors Activity -->
-          <div class="w-full">
-            <h4 class="text-[9px] uppercase tracking-[0.2em] text-zinc-400 mb-6 border-b border-zinc-100/50 pb-2">Contractors Log</h4>
-            <div id="contractorLogsContainer" class="space-y-6">
-              <div class="text-[11px] font-mono text-zinc-500">Loading logs...</div>
-            </div>
-          </div>
-
-          <!-- Trucks Activity -->
-          <div class="w-full">
-            <h4 class="text-[9px] uppercase tracking-[0.2em] text-zinc-400 mb-6 border-b border-zinc-100/50 pb-2">Trucks Log</h4>
-            <div id="truckLogsContainer" class="space-y-6">
               <div class="text-[11px] font-mono text-zinc-500">Loading logs...</div>
             </div>
           </div>
@@ -457,83 +314,9 @@ import AdminLayout from "../../layouts/AdminLayout.astro";
       }).join('') : '<div class="p-8 text-center text-sm text-slate-400">No external leads received yet.</div>';
     }
 
-    // === 4. KONTRAKTORI ===
-    const { data: contractors } = await supabase.from('contractors').select('*').order('created_at', { ascending: false });
-    if (contractors) {
-      document.getElementById('count-c-total')!.textContent = contractors.length.toString();
-      document.getElementById('count-c-active')!.textContent = contractors.filter(c => c.status === 'active').length.toString();
-      document.getElementById('count-c-pending')!.textContent = contractors.filter(c => c.status === 'pending').length.toString();
-      document.getElementById('count-c-rejected')!.textContent = contractors.filter(c => c.status === 'rejected').length.toString();
-      document.getElementById('attn-contractors')!.textContent = contractors.filter(c => c.status === 'pending').length.toString();
-      
-      document.getElementById('contractorsTable')!.innerHTML = contractors.slice(0, 3).map(c => {
-        const statusStyles: Record<string, string> = {
-          active: 'bg-green-500/10 text-green-700 border-green-500/20',
-          rejected: 'bg-red-500/10 text-red-600 border-red-500/20',
-        };
-        const statusClass = statusStyles[c.status] || 'bg-amber-500/10 text-amber-600 border-amber-500/20';
-        return `
-        <div class="flex items-center gap-3 p-3 rounded-xl hover:bg-zinc-100/50 transition-colors cursor-pointer" onclick="window.location.href='/admin/contractors/${c.id}'">
-          <div class="w-9 h-9 rounded-full bg-zinc-100 border border-zinc-200 flex items-center justify-center shrink-0 text-[10px] font-bold text-zinc-600">${(c.company_name || '?').slice(0, 2).toUpperCase()}</div>
-          <div class="min-w-0 flex-1">
-            <p class="text-[13px] font-bold text-slate-900 truncate">${c.company_name || 'N/A'}</p>
-            <p class="text-[10px] text-zinc-500 font-mono truncate">${c.territory || 'N/A'} · ${new Date(c.created_at).toLocaleDateString()}</p>
-          </div>
-          <span class="shrink-0 px-2 py-0.5 rounded-full text-[9px] font-bold uppercase border tracking-wide ${statusClass}">${c.status || 'pending'}</span>
-        </div>
-      `}).join('');
-    }
-
-    // === 5. CUSTOMERS ===
-    const { data: customers } = await supabase.from('customers').select('id, email, full_name, phone, last_seen_at, created_at, leads(id)').order('created_at', { ascending: false });
-    if (customers) {
-      document.getElementById('customersTable')!.innerHTML = customers.slice(0, 3).map((c: any) => {
-        const leadCount = c.leads?.length || 0;
-        return `
-        <div class="flex items-center gap-3 p-3 rounded-xl hover:bg-zinc-100/50 transition-colors cursor-pointer" onclick="window.location.href='/admin/customers/${c.id}'">
-          <div class="w-9 h-9 rounded-full bg-blue-100 border border-blue-200 flex items-center justify-center shrink-0 text-[10px] font-bold text-blue-700">${(c.full_name || c.email).charAt(0).toUpperCase()}</div>
-          <div class="min-w-0 flex-1">
-            <p class="text-[13px] font-bold text-slate-900 truncate">${c.full_name || 'N/A'}</p>
-            <p class="text-[10px] text-zinc-500 font-mono truncate">${c.email} · ${leadCount} request${leadCount === 1 ? '' : 's'}</p>
-          </div>
-          <span class="shrink-0 px-2 py-0.5 rounded-full text-[9px] font-bold uppercase border bg-blue-50 text-blue-700 border-blue-200">${leadCount}</span>
-        </div>
-      `}).join('');
-    }
-
-    // === 6. KAMIONI ===
-    const { data: trucks } = await supabase.from('grapple_saw_trucks').select('*').order('created_at', { ascending: false });
-    if (trucks) {
-      document.getElementById('count-t-total')!.textContent = trucks.length.toString();
-      document.getElementById('count-t-approved')!.textContent = trucks.filter(t => t.approval_status === 'approved').length.toString();
-      document.getElementById('count-t-pending')!.textContent = trucks.filter(t => t.approval_status === 'pending' || !t.approval_status).length.toString();
-      document.getElementById('count-t-rejected')!.textContent = trucks.filter(t => t.approval_status === 'rejected').length.toString();
-      document.getElementById('attn-trucks')!.textContent = trucks.filter(t => t.approval_status === 'pending' || !t.approval_status).length.toString();
-      
-      document.getElementById('trucksTable')!.innerHTML = trucks.slice(0, 3).map(t => {
-        const appStatus = t.approval_status || 'pending';
-        const appBadge = appStatus === 'approved' ? 'bg-green-500/10 text-green-700 border-green-500/20' :
-                         appStatus === 'rejected' ? 'bg-red-500/10 text-red-600 border-red-500/20' :
-                         'bg-amber-500/10 text-amber-600 border-amber-500/20';
-        return `
-        <div class="flex items-center gap-3 p-3 rounded-xl hover:bg-zinc-100/50 transition-colors cursor-pointer" onclick="window.location.href='/admin/grapple-saw-trucks/${t.id}'">
-          <div class="w-9 h-9 rounded-full bg-zinc-100 border border-zinc-200 flex items-center justify-center shrink-0">
-            <svg class="w-4 h-4 text-zinc-500" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M8 17h8m-8 0a2 2 0 11-4 0 2 2 0 014 0zm8 0a2 2 0 104 0 2 2 0 00-4 0zM3 17V7a1 1 0 011-1h9l4 4v7M3 10h13"/></svg>
-          </div>
-          <div class="min-w-0 flex-1">
-            <p class="text-[13px] font-bold text-slate-900 truncate">${t.equipment_type || 'N/A'}</p>
-            <p class="text-[10px] text-zinc-500 font-mono truncate">${t.lift_capacity_tons ? t.lift_capacity_tons + ' tons · ' : ''}${new Date(t.created_at).toLocaleDateString()}</p>
-          </div>
-          <span class="shrink-0 px-2 py-0.5 rounded-full text-[9px] font-bold uppercase border tracking-wide ${appBadge}">${appStatus}</span>
-        </div>
-      `}).join('');
-    }
-
     // === PRIKAŽI "NEEDS ATTENTION" SAMO AKO IMA NEČEG DA SE ODOBRI ===
     const attnTotal = (leads?.filter(l => !l.status || l.status === 'new').length || 0)
-      + (externalLeads?.filter(lead => lead.status === 'new').length || 0)
-      + (contractors?.filter(c => c.status === 'pending').length || 0)
-      + (trucks?.filter(t => t.approval_status === 'pending' || !t.approval_status).length || 0);
+      + (externalLeads?.filter(lead => lead.status === 'new').length || 0);
     const attentionBar = document.getElementById('attentionBar')!;
     attentionBar.classList.toggle('hidden', attnTotal === 0);
     attentionBar.classList.toggle('grid', attnTotal > 0);
@@ -554,70 +337,7 @@ import AdminLayout from "../../layouts/AdminLayout.astro";
       permitLogContainer.innerHTML = permitOnlyLogs.length > 0 ? permitOnlyLogs.map(log => generateProLogHtml(log.leads?.email || 'Permit Lead', log.action || 'Permit activity', log.user_email || log.changed_by || 'Permit automation', log.created_at)).join('') : '<div class="text-[10px] text-zinc-500 italic">No permit activity yet.</div>';
     }
 
-    const { data: contractorLogs } = await supabase.from('contractor_logs').select('*, contractors(company_name)').order('created_at', { ascending: false }).limit(limitLogs);
-    const clContainer = document.getElementById('contractorLogsContainer');
-    if (clContainer && contractorLogs) {
-      clContainer.innerHTML = contractorLogs.length > 0 ? contractorLogs.map(log => generateProLogHtml(log.contractors?.company_name || 'Unknown Contractor', log.action || log.status || 'Updated', log.user_email || log.changed_by || 'Stojan M.', log.created_at)).join('') : '<div class="text-[10px] text-zinc-500 italic">No recent activity.</div>';
-    }
-
-    const { data: truckLogs } = await supabase.from('truck_logs').select('*, grapple_saw_trucks(equipment_type)').order('created_at', { ascending: false }).limit(limitLogs);
-    const tlContainer = document.getElementById('truckLogsContainer');
-    if (tlContainer && truckLogs) {
-      tlContainer.innerHTML = truckLogs.length > 0 ? truckLogs.map(log => generateProLogHtml(log.grapple_saw_trucks?.equipment_type || 'Unknown Truck', log.action || 'Updated', log.user_email || log.changed_by || 'Stojan M.', log.created_at)).join('') : '<div class="text-[10px] text-zinc-500 italic">No recent activity.</div>';
-    }
-  }
-
-  async function loadCreditsCard() {
-    const [{ data: contractors }, { data: owners }, { data: tx }] = await Promise.all([
-      supabase.from('contractors').select('user_id, company_name, credit_balance'),
-      supabase.from('truck_owners').select('id, company_name, credit_balance'),
-      supabase.from('credit_transactions').select('*').order('created_at', { ascending: false }).limit(8),
-    ]);
-
-    const outstanding = (contractors || []).reduce((sum, c) => sum + Number(c.credit_balance || 0), 0)
-      + (owners || []).reduce((sum, o) => sum + Number(o.credit_balance || 0), 0);
-    const balanceEl = document.getElementById('creditsOutstandingBalance');
-    if (balanceEl) balanceEl.textContent = `$${outstanding.toLocaleString()}`;
-
-    const { data: spentRows } = await supabase
-      .from('credit_transactions')
-      .select('amount')
-      .in('reason', ['lead_claim', 'truck_apply']);
-    const revenue = (spentRows || []).reduce((sum, r) => sum + Math.abs(Number(r.amount || 0)), 0);
-    const revenueEl = document.getElementById('creditsLifetimeRevenue');
-    if (revenueEl) revenueEl.textContent = `$${revenue.toLocaleString()}`;
-
-    const namesByContractor = new Map((contractors || []).map((c) => [c.user_id, c.company_name]));
-    const namesByOwner = new Map((owners || []).map((o) => [o.id, o.company_name]));
-
-    const txContainer = document.getElementById('creditsRecentTx');
-    if (txContainer) {
-      if (!tx || tx.length === 0) {
-        txContainer.innerHTML = '<div class="text-[11px] text-zinc-400 italic">No credit activity yet.</div>';
-      } else {
-        txContainer.innerHTML = tx.map((row: any) => {
-          const name = row.account_type === 'contractor'
-            ? (namesByContractor.get(row.account_id) || 'Contractor')
-            : (namesByOwner.get(row.account_id) || 'Truck owner');
-          const positive = Number(row.amount) > 0;
-          const reasonLabel: Record<string, string> = {
-            lead_claim: 'Lead claim', truck_apply: 'Job application', admin_topup: 'Admin top-up',
-            admin_adjust: 'Admin adjustment', auto_refill: 'Auto-refill', purchase: 'Purchase',
-          };
-          return `
-            <div class="flex items-center justify-between gap-2">
-              <div class="min-w-0">
-                <p class="text-[11px] font-bold text-slate-900 truncate">${escapeHtml(name)}</p>
-                <p class="text-[9px] text-zinc-400">${reasonLabel[row.reason] || row.reason} · ${timeAgo(row.created_at)}</p>
-              </div>
-              <span class="shrink-0 text-[11px] font-mono font-bold ${positive ? 'text-green-700' : 'text-red-600'}">${positive ? '+' : ''}$${row.amount}</span>
-            </div>
-          `;
-        }).join('');
-      }
-    }
   }
 
   window.addEventListener('DOMContentLoaded', loadData);
-  window.addEventListener('DOMContentLoaded', loadCreditsCard);
 </script>

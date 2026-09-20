@@ -1,6 +1,4 @@
 import { supabaseAdmin } from "./supabaseAdmin";
-import { getPermitAutomationSettings } from "./permitData";
-import { runNotify } from "../pages/api/notify-new-lead";
 
 export type PublishOrigin = "website" | "external" | "permit_dispatch";
 
@@ -94,21 +92,5 @@ export async function publishWebsiteLead(input: PublishLeadInput) {
     changed_by: input.originType === "website" ? "website_form" : "dispatch_workflow",
   }]);
 
-  const settings = await getPermitAutomationSettings();
-  let notification: any = null;
-  if (makeAvailable && (settings.notifyContractorsOnPublish || settings.notifyTruckOwnersOnPublish)) {
-    notification = await runNotify(county, input.details || "", input.siteUrl, {
-      notifyContractors: settings.notifyContractorsOnPublish,
-      notifyTruckOwners: settings.notifyTruckOwnersOnPublish,
-    });
-    const contractorCount = notification.body?.contractors_matched_active_with_email || 0;
-    const truckOwnerCount = notification.body?.truck_owners_matched_approved_with_email || 0;
-    await supabaseAdmin.from("lead_logs").insert([{
-      lead_id: lead.id,
-      action: `Availability notification sent to ${contractorCount} contractors and ${truckOwnerCount} truck owners`,
-      changed_by: "lead_publisher",
-    }]);
-  }
-
-  return { lead, created: true, notification };
+  return { lead, created: true };
 }

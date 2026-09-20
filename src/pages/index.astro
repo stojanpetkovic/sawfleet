@@ -4,15 +4,9 @@ import MainLayout from "../layouts/MainLayout.astro";
 import Header from "../components/layout/Header.astro";
 import MobileNav from "../components/layout/MobileNav.astro";
 import Footer from "../components/layout/Footer.astro";
-import FormDisclaimer from "../components/FormDisclaimer.astro";
 import { supabase } from "../lib/supabase";
-import { House, BriefcaseBusiness, Truck, ArrowRight, MapPin, Trees, Scissors, CircleDotDashed, LandPlot, ShieldCheck, ClipboardCheck, HardHat, Landmark } from "lucide-astro";
-
-// 1. Učitavamo teritorije iz baze za formu
-const { data: territories } = await supabase
-  .from('service_territories')
-  .select('*')
-  .order('name', { ascending: true });
+import { supabaseAdmin } from "../lib/supabaseAdmin";
+import { ArrowRight, Calendar, Eye, Mail, MapPin, Phone, ScrollText, Star } from "lucide-astro";
 
 // Poslednja 4 objavljena blog posta za izdvojenu sekciju na dnu strane
 const { data: featuredPosts } = await supabase
@@ -21,296 +15,141 @@ const { data: featuredPosts } = await supabase
   .eq('status', 'published')
   .order('published_at', { ascending: false })
   .limit(4);
+
+// Homepage teaser: nekoliko najnovijih kvalifikovanih permit leadova, sa
+// punim kontaktom. permit_leads nema javnu RLS politiku, pa SSR upit koristi
+// service role da je zaobiđe (isti obrazac kao /permit-leads).
+const permitDb = supabaseAdmin ?? supabase;
+const [{ data: permitTeasers }, { count: permitTeaserTotal }] = await Promise.all([
+  permitDb
+    .from('permit_leads')
+    .select('id, owner_name, owner_phone, owner_email, address, jurisdiction, permit_type, permit_date')
+    .eq('permit_status', 'qualified')
+    .is('archived_at', null)
+    .order('discovered_at', { ascending: false })
+    .limit(9),
+  permitDb
+    .from('permit_leads')
+    .select('id', { count: 'exact', head: true })
+    .eq('permit_status', 'qualified')
+    .is('archived_at', null),
+]);
+
+// Broj različitih jurisdikcija koje trenutno pokrivamo — realan podatak,
+// ne izmišljen. Samo jurisdiction kolona, dovoljno jeftino i za par stotina redova.
+const { data: jurisdictionRows } = await permitDb
+  .from('permit_leads')
+  .select('jurisdiction')
+  .eq('permit_status', 'qualified')
+  .is('archived_at', null)
+  .not('jurisdiction', 'is', null);
+const jurisdictionCount = new Set((jurisdictionRows || []).map((r: any) => r.jurisdiction)).size;
 ---
 
 <MainLayout
-  title="SF Tree Removal | Find Trusted Tree Service Professionals"
-  description="Submit a tree-service request, connect with local contractors, or manage fleet equipment and opportunities across South Florida.">
+  title="SF Tree Removal | Permit Leads Portal for Tree Care Businesses"
+  description="Browse property owners who recently filed a tree-related permit across South Florida, with contact details included.">
 
   <Header />
 
-  <!-- Svetla pozadina -->
-  <main class="bg-white">
+  <main class="bg-slate-950">
 
     <!-- ============================================== -->
-    <!-- 1. HERO SEKCIJA — VIDEO POZADINA + FORMA -->
+    <!-- HERO -->
     <!-- ============================================== -->
-    <section class="relative isolate overflow-hidden pt-28 pb-20 lg:pt-36 lg:pb-28 px-4 sm:px-8 lg:min-h-[88vh] lg:flex lg:items-center bg-slate-900">
+    <section class="relative overflow-hidden border-b border-white/10 bg-slate-950 px-5 pt-28 pb-14 text-white md:px-8 md:pt-36 lg:pb-20">
+      <!-- Blueprint grid tekstura — unificiran identitet svih hero sekcija -->
+      <div class="pointer-events-none absolute inset-0 opacity-[0.5]" aria-hidden="true" style="background-image: linear-gradient(rgba(255,255,255,0.06) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.06) 1px, transparent 1px); background-size: 34px 34px;"></div>
+      <div class="pointer-events-none absolute -right-24 -top-32 h-[28rem] w-[28rem] rounded-full bg-green-500/[0.14] blur-[120px]" aria-hidden="true"></div>
+      <div class="pointer-events-none absolute -left-32 top-1/2 h-80 w-80 rounded-full bg-emerald-500/[0.08] blur-[110px]" aria-hidden="true"></div>
 
-      <!-- Video pozadina -->
-      <div class="absolute inset-0 -z-20">
-        <video
-          autoplay muted loop playsinline preload="metadata"
-          poster="/videos/hero-tree-service-poster.webp"
-          class="h-full w-full object-cover"
-        >
-          <source src="/videos/hero-optimized.webm" type="video/webm" media="(min-width: 640px) and (prefers-reduced-motion: no-preference)" />
-          <source src="/videos/hero-optimized.mp4" type="video/mp4" media="(min-width: 640px) and (prefers-reduced-motion: no-preference)" />
-        </video>
-      </div>
-      <!-- Ravnomeran tamni sloj radi čitljivosti teksta preko blurovanog videa -->
-      <div class="absolute inset-0 -z-10 bg-slate-950/45"></div>
+      <!-- Decorativni "ghost" ikonice u pozadini, samo desktop, čisto vizuelno -->
+      <ScrollText size={190} strokeWidth={0.8} class="pointer-events-none absolute -right-6 top-16 hidden -rotate-12 text-white/[0.05] lg:block" aria-hidden="true" />
+      <MapPin size={130} strokeWidth={0.8} class="pointer-events-none absolute right-72 -top-6 hidden rotate-6 text-white/[0.05] lg:block" aria-hidden="true" />
 
-      <div class="mx-auto max-w-[1320px] grid lg:grid-cols-2 gap-12 items-center relative z-10 w-full">
+      <div class="relative z-10 mx-auto max-w-7xl">
+        <div class="flex items-center gap-2.5">
+          <span class="relative flex h-2 w-2">
+            <span class="absolute inline-flex h-full w-full animate-ping rounded-full bg-green-400 opacity-75"></span>
+            <span class="relative inline-flex h-2 w-2 rounded-full bg-green-400"></span>
+          </span>
+          <span class="text-[10px] font-mono font-bold uppercase tracking-[0.22em] text-green-400">Live feed · public permit records</span>
+        </div>
+        <h1 class="mt-4 max-w-3xl text-3xl font-bold leading-tight tracking-tight sm:text-4xl lg:text-5xl">Potential <span class="bg-gradient-to-r from-green-400 via-emerald-300 to-green-400 bg-clip-text text-transparent">Permit Leads</span></h1>
+        <p class="mt-5 max-w-2xl text-sm leading-7 text-slate-400 md:text-base">Property owners who recently filed a tree-related permit application with their local jurisdiction across South Florida — public government records, compiled here with the contact details included in the filing.</p>
 
-        <!-- LEVO: Tekstualni deo (Editorial Heading) -->
-        <div class="max-w-[640px] font-sans selection:bg-green-500/30 selection:text-white">
-          <!-- Premium Minimal Badge (Glass) -->
-          <div class="inline-flex items-center gap-2 rounded-full border border-white/20 bg-white/10 backdrop-blur-md px-3 py-1.5 shadow-soft">
-            <span class="relative flex h-2 w-2">
-              <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
-              <span class="relative inline-flex rounded-full h-2 w-2 bg-green-400"></span>
-            </span>
-            <span class="text-[10px] font-bold uppercase tracking-[0.2em] text-white/90">
-              Serving South Florida
-            </span>
+        <!-- Trust row: dekorativno, bez konkretnih brojeva -->
+        <div class="mt-5 flex flex-wrap items-center gap-3">
+          <div class="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/[0.04] px-4 py-2 backdrop-blur">
+            <Eye size={14} class="text-green-300" strokeWidth={1.8} />
+            <span class="text-[11px] font-bold text-slate-300">Visited daily by tree care businesses</span>
           </div>
-
-          <!-- Editorial Heading -->
-          <h1 class="mt-6 text-[2.75rem] sm:text-[3.5rem] lg:text-[4rem] font-bold leading-[1.05] tracking-tighter text-white">
-            One place to move
-            <span class="block mt-1 bg-gradient-to-r from-green-400 to-emerald-400 bg-clip-text text-transparent">
-              tree work forward.
-            </span>
-          </h1>
-
-          <!-- High-Contrast Subtitle -->
-          <p class="mt-6 text-base sm:text-lg leading-relaxed text-white/85 font-medium">
-            Tell us what the property needs. We route the request to approved tree-service contractors working in your area.
-          </p>
-
-          <!-- Clean System Description -->
-          <p class="mt-6 text-sm leading-relaxed text-white/60 border-l-2 border-white/20 pl-4 py-1">
-            SF Tree Removal is a request and dispatch platform. Independent contractors review available projects, claim the work they can serve and contact the property owner directly.
-          </p>
-
-          <!-- Premium CTA Block -->
-          <div class="mt-10">
-            <a href="#how-it-works" class="flex h-12 w-fit px-8 items-center justify-center rounded-xl border border-white/20 bg-white/10 backdrop-blur-md text-[11px] font-bold uppercase tracking-wider text-white/90 transition-all hover:border-white/30 hover:bg-white/20">
-              See how it works
-            </a>
-          </div>
-
-          <!-- Minimalist Trust Bar -->
-          <div class="mt-12 flex flex-col sm:flex-row gap-y-3 sm:items-center sm:gap-x-6 border-t border-white/15 pt-6 text-[10px] font-mono font-bold uppercase tracking-[0.15em] text-white/60">
-            <div class="flex items-center gap-2">
-              <span class="text-green-400">//</span> 100% Free Estimate
+          <div class="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/[0.04] px-4 py-2 backdrop-blur">
+            <div class="flex gap-0.5 text-amber-400">
+              {Array.from({ length: 5 }).map(() => <Star size={12} fill="currentColor" strokeWidth={0} />)}
             </div>
-            <div class="flex items-center gap-2">
-              <span class="text-green-400">//</span> Location-Based Routing
-            </div>
-            <div class="flex items-center gap-2">
-              <span class="text-green-400">//</span> No Obligation
-            </div>
+            <span class="text-[11px] font-bold text-slate-300">Trusted public-records source</span>
           </div>
         </div>
 
-        <!-- DESNO: Forma — Bela "glass" kartica, ističe se na video pozadini -->
-        <div id="quote" class="w-full max-w-[520px] lg:ml-auto rounded-2xl sm:rounded-3xl border border-white/40 bg-white/95 backdrop-blur-xl p-6 sm:p-8 font-sans shadow-2xl ring-1 ring-black/5 relative overflow-hidden">
+        <div class="mt-6 flex flex-wrap items-center divide-x divide-white/10 rounded-2xl border border-white/10 bg-white/[0.03] px-6 py-4 font-mono backdrop-blur">
+          <div class="pr-6"><strong class="block text-2xl font-bold text-white">{(permitTeaserTotal ?? 0).toLocaleString()}</strong><span class="mt-1 block text-[9px] font-bold uppercase tracking-[0.16em] text-slate-500">qualified_leads</span></div>
+          <div class="pl-6"><strong class="block text-2xl font-bold text-white">{jurisdictionCount.toLocaleString()}</strong><span class="mt-1 block text-[9px] font-bold uppercase tracking-[0.16em] text-slate-500">jurisdictions</span></div>
+        </div>
+      </div>
+    </section>
 
-          <!-- Akcentna traka na vrhu forme — vizuelno izdvaja formu -->
-          <div class="absolute inset-x-0 top-0 h-1.5 bg-gradient-to-r from-green-500 via-emerald-500 to-green-500"></div>
+    <!-- ============================================== -->
+    <!-- PERMIT LEADS GRID — data-feed / permit-ticket aesthetic -->
+    <!-- ============================================== -->
+    <section class="bg-slate-950 px-4 py-14 text-white sm:px-8 lg:py-16">
+      <div class="mx-auto max-w-[1200px]">
 
-          <!-- Dekorativni sjaj -->
-          <div class="absolute top-0 right-0 -mr-16 -mt-16 w-32 h-32 bg-green-500/10 blur-[50px] rounded-full pointer-events-none"></div>
+        <!-- Ticket grid -->
+        <div class="grid gap-5 md:grid-cols-2 xl:grid-cols-3">
+          {(permitTeasers || []).length === 0 && (
+            <div class="col-span-full rounded-2xl border border-dashed border-white/15 bg-white/[0.02] p-10 text-center text-sm text-slate-500">No qualified permit leads right now — check back soon.</div>
+          )}
+          {(permitTeasers || []).map((lead: any) => (
+            <article class="group relative flex flex-col overflow-hidden rounded-2xl border border-white/10 bg-white/[0.035] backdrop-blur transition-all hover:-translate-y-1 hover:border-green-400/40 hover:bg-white/[0.06]">
 
-          <!-- Header Forme -->
-          <div class="border-b border-slate-200 pb-5 mb-6 relative">
-            <div class="flex items-center justify-between gap-3">
-              <span class="text-[10px] font-mono font-bold uppercase tracking-[0.2em] text-green-700">
-                // Property request
-              </span>
-              <span class="inline-flex items-center gap-1.5 rounded-full bg-green-50 border border-green-200 px-2.5 py-1 text-[9px] font-bold uppercase tracking-wider text-green-700">
-                <span class="h-1.5 w-1.5 rounded-full bg-green-500 animate-pulse"></span>
-                Free · No obligation
-              </span>
-            </div>
-            <h2 class="mt-2 text-2xl font-bold tracking-tight text-slate-900">
-              Request a Free Estimate
-            </h2>
-            <p class="mt-1 text-xs text-slate-500">
-              Available across {territories?.length || 0} active service territories. Takes under a minute.
-            </p>
-          </div>
+              <!-- Record header -->
+              <div class="flex items-center justify-between gap-2 px-5 pt-4">
+                <span class="inline-flex items-center gap-1.5 text-[9px] font-mono font-bold uppercase tracking-[0.16em] text-slate-500"><ScrollText size={12} /> Record</span>
+                <span class="font-mono text-[10px] font-bold tracking-wider text-slate-500">#{String(lead.id).replace(/-/g, "").slice(0, 8).toUpperCase()}</span>
+              </div>
 
-          <!-- Forma -->
-          <form id="leadForm" class="space-y-5 relative">
-            <!-- County -->
-            <div>
-              <label for="county" class="mb-2 block text-[10px] font-bold uppercase tracking-[0.15em] text-slate-500">
-                Where is your property?
-              </label>
-              <div class="relative">
-                <select id="county" name="county" required class="h-12 w-full appearance-none rounded-xl border border-slate-200 bg-slate-50 px-4 text-sm text-slate-900 outline-none transition-all focus:border-green-500 focus:ring-2 focus:ring-green-500/20 focus:bg-white">
-                  <option value="" selected disabled class="text-slate-400">Select County</option>
-                  {territories?.map((t) => (
-                    <option value={t.name}>{t.name}</option>
-                  ))}
-                </select>
-                <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-4 text-slate-400">
-                  <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" /></svg>
+              <!-- Permit info -->
+              <div class="px-5 pb-5 pt-3">
+                <span class="inline-flex items-center rounded-md border border-green-400/25 bg-green-400/10 px-2 py-1 text-[9px] font-bold uppercase tracking-wider text-green-300">{lead.permit_type || "Permit"}</span>
+                <h3 class="mt-3 text-base font-bold leading-snug text-white">{lead.address || "Address not listed"}</h3>
+                <div class="mt-2 flex flex-wrap items-center gap-3 text-[11px] text-slate-500">
+                  {lead.jurisdiction && <span class="inline-flex items-center gap-1 font-mono"><MapPin size={11} /> {lead.jurisdiction}</span>}
+                  {lead.permit_date && <span class="inline-flex items-center gap-1 font-mono"><Calendar size={11} /> {new Date(lead.permit_date).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" })}</span>}
                 </div>
               </div>
-            </div>
 
-            <!-- Phone + Email -->
-            <div class="grid gap-4 sm:grid-cols-2">
-              <div>
-                <label for="phone" class="mb-2 block text-[10px] font-bold uppercase tracking-[0.15em] text-slate-500">Phone Number</label>
-                <input id="phone" name="phone" type="tel" required placeholder="(555) 123-4567" class="h-12 w-full rounded-xl border border-slate-200 bg-slate-50 px-4 text-sm text-slate-900 outline-none focus:border-green-500 focus:ring-2 focus:ring-green-500/20 focus:bg-white placeholder:text-slate-400"/>
+              <!-- Perforation -->
+              <div class="relative" aria-hidden="true">
+                <div class="border-t border-dashed border-white/15"></div>
+                <span class="absolute -left-2.5 top-1/2 h-5 w-5 -translate-y-1/2 rounded-full bg-slate-950"></span>
+                <span class="absolute -right-2.5 top-1/2 h-5 w-5 -translate-y-1/2 rounded-full bg-slate-950"></span>
               </div>
-              <div>
-                <label for="email" class="mb-2 block text-[10px] font-bold uppercase tracking-[0.15em] text-slate-500">Email (Optional)</label>
-                <input id="email" name="email" type="email" placeholder="you@email.com" class="h-12 w-full rounded-xl border border-slate-200 bg-slate-50 px-4 text-sm text-slate-900 outline-none focus:border-green-500 focus:ring-2 focus:ring-green-500/20 focus:bg-white placeholder:text-slate-400"/>
+
+              <!-- Owner contact -->
+              <div class="flex flex-1 flex-col gap-2.5 px-5 py-5">
+                <span class="text-[9px] font-mono font-bold uppercase tracking-[0.16em] text-slate-500">Filed by</span>
+                <p class="text-sm font-bold text-white">{lead.owner_name || "Name not listed"}</p>
+                <div class="mt-1 flex flex-col gap-2">
+                  {lead.owner_phone && <a href={`tel:${lead.owner_phone}`} class="inline-flex items-center gap-2 font-mono text-xs font-bold text-green-400 hover:text-green-300"><Phone size={13} /> {lead.owner_phone}</a>}
+                  {lead.owner_email && <a href={`mailto:${lead.owner_email}`} class="inline-flex items-center gap-2 break-all font-mono text-xs font-bold text-green-400 hover:text-green-300"><Mail size={13} /> {lead.owner_email}</a>}
+                </div>
               </div>
-            </div>
-
-            <!-- Description -->
-            <div>
-              <label for="details" class="mb-2 block text-[10px] font-bold uppercase tracking-[0.15em] text-slate-500">Project Details</label>
-              <textarea id="details" name="details" rows="3" required placeholder="Describe the tree, location on property, urgency..." class="min-h-[100px] w-full rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm text-slate-900 outline-none focus:border-green-500 focus:ring-2 focus:ring-green-500/20 focus:bg-white placeholder:text-slate-400"></textarea>
-            </div>
-
-            <!-- Terms Disclaimer -->
-            <FormDisclaimer />
-
-            <!-- Submit Button -->
-            <button type="submit" id="submitBtn" class="mt-6 flex h-14 w-full items-center justify-center gap-2 rounded-xl bg-green-500 text-sm font-bold text-white transition-all hover:bg-green-600 active:scale-[0.98] shadow-[0_8px_24px_-6px_rgba(34,197,94,0.5)] hover:shadow-[0_12px_28px_-6px_rgba(34,197,94,0.6)]">
-              Request Free Estimate →
-            </button>
-          </form>
-
-          <!-- Footer Forme -->
-          <div class="mt-6 flex items-center justify-center gap-2 border-t border-slate-200 pt-5 text-[9px] font-mono font-bold uppercase tracking-[0.2em] text-slate-400">
-            <span>Contact details used to process your request</span>
-          </div>
-        </div>
-
-      </div>
-    </section>
-
-    <section class="border-b border-slate-200 bg-slate-950 px-4 py-14 text-white sm:px-8 lg:py-20">
-      <div class="mx-auto max-w-[1200px]">
-        <div class="grid gap-8 lg:grid-cols-[0.8fr_1.2fr] lg:items-end">
-          <div>
-            <span class="text-[10px] font-mono font-bold uppercase tracking-[0.22em] text-green-400">// One platform, three workflows</span>
-            <h2 class="mt-3 text-3xl font-bold tracking-tighter sm:text-4xl">Start from the role that matches you.</h2>
-          </div>
-          <p class="max-w-2xl text-sm leading-7 text-slate-400">The public website, partner dashboards and equipment directory work together. Each role gets a focused path and only the information needed for the next step.</p>
-        </div>
-        <div class="mt-10 grid gap-4 lg:grid-cols-3">
-          {[
-            { icon: House, label: "Property owners", title: "Request tree service", text: "Submit the location, contact details and project scope. Dispatch routes the request to contractors serving that territory.", href: "#quote", action: "Start a request" },
-            { icon: BriefcaseBusiness, label: "Contractors", title: "Review local opportunities", text: "Approved contractors see project summaries in their configured territory and use credits to claim the leads they want to pursue.", href: "/contractors-registration", action: "Join the network" },
-            { icon: Truck, label: "Fleet owners", title: "List equipment and apply", text: "Manage truck specifications and availability, claim an existing public profile and apply for relevant fleet opportunities.", href: "/truck-registration", action: "Register fleet" },
-          ].map(({ icon: Icon, label, title, text, href, action }) => (
-            <article class="flex flex-col rounded-2xl border border-white/10 bg-white/[0.04] p-6 transition hover:border-green-400/30 hover:bg-white/[0.06]">
-              <div class="flex items-center justify-between"><span class="flex h-11 w-11 items-center justify-center rounded-xl bg-green-400/10 text-green-300"><Icon size={21} strokeWidth={1.7} /></span><span class="text-[9px] font-bold uppercase tracking-[0.18em] text-slate-500">{label}</span></div>
-              <h3 class="mt-6 text-lg font-bold">{title}</h3>
-              <p class="mt-3 flex-1 text-sm leading-6 text-slate-400">{text}</p>
-              <a href={href} class="mt-6 inline-flex items-center gap-2 text-[10px] font-bold uppercase tracking-[0.16em] text-green-300 hover:text-green-200">{action}<ArrowRight size={14} /></a>
-            </article>
-          ))}
-        </div>
-        <div class="mt-4 flex items-center gap-3 rounded-2xl border border-white/10 bg-white/[0.03] px-5 py-4 text-xs text-slate-400"><MapPin size={17} class="shrink-0 text-green-400" /><span>Coverage is driven by the active territories shown on the <a href="/service-areas" class="font-bold text-white hover:text-green-300">Service Areas page</a>.</span></div>
-      </div>
-    </section>
-
-
-    <!-- ============================================== -->
-    <!-- 2. CAPABILITIES & REGIONAL BOUNDS -->
-    <!-- ============================================== -->
-    <!-- Svetla pozadina -->
-    <section id="how-it-works" class="border-t border-slate-200 bg-white px-4 py-14 font-sans selection:bg-green-500/30 selection:text-slate-900 sm:px-8 sm:py-20 lg:py-24">
-      <div class="mx-auto max-w-[1200px]">
-        <div class="grid gap-5 border-b border-slate-200 pb-8 sm:pb-10 lg:grid-cols-[minmax(0,0.9fr)_minmax(360px,0.65fr)] lg:items-end">
-          <div>
-          <span class="text-[10px] font-mono font-bold uppercase tracking-[0.2em] text-green-700">// One request, local response</span>
-            <h2 class="mt-3 max-w-2xl text-3xl font-bold leading-tight tracking-tighter text-slate-950 sm:text-4xl lg:text-[2.75rem]">Everything starts with the right project details.</h2>
-          </div>
-          <p class="max-w-xl text-sm leading-7 text-slate-600 sm:text-base">We route your request by location and service need so you spend less time calling around and more time discussing the project with a relevant local professional.</p>
-        </div>
-
-        <div class="mt-8 grid gap-5 lg:mt-10 lg:grid-cols-[minmax(0,1.15fr)_minmax(340px,0.85fr)] lg:items-stretch">
-          <div class="rounded-2xl border border-slate-200 bg-slate-50/70 p-5 sm:p-7 lg:p-8">
-            <div class="flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
-              <div><span class="text-[10px] font-mono font-bold uppercase tracking-[0.2em] text-slate-500">Services we route</span><h3 class="mt-2 text-2xl font-bold tracking-tight text-slate-950">Projects large and small.</h3></div>
-              <a href="/services" class="inline-flex items-center gap-1.5 text-[10px] font-bold uppercase tracking-[0.15em] text-green-700 hover:text-green-900">All services <ArrowRight size={13} /></a>
-            </div>
-            <div class="mt-6 grid gap-3 sm:grid-cols-2">
-              {[
-                { icon: Trees, t: "Tree Removal", d: "Dead, damaged, hazardous or unwanted trees, including work near structures." },
-                { icon: Scissors, t: "Trimming & Pruning", d: "Canopy maintenance, clearance work and preparation for severe weather." },
-                { icon: CircleDotDashed, t: "Stump Grinding", d: "Below-grade grinding to reclaim space for landscaping or construction." },
-                { icon: LandPlot, t: "Lot Clearing", d: "Tree and vegetation clearing for access, cleanup and property improvements." }
-              ].map(({ icon: Icon, t, d }) => (
-                <article class="group rounded-xl border border-slate-200 bg-white p-4 shadow-soft transition-all hover:-translate-y-0.5 hover:border-green-200 hover:shadow-soft-lg sm:p-5">
-                  <span class="flex h-9 w-9 items-center justify-center rounded-lg bg-green-50 text-green-700"><Icon size={18} strokeWidth={1.8} /></span>
-                  <h4 class="mt-4 text-sm font-bold text-slate-950">{t}</h4>
-                  <p class="mt-2 text-xs leading-5 text-slate-600">{d}</p>
-                </article>
-              ))}
-            </div>
-          </div>
-
-          <div class="relative flex min-h-full flex-col overflow-hidden rounded-2xl bg-slate-950 p-5 text-white sm:p-7 lg:p-8">
-            <div class="pointer-events-none absolute -right-20 -top-20 h-56 w-56 rounded-full bg-green-500/10 blur-[70px]"></div>
-            <div class="relative">
-              <span class="flex h-11 w-11 items-center justify-center rounded-xl border border-green-400/20 bg-green-400/10 text-green-300"><MapPin size={21} /></span>
-              <span class="mt-6 block text-[10px] font-mono font-bold uppercase tracking-[0.2em] text-green-400">// Local coverage</span>
-              <h3 class="mt-2 text-2xl font-bold tracking-tight">Built around South Florida.</h3>
-              <p class="mt-3 text-sm leading-6 text-slate-400">Requests are routed using the active territory selected in the form, helping contractors focus on locations they are configured to serve.</p>
-              <div class="mt-6 grid grid-cols-2 gap-2">
-                {(territories || []).slice(0, 6).map((territory) => (
-                  <span class="truncate rounded-lg border border-white/10 bg-white/[0.05] px-3 py-2.5 text-[10px] font-medium text-slate-300">{territory.name.replace(/^(City|Town|Village) of /, '')}</span>
-                ))}
-              </div>
-              <a href="/service-areas" class="mt-5 inline-flex items-center gap-2 text-[10px] font-bold uppercase tracking-[0.15em] text-green-300 hover:text-green-200">View all {territories?.length || 0} territories <ArrowRight size={13} /></a>
-            </div>
-            <div class="relative mt-7 border-t border-white/10 pt-6">
-              <div class="flex gap-3"><ShieldCheck size={18} class="mt-0.5 shrink-0 text-green-400" /><div><strong class="block text-xs font-bold uppercase tracking-wider text-white">Focused routing</strong><p class="mt-1.5 text-xs leading-5 text-slate-400">The request enters a relevant local workflow instead of being posted as an unrestricted public contact list.</p></div></div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <section class="relative overflow-hidden border-t border-slate-200 bg-slate-50 px-4 py-14 font-sans selection:bg-green-500/30 selection:text-slate-900 sm:px-8 sm:py-20 lg:py-24">
-      <div class="pointer-events-none absolute right-0 top-0 h-96 w-96 rounded-full bg-green-500/[0.05] blur-[110px]" aria-hidden="true"></div>
-      <div class="relative z-10 mx-auto max-w-[1200px]">
-        <div class="grid gap-6 lg:grid-cols-[minmax(0,0.9fr)_minmax(360px,0.65fr)] lg:items-end">
-          <div>
-            <div class="flex items-center gap-3">
-              <span class="flex h-10 w-10 items-center justify-center rounded-xl border border-green-200 bg-green-50 text-green-700"><ShieldCheck size={20} strokeWidth={1.8} /></span>
-              <span class="text-[10px] font-mono font-bold uppercase tracking-[0.2em] text-green-700">// Trust & compliance</span>
-            </div>
-            <h2 class="mt-5 max-w-2xl text-3xl font-bold leading-tight tracking-tighter text-slate-950 sm:text-4xl lg:text-[2.75rem]">Clear responsibilities before work begins.</h2>
-          </div>
-          <p class="max-w-xl text-sm leading-7 text-slate-600 sm:text-base">The platform provides structured routing and account review. Property-specific credentials, protections and permit requirements should always be confirmed directly before scheduling work.</p>
-        </div>
-
-        <div class="mt-9 grid gap-3 lg:mt-12 lg:grid-cols-3">
-          {[
-            { icon: ClipboardCheck, n: "01", label: "Platform step", title: "Account review", text: "Contractor applications are reviewed before dashboard access is approved. This administrative review does not guarantee credentials, availability or work quality." },
-            { icon: HardHat, n: "02", label: "Confirm with provider", title: "Crew protection", text: "Ask which crew will perform the work and confirm the insurance and workplace protections that apply to your specific project." },
-            { icon: Landmark, n: "03", label: "Confirm locally", title: "Permit requirements", text: "Licensing and permit requirements vary by property, scope and municipality. Confirm the current requirements before work starts." },
-          ].map(({ icon: Icon, n, label, title, text }) => (
-            <article class="group relative overflow-hidden rounded-2xl border border-slate-200 bg-white p-5 shadow-soft transition-all hover:-translate-y-0.5 hover:border-green-200 hover:shadow-soft-lg sm:p-6">
-              <div class="flex items-start justify-between">
-                <span class="flex h-11 w-11 items-center justify-center rounded-xl bg-slate-50 text-green-700 transition group-hover:bg-green-50"><Icon size={21} strokeWidth={1.7} /></span>
-                <span class="font-mono text-[10px] font-bold text-slate-400">// {n}</span>
-              </div>
-              <span class="mt-6 block text-[9px] font-bold uppercase tracking-[0.18em] text-green-700">{label}</span>
-              <h3 class="mt-2 text-lg font-bold text-slate-950">{title}</h3>
-              <p class="mt-3 text-xs leading-6 text-slate-600 sm:text-sm">{text}</p>
             </article>
           ))}
         </div>
 
-        <div class="mt-4 flex flex-col gap-4 rounded-2xl border border-slate-200 bg-white px-5 py-5 shadow-soft sm:flex-row sm:items-center sm:justify-between sm:px-6">
-          <div><h3 class="text-sm font-bold text-slate-950">Understand the platform and provider responsibilities.</h3><p class="mt-1 text-xs leading-5 text-slate-500">Review the full framework before choosing or scheduling an independent provider.</p></div>
-          <a href="/compliance" class="inline-flex h-11 w-full shrink-0 items-center justify-center gap-2 rounded-xl border border-slate-200 px-5 text-[10px] font-bold uppercase tracking-[0.15em] text-slate-700 transition hover:border-green-300 hover:text-green-800 sm:w-auto">View compliance framework <ArrowRight size={14} /></a>
-        </div>
+        <a href="/permit-leads" class="mt-9 inline-flex h-12 items-center justify-center gap-2 rounded-xl bg-green-500 px-6 text-xs font-bold uppercase tracking-[0.14em] text-slate-950 shadow-[0_12px_30px_-14px_rgba(74,222,128,0.6)] transition hover:bg-green-400">See all permit leads <ArrowRight size={15} /></a>
       </div>
     </section>
 
@@ -322,7 +161,7 @@ const { data: featuredPosts } = await supabase
               <span class="text-[10px] font-mono font-bold uppercase tracking-[0.2em] text-green-700">// From the blog</span>
               <h2 class="mt-2 text-3xl font-bold tracking-tight text-slate-950 sm:text-4xl">Tips, guides, and stories</h2>
             </div>
-            <a href="/blog" class="inline-flex h-11 shrink-0 items-center justify-center gap-2 rounded-xl border border-slate-200 px-5 text-[10px] font-bold uppercase tracking-[0.15em] text-slate-700 transition hover:border-green-300 hover:text-green-800">View all posts <ArrowRight size={14} /></a>
+            <a href="/blog" class="inline-flex h-11 shrink-0 items-center justify-center gap-2 rounded-xl border border-slate-200 bg-white px-5 text-[10px] font-bold uppercase tracking-[0.15em] text-slate-700 transition hover:border-green-300 hover:text-green-800">View all posts <ArrowRight size={14} /></a>
           </div>
 
           <div class="mt-9 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:mt-12 lg:grid-cols-4">
@@ -357,72 +196,3 @@ const { data: featuredPosts } = await supabase
   <MobileNav />
 
 </MainLayout>
-
-<script>
-  // FUNKCIJA ZA HVATANJE IZVORA SAOBRAĆAJA
-  function getAttribution() {
-    const params = new URLSearchParams(window.location.search);
-    return {
-      utm_source: params.get('utm_source'),
-      utm_medium: params.get('utm_medium'),
-      utm_campaign: params.get('utm_campaign'),
-      utm_content: params.get('utm_content'),
-      utm_term: params.get('utm_term'),
-      gclid: params.get('gclid'),
-      fbclid: params.get('fbclid'),
-      referrer: document.referrer || null,
-      landing_page: `${window.location.pathname}${window.location.search}`,
-    };
-  }
-
-  function getTrafficSource(attribution: ReturnType<typeof getAttribution>) {
-    if (attribution.utm_source) return attribution.utm_source.toLowerCase();
-    if (attribution.gclid) return 'google';
-    if (attribution.fbclid) return 'meta';
-
-    const referrer = document.referrer.toLowerCase();
-    if (referrer.includes('google')) return 'google';
-    if (referrer.includes('facebook') || referrer.includes('fb.com') || referrer.includes('instagram')) return 'facebook';
-    if (referrer.includes('bing')) return 'bing';
-    
-    return 'organic';
-  }
-
-  const form = document.getElementById('leadForm') as HTMLFormElement;
-  const btn = document.getElementById('submitBtn') as HTMLButtonElement;
-
-  form?.addEventListener('submit', async (e) => {
-    e.preventDefault();
-    btn.disabled = true;
-    btn.innerText = "Sending...";
-
-    const formData = new FormData(form);
-    const attribution = getAttribution();
-    const trafficSource = getTrafficSource(attribution); // Hvatamo izvor
-    
-    const params = new URLSearchParams(window.location.search);
-    const response = await fetch('/api/website-lead', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        county: formData.get('county'),
-        phone: formData.get('phone'),
-        email: formData.get('email'),
-        details: formData.get('details'),
-        source: trafficSource || 'website',
-        permitRef: params.get('permit_ref'),
-        attribution,
-      }),
-    });
-    const result = await response.json().catch(() => ({}));
-
-    if (!response.ok || !result.ok) {
-      alert("Error: " + (result.error || "Unable to submit request"));
-      btn.disabled = false;
-      btn.innerText = "Request Free Estimate →";
-    } else {
-      // OVO JE KLJUČNA PROMENA: Uspešan upis sada vodi na Thank You stranu
-      window.location.href = '/thank-you';
-    }
-  });
-</script>

@@ -41,8 +41,6 @@ export type PermitAutomationSettings = {
   externalAutoPublish: boolean;
   externalAutoPublishDomains: string[];
   externalMinQualityScore: number;
-  notifyContractorsOnPublish: boolean;
-  notifyTruckOwnersOnPublish: boolean;
   permitManualPublishRequiresConfirmation: boolean;
   permitMaxEmailAttempts: number;
   permitDailyEmailLimit: number;
@@ -66,8 +64,6 @@ const DEFAULT_SETTINGS: PermitAutomationSettings = {
   externalAutoPublish: false,
   externalAutoPublishDomains: [],
   externalMinQualityScore: 70,
-  notifyContractorsOnPublish: true,
-  notifyTruckOwnersOnPublish: true,
   permitManualPublishRequiresConfirmation: true,
   permitMaxEmailAttempts: 3,
   permitDailyEmailLimit: 10,
@@ -116,8 +112,6 @@ export function parsePermitSettings(raw: string | null | undefined): PermitAutom
       externalAutoPublish: parsed.externalAutoPublish ?? DEFAULT_SETTINGS.externalAutoPublish,
       externalAutoPublishDomains: Array.isArray(parsed.externalAutoPublishDomains) ? parsed.externalAutoPublishDomains : DEFAULT_SETTINGS.externalAutoPublishDomains,
       externalMinQualityScore: Number(parsed.externalMinQualityScore ?? DEFAULT_SETTINGS.externalMinQualityScore),
-      notifyContractorsOnPublish: parsed.notifyContractorsOnPublish ?? DEFAULT_SETTINGS.notifyContractorsOnPublish,
-      notifyTruckOwnersOnPublish: parsed.notifyTruckOwnersOnPublish ?? DEFAULT_SETTINGS.notifyTruckOwnersOnPublish,
       permitManualPublishRequiresConfirmation: parsed.permitManualPublishRequiresConfirmation ?? DEFAULT_SETTINGS.permitManualPublishRequiresConfirmation,
       permitMaxEmailAttempts: Number(parsed.permitMaxEmailAttempts ?? DEFAULT_SETTINGS.permitMaxEmailAttempts),
       permitDailyEmailLimit: Number(parsed.permitDailyEmailLimit ?? DEFAULT_SETTINGS.permitDailyEmailLimit),

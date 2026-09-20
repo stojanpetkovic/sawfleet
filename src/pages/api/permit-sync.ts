@@ -4,8 +4,6 @@ import { supabaseAdmin } from "../../lib/supabaseAdmin";
 import { buildPermitOutreachEmail, getPermitLeads, getPermitAutomationSettings, savePermitAutomationSettings } from "../../lib/permitData";
 import { sendEmail } from "../../lib/resend";
 import { authorizeAutomationRequest } from "../../lib/automationAuth";
-import { runTruckOutreachBatch } from "../../lib/truckOutreach";
-import { processCreditAutoRefill } from "../../lib/creditSystem";
 
 /**
  * Autonomous permit lead scraping and sync to external_leads table.
@@ -22,11 +20,6 @@ export async function POST({ request }: { request: Request }) {
       });
     }
     console.log(`[PERMIT SYNC] Starting permit lead synchronization at ${new Date().toISOString()}`);
-    const truckOutreach = await runTruckOutreachBatch();
-    const creditRefill = await processCreditAutoRefill().catch((err) => {
-      console.error("[PERMIT SYNC] Credit auto-refill failed:", err);
-      return { ok: false, refilled: 0 };
-    });
 
     // Get automation settings
     const settings = await getPermitAutomationSettings();
@@ -39,8 +32,6 @@ export async function POST({ request }: { request: Request }) {
           message: "Automation disabled",
           synced: 0,
           created: 0,
-          truckOutreach,
-          creditRefill,
         }),
         { status: 200, headers: { "Content-Type": "application/json" } }
       );
@@ -301,8 +292,6 @@ export async function POST({ request }: { request: Request }) {
         synced: insertedCount,
         created: insertedCount,
         skipped: permits.length - insertedCount,
-        truckOutreach,
-        creditRefill,
       }),
       { status: 200, headers: { "Content-Type": "application/json" } }
     );

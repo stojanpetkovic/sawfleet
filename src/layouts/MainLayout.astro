@@ -12,8 +12,8 @@ interface Props {
 }
 
 const {
-  title = "SF Tree Removal | Premium Tree Service Dispatch Network",
-  description = "Connect homeowners with trusted local tree service professionals and grapple saw truck operators across South Florida.",
+  title = "SF Tree Removal | Permit Leads Portal for Tree Care Businesses",
+  description = "Browse property owners who recently filed a tree-related permit across South Florida, plus a public directory of tree care contractors — free to browse, updated regularly.",
   image = "/og-image.jpg", // Putanja do slike koja će se prikazati kada neko podeli link na Viberu/WhatsAppu/FB-u
   structuredData,
   noindex = false,
@@ -22,9 +22,9 @@ const {
 // Generisanje kanoničnog URL-a za SEO (sprečava duplicate content penale)
 const canonicalURL = new URL(Astro.url.pathname, Astro.site || Astro.url.origin);
 
-// Organization schema (sajtska, ne LocalBusiness — ovo je dispatch/
-// marketplace platforma bez jedne fizičke adrese/telefona, pa ne
-// izmišljamo te podatke; koristimo samo ono što stvarno znamo)
+// Organization schema (sajtska, ne LocalBusiness — ovo je javni portal
+// bez jedne fizičke adrese/telefona, pa ne izmišljamo te podatke;
+// koristimo samo ono što stvarno znamo)
 const organizationSchema = {
   "@context": "https://schema.org",
   "@type": "Organization",
@@ -32,7 +32,7 @@ const organizationSchema = {
   url: "https://sftreeremoval.com/",
   logo: "https://sftreeremoval.com/logo/logo.png",
   description:
-    "Premium tree service dispatch network connecting South Florida homeowners with vetted, compliant tree service contractors.",
+    "Public permit-lead data portal for the tree care industry across South Florida — surfacing property owners who recently filed a tree-related permit, plus a public contractor directory.",
   areaServed: [
     { "@type": "AdministrativeArea", name: "Broward County" },
     { "@type": "AdministrativeArea", name: "City of Boca Raton" },

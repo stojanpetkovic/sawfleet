@@ -36,13 +36,6 @@ export async function POST({ request }: { request: Request }) {
   const status = mapping[event?.type];
   if (emailId && status && supabaseAdmin) {
     const now = new Date().toISOString();
-    let update = supabaseAdmin.from("truck_profile_outreach").update({
-      status,
-      ...(status === "delivered" ? { delivered_at: now } : {}),
-      updated_at: now,
-    }).eq("resend_email_id", emailId);
-    if (status === "delivered") update = update.in("status", ["queued", "sent"]);
-    await update;
     let permitUpdate = supabaseAdmin.from("permit_outreach_events").update({
       status,
       ...(status === "delivered" ? { delivered_at: now } : {}),

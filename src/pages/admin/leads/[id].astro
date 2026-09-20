@@ -24,21 +24,6 @@ const activityLog: { action: string; at: string; by?: string }[] =
 // Dohvati teritorije za Edit modal
 const { data: territories } = await supabase.from('service_territories').select('*').order('name');
 
-const { data: rawTruckApplications } = await db
-  .from('truck_lead_applications')
-  .select('*')
-  .eq('lead_id', id)
-  .order('created_at', { ascending: false });
-const ownerIds = Array.from(new Set((rawTruckApplications || []).map((application: any) => application.truck_owner_id)));
-const truckIds = Array.from(new Set((rawTruckApplications || []).map((application: any) => application.truck_id).filter(Boolean)));
-const { data: applicationOwners } = ownerIds.length ? await db.from('truck_owners').select('id,company_name,contact_name,email,phone').in('id', ownerIds) : { data: [] };
-const { data: applicationTrucks } = truckIds.length ? await db.from('grapple_saw_trucks').select('id,equipment_type,lift_capacity_tons,working_height_ft').in('id', truckIds) : { data: [] };
-const truckApplications = (rawTruckApplications || []).map((application: any) => ({
-  ...application,
-  owner: (applicationOwners || []).find((owner: any) => owner.id === application.truck_owner_id),
-  truck: (applicationTrucks || []).find((truck: any) => truck.id === application.truck_id),
-}));
-
 // PREUSMERAVANJE AKO LID NE POSTOJI
 if (!lead) return Astro.redirect('/admin/service-leads');
 
@@ -132,29 +117,6 @@ const leadStatus = lead.status || 'new';
         </div>
       </div>
 
-      <div class="rounded-2xl border border-blue-200 bg-white p-6 shadow-sm">
-        <div class="flex items-center justify-between gap-3"><div><p class="text-[9px] font-bold uppercase tracking-[0.18em] text-blue-700">Heavy equipment support</p><h2 class="mt-1 text-base font-bold text-slate-950">Truck owner applications</h2></div><span class="rounded-full bg-blue-50 px-3 py-1 text-[10px] font-bold text-blue-700">{truckApplications.length}</span></div>
-        <div class="mt-5 space-y-3">
-          {truckApplications.length === 0 ? (
-            <p class="rounded-xl border border-dashed border-slate-200 p-6 text-center text-xs text-slate-400">No truck owners have applied to this lead.</p>
-          ) : truckApplications.map((application: any) => (
-            <div class="rounded-xl border border-slate-200 p-4">
-              <div class="flex flex-col justify-between gap-3 sm:flex-row sm:items-start">
-                <div>
-                  <p class="text-sm font-bold text-slate-950">{application.owner?.company_name || application.owner?.contact_name || 'Fleet partner'}</p>
-                  <p class="mt-1 text-[11px] text-slate-500">{application.truck?.equipment_type || 'Equipment not specified'}{application.truck?.lift_capacity_tons ? ` · ${application.truck.lift_capacity_tons} tons` : ''}{application.truck?.working_height_ft ? ` · ${application.truck.working_height_ft} ft` : ''}</p>
-                  {application.message && <p class="mt-2 text-xs text-slate-600">{application.message}</p>}
-                  <div class="mt-3 flex flex-wrap gap-3 text-[10px]">{application.owner?.phone && <a class="font-bold text-blue-700" href={`tel:${application.owner.phone}`}>Call</a>}{application.owner?.email && <a class="font-bold text-blue-700" href={`mailto:${application.owner.email}`}>Email</a>}</div>
-                </div>
-                <div class="flex items-center gap-2">
-                  <span class="rounded-full border border-slate-200 px-2.5 py-1 text-[9px] font-bold uppercase text-slate-600">{application.status}</span>
-                  {application.status === 'pending' && <><button class="truck-application-status rounded-lg bg-green-600 px-3 py-2 text-[9px] font-bold uppercase text-white" data-application-id={application.id} data-status="accepted">Accept</button><button class="truck-application-status rounded-lg bg-red-50 px-3 py-2 text-[9px] font-bold uppercase text-red-600" data-application-id={application.id} data-status="rejected">Reject</button></>}
-                </div>
-              </div>
-            </div>
-          ))}
-        </div>
-      </div>
     </div>
 
     <!-- Right Sidebar: Status / Actions / Manage / Activity Log -->
@@ -264,26 +226,6 @@ const leadStatus = lead.status || 'new';
     input.value = '';
   });
 
-  document.querySelectorAll<HTMLButtonElement>('.truck-application-status').forEach((button) => {
-    button.addEventListener('click', async () => {
-      const { data: { session } } = await supabase.auth.getSession();
-      if (!session?.access_token) { alert('Admin session expired.'); return; }
-      button.disabled = true;
-      const response = await fetch('/api/truck-application-status', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${session.access_token}` },
-        body: JSON.stringify({ applicationId: button.dataset.applicationId, status: button.dataset.status }),
-      });
-      const result = await response.json().catch(() => ({}));
-      if (!response.ok || !result.ok) {
-        alert('Could not update application: ' + (result.error || 'Unknown error'));
-        button.disabled = false;
-        return;
-      }
-      window.location.reload();
-    });
-  });
-  
   // -- STATUS CONTROLS --
   async function updateStatus(newStatus: string) {
     if (!id) return;

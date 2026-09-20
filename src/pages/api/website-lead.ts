@@ -3,7 +3,6 @@ export const prerender = false;
 import { supabaseAdmin } from "../../lib/supabaseAdmin";
 import { getPermitAutomationSettings } from "../../lib/permitData";
 import { publishWebsiteLead } from "../../lib/leadWorkflow";
-import { sendEmail, customerTrackingEmailHtml } from "../../lib/resend.js";
 
 function json(body: unknown, status = 200) {
   return new Response(JSON.stringify(body), { status, headers: { "Content-Type": "application/json" } });
@@ -57,57 +56,6 @@ export async function POST({ request }: { request: Request }) {
         action: `Homeowner submitted a request and converted to Website Lead ${result.lead.id}`,
         changed_by: "website_form",
       }]);
-    }
-
-    // Auto-create/link customer account when email is provided
-    if (email && result.lead?.id) {
-      try {
-        const normalEmail = email.toLowerCase().trim();
-        // Upsert customer record
-        const { data: existingCustomer } = await supabaseAdmin
-          .from("customers")
-          .select("id")
-          .eq("email", normalEmail)
-          .maybeSingle();
-
-        let customerId = existingCustomer?.id;
-        if (!customerId) {
-          const { data: newCustomer } = await supabaseAdmin
-            .from("customers")
-            .insert([{ email: normalEmail, phone: phone || null }])
-            .select("id")
-            .maybeSingle();
-          customerId = newCustomer?.id;
-        }
-        // Link lead to customer
-        if (customerId) {
-          await supabaseAdmin
-            .from("leads")
-            .update({ customer_id: customerId })
-            .eq("id", result.lead.id);
-        }
-
-        // Email them a direct sign-in link to their tracking dashboard
-        const siteUrl = new URL(request.url).origin;
-        const accountUrl = `${siteUrl}/my-account`;
-        const { data: linkData, error: linkError } = await supabaseAdmin.auth.admin.generateLink({
-          type: "magiclink",
-          email: normalEmail,
-          options: { redirectTo: accountUrl },
-        });
-        if (!linkError && linkData?.properties?.action_link) {
-          await sendEmail({
-            to: normalEmail,
-            subject: "Track your tree service request",
-            html: customerTrackingEmailHtml({ county, dashboardUrl: linkData.properties.action_link, accountUrl }),
-          });
-        } else if (linkError) {
-          console.error("customer tracking link generation failed", linkError);
-        }
-      } catch (e) {
-        // Non-fatal — don't fail the lead submission
-        console.error("customer auto-link failed", e);
-      }
     }
 
     return json({ ok: true, leadId: result.lead?.id, created: result.created, duplicate: result.duplicate || null });
