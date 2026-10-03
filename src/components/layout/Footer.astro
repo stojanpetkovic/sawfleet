@@ -72,9 +72,18 @@ const links = {
 
     <!-- Bottom Bar -->
     <div class="mt-12 border-t border-white/10 pt-6 flex flex-col sm:flex-row items-center justify-between gap-4">
-      <p class="text-[9px] font-mono uppercase tracking-[0.12em] text-slate-500">
-        &copy; {currentYear} SF Tree Removal. All rights reserved.
-      </p>
+      <div class="text-center sm:text-left space-y-1 text-[9px] font-mono uppercase tracking-[0.12em] text-slate-500">
+        <p>&copy; {currentYear} SF Tree Removal. All rights reserved.</p>
+        <p>
+          Website by{" "}
+          <a
+            href="https://stojanpetkovic.com/"
+            target="_blank"
+            rel="noopener noreferrer"
+            class="underline hover:text-slate-300 transition-colors"
+          >Stojan Petković</a>
+        </p>
+      </div>
       <div class="flex items-center gap-4 text-[9px] font-mono uppercase tracking-[0.12em] text-slate-500">
         <a href="/privacy" class="hover:text-slate-300 transition-colors">Privacy</a>
         <a href="/terms" class="hover:text-slate-300 transition-colors">Terms</a>
