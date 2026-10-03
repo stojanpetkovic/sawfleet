@@ -1,89 +1,42 @@
 ---
-const {
-  name = "SF Tree Removal",
-  url = "https://sftreeremoval.com",
-  area = "South Florida",
-  telephone = "+1-888-452-1505",
-  image = "/images/og-default.jpg",
-  priceRange = "$$",
-  streetAddress = "South Florida",
-  addressLocality = "Fort Lauderdale",
-  addressRegion = "FL",
-  postalCode = "33301",
-  addressCountry = "US",
-  latitude = 26.1224,
-  longitude = -80.1373,
-  openingHours = "Mo-Su 00:00-23:59"
-} = Astro.props;
+import { business } from "../config/business";
 
-/* =====================
-   LOCAL BUSINESS SCHEMA
-===================== */
-const localBusinessSchema = {
+// schema.org has no TreeService type; HomeAndConstructionBusiness is the
+// closest real one, and Google ignores types it does not know.
+const schema = {
   "@context": "https://schema.org",
-  "@type": "TreeService",
-  "@id": `${url}#localbusiness`,
-  "name": name,
-  "url": url,
-  "image": `${url}${image}`,
-  "priceRange": priceRange,
-  "telephone": telephone,
-  "areaServed": {
-    "@type": "AdministrativeArea",
-    "name": area
-  },
-  "address": {
+  "@type": "HomeAndConstructionBusiness",
+  "@id": `${business.url}/#localbusiness`,
+  name: business.name,
+  url: `${business.url}/`,
+  image: `${business.url}/images/og-default.jpg`,
+  logo: `${business.url}/images/logo.png`,
+  priceRange: "$$",
+  address: {
     "@type": "PostalAddress",
-    "streetAddress": streetAddress,
-    "addressLocality": addressLocality,
-    "addressRegion": addressRegion,
-    "postalCode": postalCode,
-    "addressCountry": addressCountry
+    addressLocality: business.city,
+    addressRegion: business.region,
+    postalCode: business.postalCode,
+    addressCountry: business.country,
   },
-  "geo": {
-    "@type": "GeoCoordinates",
-    "latitude": latitude,
-    "longitude": longitude
-  },
-  "openingHoursSpecification": {
+  areaServed: business.areaServed.map((name) => ({ "@type": "AdministrativeArea", name })),
+  openingHoursSpecification: {
     "@type": "OpeningHoursSpecification",
-    "dayOfWeek": [
-      "Monday","Tuesday","Wednesday",
-      "Thursday","Friday","Saturday","Sunday"
-    ],
-    "opens": "00:00",
-    "closes": "23:59"
+    dayOfWeek: ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"],
+    opens: "00:00",
+    closes: "23:59",
   },
-  "hasOfferCatalog": {
+  hasOfferCatalog: {
     "@type": "OfferCatalog",
-    "name": "Tree Services",
-    "itemListElement": [
-      {
-        "@type": "Offer",
-        "itemOffered": {
-          "@type": "Service",
-          "name": "Tree Removal"
-        }
-      },
-      {
-        "@type": "Offer",
-        "itemOffered": {
-          "@type": "Service",
-          "name": "Emergency Tree Removal"
-        }
-      },
-      {
-        "@type": "Offer",
-        "itemOffered": {
-          "@type": "Service",
-          "name": "Certified Arborist Services"
-        }
-      }
-    ]
-  }
+    name: "Tree Services",
+    itemListElement: [
+      { "@type": "Offer", itemOffered: { "@type": "Service", name: "Tree Removal", url: `${business.url}/tree-removal/` } },
+      { "@type": "Offer", itemOffered: { "@type": "Service", name: "Emergency Tree Removal", url: `${business.url}/emergency-tree-removal/` } },
+      { "@type": "Offer", itemOffered: { "@type": "Service", name: "Tree Trimming and Stump Grinding", url: `${business.url}/tree-services/` } },
+      { "@type": "Offer", itemOffered: { "@type": "Service", name: "Certified Arborist Services", url: `${business.url}/certified-arborist/` } },
+    ],
+  },
 };
 ---
 
-<script type="application/ld+json">
-{JSON.stringify(localBusinessSchema)}
-</script>
+<script type="application/ld+json" set:html={JSON.stringify(schema)} />

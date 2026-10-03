@@ -1,5 +1,5 @@
 ---
-const phone = "1-888-452-1505";
+import { business } from "../config/business";
 ---
 
 <header class="sticky top-0 z-50 bg-white border-b border-gray-200">
@@ -23,7 +23,7 @@ const phone = "1-888-452-1505";
         <div class="relative group">
           <a href="/tree-services/" class="flex items-center gap-1 hover:text-teal-700 transition">
             Services
-            <svg class="h-4 w-4 mt-[1px]" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+            <svg class="h-4 w-4 mt-px" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
               <path d="M19 9l-7 7-7-7" />
             </svg>
           </a>
@@ -44,7 +44,7 @@ const phone = "1-888-452-1505";
         <div class="relative group">
           <a href="/areas/" class="flex items-center gap-1 hover:text-teal-700 transition">
             Service Areas
-            <svg class="h-4 w-4 mt-[1px]" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+            <svg class="h-4 w-4 mt-px" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
               <path d="M19 9l-7 7-7-7" />
             </svg>
           </a>
@@ -66,6 +66,9 @@ const phone = "1-888-452-1505";
             <a href="/areas/broward-county-tree-removal/" class="block px-6 py-3 hover:bg-gray-50">
               Broward County
             </a>
+            <a href="/areas/palm-beach-county-tree-removal/" class="block px-6 py-3 hover:bg-gray-50">
+              Palm Beach County
+            </a>
             <a href="/areas/" class="block px-6 py-3 font-semibold text-teal-700">
               View All Service Areas →
             </a>
@@ -78,10 +81,6 @@ const phone = "1-888-452-1505";
 
       <!-- ================= RIGHT ACTIONS ================= -->
       <div class="flex items-center gap-5">
-
-        <a href={`tel:${phone}`} class="hidden md:flex items-center gap-2 text-sm font-semibold text-slate-800">
-          📞 {phone}
-        </a>
 
         <a
           href="/contact-us/"
@@ -146,6 +145,9 @@ const phone = "1-888-452-1505";
         <a href="/areas/broward-county-tree-removal/" class="block py-1 font-semibold">
           Broward County
         </a>
+        <a href="/areas/palm-beach-county-tree-removal/" class="block py-1 font-semibold">
+          Palm Beach County
+        </a>
         <a href="/areas/" class="block mt-2 text-teal-700 font-semibold">
           View All Service Areas →
         </a>
@@ -155,10 +157,10 @@ const phone = "1-888-452-1505";
       <a href="/contact-us/" class="block">Contact</a>
 
       <a
-        href={`tel:${phone}`}
+        href="/contact-us/"
         class="mt-6 inline-flex w-full justify-center rounded-full bg-teal-700 px-6 py-3 text-white"
       >
-        📞 {phone}
+        Request a Free Estimate
       </a>
     </nav>
   </div>

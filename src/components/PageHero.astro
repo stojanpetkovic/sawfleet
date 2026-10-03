@@ -1,0 +1,33 @@
+---
+// The dark teal page header used across the site: badge, title, lead and,
+// optionally, the estimate button.
+interface Props {
+  badge: string;
+  title: string;
+  lead: string;
+  actions?: boolean;
+}
+const { badge, title, lead, actions = true } = Astro.props;
+---
+
+<section class="bg-teal-900 py-24 text-white md:py-28">
+  <div class="mx-auto max-w-5xl px-6 text-center">
+    <span class="mb-6 inline-block rounded-full border border-dashed border-white/60 px-4 py-1 text-xs font-bold tracking-widest">
+      {badge}
+    </span>
+    <h1 class="text-4xl font-extrabold leading-tight md:text-5xl xl:text-6xl">{title}</h1>
+    <p class="mx-auto mt-8 max-w-3xl text-lg text-white/90">{lead}</p>
+    {
+      actions && (
+        <div class="mt-12 flex flex-wrap justify-center gap-4">
+          <a
+            href="/contact-us/"
+            class="inline-flex items-center gap-3 rounded-full bg-white px-8 py-4 font-extrabold text-teal-900 transition hover:bg-slate-100"
+          >
+            Request a Free Estimate
+          </a>
+        </div>
+      )
+    }
+  </div>
+</section>

@@ -3,11 +3,11 @@ import Header from "../components/Header.astro";
 import Footer from "../components/Footer.astro";
 import SeoHead from "../components/SeoHead.astro";
 import Tracking from "../components/Tracking.astro";
+import "../styles/global.css";
 
 const {
   title = "SF Tree Removal | Professional Tree Service South Florida",
   description = "Professional tree removal and tree service in South Florida. Emergency tree removal, certified arborists, and modern equipment.",
-  canonical = "https://sftreeremoval.com/",
   ogImage = "/images/og-default.jpg",
   noindex = false,
 } = Astro.props;
@@ -20,7 +20,6 @@ const {
     <SeoHead
       title={title}
       description={description}
-      canonical={canonical}
       ogImage={ogImage}
       noindex={noindex}
     />
@@ -36,7 +35,7 @@ const {
 
   <body class="min-h-screen bg-white font-sans text-slate-900 antialiased">
 
-    <!-- ================= TRACKING (MORA BITI U BODY) ================= -->
+    <!-- ================= TRACKING ================= -->
     <Tracking />
 
     <!-- ================= HEADER ================= -->
@@ -49,6 +48,10 @@ const {
 
     <!-- ================= FOOTER ================= -->
     <Footer />
+
+    <script>
+      import "../scripts/lead-forms";
+    </script>
 
   </body>
 </html>

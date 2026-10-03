@@ -1,0 +1,41 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import PageHero from "../../components/PageHero.astro";
+import CtaBand from "../../components/CtaBand.astro";
+import { guides } from "../../config/guides";
+
+const fmt = new Intl.DateTimeFormat("en-US", { dateStyle: "medium", timeZone: "UTC" });
+---
+
+<BaseLayout
+  title="Tree Care Guides | Tree Removal Advice for South Florida Homeowners"
+  description="Practical guides for South Florida homeowners: tree removal cost, permits, hurricane preparation and when to call an arborist."
+>
+  <PageHero
+    badge="TREE CARE GUIDES"
+    title="Tree Care Guides for South Florida"
+    lead="Plain-language advice on costs, permits, storms and tree health, written for homeowners in Miami-Dade, Broward and Palm Beach County."
+    actions={false}
+  />
+
+  <section class="bg-[#f4f8f6] py-24">
+    <div class="mx-auto grid max-w-6xl gap-8 px-6 md:grid-cols-2">
+      {
+        guides.map((g) => (
+          <a href={`/tree-care-guides/${g.slug}/`} class="group flex flex-col rounded-3xl bg-white p-10 transition hover:shadow-lg">
+            <p class="text-sm text-slate-500">
+              <time datetime={g.published}>{fmt.format(new Date(g.published))}</time> · {g.readMinutes} min read
+            </p>
+            <h2 class="mt-3 text-2xl font-extrabold text-slate-900 group-hover:text-teal-700">{g.title}</h2>
+            <p class="mt-4 flex-1 text-slate-600">{g.description}</p>
+            <span class="mt-6 inline-flex items-center gap-2 font-semibold text-teal-700">
+              Read guide <span class="transition group-hover:translate-x-1">↗</span>
+            </span>
+          </a>
+        ))
+      }
+    </div>
+  </section>
+
+  <CtaBand />
+</BaseLayout>

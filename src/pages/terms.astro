@@ -1,0 +1,73 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import { business } from "../config/business";
+const updated = "October 3, 2026";
+---
+
+<BaseLayout
+  title={`Terms & Conditions | ${business.name}`}
+  description={`The terms that apply when you use the ${business.name} website.`}
+>
+  <section class="bg-white py-24">
+    <div class="mx-auto max-w-3xl px-6">
+      <div class="prose-sf">
+        <h1 class="text-4xl font-extrabold text-slate-900 md:text-5xl">Terms &amp; Conditions</h1>
+        <p class="text-base text-slate-500">Last updated: {updated}</p>
+
+        <p>
+          These terms apply to your use of {business.url.replace("https://", "")} (the "website"), operated by
+          {" "}{business.name}. By using the website you agree to them.
+        </p>
+
+        <h2>Information on this website</h2>
+        <p>
+          The content on this website, including our guides about costs, permits and tree care, is general information.
+          It is not legal, financial or professional advice for your specific situation. Local rules change; always
+          confirm permit requirements with your city or county.
+        </p>
+
+        <h2>Estimates and services</h2>
+        <p>
+          Sending a form or calling us does not create a contract. Estimates are based on the information available at the
+          time and become binding only when we agree on the work, price and schedule with you. The actual work is governed
+          by that agreement.
+        </p>
+
+        <h2>Your submissions</h2>
+        <p>
+          When you send us a form, you confirm that the information is accurate and that you are allowed to share it. We
+          handle it as described in our <a href="/privacy-policy/">Privacy Policy</a>.
+        </p>
+
+        <h2>Acceptable use</h2>
+        <p>
+          Do not misuse the website, for example by sending spam or automated submissions, trying to access systems you
+          are not authorized to use, or interfering with how the website works.
+        </p>
+
+        <h2>Intellectual property</h2>
+        <p>
+          The website's text, design and logo belong to {business.name} or are used with permission. Some photos are stock
+          images used under their license. You may not copy or reuse the content without permission.
+        </p>
+
+        <h2>Links to other websites</h2>
+        <p>We are not responsible for the content or practices of websites we link to.</p>
+
+        <h2>Limitation of liability</h2>
+        <p>
+          The website is provided "as is". To the extent permitted by law, {business.name} is not liable for losses
+          arising from the use of the website or reliance on its general information.
+        </p>
+
+        <h2>Governing law</h2>
+        <p>These terms are governed by the laws of the State of Florida.</p>
+
+        <h2>Contact</h2>
+        <p>
+          Questions about these terms: send them through our <a href="/contact-us/">contact form</a>.
+        </p>
+      </div>
+    </div>
+  </section>
+</BaseLayout>

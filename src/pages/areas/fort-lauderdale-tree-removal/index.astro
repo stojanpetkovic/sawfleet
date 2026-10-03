@@ -4,7 +4,6 @@ import BaseLayout from "../../../layouts/BaseLayout.astro";
 const city = "Fort Lauderdale";
 const county = "Broward County";
 const state = "FL";
-const phone = "+1-888-452-1505";
 
 const title = `Tree Removal Services in ${city}, ${state} | Emergency & Licensed Pros`;
 const description =
@@ -29,7 +28,6 @@ const canonical = "https://sftreeremoval.com/areas/fort-lauderdale-tree-removal/
   "@id": `${canonical}#localbusiness`,
   "name": `SF Tree Removal – ${city}`,
   "url": canonical,
-  "telephone": phone,
   "priceRange": "$$",
   "image": "https://sftreeremoval.com/images/og-default.jpg",
   "address": {
@@ -223,7 +221,7 @@ const canonical = "https://sftreeremoval.com/areas/fort-lauderdale-tree-removal/
 
       <!-- IMAGE -->
       <div class="relative">
-        <img
+        <img width="960" height="640"
           src="/images/cities/fort-lauderdale-tree-removal-1.jpg"
           alt={`Professional tree removal services in ${city}, FL`}
           class="rounded-3xl shadow-lg w-full h-auto object-cover"
@@ -316,7 +314,7 @@ const canonical = "https://sftreeremoval.com/areas/fort-lauderdale-tree-removal/
 
       <!-- IMAGE -->
       <div class="relative order-1 lg:order-2">
-        <img
+        <img width="960" height="640"
           src="/images/cities/fort-lauderdale-tree-removal-2.jpg"
           alt={`Certified arborist tree assessment in ${city}, Florida`}
           class="rounded-3xl shadow-lg w-full h-auto object-cover"
@@ -464,12 +462,12 @@ const canonical = "https://sftreeremoval.com/areas/fort-lauderdale-tree-removal/
     <!-- CTA -->
     <div class="mt-12 flex flex-wrap justify-center gap-6">
       <a
-        href="tel:18884521505"
+        href="/contact-us/"
         class="inline-flex items-center gap-4 rounded-full
-               bg-white px-12 py-5 text-teal-900 font-extrabold
+               bg-white px-10 py-4 text-teal-900 font-extrabold
                hover:bg-slate-100 transition"
       >
-        📞 Call Now – 1-888-452-1505
+        Request Emergency Service
       </a>
 
       <a
@@ -485,7 +483,7 @@ const canonical = "https://sftreeremoval.com/areas/fort-lauderdale-tree-removal/
   </div>
 
   <!-- BACKGROUND ACCENT -->
-  <div class="absolute inset-0 bg-gradient-to-b from-transparent to-black/20"></div>
+  <div class="absolute inset-0 bg-linear-to-b from-transparent to-black/20"></div>
 </section>
 <!-- ================= EMERGENCY RESPONSE PROCESS ================= -->
 <section class="relative bg-white py-32 overflow-hidden">
@@ -521,11 +519,11 @@ const canonical = "https://sftreeremoval.com/areas/fort-lauderdale-tree-removal/
           STEP 1
         </span>
         <h3 class="text-xl font-extrabold text-slate-900 mb-4">
-          Immediate Emergency Call
+          Emergency Request
         </h3>
         <p class="text-slate-600 leading-relaxed">
-          Once you contact our emergency line at
-          <strong>1-888-452-1505</strong>, our dispatch team gathers critical
+          Once you send an emergency request through our
+          <a href="/contact-us/" class="font-semibold text-teal-700 underline">contact form</a>, our dispatch team gathers critical
           details about the situation, location, and potential hazards to
           prioritize response time.
         </p>
@@ -655,7 +653,7 @@ const canonical = "https://sftreeremoval.com/areas/fort-lauderdale-tree-removal/
       <!-- RIGHT: HIGHLIGHTS -->
       <div class="grid grid-cols-1 sm:grid-cols-2 gap-8">
 
-        <div class="bg-white rounded-3xl p-8 shadow-sm">
+        <div class="bg-white rounded-3xl p-8 shadow-xs">
           <h3 class="text-lg font-extrabold text-slate-900 mb-3">
             Advanced Safety Equipment
           </h3>
@@ -665,7 +663,7 @@ const canonical = "https://sftreeremoval.com/areas/fort-lauderdale-tree-removal/
           </p>
         </div>
 
-        <div class="bg-white rounded-3xl p-8 shadow-sm">
+        <div class="bg-white rounded-3xl p-8 shadow-xs">
           <h3 class="text-lg font-extrabold text-slate-900 mb-3">
             Trained Emergency Crews
           </h3>
@@ -675,7 +673,7 @@ const canonical = "https://sftreeremoval.com/areas/fort-lauderdale-tree-removal/
           </p>
         </div>
 
-        <div class="bg-white rounded-3xl p-8 shadow-sm">
+        <div class="bg-white rounded-3xl p-8 shadow-xs">
           <h3 class="text-lg font-extrabold text-slate-900 mb-3">
             Insurance & Liability Protection
           </h3>
@@ -685,7 +683,7 @@ const canonical = "https://sftreeremoval.com/areas/fort-lauderdale-tree-removal/
           </p>
         </div>
 
-        <div class="bg-white rounded-3xl p-8 shadow-sm">
+        <div class="bg-white rounded-3xl p-8 shadow-xs">
           <h3 class="text-lg font-extrabold text-slate-900 mb-3">
             Local Compliance Expertise
           </h3>
@@ -701,12 +699,12 @@ const canonical = "https://sftreeremoval.com/areas/fort-lauderdale-tree-removal/
     <!-- CTA -->
     <div class="mt-20 text-center">
       <a
-        href="tel:1-888-452-1505"
+        href="/contact-us/"
         class="inline-flex items-center gap-4 rounded-full
                bg-teal-700 px-12 py-5 text-white font-extrabold
                hover:bg-teal-800 transition"
       >
-        📞 Call 1-888-452-1505 for Emergency Tree Removal
+        Request Emergency Service
       </a>
     </div>
 
@@ -810,12 +808,12 @@ const canonical = "https://sftreeremoval.com/areas/fort-lauderdale-tree-removal/
     <!-- CTA -->
     <div class="mt-20 text-center">
       <a
-        href="tel:1-888-452-1505"
+        href="/contact-us/"
         class="inline-flex items-center gap-4 rounded-full
                bg-teal-700 px-12 py-5 text-white font-extrabold
                hover:bg-teal-800 transition"
       >
-        📞 24/7 Emergency Tree Removal in Fort Lauderdale
+        24/7 Emergency Tree Removal in Fort Lauderdale
       </a>
     </div>
 
@@ -856,12 +854,12 @@ const canonical = "https://sftreeremoval.com/areas/fort-lauderdale-tree-removal/
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-10">
 
       <!-- STEP 1 -->
-      <div class="bg-white/10 backdrop-blur rounded-3xl p-8">
+      <div class="bg-white/10 backdrop-blur-sm rounded-3xl p-8">
         <span class="block text-sm font-bold text-teal-200 mb-3">
           STEP 1
         </span>
         <h3 class="text-xl font-extrabold mb-4">
-          Immediate Call & Dispatch
+          Immediate Dispatch
         </h3>
         <p class="text-white/90 leading-relaxed">
           Once you contact us, our emergency team is dispatched immediately.
@@ -871,7 +869,7 @@ const canonical = "https://sftreeremoval.com/areas/fort-lauderdale-tree-removal/
       </div>
 
       <!-- STEP 2 -->
-      <div class="bg-white/10 backdrop-blur rounded-3xl p-8">
+      <div class="bg-white/10 backdrop-blur-sm rounded-3xl p-8">
         <span class="block text-sm font-bold text-teal-200 mb-3">
           STEP 2
         </span>
@@ -886,7 +884,7 @@ const canonical = "https://sftreeremoval.com/areas/fort-lauderdale-tree-removal/
       </div>
 
       <!-- STEP 3 -->
-      <div class="bg-white/10 backdrop-blur rounded-3xl p-8">
+      <div class="bg-white/10 backdrop-blur-sm rounded-3xl p-8">
         <span class="block text-sm font-bold text-teal-200 mb-3">
           STEP 3
         </span>
@@ -901,7 +899,7 @@ const canonical = "https://sftreeremoval.com/areas/fort-lauderdale-tree-removal/
       </div>
 
       <!-- STEP 4 -->
-      <div class="bg-white/10 backdrop-blur rounded-3xl p-8">
+      <div class="bg-white/10 backdrop-blur-sm rounded-3xl p-8">
         <span class="block text-sm font-bold text-teal-200 mb-3">
           STEP 4
         </span>
@@ -928,12 +926,12 @@ const canonical = "https://sftreeremoval.com/areas/fort-lauderdale-tree-removal/
     <!-- CTA -->
     <div class="mt-16 text-center">
       <a
-        href="tel:1-888-452-1505"
+        href="/contact-us/"
         class="inline-flex items-center gap-4 rounded-full
                bg-white px-12 py-5 text-teal-900 font-extrabold
                hover:bg-slate-100 transition"
       >
-        📞 Call Now for Emergency Tree Removal
+        Request Emergency Service
       </a>
     </div>
 
@@ -1038,12 +1036,12 @@ const canonical = "https://sftreeremoval.com/areas/fort-lauderdale-tree-removal/
     <!-- CTA -->
     <div class="mt-16 text-center">
       <a
-        href="tel:1-888-452-1505"
+        href="/contact-us/"
         class="inline-flex items-center gap-4 rounded-full
                bg-teal-700 px-12 py-5 text-white font-extrabold
                hover:bg-teal-800 transition"
       >
-        📞 Call 1-888-452-1505 for Emergency Tree Removal
+        Request Emergency Service
       </a>
     </div>
 
@@ -1154,12 +1152,12 @@ const canonical = "https://sftreeremoval.com/areas/fort-lauderdale-tree-removal/
     <!-- CTA -->
     <div class="mt-16 text-center">
       <a
-        href="tel:1-888-452-1505"
+        href="/contact-us/"
         class="inline-flex items-center gap-4 rounded-full
                bg-teal-700 px-12 py-5 text-white font-extrabold
                hover:bg-teal-800 transition"
       >
-        📞 Emergency Tree Removal Near You in Fort Lauderdale
+        Emergency Tree Removal Near You in Fort Lauderdale
       </a>
     </div>
 
@@ -1263,12 +1261,12 @@ const canonical = "https://sftreeremoval.com/areas/fort-lauderdale-tree-removal/
     <!-- CTA -->
     <div class="mt-14 text-center">
       <a
-        href="tel:1-888-452-1505"
+        href="/contact-us/"
         class="inline-flex items-center gap-4 rounded-full
                bg-teal-700 px-10 py-4 text-white font-extrabold
                hover:bg-teal-800 transition"
       >
-        📞 Call 1-888-452-1505 for Emergency Tree Removal
+        Request Emergency Service
       </a>
     </div>
 
@@ -1282,7 +1280,7 @@ const canonical = "https://sftreeremoval.com/areas/fort-lauderdale-tree-removal/
     <h2 class="text-4xl md:text-5xl xl:text-6xl font-extrabold leading-tight">
       Emergency Tree Removal in Fort Lauderdale
       <br class="hidden sm:block" />
-      Call Now for Immediate Assistance
+      Request Immediate Assistance
     </h2>
 
     <!-- SUBTEXT -->
@@ -1296,12 +1294,12 @@ const canonical = "https://sftreeremoval.com/areas/fort-lauderdale-tree-removal/
     <!-- PRIMARY CTA -->
     <div class="mt-14">
       <a
-        href="tel:1-888-452-1505"
+        href="/contact-us/"
         class="inline-flex items-center gap-4 rounded-full
                bg-white px-14 py-6 text-teal-900 font-extrabold text-lg
                hover:bg-slate-100 transition"
       >
-        📞 Call 1-888-452-1505 Now
+        Request a Free Estimate
       </a>
     </div>
 

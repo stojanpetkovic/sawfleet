@@ -1,6 +1,6 @@
 <section class="relative overflow-hidden rounded-2xl bg-slate-950 text-white">
   <!-- BACKGROUND GRADIENT -->
-  <div class="absolute inset-0 bg-gradient-to-br from-teal-800/40 via-slate-900 to-slate-950"></div>
+  <div class="absolute inset-0 bg-linear-to-br from-teal-800/40 via-slate-900 to-slate-950"></div>
 
   <!-- DECORATIVE LINES (LEFT) -->
   <div class="absolute inset-y-0 left-0 w-40 bg-[repeating-linear-gradient(135deg,rgba(255,255,255,0.04)_0,rgba(255,255,255,0.04)_1px,transparent_1px,transparent_8px)]"></div>
@@ -55,22 +55,28 @@
            shadow-2xl"
   >
     <!-- IMAGE -->
-    <img
-      src="/images/hero/hero-main.jpg"
-      alt="Professional tree removal service in South Florida"
-      class="h-full w-full object-cover"
-      loading="eager"
-      decoding="async"
-    />
+    <picture>
+      <source srcset="/images/hero/hero-main-1280.webp" type="image/webp" />
+      <img
+        src="/images/hero/hero-main-1280.jpg"
+        alt="Professional tree removal service in South Florida"
+        width="1280"
+        height="960"
+        class="h-full w-full object-cover"
+        loading="eager"
+        fetchpriority="high"
+        decoding="async"
+      />
+    </picture>
 
     <!-- SUBTLE OVERLAY -->
-    <div class="absolute inset-0 bg-gradient-to-t from-black/25 via-transparent to-transparent"></div>
+    <div class="absolute inset-0 bg-linear-to-t from-black/25 via-transparent to-transparent"></div>
   </div>
 
   <!-- RATING BADGE -->
   <div
     class="absolute top-6 left-6 rounded-xl bg-white/95 px-6 py-4
-           text-slate-900 shadow-lg backdrop-blur"
+           text-slate-900 shadow-lg backdrop-blur-sm"
   >
     <div class="flex items-center gap-2 text-3xl font-extrabold leading-none">
       4.8 <span class="text-teal-700">★</span>

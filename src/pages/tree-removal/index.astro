@@ -2,7 +2,6 @@
 import BaseLayout from "../../layouts/BaseLayout.astro";
 import LocalBusinessSchema from "../../components/LocalBusinessSchema.astro";
 
-const phone = "1-888-452-1505";
 ---
 
 <BaseLayout
@@ -42,14 +41,6 @@ const phone = "1-888-452-1505";
     <div class="mt-14 flex flex-wrap justify-center gap-6">
 
       <!-- PRIMARY -->
-      <a
-        href={`tel:${phone}`}
-        class="inline-flex items-center gap-4 rounded-full
-               bg-white px-10 py-4 text-teal-800 font-extrabold
-               hover:bg-slate-100 transition"
-      >
-        📞 Call Now
-      </a>
 
       <!-- SECONDARY -->
       <a
@@ -322,15 +313,15 @@ const phone = "1-888-452-1505";
 
         <!-- CTA -->
         <div class="flex flex-wrap gap-6">
-
           <a
-            href="tel:18884521505"
+            href="/contact-us/"
             class="inline-flex items-center gap-4 rounded-full
-                   bg-white px-10 py-4 text-teal-800 font-extrabold
+                   bg-white px-10 py-4 text-teal-900 font-extrabold
                    hover:bg-slate-100 transition"
           >
-            📞 Call Emergency Line
+            Request Emergency Service
           </a>
+
 
           <a
             href="/emergency-tree-removal/"
@@ -465,7 +456,7 @@ const phone = "1-888-452-1505";
 
       <!-- MIAMI -->
       <a
-        href="/miami-tree-removal/"
+        href="/areas/miami-tree-removal/"
         class="group bg-white rounded-3xl p-8 transition hover:shadow-lg"
       >
         <h3 class="text-xl font-extrabold text-slate-900 mb-3">
@@ -483,7 +474,7 @@ const phone = "1-888-452-1505";
 
       <!-- FORT LAUDERDALE -->
       <a
-        href="/fort-lauderdale-tree-removal/"
+        href="/areas/fort-lauderdale-tree-removal/"
         class="group bg-white rounded-3xl p-8 transition hover:shadow-lg"
       >
         <h3 class="text-xl font-extrabold text-slate-900 mb-3">
@@ -501,7 +492,7 @@ const phone = "1-888-452-1505";
 
       <!-- HOLLYWOOD -->
       <a
-        href="/hollywood-tree-service/"
+        href="/areas/hollywood-tree-service/"
         class="group bg-white rounded-3xl p-8 transition hover:shadow-lg"
       >
         <h3 class="text-xl font-extrabold text-slate-900 mb-3">
@@ -519,7 +510,7 @@ const phone = "1-888-452-1505";
 
       <!-- PEMBROKE PINES -->
       <a
-        href="/pembroke-pines-tree-removal/"
+        href="/areas/pembroke-pines-tree-removal/"
         class="group bg-white rounded-3xl p-8 transition hover:shadow-lg"
       >
         <h3 class="text-xl font-extrabold text-slate-900 mb-3">
@@ -537,7 +528,7 @@ const phone = "1-888-452-1505";
 
       <!-- BOCA RATON -->
       <a
-        href="/boca-raton-tree-removal/"
+        href="/areas/boca-raton-tree-removal/"
         class="group bg-white rounded-3xl p-8 transition hover:shadow-lg"
       >
         <h3 class="text-xl font-extrabold text-slate-900 mb-3">
@@ -700,11 +691,11 @@ const phone = "1-888-452-1505";
 
       <div class="mt-12 flex justify-center gap-6">
         <a
-          href={`tel:${phone}`}
+          href="/contact-us/"
           class="inline-flex items-center gap-4 rounded-full
                  bg-white px-10 py-4 text-teal-800 font-extrabold"
         >
-          📞 Call Now
+          Request a Free Estimate
         </a>
       </div>
 

@@ -1,0 +1,78 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import PageHero from "../../components/PageHero.astro";
+import CtaBand from "../../components/CtaBand.astro";
+
+const principles = [
+  { icon: "🦺", title: "Safety first", text: "Every job starts with a plan for how each piece of the tree comes down and where it lands, so people and property stay safe." },
+  { icon: "📋", title: "Clear estimates", text: "You know what's included before we start: removal, stump grinding, cleanup and any permit work." },
+  { icon: "🏡", title: "Respect for your property", text: "We protect lawns, pavers, fences and roofs while we work, and leave the yard clean." },
+  { icon: "🌳", title: "Honest advice", text: "If a tree can be saved with the right pruning, we'll tell you, rather than sell you a removal you don't need." },
+];
+---
+
+<BaseLayout
+  title="About SF Tree Removal | Tree Service Across South Florida"
+  description="SF Tree Removal provides tree removal, emergency storm response, trimming and arborist services across Miami-Dade, Broward and Palm Beach County."
+>
+  <PageHero
+    badge="ABOUT US"
+    title="About SF Tree Removal"
+    lead="A South Florida tree service focused on one thing: taking care of trees, and the homes around them, safely."
+  />
+
+  <section class="bg-white py-24">
+    <div class="mx-auto max-w-3xl px-6">
+      <div class="prose-sf">
+        <h2>Who we are</h2>
+        <p>
+          SF Tree Removal serves homeowners, HOAs and businesses across Miami-Dade, Broward and Palm Beach County. Our work
+          ranges from removing a single palm next to a pool to taking down large oaks over a roof, clearing storm damage,
+          and assessing trees that may or may not need to go.
+        </p>
+        <p>
+          South Florida is hard on trees. Hurricanes, heavy rain, sandy soil and fast-growing species mean trees here can
+          become a risk faster than people expect. Our job is to spot those risks early and deal with them before the
+          next storm does.
+        </p>
+
+        <h2>What we do</h2>
+        <ul>
+          <li><a href="/tree-removal/">Tree removal</a>, including large trees close to houses, pools and power lines</li>
+          <li><a href="/emergency-tree-removal/">Emergency tree removal</a> after storms and accidents</li>
+          <li><a href="/tree-services/">Tree services</a>: trimming, pruning, palm work and stump grinding</li>
+          <li><a href="/certified-arborist/">Arborist assessments</a> and documentation for permits and insurance</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <section class="bg-[#f4f8f6] py-24">
+    <div class="mx-auto max-w-6xl px-6">
+      <h2 class="mb-14 text-center text-3xl font-extrabold text-slate-900 md:text-4xl">How We Work</h2>
+      <div class="grid gap-8 sm:grid-cols-2 lg:grid-cols-4">
+        {
+          principles.map((p) => (
+            <div class="rounded-3xl bg-white p-8">
+              <div class="text-3xl" aria-hidden="true">{p.icon}</div>
+              <h3 class="mt-4 text-lg font-extrabold text-slate-900">{p.title}</h3>
+              <p class="mt-3 text-slate-600">{p.text}</p>
+            </div>
+          ))
+        }
+      </div>
+    </div>
+  </section>
+
+  <section class="bg-white py-24">
+    <div class="mx-auto max-w-3xl px-6 text-center">
+      <h2 class="text-3xl font-extrabold text-slate-900 md:text-4xl">Where We Work</h2>
+      <p class="mt-6 text-lg text-slate-600">
+        From Miami to Fort Lauderdale, Hollywood, Pembroke Pines and Boca Raton, and everywhere in between.
+      </p>
+      <a href="/areas/" class="mt-8 inline-flex items-center gap-2 font-bold text-teal-700 hover:underline">See all service areas ↗</a>
+    </div>
+  </section>
+
+  <CtaBand />
+</BaseLayout>

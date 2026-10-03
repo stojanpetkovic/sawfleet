@@ -1,0 +1,27 @@
+---
+// Closing call to action, matching the end of the service and area pages.
+interface Props {
+  title?: string;
+  text?: string;
+}
+const {
+  title = "Need a Tree Removed or Checked?",
+  text = "Tell us about the job and get a free estimate. For fallen or dangerous trees, mark it as an emergency and we'll respond first.",
+} = Astro.props;
+---
+
+<section class="bg-teal-800 py-28 text-white">
+  <div class="mx-auto max-w-5xl px-6 text-center">
+    <h2 class="text-4xl font-extrabold leading-tight md:text-5xl">{title}</h2>
+    <p class="mx-auto mt-8 max-w-3xl text-lg text-white/90">{text}</p>
+    <div class="mt-12">
+      <a
+        href="/contact-us/"
+        class="inline-flex items-center gap-4 rounded-full bg-white px-12 py-5 font-extrabold text-teal-800 transition hover:bg-slate-100"
+      >
+        Request a Free Estimate
+        <span class="flex h-10 w-10 items-center justify-center rounded-full bg-teal-700 text-white">↗</span>
+      </a>
+    </div>
+  </div>
+</section>

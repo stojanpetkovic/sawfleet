@@ -1,0 +1,150 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import LocalBusinessSchema from "../../components/LocalBusinessSchema.astro";
+import { business } from "../../config/business";
+
+const services = [
+  "Tree Removal",
+  "Emergency Tree Removal",
+  "Tree Trimming / Pruning",
+  "Stump Grinding",
+  "Arborist Assessment",
+  "Not sure yet",
+];
+
+const cities = [
+  "Miami",
+  "Fort Lauderdale",
+  "Hollywood",
+  "Pembroke Pines",
+  "Boca Raton",
+  "Other Broward County",
+  "Other Miami-Dade County",
+  "Other Palm Beach County",
+];
+
+const inputClass =
+  "w-full rounded-xl border border-slate-300 bg-white px-4 py-3 text-slate-900 outline-hidden transition focus:border-teal-600 focus:ring-2 focus:ring-teal-600/20";
+---
+
+<BaseLayout
+  title="Contact SF Tree Removal | Free Tree Service Estimate in South Florida"
+  description="Request a free estimate for tree removal, trimming or emergency service in South Florida. Send the form and we'll get back to you quickly."
+>
+  <LocalBusinessSchema />
+
+  <!-- ================= HERO ================= -->
+  <section class="bg-teal-900 py-24 text-white">
+    <div class="mx-auto max-w-4xl px-6 text-center">
+      <span class="mb-6 inline-block rounded-full border border-dashed border-white/60 px-4 py-1 text-xs font-bold tracking-widest">
+        FREE ESTIMATES
+      </span>
+      <h1 class="text-4xl font-extrabold leading-tight md:text-5xl">Contact SF Tree Removal</h1>
+      <p class="mx-auto mt-6 max-w-2xl text-lg text-white/90">
+        Tell us about the tree and the property. We'll get back to you with next steps and a free estimate, usually
+        the same day.
+      </p>
+    </div>
+  </section>
+
+  <!-- ================= FORM + INFO ================= -->
+  <section class="bg-[#f4f8f6] py-24">
+    <div class="mx-auto grid max-w-6xl gap-10 px-6 lg:grid-cols-3">
+      <!-- FORM -->
+      <div class="rounded-2xl bg-white p-8 shadow-sm md:p-10 lg:col-span-2">
+        <h2 class="text-2xl font-extrabold text-slate-900">Request a Free Estimate</h2>
+        <p class="mt-2 text-slate-600">Fields marked * are required.</p>
+
+        <form data-lead-form="contact" data-lead-ignore class="mt-8 space-y-5">
+          <div class="grid gap-5 md:grid-cols-2">
+            <label class="block">
+              <span class="mb-2 block text-sm font-semibold text-slate-800">Full name *</span>
+              <input name="name" required autocomplete="name" class={inputClass} />
+            </label>
+            <label class="block">
+              <span class="mb-2 block text-sm font-semibold text-slate-800">Phone *</span>
+              <input name="phone" type="tel" required autocomplete="tel" class={inputClass} />
+            </label>
+          </div>
+
+          <label class="block">
+            <span class="mb-2 block text-sm font-semibold text-slate-800">Email</span>
+            <input name="email" type="email" autocomplete="email" class={inputClass} />
+          </label>
+
+          <div class="grid gap-5 md:grid-cols-2">
+            <label class="block">
+              <span class="mb-2 block text-sm font-semibold text-slate-800">Service needed</span>
+              <select name="service" class={inputClass}>
+                {services.map((s) => <option value={s}>{s}</option>)}
+              </select>
+            </label>
+            <label class="block">
+              <span class="mb-2 block text-sm font-semibold text-slate-800">City</span>
+              <select name="city" class={inputClass}>
+                {cities.map((c) => <option value={c}>{c}</option>)}
+              </select>
+            </label>
+          </div>
+
+          <label class="block">
+            <span class="mb-2 block text-sm font-semibold text-slate-800">Tell us about the job *</span>
+            <textarea
+              name="message"
+              required
+              rows="5"
+              placeholder="Type of tree, approximate size, how close it is to the house or power lines, any damage…"
+              class={inputClass}></textarea>
+          </label>
+
+          <!-- Left empty by people; bots fill it in. -->
+          <input name="website_hp" tabindex="-1" autocomplete="off" class="hidden" aria-hidden="true" />
+
+          <p data-lead-error hidden class="rounded-xl bg-red-50 px-4 py-3 text-sm text-red-700" role="alert"></p>
+
+          <button
+            type="submit"
+            class="inline-flex w-full items-center justify-center gap-3 rounded-full bg-teal-700 px-8 py-4 font-bold text-white transition hover:bg-teal-800 md:w-auto"
+          >
+            Send Request ↗
+          </button>
+          <p class="text-xs text-slate-500">
+            By sending this form you agree to our <a href="/privacy-policy/" class="underline">Privacy Policy</a>.
+            We only use your details to answer your request.
+          </p>
+        </form>
+      </div>
+
+      <!-- INFO -->
+      <aside class="space-y-6">
+        <div class="rounded-2xl bg-teal-700 p-8 text-white">
+          <h2 class="text-lg font-bold">Need help right now?</h2>
+          <p class="mt-2 text-sm text-white/85">
+            For fallen trees, storm damage or a tree on a house or power line, choose Emergency Tree Removal in the form
+            and we'll handle your request first.
+          </p>
+          <p class="mt-4 text-xs text-white/75">Emergency requests answered 24/7</p>
+        </div>
+
+        <div class="rounded-2xl bg-white p-8 shadow-sm">
+          <h2 class="text-lg font-bold text-slate-900">Contact details</h2>
+          <ul class="mt-4 space-y-3 text-sm text-slate-700">
+            <li><strong>Based in:</strong> {business.city}, {business.region}</li>
+          </ul>
+        </div>
+
+        <div class="rounded-2xl bg-white p-8 shadow-sm">
+          <h2 class="text-lg font-bold text-slate-900">Areas we serve</h2>
+          <ul class="mt-4 space-y-2 text-sm">
+            <li><a href="/areas/miami-tree-removal/" class="text-teal-700 hover:underline">Miami</a></li>
+            <li><a href="/areas/fort-lauderdale-tree-removal/" class="text-teal-700 hover:underline">Fort Lauderdale</a></li>
+            <li><a href="/areas/hollywood-tree-service/" class="text-teal-700 hover:underline">Hollywood</a></li>
+            <li><a href="/areas/pembroke-pines-tree-removal/" class="text-teal-700 hover:underline">Pembroke Pines</a></li>
+            <li><a href="/areas/boca-raton-tree-removal/" class="text-teal-700 hover:underline">Boca Raton</a></li>
+            <li><a href="/areas/" class="font-semibold text-slate-800 hover:underline">All service areas →</a></li>
+          </ul>
+        </div>
+      </aside>
+    </div>
+  </section>
+</BaseLayout>

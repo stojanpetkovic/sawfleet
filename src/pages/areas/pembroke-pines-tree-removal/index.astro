@@ -4,7 +4,6 @@ import BaseLayout from "../../../layouts/BaseLayout.astro";
 const city = "Pembroke Pines";
 const county = "Broward County";
 const state = "FL";
-const phone = "+1-888-452-1505";
 
 const title = `${city} Tree Removal Services | SF Tree Removal`;
 const description =
@@ -29,7 +28,6 @@ const canonical = "https://sftreeremoval.com/areas/pembroke-pines-tree-removal/"
   "@id": `${canonical}#localbusiness`,
   "name": `SF Tree Removal – ${city}`,
   "url": canonical,
-  "telephone": phone,
   "priceRange": "$$",
   "image": "https://sftreeremoval.com/images/og-default.jpg",
   "address": {
@@ -211,14 +209,6 @@ const canonical = "https://sftreeremoval.com/areas/pembroke-pines-tree-removal/"
       </a>
 
       <!-- SECONDARY -->
-      <a
-        href="tel:18884521505"
-        class="inline-flex items-center gap-4 rounded-full
-               border border-white/70 px-12 py-5 text-white font-bold
-               hover:bg-white/10 transition"
-      >
-        📞 24/7 Emergency Service
-      </a>
 
     </div>
 
@@ -286,7 +276,7 @@ const canonical = "https://sftreeremoval.com/areas/pembroke-pines-tree-removal/"
       <!-- SERVICE CARD -->
       <a
         href="/tree-removal/"
-        class="group bg-white rounded-3xl p-10 shadow-sm transition
+        class="group bg-white rounded-3xl p-10 shadow-xs transition
                hover:shadow-lg"
       >
         <h3 class="text-xl font-extrabold text-slate-900 mb-4">
@@ -301,7 +291,7 @@ const canonical = "https://sftreeremoval.com/areas/pembroke-pines-tree-removal/"
       <!-- SERVICE CARD -->
       <a
         href="/emergency-tree-removal/"
-        class="group bg-white rounded-3xl p-10 shadow-sm transition
+        class="group bg-white rounded-3xl p-10 shadow-xs transition
                hover:shadow-lg"
       >
         <h3 class="text-xl font-extrabold text-slate-900 mb-4">
@@ -316,7 +306,7 @@ const canonical = "https://sftreeremoval.com/areas/pembroke-pines-tree-removal/"
       <!-- SERVICE CARD -->
       <a
         href="/certified-arborist/"
-        class="group bg-white rounded-3xl p-10 shadow-sm transition
+        class="group bg-white rounded-3xl p-10 shadow-xs transition
                hover:shadow-lg"
       >
         <h3 class="text-xl font-extrabold text-slate-900 mb-4">
@@ -391,7 +381,7 @@ const canonical = "https://sftreeremoval.com/areas/pembroke-pines-tree-removal/"
       <!-- RIGHT IMAGE -->
       <div class="relative">
         <div class="overflow-hidden rounded-3xl">
-          <img
+          <img width="960" height="638"
             src="/images/tree-removal/pembroke-pines-hazard-tree.jpg"
             alt="Hazardous tree removal in Pembroke Pines Florida"
             class="w-full h-full object-cover"
@@ -413,7 +403,7 @@ const canonical = "https://sftreeremoval.com/areas/pembroke-pines-tree-removal/"
       <!-- LEFT IMAGE -->
       <div class="relative">
         <div class="overflow-hidden rounded-3xl">
-          <img
+          <img width="960" height="960"
             src="/images/emergency/pembroke-pines-storm-tree.jpg"
             alt="Emergency tree removal after storm in Pembroke Pines Florida"
             class="w-full h-full object-cover"
@@ -453,12 +443,12 @@ const canonical = "https://sftreeremoval.com/areas/pembroke-pines-tree-removal/"
         <!-- CTA -->
         <div class="flex flex-wrap gap-6">
           <a
-            href="tel:18884521505"
+            href="/contact-us/"
             class="inline-flex items-center gap-4 rounded-full
                    bg-white px-10 py-4 text-teal-900 font-extrabold
                    hover:bg-slate-100 transition"
           >
-            📞 Call for Emergency Service
+            Request Emergency Service
           </a>
 
           <a
@@ -525,7 +515,7 @@ const canonical = "https://sftreeremoval.com/areas/pembroke-pines-tree-removal/"
       <!-- RIGHT IMAGE -->
       <div class="relative">
         <div class="overflow-hidden rounded-3xl">
-          <img
+          <img width="960" height="640"
             src="/images/equipment/crane-tree-removal-pembroke-pines.jpg"
             alt="Crane-assisted tree removal in Pembroke Pines Florida"
             class="w-full h-full object-cover"
@@ -568,7 +558,7 @@ const canonical = "https://sftreeremoval.com/areas/pembroke-pines-tree-removal/"
     <!-- GRID -->
     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-10">
 
-      <div class="bg-white rounded-3xl p-10 shadow-sm">
+      <div class="bg-white rounded-3xl p-10 shadow-xs">
         <h3 class="text-xl font-extrabold text-slate-900 mb-4">
           Local Pembroke Pines Experience
         </h3>
@@ -579,7 +569,7 @@ const canonical = "https://sftreeremoval.com/areas/pembroke-pines-tree-removal/"
         </p>
       </div>
 
-      <div class="bg-white rounded-3xl p-10 shadow-sm">
+      <div class="bg-white rounded-3xl p-10 shadow-xs">
         <h3 class="text-xl font-extrabold text-slate-900 mb-4">
           Licensed & Fully Insured
         </h3>
@@ -590,7 +580,7 @@ const canonical = "https://sftreeremoval.com/areas/pembroke-pines-tree-removal/"
         </p>
       </div>
 
-      <div class="bg-white rounded-3xl p-10 shadow-sm">
+      <div class="bg-white rounded-3xl p-10 shadow-xs">
         <h3 class="text-xl font-extrabold text-slate-900 mb-4">
           24/7 Emergency Response
         </h3>
@@ -601,7 +591,7 @@ const canonical = "https://sftreeremoval.com/areas/pembroke-pines-tree-removal/"
         </p>
       </div>
 
-      <div class="bg-white rounded-3xl p-10 shadow-sm">
+      <div class="bg-white rounded-3xl p-10 shadow-xs">
         <h3 class="text-xl font-extrabold text-slate-900 mb-4">
           Advanced Equipment
         </h3>
@@ -612,7 +602,7 @@ const canonical = "https://sftreeremoval.com/areas/pembroke-pines-tree-removal/"
         </p>
       </div>
 
-      <div class="bg-white rounded-3xl p-10 shadow-sm">
+      <div class="bg-white rounded-3xl p-10 shadow-xs">
         <h3 class="text-xl font-extrabold text-slate-900 mb-4">
           Safety-First Process
         </h3>
@@ -623,7 +613,7 @@ const canonical = "https://sftreeremoval.com/areas/pembroke-pines-tree-removal/"
         </p>
       </div>
 
-      <div class="bg-white rounded-3xl p-10 shadow-sm">
+      <div class="bg-white rounded-3xl p-10 shadow-xs">
         <h3 class="text-xl font-extrabold text-slate-900 mb-4">
           Clear, Honest Pricing
         </h3>
@@ -783,7 +773,7 @@ const canonical = "https://sftreeremoval.com/areas/pembroke-pines-tree-removal/"
     <!-- FAQ BLOCKS -->
     <div class="space-y-6 text-left">
 
-      <div class="bg-white rounded-2xl p-6 shadow-sm">
+      <div class="bg-white rounded-2xl p-6 shadow-xs">
         <h3 class="font-bold text-slate-900 mb-2">
           Do you offer tree removal services in Pembroke Pines?
         </h3>
@@ -794,7 +784,7 @@ const canonical = "https://sftreeremoval.com/areas/pembroke-pines-tree-removal/"
         </p>
       </div>
 
-      <div class="bg-white rounded-2xl p-6 shadow-sm">
+      <div class="bg-white rounded-2xl p-6 shadow-xs">
         <h3 class="font-bold text-slate-900 mb-2">
           Is emergency tree removal available in Pembroke Pines?
         </h3>
@@ -805,7 +795,7 @@ const canonical = "https://sftreeremoval.com/areas/pembroke-pines-tree-removal/"
         </p>
       </div>
 
-      <div class="bg-white rounded-2xl p-6 shadow-sm">
+      <div class="bg-white rounded-2xl p-6 shadow-xs">
         <h3 class="font-bold text-slate-900 mb-2">
           Do I need a permit to remove a tree in Pembroke Pines?
         </h3>
@@ -816,7 +806,7 @@ const canonical = "https://sftreeremoval.com/areas/pembroke-pines-tree-removal/"
         </p>
       </div>
 
-      <div class="bg-white rounded-2xl p-6 shadow-sm">
+      <div class="bg-white rounded-2xl p-6 shadow-xs">
         <h3 class="font-bold text-slate-900 mb-2">
           Are your tree removal services licensed and insured?
         </h3>
@@ -827,7 +817,7 @@ const canonical = "https://sftreeremoval.com/areas/pembroke-pines-tree-removal/"
         </p>
       </div>
 
-      <div class="bg-white rounded-2xl p-6 shadow-sm">
+      <div class="bg-white rounded-2xl p-6 shadow-xs">
         <h3 class="font-bold text-slate-900 mb-2">
           Can you remove trees near homes or power lines?
         </h3>
@@ -858,7 +848,7 @@ const canonical = "https://sftreeremoval.com/areas/pembroke-pines-tree-removal/"
     <h2 class="text-4xl md:text-5xl font-extrabold leading-tight mb-8">
       Need Tree Removal in Pembroke Pines?
       <br class="hidden sm:block" />
-      Call Now for Immediate Assistance
+      Request Immediate Assistance
     </h2>
 
     <!-- SUBTEXT -->
@@ -871,14 +861,6 @@ const canonical = "https://sftreeremoval.com/areas/pembroke-pines-tree-removal/"
 
     <!-- CTA BUTTONS -->
     <div class="flex flex-wrap justify-center gap-6">
-      <a
-        href={`tel:${phone}`}
-        class="inline-flex items-center gap-4 rounded-full
-               bg-white px-12 py-5 text-teal-900 font-extrabold
-               hover:bg-slate-100 transition"
-      >
-        📞 Call Now
-      </a>
 
       <a
         href="/contact-us/"

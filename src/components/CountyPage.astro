@@ -1,0 +1,124 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import LocalBusinessSchema from "./LocalBusinessSchema.astro";
+import PageHero from "./PageHero.astro";
+import CtaBand from "./CtaBand.astro";
+
+// One template for the county pages, so every county reads the same way:
+// what we do there, the cities we cover, the trees and the rules locally.
+interface City {
+  name: string;
+  href?: string;
+}
+interface Props {
+  county: string;
+  title: string;
+  description: string;
+  lead: string;
+  intro: string[];
+  cities: City[];
+  trees: { name: string; note: string }[];
+  permits: string[];
+}
+
+const { county, title, description, lead, intro, cities, trees, permits } = Astro.props;
+
+const services = [
+  { name: "Tree Removal", href: "/tree-removal/", text: "Safe removal of dead, dying, leaning and unwanted trees, including large trees close to homes." },
+  { name: "Emergency Tree Removal", href: "/emergency-tree-removal/", text: "Fast response when a storm brings a tree down on a roof, car, fence or driveway." },
+  { name: "Tree Services", href: "/tree-services/", text: "Trimming, pruning, palm work and stump grinding to keep trees healthy and clear of the house." },
+  { name: "Certified Arborist", href: "/certified-arborist/", text: "Tree health and risk assessments, and documentation when a permit or exemption needs it." },
+];
+---
+
+<BaseLayout title={title} description={description}>
+  <LocalBusinessSchema />
+
+  <PageHero badge={`${county.toUpperCase()}, FL`} title={`Tree Removal in ${county}`} lead={lead} />
+
+  <!-- INTRO -->
+  <section class="bg-white py-24">
+    <div class="mx-auto max-w-4xl px-6 text-center">
+      <h2 class="mb-8 text-3xl font-extrabold text-slate-900 md:text-4xl">Local Tree Service Across {county}</h2>
+      {intro.map((p) => <p class="mt-5 text-lg leading-relaxed text-slate-600">{p}</p>)}
+    </div>
+  </section>
+
+  <!-- SERVICES -->
+  <section class="bg-[#f4f8f6] py-24">
+    <div class="mx-auto max-w-7xl px-6">
+      <h2 class="mb-14 text-center text-3xl font-extrabold text-slate-900 md:text-4xl">Our Services in {county}</h2>
+      <div class="grid gap-8 sm:grid-cols-2 lg:grid-cols-4">
+        {
+          services.map((s) => (
+            <a href={s.href} class="group rounded-3xl bg-white p-8 transition hover:shadow-lg">
+              <h3 class="mb-3 text-xl font-extrabold text-slate-900">{s.name}</h3>
+              <p class="text-slate-600">{s.text}</p>
+              <span class="mt-5 inline-flex items-center gap-2 font-semibold text-teal-700">
+                Learn more <span class="transition group-hover:translate-x-1">↗</span>
+              </span>
+            </a>
+          ))
+        }
+      </div>
+    </div>
+  </section>
+
+  <!-- CITIES -->
+  <section class="bg-white py-24">
+    <div class="mx-auto max-w-5xl px-6">
+      <h2 class="mb-6 text-center text-3xl font-extrabold text-slate-900 md:text-4xl">Cities We Serve in {county}</h2>
+      <p class="mx-auto mb-12 max-w-3xl text-center text-lg text-slate-600">
+        Not sure if we cover your street? <a href="/contact-us/" class="font-semibold text-teal-700 underline">Ask us</a>,
+        we work across the whole county.
+      </p>
+      <ul class="grid grid-cols-2 gap-4 sm:grid-cols-3">
+        {
+          cities.map((c) => (
+            <li>
+              {c.href ? (
+                <a href={c.href} class="block rounded-2xl border border-teal-700 bg-teal-700 px-5 py-4 font-bold text-white transition hover:bg-teal-800">
+                  {c.name} ↗
+                </a>
+              ) : (
+                <span class="block rounded-2xl border border-slate-200 px-5 py-4 font-semibold text-slate-800">{c.name}</span>
+              )}
+            </li>
+          ))
+        }
+      </ul>
+    </div>
+  </section>
+
+  <!-- TREES -->
+  <section class="bg-[#f4f8f6] py-24">
+    <div class="mx-auto max-w-6xl px-6">
+      <h2 class="mb-14 text-center text-3xl font-extrabold text-slate-900 md:text-4xl">Trees We Work With in {county}</h2>
+      <div class="grid gap-6 md:grid-cols-2">
+        {
+          trees.map((t) => (
+            <div class="rounded-3xl bg-white p-8">
+              <h3 class="mb-2 text-lg font-extrabold text-slate-900">{t.name}</h3>
+              <p class="text-slate-600">{t.note}</p>
+            </div>
+          ))
+        }
+      </div>
+    </div>
+  </section>
+
+  <!-- PERMITS -->
+  <section class="bg-white py-24">
+    <div class="mx-auto max-w-4xl px-6">
+      <h2 class="mb-8 text-3xl font-extrabold text-slate-900 md:text-4xl">Tree Removal Permits in {county}</h2>
+      <div class="prose-sf max-w-none">
+        {permits.map((p) => <p set:html={p} />)}
+        <p>
+          Read more in our guide to <a href="/tree-removal-permits/">tree removal permits in South Florida</a>.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <CtaBand title={`Need Tree Removal in ${county}?`} />
+</BaseLayout>

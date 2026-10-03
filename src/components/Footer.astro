@@ -1,3 +1,8 @@
+---
+import { business } from "../config/business";
+const year = new Date().getFullYear();
+---
+
 <footer class="bg-[#dfeceb] text-slate-800">
 
   <!-- ================= CTA / NEWSLETTER ================= -->
@@ -21,39 +26,48 @@
           class="mt-8 inline-flex items-center gap-4 rounded-full bg-teal-700 px-6 py-3
                  text-white font-bold hover:bg-teal-800 transition"
         >
-          <span class="flex -space-x-3">
-            <img src="/images/avatars/1.jpg" class="h-8 w-8 rounded-full border-2 border-white" alt="" />
-            <img src="/images/avatars/2.jpg" class="h-8 w-8 rounded-full border-2 border-white" alt="" />
-            <img src="/images/avatars/3.jpg" class="h-8 w-8 rounded-full border-2 border-white" alt="" />
+          <span class="flex -space-x-2" aria-hidden="true">
+            <span class="grid h-8 w-8 place-items-center rounded-full border-2 border-white bg-teal-600 text-sm">📝</span>
+            <span class="grid h-8 w-8 place-items-center rounded-full border-2 border-white bg-teal-600 text-sm">🌳</span>
+            <span class="grid h-8 w-8 place-items-center rounded-full border-2 border-white bg-teal-600 text-sm">🛡️</span>
           </span>
           Let’s Talk →
         </a>
       </div>
 
-      <!-- RIGHT -->
+      <!-- RIGHT: quick estimate request -->
       <div class="rounded-2xl bg-teal-700 p-8 text-white">
-        <h3 class="text-xl font-bold mb-6">
-          Get Tree Care Tips & Updates
-        </h3>
+        <h3 class="text-xl font-bold">Get a Free Estimate</h3>
+        <p class="mt-2 text-sm text-white/85">Leave your number and we'll call you back, usually the same day.</p>
 
-        <form class="flex items-center bg-white rounded-full overflow-hidden">
-          <input
-            type="email"
-            placeholder="Enter your email"
-            class="flex-1 px-5 py-3 text-sm text-slate-800 outline-none"
-          />
-          <button
-            type="submit"
-            class="flex items-center gap-2 bg-teal-800 px-6 py-3 font-bold hover:bg-teal-900 transition"
-          >
-            Subscribe ↗
+        <form data-lead-form="footer-estimate" data-lead-ignore class="mt-6 space-y-3">
+          <div class="grid gap-3 sm:grid-cols-2">
+            <label class="block">
+              <span class="sr-only">Your name</span>
+              <input name="name" required autocomplete="name" placeholder="Your name"
+                class="w-full rounded-full bg-white px-5 py-3 text-sm text-slate-800 outline-hidden focus:ring-2 focus:ring-teal-300" />
+            </label>
+            <label class="block">
+              <span class="sr-only">Phone number</span>
+              <input name="phone" type="tel" required autocomplete="tel" placeholder="Phone number"
+                class="w-full rounded-full bg-white px-5 py-3 text-sm text-slate-800 outline-hidden focus:ring-2 focus:ring-teal-300" />
+            </label>
+          </div>
+          <label class="block">
+            <span class="sr-only">What do you need?</span>
+            <input name="message" placeholder="What do you need? (e.g. remove a palm tree)"
+              class="w-full rounded-full bg-white px-5 py-3 text-sm text-slate-800 outline-hidden focus:ring-2 focus:ring-teal-300" />
+          </label>
+          <!-- Left empty by people; bots fill it in. -->
+          <input name="website_hp" tabindex="-1" autocomplete="off" class="hidden" aria-hidden="true" />
+          <button type="submit" class="w-full rounded-full bg-teal-900 px-6 py-3 font-bold transition hover:bg-teal-950">
+            Request a Call Back ↗
           </button>
+          <p data-lead-error hidden class="rounded-lg bg-white/15 px-4 py-2 text-sm" role="alert"></p>
+          <p class="text-xs text-white/75">
+            By sending this form you agree to our <a href="/privacy-policy/" class="underline">Privacy Policy</a>.
+          </p>
         </form>
-
-        <label class="mt-4 flex items-center gap-2 text-sm text-white/90">
-          <input type="checkbox" class="accent-white" />
-          I agree to the Terms & Conditions
-        </label>
       </div>
 
     </div>
@@ -105,18 +119,6 @@
         <h4 class="font-bold mb-4 text-slate-900">Our Office</h4>
         <ul class="space-y-3 text-sm text-slate-700">
           <li>South Florida, USA</li>
-          <li>
-            <strong>P:</strong>{" "}
-            <a href="tel:18884521505" class="hover:text-teal-700">
-              1-888-452-1505
-            </a>
-          </li>
-          <li>
-            <strong>E:</strong>{" "}
-            <a href="mailto:info@sftreeremoval.com" class="hover:text-teal-700">
-              info@sftreeremoval.com
-            </a>
-          </li>
           <li class="flex items-center gap-2">
             ⏱ Mon–Sun 24/7 Emergency
           </li>
@@ -132,7 +134,13 @@
       class="max-w-7xl mx-auto px-6 py-6 flex flex-col md:flex-row items-center justify-between gap-6
                  text-sm text-white"
     >
-      <span>© 2026 SF Tree Removal. All rights reserved.</span>
+      <div class="text-center md:text-left space-y-1">
+        <p>© {year} {business.name}. All rights reserved.</p>
+        <p class="text-xs text-white/80">
+          Website by{" "}
+          <a href="https://stojanpetkovic.com/" target="_blank" rel="noopener noreferrer" class="underline hover:text-white">Stojan Petković</a>
+        </p>
+      </div>
 
       <div class="flex items-center gap-6">
         <a href="/privacy-policy/" class="hover:underline">Privacy Policy</a>

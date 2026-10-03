@@ -1,0 +1,41 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import { business } from "../../config/business";
+---
+
+<BaseLayout
+  title="Thank You | SF Tree Removal"
+  description="Your request has been sent. SF Tree Removal will get back to you shortly."
+  noindex
+>
+  <section class="bg-[#f4f8f6] py-32">
+    <div class="mx-auto max-w-2xl px-6 text-center">
+      <div class="mx-auto grid h-16 w-16 place-items-center rounded-full bg-teal-700 text-3xl text-white" aria-hidden="true">✓</div>
+      <h1 class="mt-8 text-4xl font-extrabold text-slate-900 md:text-5xl">Thank you!</h1>
+      <p class="mt-6 text-lg text-slate-600">
+        Your request has been sent. We'll get back to you shortly, usually the same day, to talk about the job and
+        your free estimate.
+      </p>
+      <div class="mt-10 flex flex-wrap justify-center gap-4">
+        <a href="/" class="rounded-full bg-teal-700 px-8 py-4 font-bold text-white transition hover:bg-teal-800">Back to Home</a>
+        <a href="/tree-care-guides/" class="rounded-full border border-slate-300 px-8 py-4 font-bold text-slate-800 transition hover:bg-white">
+          Read Tree Care Guides
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Conversion event for GA4, sent once per submitted form (not on reloads or direct visits). -->
+  <script is:inline>
+    (function () {
+      var form = null;
+      try {
+        form = sessionStorage.getItem('sf_lead_sent');
+        sessionStorage.removeItem('sf_lead_sent');
+      } catch (e) {}
+      if (form && typeof window.gtag === 'function') {
+        window.gtag('event', 'generate_lead', { form_name: form });
+      }
+    })();
+  </script>
+</BaseLayout>

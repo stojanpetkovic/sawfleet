@@ -1,0 +1,44 @@
+---
+import CountyPage from "../../../components/CountyPage.astro";
+
+const cities = [
+  { name: "Boca Raton", href: "/areas/boca-raton-tree-removal/" },
+  { name: "Delray Beach" },
+  { name: "Boynton Beach" },
+  { name: "Lake Worth Beach" },
+  { name: "West Palm Beach" },
+  { name: "Wellington" },
+  { name: "Palm Beach Gardens" },
+  { name: "Jupiter" },
+  { name: "Royal Palm Beach" },
+];
+
+const trees = [
+  { name: "Royal, coconut and other palms", note: "Tall palms around pools, entries and HOA common areas, where fronds and coconuts fall over walkways." },
+  { name: "Live oaks and laurel oaks", note: "Mature oaks with heavy limbs over roofs, which need controlled removal or crown reduction." },
+  { name: "Ficus and banyan", note: "Trees with aggressive roots that damage foundations, walls, pools and driveways." },
+  { name: "Mahogany and gumbo limbo", note: "Popular shade trees in older neighborhoods, often trimmed or removed after storm damage." },
+  { name: "Australian pine", note: "An invasive tree common along the coast that fails easily in high winds." },
+  { name: "Storm-damaged trees", note: "Leaning trees, split trunks and hanging limbs after tropical storms and hurricanes." },
+];
+
+const permits = [
+  "In Palm Beach County, tree rules are set by the city the property is in, such as Boca Raton, Delray Beach or West Palm Beach, or by the county for unincorporated areas. Many communities also have HOA rules on top of that.",
+  "Under Florida Statute 163.045, a homeowner may remove a tree on residential property without a local permit when a certified arborist or licensed landscape architect documents that the tree poses an unacceptable risk to people or property. Keep that documentation; the city can ask for it later.",
+  "Because the rules differ from city to city and change over time, check with your city or HOA before work starts. We can tell you what is usually needed for your address.",
+];
+---
+
+<CountyPage
+  county="Palm Beach County"
+  title="Tree Removal Palm Beach County FL | Emergency & Residential Tree Service"
+  description="Tree removal, emergency storm response, palm and tree trimming and arborist services across Palm Beach County, FL: Boca Raton, Delray Beach, Boynton Beach, West Palm Beach and more."
+  lead="Safe tree removal, storm response and tree care for homes, HOAs and businesses across Palm Beach County."
+  intro={[
+    "Palm Beach County mixes coastal properties full of palms with inland neighborhoods shaded by large oaks and ficus. Close to the ocean, storms and salt air take a toll on trees, and a weakened tree near a house is a risk nobody wants to leave until the next hurricane.",
+    "SF Tree Removal provides complete removals, emergency storm work, trimming and arborist assessments across the county, from Boca Raton to Jupiter.",
+  ]}
+  cities={cities}
+  trees={trees}
+  permits={permits}
+/>

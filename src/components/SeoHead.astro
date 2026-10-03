@@ -1,95 +1,63 @@
 ---
-const {
-  title,
-  description,
-  canonical,
-  ogImage,
-  noindex = false,
-} = Astro.props;
+import { business } from '../config/business';
 
-/* =====================
-   GLOBAL SITE CONFIG
-===================== */
-const siteName = "SF Tree Removal";
-const siteUrl = "https://sftreeremoval.com";
-const logoUrl = `${siteUrl}/images/logo.png`;
+interface Props {
+  title?: string;
+  description?: string;
+  /** Ignored: the canonical address is derived from the page's own URL. */
+  canonical?: string;
+  ogImage?: string;
+  noindex?: boolean;
+}
 
-/* =====================
-   META FALLBACKS
-===================== */
-const metaTitle = title ?? `${siteName} | Professional Tree Service South Florida`;
+const { title, description, ogImage = '/images/og-default.jpg', noindex = false } = Astro.props;
 
+const metaTitle = title ?? `${business.name} | Professional Tree Service South Florida`;
 const metaDescription =
   description ??
-  "Professional tree removal and tree service in South Florida. Emergency tree removal, certified arborists, and modern equipment.";
+  'Professional tree removal and tree service in South Florida. Emergency tree removal, certified arborists, and modern equipment.';
 
-const metaCanonical = canonical ?? siteUrl;
+// Built from the route itself, so it always matches the address the page is
+// served at (with the trailing slash every link on the site uses).
+const canonical = new URL(Astro.url.pathname, Astro.site).href;
+const ogImageUrl = new URL(ogImage, Astro.site).href;
 
-const metaOgImage = ogImage
-  ? `${siteUrl}${ogImage}`
-  : `${siteUrl}/images/og-default.jpg`;
-
-/* =====================
-   ORGANIZATION SCHEMA
-===================== */
 const organizationSchema = {
-  "@context": "https://schema.org",
-  "@type": "Organization",
-  "@id": `${siteUrl}#organization`,
-  "name": siteName,
-  "url": siteUrl,
-  "logo": {
-    "@type": "ImageObject",
-    "url": logoUrl,
-    "width": 500,
-    "height": 200
-  },
-  "contactPoint": {
-    "@type": "ContactPoint",
-    "telephone": "+1-888-452-1505",
-    "contactType": "customer service",
-    "areaServed": "US-FL",
-    "availableLanguage": ["English"]
-  },
-  "sameAs": [
-    "https://www.facebook.com/",
-    "https://www.linkedin.com/"
-  ]
+  '@context': 'https://schema.org',
+  '@type': 'Organization',
+  '@id': `${business.url}/#organization`,
+  name: business.name,
+  url: `${business.url}/`,
+  logo: { '@type': 'ImageObject', url: `${business.url}/images/logo.png`, width: 512, height: 512 },
 };
 ---
 
-<!-- ================= BASIC ================= -->
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 
 <title>{metaTitle}</title>
 <meta name="description" content={metaDescription} />
-<link rel="canonical" href={metaCanonical} />
+<link rel="canonical" href={canonical} />
+<meta name="robots" content={noindex ? 'noindex, follow' : 'index, follow, max-image-preview:large'} />
 
-{noindex && <meta name="robots" content="noindex, nofollow" />}
-
-<!-- ================= OPEN GRAPH ================= -->
 <meta property="og:type" content="website" />
-<meta property="og:site_name" content={siteName} />
+<meta property="og:site_name" content={business.name} />
+<meta property="og:locale" content="en_US" />
 <meta property="og:title" content={metaTitle} />
 <meta property="og:description" content={metaDescription} />
-<meta property="og:url" content={metaCanonical} />
-<meta property="og:image" content={metaOgImage} />
+<meta property="og:url" content={canonical} />
+<meta property="og:image" content={ogImageUrl} />
 <meta property="og:image:width" content="1200" />
 <meta property="og:image:height" content="630" />
 
-<!-- ================= TWITTER ================= -->
 <meta name="twitter:card" content="summary_large_image" />
 <meta name="twitter:title" content={metaTitle} />
 <meta name="twitter:description" content={metaDescription} />
-<meta name="twitter:image" content={metaOgImage} />
+<meta name="twitter:image" content={ogImageUrl} />
 
-<!-- ================= FAVICONS ================= -->
-<link rel="icon" href="/favicon.ico" />
+<link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+<link rel="icon" href="/favicon.ico" sizes="any" />
 <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+<link rel="sitemap" href="/sitemap-index.xml" />
 
-<!-- ================= ORGANIZATION SCHEMA ================= -->
-<script type="application/ld+json">
-{JSON.stringify(organizationSchema)}
-</script>
-
+<script type="application/ld+json" set:html={JSON.stringify(organizationSchema)} />
