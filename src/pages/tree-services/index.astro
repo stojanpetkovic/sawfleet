@@ -1,0 +1,694 @@
+
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+
+const title = "Professional Tree Services in South Florida | SF Tree Removal";
+const description =
+  "Professional tree services in South Florida including tree removal, emergency tree service, storm damage cleanup, and certified arborist services for residential and commercial properties.";
+
+const canonical = "https://sftreeremoval.com/tree-services/";
+const phone = "+1-888-452-1505";
+---
+
+<BaseLayout
+  title={title}
+  description={description}
+  canonical={canonical}
+>
+
+<!-- =========================================================
+  LOCAL BUSINESS SCHEMA – TREE SERVICES (MAIN HUB)
+========================================================= -->
+<script type="application/ld+json">
+{JSON.stringify({
+  "@context": "https://schema.org",
+  "@type": "LocalBusiness",
+  "@id": `${canonical}#localbusiness`,
+  "name": "SF Tree Removal",
+  "url": canonical,
+  "telephone": phone,
+  "priceRange": "$$",
+  "image": "https://sftreeremoval.com/images/og-default.jpg",
+  "address": {
+    "@type": "PostalAddress",
+    "addressRegion": "FL",
+    "addressCountry": "US"
+  },
+  "areaServed": {
+    "@type": "AdministrativeArea",
+    "name": "South Florida"
+  },
+  "openingHoursSpecification": {
+    "@type": "OpeningHoursSpecification",
+    "dayOfWeek": [
+      "Monday","Tuesday","Wednesday","Thursday","Friday","Saturday","Sunday"
+    ],
+    "opens": "00:00",
+    "closes": "23:59"
+  }
+})}
+</script>
+
+<!-- =========================================================
+  SERVICE SCHEMA – TREE SERVICES
+========================================================= -->
+<script type="application/ld+json">
+{JSON.stringify({
+  "@context": "https://schema.org",
+  "@type": "Service",
+  "@id": `${canonical}#treeservices`,
+  "name": "Professional Tree Services",
+  "serviceType": "Tree Services",
+  "provider": {
+    "@type": "LocalBusiness",
+    "name": "SF Tree Removal"
+  },
+  "areaServed": {
+    "@type": "AdministrativeArea",
+    "name": "South Florida"
+  },
+  "hasOfferCatalog": {
+    "@type": "OfferCatalog",
+    "name": "Tree Services",
+    "itemListElement": [
+      {
+        "@type": "Offer",
+        "itemOffered": {
+          "@type": "Service",
+          "name": "Tree Removal"
+        }
+      },
+      {
+        "@type": "Offer",
+        "itemOffered": {
+          "@type": "Service",
+          "name": "Emergency Tree Removal"
+        }
+      },
+      {
+        "@type": "Offer",
+        "itemOffered": {
+          "@type": "Service",
+          "name": "Certified Arborist Services"
+        }
+      }
+    ]
+  }
+})}
+</script>
+
+<!-- =========================================================
+  BREADCRUMB SCHEMA
+========================================================= -->
+<script type="application/ld+json">
+{JSON.stringify({
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    {
+      "@type": "ListItem",
+      "position": 1,
+      "name": "Home",
+      "item": "https://sftreeremoval.com/"
+    },
+    {
+      "@type": "ListItem",
+      "position": 2,
+      "name": "Tree Services",
+      "item": canonical
+    }
+  ]
+})}
+</script>
+
+<!-- ================= FAQ PAGE SCHEMA – TREE SERVICES ================= -->
+<script type="application/ld+json">
+{JSON.stringify({
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {
+      "@type": "Question",
+      "name": "What tree services do you provide?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "We provide full-service tree care including tree removal, emergency tree services, storm damage cleanup, certified arborist services, and professional tree assessments for residential and commercial properties across South Florida."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Do you offer emergency tree services?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Yes. Our tree service crews are available 24/7 for emergency situations involving fallen trees, storm damage, hanging limbs, and hazardous conditions that require immediate professional response."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Are your tree services licensed and insured?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Yes. We are a fully licensed and insured tree service company, ensuring safety and protection for homeowners, businesses, and surrounding property on every project."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Do I need a permit for tree removal?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Permit requirements vary by city and county. Some trees are protected or require approval before removal. Our team assists with permit verification and provides certified arborist reports when required."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Can you remove trees near homes or power lines?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Yes. We specialize in controlled tree removal near homes, roofs, pools, and power lines using professional equipment such as cranes, lifts, rigging systems, and strict safety procedures."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "How much do professional tree services cost?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Tree service pricing depends on factors such as tree size, location, access, and complexity. Emergency work and crane-assisted removals may affect cost. We provide free, no-obligation estimates."
+      }
+    }
+  ]
+})}
+</script>
+
+<!-- ================= HERO ================= -->
+<section class="bg-teal-800 py-32 text-white">
+  <div class="max-w-7xl mx-auto px-6 text-center">
+
+    <span
+      class="inline-block mb-6 px-4 py-1 text-xs font-bold tracking-widest
+             border border-dashed border-white/60 rounded-full"
+    >
+      PROFESSIONAL TREE SERVICES
+    </span>
+
+    <h1 class="text-4xl md:text-5xl xl:text-6xl font-extrabold leading-tight">
+      Professional Tree Services
+      <br class="hidden sm:block" />
+      Across South Florida
+    </h1>
+
+    <p class="mt-8 max-w-3xl mx-auto text-lg text-white/90 leading-relaxed">
+      SF Tree Removal provides complete tree services including tree removal,
+      emergency tree service, storm damage cleanup, and certified arborist
+      solutions for residential and commercial properties throughout South
+      Florida.
+    </p>
+
+    <div class="mt-12 flex flex-wrap justify-center gap-6">
+      <a
+        href="/contact-us/"
+        class="inline-flex items-center gap-4 rounded-full
+               bg-white px-10 py-4 text-teal-900 font-extrabold
+               hover:bg-slate-100 transition"
+      >
+        Request Free Estimate
+        <span class="flex h-9 w-9 items-center justify-center rounded-full bg-teal-700 text-white">
+          ↗
+        </span>
+      </a>
+
+      <a
+        href="tel:18884521505"
+        class="inline-flex items-center gap-4 rounded-full
+               border border-white/70 px-10 py-4 text-white font-bold
+               hover:bg-white/10 transition"
+      >
+        📞 24/7 Emergency Line
+      </a>
+    </div>
+
+  </div>
+</section>
+<!-- ================= WHAT WE DO ================= -->
+<section class="bg-white py-32">
+  <div class="max-w-7xl mx-auto px-6">
+
+    <!-- HEADER -->
+    <div class="max-w-4xl mx-auto text-center mb-20">
+      <span
+        class="inline-block mb-6 px-4 py-1 text-xs font-bold tracking-widest
+               text-teal-700 border border-dashed border-teal-600 rounded-full"
+      >
+        WHAT WE DO
+      </span>
+
+      <h2 class="text-3xl md:text-4xl font-extrabold text-slate-900 mb-8">
+        Full-Service Tree Care Solutions Across South Florida
+      </h2>
+
+      <p class="text-lg text-slate-600 leading-relaxed">
+        SF Tree Removal delivers comprehensive tree services designed to protect
+        people, property, and long-term tree health. Our professional crews
+        handle everything from scheduled maintenance to urgent emergency
+        situations while following strict safety standards and local regulations
+        throughout South Florida.
+      </p>
+    </div>
+
+    <!-- CONTENT GRID -->
+    <div class="grid md:grid-cols-2 gap-16 max-w-5xl mx-auto">
+
+      <!-- LEFT -->
+      <div>
+        <h3 class="text-xl font-extrabold text-slate-900 mb-4">
+          Complete Tree Services for Residential & Commercial Properties
+        </h3>
+
+        <p class="text-slate-600 leading-relaxed mb-6">
+          We work with homeowners, property managers, HOAs, and commercial
+          clients to provide reliable tree services tailored to each property’s
+          needs. Every project is carefully planned to minimize disruption and
+          maximize safety.
+        </p>
+
+        <ul class="space-y-3 text-slate-700 leading-relaxed">
+          <li>• Professional <a href="/tree-removal/" class="text-teal-700 font-semibold hover:underline">tree removal</a> for hazardous or unwanted trees</li>
+          <li>• 24/7 <a href="/emergency-tree-removal/" class="text-teal-700 font-semibold hover:underline">emergency tree services</a> after storms or accidents</li>
+          <li>• Storm damage cleanup and debris management</li>
+          <li>• Tree risk assessments and safety evaluations</li>
+        </ul>
+      </div>
+
+      <!-- RIGHT -->
+      <div>
+        <h3 class="text-xl font-extrabold text-slate-900 mb-4">
+          Safety-Focused, Regulation-Compliant Approach
+        </h3>
+
+        <p class="text-slate-600 leading-relaxed mb-6">
+          Tree work can be dangerous when performed without proper training or
+          equipment. Our teams use professional-grade cranes, lifts, and rigging
+          systems to perform controlled tree removal even in tight or high-risk
+          environments.
+        </p>
+
+        <p class="text-slate-600 leading-relaxed mb-6">
+          When permits or documentation are required, our
+          <a href="/certified-arborist/" class="text-teal-700 font-semibold hover:underline">
+            certified arborists
+          </a>
+          provide expert guidance, reports, and compliance support to ensure your
+          project meets local and municipal requirements.
+        </p>
+
+        <p class="text-slate-600 leading-relaxed">
+          From the initial assessment to final cleanup, every service we provide
+          is focused on delivering safe, efficient, and professional results.
+        </p>
+      </div>
+
+    </div>
+
+    <!-- CTA -->
+    <div class="mt-20 text-center">
+      <a
+        href="/tree-services/"
+        class="inline-flex items-center gap-4 rounded-full
+               bg-teal-700 px-10 py-4 text-white font-bold
+               hover:bg-teal-800 transition"
+      >
+        Explore Our Tree Services
+        <span class="flex h-9 w-9 items-center justify-center rounded-full bg-white/15">
+          ↗
+        </span>
+      </a>
+    </div>
+
+  </div>
+</section>
+<!-- ================= SERVICES GRID ================= -->
+<section class="bg-[#f4f8f6] py-32">
+  <div class="max-w-7xl mx-auto px-6">
+
+    <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-12">
+
+      <!-- TREE REMOVAL -->
+      <a href="/tree-removal/" class="bg-white rounded-3xl p-10 hover:shadow-lg transition">
+        <h3 class="text-2xl font-extrabold text-slate-900 mb-4">
+          Tree Removal Services
+        </h3>
+        <p class="text-slate-600 leading-relaxed mb-6">
+          Safe and controlled tree removal for hazardous, damaged, or unwanted
+          trees using professional equipment and experienced crews.
+        </p>
+        <span class="font-bold text-teal-700">Learn More →</span>
+      </a>
+
+      <!-- EMERGENCY -->
+      <a href="/emergency-tree-removal/" class="bg-white rounded-3xl p-10 hover:shadow-lg transition">
+        <h3 class="text-2xl font-extrabold text-slate-900 mb-4">
+          Emergency Tree Services
+        </h3>
+        <p class="text-slate-600 leading-relaxed mb-6">
+          24/7 emergency response for fallen trees, storm damage, and hazardous
+          situations threatening homes or businesses.
+        </p>
+        <span class="font-bold text-teal-700">Learn More →</span>
+      </a>
+
+      <!-- ARBORIST -->
+      <a href="/certified-arborist/" class="bg-white rounded-3xl p-10 hover:shadow-lg transition">
+        <h3 class="text-2xl font-extrabold text-slate-900 mb-4">
+          Certified Arborist Services
+        </h3>
+        <p class="text-slate-600 leading-relaxed mb-6">
+          Professional tree health assessments, arborist reports, permit
+          assistance, and expert recommendations.
+        </p>
+        <span class="font-bold text-teal-700">Learn More →</span>
+      </a>
+
+    </div>
+
+  </div>
+</section>
+<!-- ================= WHY PROFESSIONAL TREE SERVICES MATTER ================= -->
+<section class="bg-white py-32">
+  <div class="max-w-7xl mx-auto px-6">
+
+    <!-- HEADER -->
+    <div class="max-w-4xl mx-auto text-center mb-20">
+      <span
+        class="inline-block mb-6 px-4 py-1 text-xs font-bold tracking-widest
+               text-teal-700 border border-dashed border-teal-600 rounded-full"
+      >
+        WHY PROFESSIONAL TREE SERVICES
+      </span>
+
+      <h2 class="text-3xl md:text-4xl font-extrabold text-slate-900 mb-8">
+        Why Professional Tree Services Matter
+      </h2>
+
+      <p class="text-lg text-slate-600 leading-relaxed">
+        Tree work involves serious risks when performed without proper training,
+        equipment, and planning. Professional tree services protect people,
+        property, and surrounding landscapes while ensuring compliance with
+        local and municipal regulations across South Florida.
+      </p>
+    </div>
+
+    <!-- CONTENT GRID -->
+    <div class="grid md:grid-cols-2 gap-16 max-w-5xl mx-auto">
+
+      <!-- LEFT -->
+      <div>
+        <h3 class="text-xl font-extrabold text-slate-900 mb-4">
+          Safety Is the Highest Priority
+        </h3>
+
+        <p class="text-slate-600 leading-relaxed mb-6">
+          Tree removal and pruning involve heavy materials, elevated work, and
+          unpredictable forces. Without professional experience, improper cuts
+          or unsafe techniques can lead to severe injuries or uncontrolled tree
+          failure.
+        </p>
+
+        <p class="text-slate-600 leading-relaxed">
+          Our crews follow established safety protocols and use professional
+          equipment such as cranes, lifts, and rigging systems to control every
+          stage of the operation.
+        </p>
+      </div>
+
+      <!-- RIGHT -->
+      <div>
+        <h3 class="text-xl font-extrabold text-slate-900 mb-4">
+          Protecting Property & Avoiding Costly Damage
+        </h3>
+
+        <p class="text-slate-600 leading-relaxed mb-6">
+          Improper tree work can result in damage to roofs, vehicles, fences,
+          landscaping, and underground utilities. Professional tree services
+          focus on precision, planning, and controlled removal techniques.
+        </p>
+
+        <p class="text-slate-600 leading-relaxed">
+          By evaluating tree structure, surrounding obstacles, and access
+          points, we reduce risk and help property owners avoid expensive
+          repairs or liability issues.
+        </p>
+      </div>
+
+      <!-- LEFT -->
+      <div>
+        <h3 class="text-xl font-extrabold text-slate-900 mb-4">
+          Compliance with Local Regulations
+        </h3>
+
+        <p class="text-slate-600 leading-relaxed mb-6">
+          Many cities in South Florida require permits or certified arborist
+          documentation before tree removal. Failing to comply with these
+          regulations can lead to fines or stop-work orders.
+        </p>
+
+        <p class="text-slate-600 leading-relaxed">
+          Professional tree services ensure that all work is performed in
+          accordance with local codes, HOA guidelines, and environmental
+          protections.
+        </p>
+      </div>
+
+      <!-- RIGHT -->
+      <div>
+        <h3 class="text-xl font-extrabold text-slate-900 mb-4">
+          Long-Term Tree Health & Liability Reduction
+        </h3>
+
+        <p class="text-slate-600 leading-relaxed mb-6">
+          Professional assessments help identify hidden structural issues,
+          disease, or root damage that may not be visible to untrained eyes.
+        </p>
+
+        <p class="text-slate-600 leading-relaxed">
+          Whether recommending removal, pruning, or preservation, professional
+          tree services help property owners make informed decisions that reduce
+          long-term risk and liability.
+        </p>
+      </div>
+
+    </div>
+
+    <!-- CTA -->
+    <div class="mt-20 text-center">
+      <a
+        href="/contact-us/"
+        class="inline-flex items-center gap-4 rounded-full
+               bg-teal-700 px-10 py-4 text-white font-bold
+               hover:bg-teal-800 transition"
+      >
+        Talk to a Tree Service Expert
+        <span class="flex h-9 w-9 items-center justify-center rounded-full bg-white/15">
+          ↗
+        </span>
+      </a>
+    </div>
+
+  </div>
+</section>
+<!-- ================= MINI TRUST STRIP ================= -->
+<section class="bg-[#f4f8f6] py-20">
+  <div class="max-w-7xl mx-auto px-6">
+
+    <div
+      class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-10
+             text-center"
+    >
+
+      <!-- ITEM -->
+      <div class="bg-white rounded-2xl p-10 shadow-sm">
+        <div class="text-4xl font-extrabold text-teal-700 mb-4">
+          Licensed
+        </div>
+        <p class="text-sm text-slate-600 leading-relaxed">
+          Fully licensed tree service company operating in compliance with
+          Florida and local municipal regulations.
+        </p>
+      </div>
+
+      <!-- ITEM -->
+      <div class="bg-white rounded-2xl p-10 shadow-sm">
+        <div class="text-4xl font-extrabold text-teal-700 mb-4">
+          Insured
+        </div>
+        <p class="text-sm text-slate-600 leading-relaxed">
+          Comprehensive liability insurance protecting homeowners, businesses,
+          and surrounding property during every project.
+        </p>
+      </div>
+
+      <!-- ITEM -->
+      <div class="bg-white rounded-2xl p-10 shadow-sm">
+        <div class="text-4xl font-extrabold text-teal-700 mb-4">
+          24/7
+        </div>
+        <p class="text-sm text-slate-600 leading-relaxed">
+          Emergency tree services available day and night for storm damage,
+          fallen trees, and hazardous situations.
+        </p>
+      </div>
+
+      <!-- ITEM -->
+      <div class="bg-white rounded-2xl p-10 shadow-sm">
+        <div class="text-4xl font-extrabold text-teal-700 mb-4">
+          Local
+        </div>
+        <p class="text-sm text-slate-600 leading-relaxed">
+          South Florida-based crews with deep knowledge of local trees,
+          permitting requirements, and storm risks.
+        </p>
+      </div>
+
+    </div>
+
+  </div>
+</section>
+
+<!-- ================= TREE SERVICES FAQ ================= -->
+<section class="bg-white py-28">
+  <div class="max-w-5xl mx-auto px-6">
+
+    <!-- TITLE -->
+    <header class="text-center mb-16">
+      <h2 class="text-3xl md:text-4xl font-extrabold text-slate-900">
+        Tree Service FAQs
+      </h2>
+      <p class="mt-4 text-slate-600 max-w-2xl mx-auto">
+        Answers to the most common questions about professional tree services,
+        safety, permits, and emergency response across South Florida.
+      </p>
+    </header>
+
+    <!-- FAQ GRID -->
+    <div class="grid gap-8 md:grid-cols-2">
+
+      <!-- ITEM -->
+      <div class="rounded-2xl border border-slate-200 p-8">
+        <h3 class="text-lg font-extrabold text-slate-900 mb-3">
+          What tree services do you provide?
+        </h3>
+        <p class="text-slate-600 leading-relaxed">
+          We offer full-service tree care including tree removal, emergency tree
+          service, storm damage cleanup, certified arborist services, and
+          professional assessments for residential and commercial properties.
+        </p>
+      </div>
+
+      <!-- ITEM -->
+      <div class="rounded-2xl border border-slate-200 p-8">
+        <h3 class="text-lg font-extrabold text-slate-900 mb-3">
+          Do you provide emergency tree services?
+        </h3>
+        <p class="text-slate-600 leading-relaxed">
+          Yes. Our crews are available 24/7 for emergency tree removal involving
+          fallen trees, storm damage, hanging limbs, and hazardous situations
+          that require immediate action.
+        </p>
+      </div>
+
+      <!-- ITEM -->
+      <div class="rounded-2xl border border-slate-200 p-8">
+        <h3 class="text-lg font-extrabold text-slate-900 mb-3">
+          Are you licensed and insured?
+        </h3>
+        <p class="text-slate-600 leading-relaxed">
+          Absolutely. We are a fully licensed and insured tree service company,
+          protecting homeowners, businesses, and surrounding property on every
+          project we perform.
+        </p>
+      </div>
+
+      <!-- ITEM -->
+      <div class="rounded-2xl border border-slate-200 p-8">
+        <h3 class="text-lg font-extrabold text-slate-900 mb-3">
+          Do I need a permit for tree removal?
+        </h3>
+        <p class="text-slate-600 leading-relaxed">
+          Permit requirements vary by city and county. Some trees are protected
+          or require approval before removal. Our team helps verify local
+          regulations and provides certified arborist reports when required.
+        </p>
+      </div>
+
+      <!-- ITEM -->
+      <div class="rounded-2xl border border-slate-200 p-8">
+        <h3 class="text-lg font-extrabold text-slate-900 mb-3">
+          Can you remove trees near homes or power lines?
+        </h3>
+        <p class="text-slate-600 leading-relaxed">
+          Yes. We specialize in controlled tree removal near homes, roofs,
+          pools, and power lines using cranes, lifts, rigging systems, and
+          advanced safety procedures.
+        </p>
+      </div>
+
+      <!-- ITEM -->
+      <div class="rounded-2xl border border-slate-200 p-8">
+        <h3 class="text-lg font-extrabold text-slate-900 mb-3">
+          How much does professional tree service cost?
+        </h3>
+        <p class="text-slate-600 leading-relaxed">
+          Pricing depends on tree size, location, access, and complexity.
+          Emergency situations and crane work may affect cost. We provide free,
+          no-obligation estimates across South Florida.
+        </p>
+      </div>
+
+    </div>
+
+    <!-- CTA -->
+    <div class="mt-16 text-center">
+      <a
+        href="/contact-us/"
+        class="inline-flex items-center gap-4 rounded-full
+               bg-teal-700 px-10 py-4 text-white font-bold
+               hover:bg-teal-800 transition"
+      >
+        Request a Free Tree Service Estimate
+        <span class="flex h-9 w-9 items-center justify-center rounded-full bg-white/15">
+          ↗
+        </span>
+      </a>
+    </div>
+
+  </div>
+</section>
+
+<!-- ================= FINAL CTA ================= -->
+<section class="bg-teal-900 py-32 text-white">
+  <div class="max-w-7xl mx-auto px-6 text-center">
+
+    <h2 class="text-4xl md:text-5xl font-extrabold leading-tight">
+      Need Professional Tree Services?
+      <br class="hidden sm:block" />
+      We’re Ready to Help
+    </h2>
+
+    <p class="mt-8 max-w-3xl mx-auto text-lg text-white/90">
+      Contact SF Tree Removal today for professional tree services, emergency
+      response, and certified arborist solutions across South Florida.
+    </p>
+
+    <div class="mt-12">
+      <a
+        href="/contact-us/"
+        class="inline-flex items-center gap-4 rounded-full
+               bg-white px-12 py-5 text-teal-900 font-extrabold
+               hover:bg-slate-100 transition"
+      >
+        Request a Free Estimate
+      </a>
+    </div>
+
+  </div>
+</section>
+
+</BaseLayout>

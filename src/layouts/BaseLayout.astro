@@ -1,0 +1,54 @@
+---
+import Header from "../components/Header.astro";
+import Footer from "../components/Footer.astro";
+import SeoHead from "../components/SeoHead.astro";
+import Tracking from "../components/Tracking.astro";
+
+const {
+  title = "SF Tree Removal | Professional Tree Service South Florida",
+  description = "Professional tree removal and tree service in South Florida. Emergency tree removal, certified arborists, and modern equipment.",
+  canonical = "https://sftreeremoval.com/",
+  ogImage = "/images/og-default.jpg",
+  noindex = false,
+} = Astro.props;
+---
+
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+  <head>
+    <!-- ================= SEO META ================= -->
+    <SeoHead
+      title={title}
+      description={description}
+      canonical={canonical}
+      ogImage={ogImage}
+      noindex={noindex}
+    />
+
+    <!-- ================= GOOGLE FONT ================= -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap"
+      rel="stylesheet"
+    />
+  </head>
+
+  <body class="min-h-screen bg-white font-sans text-slate-900 antialiased">
+
+    <!-- ================= TRACKING (MORA BITI U BODY) ================= -->
+    <Tracking />
+
+    <!-- ================= HEADER ================= -->
+    <Header />
+
+    <!-- ================= MAIN CONTENT ================= -->
+    <main id="content" class="relative">
+      <slot />
+    </main>
+
+    <!-- ================= FOOTER ================= -->
+    <Footer />
+
+  </body>
+</html>

@@ -1,0 +1,667 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+
+// CORE SECTIONS
+import Hero from "../components/Hero.astro";
+import LocalBusinessSchema from "../components/LocalBusinessSchema.astro";
+
+// (uskoro dodajemo)
+// import ServicesPreview from "../components/ServicesPreview.astro";
+// import EmergencyCTA from "../components/EmergencyCTA.astro";
+// import ReviewsSnapshot from "../components/ReviewsSnapshot.astro";
+// import AreasPreview from "../components/AreasPreview.astro";
+// import FooterCTA from "../components/FooterCTA.astro";
+---
+
+<BaseLayout
+  title="SF Tree Removal | Professional Tree Service South Florida"
+  description="Professional tree removal and tree services in South Florida. Emergency tree removal, certified arborists, and safe modern equipment."
+  canonical="https://sftreeremoval.com/"
+>
+  <!-- ================= LOCAL BUSINESS SCHEMA ================= -->
+  <LocalBusinessSchema />
+
+  <!-- ================= HERO ================= -->
+  <Hero />
+
+  <section class="bg-[#eef5f4] py-32">
+  <div class="max-w-7xl mx-auto px-6">
+
+    <!-- GRID 3x2 -->
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-10">
+
+      <!-- TOP LEFT -->
+      <div class="bg-white rounded-3xl p-10 flex flex-col justify-between">
+        <div class="mb-10 flex justify-center text-teal-700 text-7xl leading-none">
+          🏆
+        </div>
+
+        <div>
+          <h3 class="text-2xl font-extrabold text-slate-900 mb-4">
+            Proven Local Expertise
+          </h3>
+          <p class="text-slate-600 leading-relaxed">
+            Licensed and insured tree removal professionals trusted across South
+            Florida for safe, compliant, and efficient service.
+          </p>
+        </div>
+      </div>
+
+      <!-- CENTER CTA -->
+      <div class="flex flex-col items-center justify-center text-center px-6">
+        <span
+          class="inline-block mb-6 px-4 py-1 text-xs font-bold tracking-widest
+                 text-teal-700 border border-dashed border-teal-600 rounded-full"
+        >
+          CHOOSE THE BEST
+        </span>
+
+        <h2 class="text-4xl md:text-5xl font-extrabold text-slate-900 leading-tight mb-10">
+          Tree Services Built for<br />
+          South Florida Properties
+        </h2>
+
+        <a
+          href="/tree-services/"
+          class="inline-flex items-center gap-4 rounded-full
+                 bg-teal-700 px-8 py-4 text-white font-bold
+                 hover:bg-teal-800 transition"
+        >
+          Learn More
+          <span
+            class="flex h-10 w-10 items-center justify-center rounded-full bg-white/15"
+          >
+            ↗
+          </span>
+        </a>
+      </div>
+
+      <!-- TOP RIGHT -->
+      <div class="bg-white rounded-3xl p-10 flex flex-col justify-between">
+        <div class="mb-10 flex justify-center text-teal-700 text-7xl leading-none">
+          👥
+        </div>
+
+        <div>
+          <h3 class="text-2xl font-extrabold text-slate-900 mb-4">
+            Expert Tree Crew
+          </h3>
+          <p class="text-slate-600 leading-relaxed">
+            Experienced arborists and operators handling complex removals,
+            emergency situations, and precision work with confidence.
+          </p>
+        </div>
+      </div>
+
+      <!-- BOTTOM LEFT -->
+      <div class="bg-white rounded-3xl p-10">
+        <div class="mb-10 flex justify-center text-teal-700 text-7xl leading-none">
+          ☎️
+        </div>
+
+        <h3 class="text-2xl font-extrabold text-slate-900 mb-4">
+          24/7 Emergency Support
+        </h3>
+        <p class="text-slate-600 leading-relaxed">
+          Rapid response for fallen trees, storm damage, and hazardous situations
+          threatening homes, vehicles, or power lines.
+        </p>
+      </div>
+
+      <!-- BOTTOM CENTER -->
+      <div class="bg-white rounded-3xl p-10">
+        <div class="mb-10 flex justify-center text-teal-700 text-7xl leading-none">
+          🛠️
+        </div>
+
+        <h3 class="text-2xl font-extrabold text-slate-900 mb-4">
+          Modern Equipment
+        </h3>
+        <p class="text-slate-600 leading-relaxed">
+          Cranes, lifts, and precision tools allow safe, efficient tree removal
+          with minimal impact on your property.
+        </p>
+      </div>
+
+      <!-- BOTTOM RIGHT IMAGE -->
+      <div
+        class="relative rounded-3xl overflow-hidden flex items-end p-10 text-white
+               bg-cover bg-center"
+        style="background-image:url('/images/team-growth.jpg')"
+      >
+        <div class="absolute inset-0 bg-teal-900/60"></div>
+
+        <div class="relative z-10">
+          <span class="block text-sm mb-2 opacity-90">
+            Faster Emergency Response
+          </span>
+          <strong class="text-7xl font-extrabold">
+            8.5×
+          </strong>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+  <!-- ================= SERVICES PREVIEW ================= -->
+<section class="bg-white py-32">
+  <div class="max-w-7xl mx-auto px-6 text-center">
+
+    <!-- BADGE -->
+    <span
+      class="inline-block mb-8 px-4 py-1 text-xs font-bold tracking-widest
+             text-teal-700 border border-dashed border-teal-600 rounded-full"
+    >
+      OUR SERVICES
+    </span>
+
+    <!-- TITLE -->
+    <h2 class="text-4xl md:text-5xl font-extrabold text-slate-900 leading-tight">
+      Professional Tree Services
+      <br class="hidden sm:block" />
+      Designed for South Florida
+    </h2>
+
+    <!-- SUBTEXT -->
+    <p class="mt-8 max-w-3xl mx-auto text-lg text-slate-600">
+      From emergency response to long-term tree care, we deliver safe, efficient
+      and compliant solutions for residential and commercial properties.
+    </p>
+
+    <!-- SERVICES GRID -->
+    <div class="mt-20 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-10 text-left">
+
+      <!-- SERVICE CARD -->
+      <a
+        href="/tree-removal/"
+        class="group bg-[#f4f8f6] rounded-3xl p-10 transition
+               hover:bg-white hover:shadow-lg"
+      >
+        <div class="mb-10 flex justify-center text-teal-700 text-7xl leading-none">
+          🌳
+        </div>
+
+        <h3 class="text-2xl font-extrabold text-slate-900 mb-4 text-center">
+          Tree Removal
+        </h3>
+
+        <p class="text-slate-600 leading-relaxed text-center">
+          Safe and efficient removal of hazardous, damaged, or unwanted trees
+          using modern equipment and certified arborists.
+        </p>
+
+        <div class="mt-8 flex justify-center">
+          <span class="inline-flex items-center gap-2 text-sm font-bold text-teal-700">
+            Learn More
+            <span
+              class="flex h-7 w-7 items-center justify-center rounded-full bg-teal-700 text-white"
+            >
+              ↗
+            </span>
+          </span>
+        </div>
+      </a>
+
+      <!-- SERVICE CARD -->
+      <a
+        href="/emergency-tree-removal/"
+        class="group bg-[#f4f8f6] rounded-3xl p-10 transition
+               hover:bg-white hover:shadow-lg"
+      >
+        <div class="mb-10 flex justify-center text-teal-700 text-7xl leading-none">
+          ⚡
+        </div>
+
+        <h3 class="text-2xl font-extrabold text-slate-900 mb-4 text-center">
+          Emergency Tree Removal
+        </h3>
+
+        <p class="text-slate-600 leading-relaxed text-center">
+          24/7 rapid response for storm damage, fallen trees, and urgent hazards
+          threatening people or property.
+        </p>
+
+        <div class="mt-8 flex justify-center">
+          <span class="inline-flex items-center gap-2 text-sm font-bold text-teal-700">
+            Learn More
+            <span class="flex h-7 w-7 items-center justify-center rounded-full bg-teal-700 text-white">
+              ↗
+            </span>
+          </span>
+        </div>
+      </a>
+
+      <!-- SERVICE CARD -->
+      <a
+        href="/certified-arborist/"
+        class="group bg-[#f4f8f6] rounded-3xl p-10 transition
+               hover:bg-white hover:shadow-lg"
+      >
+        <div class="mb-10 flex justify-center text-teal-700 text-7xl leading-none">
+          🌿
+        </div>
+
+        <h3 class="text-2xl font-extrabold text-slate-900 mb-4 text-center">
+          Certified Arborist Services
+        </h3>
+
+        <p class="text-slate-600 leading-relaxed text-center">
+          Expert tree health assessments, permits, pruning guidance, and long-term
+          care plans tailored to Florida landscapes.
+        </p>
+
+        <div class="mt-8 flex justify-center">
+          <span class="inline-flex items-center gap-2 text-sm font-bold text-teal-700">
+            Learn More
+            <span class="flex h-7 w-7 items-center justify-center rounded-full bg-teal-700 text-white">
+              ↗
+            </span>
+          </span>
+        </div>
+      </a>
+
+    </div>
+
+    <!-- BOTTOM CTA -->
+    <div class="mt-20">
+      <a
+        href="/tree-services/"
+        class="inline-flex items-center gap-4 rounded-full
+               bg-teal-700 px-10 py-4 text-white font-bold
+               hover:bg-teal-800 transition"
+      >
+        View All Services
+        <span class="flex h-10 w-10 items-center justify-center rounded-full bg-white/15">
+          ↗
+        </span>
+      </a>
+    </div>
+
+  </div>
+</section>
+
+  <!-- ================= EMERGENCY CTA ================= -->
+ 
+  <section class="bg-teal-700 py-32">
+  <div class="max-w-7xl mx-auto px-6 text-center text-white">
+
+    <!-- BADGE -->
+    <span
+      class="inline-block mb-8 px-4 py-1 text-xs font-bold tracking-widest
+             border border-dashed border-white/60 rounded-full"
+    >
+      24/7 EMERGENCY SERVICE
+    </span>
+
+    <!-- HEADLINE -->
+    <h2 class="text-4xl md:text-5xl xl:text-6xl font-extrabold leading-tight">
+      Tree Emergency?<br class="hidden sm:block" />
+      We’re Ready to Respond Immediately.
+    </h2>
+
+    <!-- SUBTEXT -->
+    <p class="mt-8 max-w-3xl mx-auto text-lg text-white/90">
+      Fallen trees, storm damage, or hazardous situations threatening your home
+      or business require fast, professional action. Our emergency crew is
+      available 24/7 across South Florida.
+    </p>
+
+    <!-- CTA BUTTONS -->
+    <div class="mt-14 flex flex-wrap justify-center gap-6">
+
+      <!-- CALL -->
+      <a
+        href="tel:18884521505"
+        class="inline-flex items-center gap-4 rounded-full
+               bg-white px-10 py-4 text-teal-800 font-extrabold
+               hover:bg-slate-100 transition"
+      >
+        📞 Call Now
+        <span
+          class="flex h-10 w-10 items-center justify-center rounded-full
+                 bg-teal-700 text-white"
+        >
+          ↗
+        </span>
+      </a>
+
+      <!-- LEARN MORE -->
+      <a
+        href="/emergency-tree-removal/"
+        class="inline-flex items-center gap-4 rounded-full
+               border border-white/70 px-10 py-4 text-white font-bold
+               hover:bg-white/10 transition"
+      >
+        Emergency Tree Removal
+        <span
+          class="flex h-10 w-10 items-center justify-center rounded-full
+                 bg-white/15"
+        >
+          ↗
+        </span>
+      </a>
+
+    </div>
+
+    <!-- TRUST LINE -->
+    <p class="mt-12 text-sm text-white/80">
+      Serving Miami, Fort Lauderdale, Broward County & surrounding areas.
+    </p>
+
+  </div>
+</section>
+
+  <!-- ================= REVIEWS ================= -->
+ <section class="bg-[#f4f8f6] py-32">
+  <div class="max-w-7xl mx-auto px-6 text-center">
+
+    <!-- BADGE -->
+    <span
+      class="inline-block mb-8 px-4 py-1 text-xs font-bold tracking-widest
+             text-teal-700 border border-dashed border-teal-600 rounded-full"
+    >
+      CUSTOMER REVIEWS
+    </span>
+
+    <!-- TITLE -->
+    <h2 class="text-4xl md:text-5xl font-extrabold text-slate-900 leading-tight">
+      Trusted by Homeowners & Businesses
+      <br class="hidden sm:block" />
+      Across South Florida
+    </h2>
+
+    <!-- SUBTEXT -->
+    <p class="mt-8 max-w-3xl mx-auto text-lg text-slate-600">
+      Our clients rely on us for fast response, professional service, and safe
+      results — especially when it matters most.
+    </p>
+
+    <!-- REVIEWS GRID -->
+    <div class="mt-20 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10 text-left">
+
+      <!-- REVIEW CARD -->
+      <div class="bg-white rounded-3xl p-10 shadow-sm">
+        <div class="flex items-center gap-2 mb-6 text-teal-700">
+          ★★★★★
+        </div>
+
+        <p class="text-slate-700 leading-relaxed mb-8">
+          SF Tree Removal responded immediately after a storm knocked a tree onto
+          our driveway. The crew was professional, fast, and extremely careful
+          around our home.
+        </p>
+      </div>
+
+      <!-- REVIEW CARD -->
+      <div class="bg-white rounded-3xl p-10 shadow-sm">
+        <div class="flex items-center gap-2 mb-6 text-teal-700">
+          ★★★★★
+        </div>
+
+        <p class="text-slate-700 leading-relaxed mb-8">
+          We needed an emergency tree removal late at night. They arrived fast,
+          handled everything safely, and explained the process clearly. Highly
+          recommended.
+        </p>
+      </div>
+
+      <!-- REVIEW CARD -->
+      <div class="bg-white rounded-3xl p-10 shadow-sm">
+        <div class="flex items-center gap-2 mb-6 text-teal-700">
+          ★★★★★
+        </div>
+
+        <p class="text-slate-700 leading-relaxed mb-8">
+          Professional crew with excellent equipment. They removed several large
+          trees without any damage to our property. Clean, efficient, and worth
+          every dollar.
+        </p>
+      </div>
+
+    </div>
+
+  </div>
+</section>
+
+  <!-- ================= SERVICE AREAS ================= -->
+ 
+  <section class="bg-white py-32">
+  <div class="max-w-7xl mx-auto px-6 text-center">
+
+    <!-- BADGE -->
+    <span
+      class="inline-block mb-8 px-4 py-1 text-xs font-bold tracking-widest
+             text-teal-700 border border-dashed border-teal-600 rounded-full"
+    >
+      SERVICE AREAS
+    </span>
+
+    <!-- TITLE -->
+    <h2 class="text-4xl md:text-5xl font-extrabold text-slate-900 leading-tight">
+      Proudly Serving South Florida
+      <br class="hidden sm:block" />
+      & Surrounding Communities
+    </h2>
+
+    <!-- SUBTEXT -->
+    <p class="mt-8 max-w-3xl mx-auto text-lg text-slate-600">
+      Our licensed and insured tree service teams operate across major cities and
+      counties in South Florida, providing fast response and professional care.
+    </p>
+
+    <!-- AREAS GRID -->
+    <div class="mt-20 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-10 text-left">
+
+      <!-- AREA CARD -->
+      <a
+        href="/areas/miami-tree-removal/"
+        class="group bg-[#f4f8f6] rounded-3xl p-10 transition
+               hover:bg-white hover:shadow-lg"
+      >
+        <h3 class="text-2xl font-extrabold text-slate-900 mb-2">
+          Miami
+        </h3>
+        <p class="text-slate-600 mb-6">
+          Emergency tree removal, storm response, and full-service tree care.
+        </p>
+
+        <span class="inline-flex items-center gap-2 text-sm font-bold text-teal-700">
+          Miami Tree Removal
+          <span class="flex h-7 w-7 items-center justify-center rounded-full bg-teal-700 text-white">
+            ↗
+          </span>
+        </span>
+      </a>
+
+      <!-- AREA CARD -->
+      <a
+        href="/areas/fort-lauderdale-tree-removal/"
+        class="group bg-[#f4f8f6] rounded-3xl p-10 transition
+               hover:bg-white hover:shadow-lg"
+      >
+        <h3 class="text-2xl font-extrabold text-slate-900 mb-2">
+          Fort Lauderdale
+        </h3>
+        <p class="text-slate-600 mb-6">
+          Residential and commercial tree services with permit expertise.
+        </p>
+
+        <span class="inline-flex items-center gap-2 text-sm font-bold text-teal-700">
+          Fort Lauderdale Tree Removal
+          <span class="flex h-7 w-7 items-center justify-center rounded-full bg-teal-700 text-white">
+            ↗
+          </span>
+        </span>
+      </a>
+
+      <!-- AREA CARD -->
+      <a
+        href="/areas/hollywood-tree-service/"
+        class="group bg-[#f4f8f6] rounded-3xl p-10 transition
+               hover:bg-white hover:shadow-lg"
+      >
+        <h3 class="text-2xl font-extrabold text-slate-900 mb-2">
+          Hollywood
+        </h3>
+        <p class="text-slate-600 mb-6">
+          Complete tree service solutions for homes and businesses.
+        </p>
+
+        <span class="inline-flex items-center gap-2 text-sm font-bold text-teal-700">
+          Hollywood Tree Service
+          <span class="flex h-7 w-7 items-center justify-center rounded-full bg-teal-700 text-white">
+            ↗
+          </span>
+        </span>
+      </a>
+
+      <!-- AREA CARD -->
+      <a
+        href="/areas/pembroke-pines-tree-removal/"
+        class="group bg-[#f4f8f6] rounded-3xl p-10 transition
+               hover:bg-white hover:shadow-lg"
+      >
+        <h3 class="text-2xl font-extrabold text-slate-900 mb-2">
+          Pembroke Pines
+        </h3>
+        <p class="text-slate-600 mb-6">
+          Fast emergency response and long-term tree care programs.
+        </p>
+
+        <span class="inline-flex items-center gap-2 text-sm font-bold text-teal-700">
+          Pembroke Pines Tree Removal
+          <span class="flex h-7 w-7 items-center justify-center rounded-full bg-teal-700 text-white">
+            ↗
+          </span>
+        </span>
+      </a>
+
+      <!-- AREA CARD -->
+      <a
+        href="/areas/boca-raton-tree-removal/"
+        class="group bg-[#f4f8f6] rounded-3xl p-10 transition
+               hover:bg-white hover:shadow-lg"
+      >
+        <h3 class="text-2xl font-extrabold text-slate-900 mb-2">
+          Boca Raton
+        </h3>
+        <p class="text-slate-600 mb-6">
+          High-end tree removal and certified arborist services.
+        </p>
+
+        <span class="inline-flex items-center gap-2 text-sm font-bold text-teal-700">
+          Boca Raton Tree Removal
+          <span class="flex h-7 w-7 items-center justify-center rounded-full bg-teal-700 text-white">
+            ↗
+          </span>
+        </span>
+      </a>
+
+      <!-- COUNTY CARD -->
+      <a
+        href="/areas/broward-county-tree-removal/"
+        class="group bg-[#f4f8f6] rounded-3xl p-10 transition
+               hover:bg-white hover:shadow-lg"
+      >
+        <h3 class="text-2xl font-extrabold text-slate-900 mb-2">
+          Broward County
+        </h3>
+        <p class="text-slate-600 mb-6">
+          County-wide coverage for emergency and scheduled tree services.
+        </p>
+
+        <span class="inline-flex items-center gap-2 text-sm font-bold text-teal-700">
+          Broward County Tree Removal
+          <span class="flex h-7 w-7 items-center justify-center rounded-full bg-teal-700 text-white">
+            ↗
+          </span>
+        </span>
+      </a>
+
+    </div>
+
+    <!-- BOTTOM CTA -->
+    <div class="mt-20">
+      <a
+        href="/areas/"
+        class="inline-flex items-center gap-4 rounded-full
+               bg-teal-700 px-10 py-4 text-white font-bold
+               hover:bg-teal-800 transition"
+      >
+        View All Service Areas
+        <span class="flex h-10 w-10 items-center justify-center rounded-full bg-white/15">
+          ↗
+        </span>
+      </a>
+    </div>
+
+  </div>
+</section>
+
+  <!-- ================= FINAL CTA ================= -->
+<section class="bg-teal-800 py-32">
+  <div class="max-w-7xl mx-auto px-6 text-center text-white">
+
+    <!-- BADGE -->
+    <span
+      class="inline-block mb-8 px-4 py-1 text-xs font-bold tracking-widest
+             border border-dashed border-white/60 rounded-full"
+    >
+      READY TO GET STARTED
+    </span>
+
+    <!-- HEADLINE -->
+    <h2 class="text-4xl md:text-5xl xl:text-6xl font-extrabold leading-tight">
+      Protect Your Property with<br class="hidden sm:block" />
+      Professional Tree Care
+    </h2>
+
+    <!-- SUBTEXT -->
+    <p class="mt-8 max-w-3xl mx-auto text-lg text-white/90">
+      From urgent tree emergencies to planned arborist services, our team is
+      ready to respond quickly, safely, and professionally across South Florida.
+    </p>
+
+    <!-- CTA BUTTONS -->
+    <div class="mt-14 flex flex-wrap justify-center gap-6">
+
+      <!-- PRIMARY -->
+      <a
+        href="/contact-us/"
+        class="inline-flex items-center gap-4 rounded-full
+               bg-white px-10 py-4 text-teal-800 font-extrabold
+               hover:bg-slate-100 transition"
+      >
+        Request a Free Estimate
+        <span
+          class="flex h-10 w-10 items-center justify-center rounded-full
+                 bg-teal-700 text-white"
+        >
+          ↗
+        </span>
+      </a>
+
+      <!-- SECONDARY -->
+      <a
+        href="tel:18884521505"
+        class="inline-flex items-center gap-4 rounded-full
+               border border-white/70 px-10 py-4 text-white font-bold
+               hover:bg-white/10 transition"
+      >
+        📞 24/7 Emergency Line
+      </a>
+
+    </div>
+
+    <!-- TRUST LINE -->
+    <p class="mt-12 text-sm text-white/80">
+      Trusted by homeowners and businesses across Miami, Fort Lauderdale,
+      Broward County & surrounding areas.
+    </p>
+
+  </div>
+</section>
+
+</BaseLayout>

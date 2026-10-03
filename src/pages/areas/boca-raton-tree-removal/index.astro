@@ -1,0 +1,1097 @@
+---
+import BaseLayout from "../../../layouts/BaseLayout.astro";
+
+const city = "Boca Raton";
+const county = "Palm Beach County";
+const state = "FL";
+const phone = "+1-888-452-1505";
+
+const title = `Tree Removal Boca Raton FL | Emergency & Arborist Services`;
+const description =
+  `Professional tree removal in Boca Raton, FL. Emergency tree removal, storm damage cleanup, and certified arborist services for residential and commercial properties across ${county}.`;
+
+const canonical = "https://sftreeremoval.com/areas/boca-raton-tree-removal/";
+---
+
+<BaseLayout
+  title={title}
+  description={description}
+  canonical={canonical}
+>
+<script type="application/ld+json">
+{JSON.stringify({
+  "@context": "https://schema.org",
+  "@type": "LocalBusiness",
+  "@id": `${canonical}#localbusiness`,
+  "name": `SF Tree Removal – Boca Raton`,
+  "url": canonical,
+  "telephone": phone,
+  "priceRange": "$$$",
+  "image": "https://sftreeremoval.com/images/og-default.jpg",
+  "address": {
+    "@type": "PostalAddress",
+    "addressLocality": city,
+    "addressRegion": state,
+    "addressCountry": "US"
+  },
+  "areaServed": [
+    { "@type": "City", "name": city },
+    { "@type": "AdministrativeArea", "name": county }
+  ],
+  "openingHoursSpecification": {
+    "@type": "OpeningHoursSpecification",
+    "dayOfWeek": [
+      "Monday","Tuesday","Wednesday","Thursday","Friday","Saturday","Sunday"
+    ],
+    "opens": "00:00",
+    "closes": "23:59"
+  },
+  "hasOfferCatalog": {
+    "@type": "OfferCatalog",
+    "name": "Tree Removal Services",
+    "itemListElement": [
+      {
+        "@type": "Offer",
+        "itemOffered": {
+          "@type": "Service",
+          "name": "Tree Removal",
+          "areaServed": city
+        }
+      },
+      {
+        "@type": "Offer",
+        "itemOffered": {
+          "@type": "Service",
+          "name": "Emergency Tree Removal",
+          "areaServed": city
+        }
+      },
+      {
+        "@type": "Offer",
+        "itemOffered": {
+          "@type": "Service",
+          "name": "Storm Damage Tree Cleanup",
+          "areaServed": city
+        }
+      },
+      {
+        "@type": "Offer",
+        "itemOffered": {
+          "@type": "Service",
+          "name": "Certified Arborist Services",
+          "areaServed": city
+        }
+      }
+    ]
+  }
+})}
+</script>
+<script type="application/ld+json">
+{JSON.stringify({
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    {
+      "@type": "ListItem",
+      "position": 1,
+      "name": "Home",
+      "item": "https://sftreeremoval.com/"
+    },
+    {
+      "@type": "ListItem",
+      "position": 2,
+      "name": "Service Areas",
+      "item": "https://sftreeremoval.com/areas/"
+    },
+    {
+      "@type": "ListItem",
+      "position": 3,
+      "name": "Boca Raton Tree Removal",
+      "item": canonical
+    }
+  ]
+})}
+</script>
+<script type="application/ld+json">
+{JSON.stringify({
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {
+      "@type": "Question",
+      "name": "Do you provide tree removal services in Boca Raton, FL?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Yes. SF Tree Removal provides professional tree removal services in Boca Raton for residential, commercial, and HOA-managed properties."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Do you offer emergency tree removal in Boca Raton?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Yes. We offer 24/7 emergency tree removal in Boca Raton for storm damage, fallen trees, and hazardous situations."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Are permits required for tree removal in Boca Raton?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Some tree removals in Boca Raton require permits, especially for protected species. Our team assists with permit verification and certified arborist reports."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Is your tree removal company licensed and insured?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Yes. SF Tree Removal is fully licensed and insured to perform tree removal safely and professionally in Boca Raton."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Can you remove trees near luxury homes and tight spaces?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Absolutely. We specialize in controlled tree removal near luxury homes, pools, and structures using cranes, lifts, and precision rigging."
+      }
+    }
+  ]
+})}
+</script>
+
+<!-- ================= HERO – BOCA RATON ================= -->
+<section class="bg-teal-900 py-32 text-white">
+  <div class="max-w-7xl mx-auto px-6 text-center">
+
+    <!-- BADGE -->
+    <span
+      class="inline-block mb-8 px-4 py-1 text-xs font-bold tracking-widest
+             text-teal-200 border border-dashed border-teal-300 rounded-full"
+    >
+      PROFESSIONAL TREE REMOVAL
+    </span>
+
+    <!-- TITLE -->
+    <h1 class="text-4xl md:text-5xl xl:text-6xl font-extrabold leading-tight">
+      Tree Removal Services in Boca Raton, Florida
+    </h1>
+
+    <!-- SUBTEXT -->
+    <p class="mt-8 max-w-3xl mx-auto text-lg text-white/90 leading-relaxed">
+      SF Tree Removal provides professional tree removal services in Boca Raton
+      for residential estates, commercial properties, and HOA-managed
+      communities. From emergency tree removal to precision removals near
+      luxury homes, we deliver safe, discreet, and fully insured solutions.
+    </p>
+
+    <!-- CTA -->
+    <div class="mt-12 flex flex-wrap justify-center gap-6">
+      <a
+        href={`tel:${phone}`}
+        class="inline-flex items-center gap-4 rounded-full
+               bg-white px-10 py-4 text-teal-900 font-bold
+               hover:bg-slate-100 transition"
+      >
+        📞 Call Now
+      </a>
+
+      <a
+        href="/contact-us/"
+        class="inline-flex items-center gap-4 rounded-full
+               border-2 border-white px-10 py-4 text-white font-bold
+               hover:bg-white hover:text-teal-900 transition"
+      >
+        Request Free Estimate
+      </a>
+    </div>
+
+  </div>
+</section>
+<!-- ================= LOCAL INTRO – BOCA RATON ================= -->
+<section class="bg-white py-32">
+  <div class="max-w-7xl mx-auto px-6">
+
+    <div class="grid lg:grid-cols-2 gap-20 items-center">
+
+      <!-- LEFT: TEXT -->
+      <div>
+
+        <span
+          class="inline-block mb-6 px-4 py-1 text-xs font-bold tracking-widest
+                 text-teal-700 border border-dashed border-teal-600 rounded-full"
+        >
+          LOCAL TREE REMOVAL EXPERTS
+        </span>
+
+        <h2 class="text-3xl md:text-4xl font-extrabold text-slate-900 leading-tight">
+          Trusted Tree Removal Company in Boca Raton, FL
+        </h2>
+
+        <p class="mt-8 text-lg text-slate-600 leading-relaxed">
+          SF Tree Removal is a professional tree removal company serving
+          <strong>Boca Raton</strong> and surrounding areas of
+          <strong>Palm Beach County</strong>. We specialize in safe, controlled
+          tree removal for residential estates, commercial properties, and
+          HOA-managed communities.
+        </p>
+
+        <p class="mt-6 text-slate-600 leading-relaxed">
+          Boca Raton properties often require a higher level of precision due to
+          mature landscaping, proximity to structures, and local regulations.
+          Our experienced crews understand these challenges and deliver tree
+          removal solutions designed to protect your property, landscape, and
+          long-term value.
+        </p>
+
+        <div class="mt-10 flex flex-wrap gap-6">
+          <a
+            href="/contact-us/"
+            class="inline-flex items-center gap-3 rounded-full
+                   bg-teal-700 px-8 py-4 text-white font-bold
+                   hover:bg-teal-800 transition"
+          >
+            Request Free Estimate
+            <span class="flex h-8 w-8 items-center justify-center rounded-full bg-white/15">↗</span>
+          </a>
+
+          <a
+            href="/areas/palm-beach-county-tree-removal/"
+            class="inline-flex items-center gap-2 text-sm font-bold text-teal-700"
+          >
+            Serving All Palm Beach County
+            <span class="flex h-7 w-7 items-center justify-center rounded-full bg-teal-700 text-white">↗</span>
+          </a>
+        </div>
+
+      </div>
+
+      <!-- RIGHT: IMAGE -->
+      <div class="relative">
+        <div class="overflow-hidden rounded-3xl">
+          <img
+            src="/images/areas/boca-raton-tree-removal.jpg"
+            alt="Professional tree removal service in Boca Raton FL"
+            class="w-full h-full object-cover"
+            loading="lazy"
+          />
+        </div>
+      </div>
+
+    </div>
+
+  </div>
+</section>
+<!-- ================= WHEN TREE REMOVAL IS NEEDED – BOCA RATON ================= -->
+<section class="bg-[#f4f8f6] py-32">
+  <div class="max-w-7xl mx-auto px-6">
+
+    <div class="grid lg:grid-cols-2 gap-20 items-start">
+
+      <!-- LEFT: CONTENT -->
+      <div>
+
+        <span
+          class="inline-block mb-6 px-4 py-1 text-xs font-bold tracking-widest
+                 text-teal-700 border border-dashed border-teal-600 rounded-full"
+        >
+          TREE SAFETY & RISK
+        </span>
+
+        <h2 class="text-3xl md:text-4xl font-extrabold text-slate-900 leading-tight">
+          When Is Tree Removal Necessary in Boca Raton?
+        </h2>
+
+        <p class="mt-8 text-lg text-slate-600 leading-relaxed">
+          Tree removal becomes necessary when a tree poses a safety risk, causes
+          structural concerns, or no longer meets local regulations. In
+          <strong>Boca Raton</strong>, this often involves mature trees located
+          close to homes, pools, driveways, or neighboring properties.
+        </p>
+
+        <p class="mt-6 text-slate-600 leading-relaxed">
+          Florida’s coastal climate, seasonal storms, and saturated soil can
+          weaken root systems and compromise tree stability. Addressing these
+          issues early helps prevent costly damage and emergency situations.
+        </p>
+
+        <!-- LIST -->
+        <ul class="mt-10 space-y-5 text-slate-700 leading-relaxed">
+          <li>
+            <strong>Dead or declining trees</strong> showing signs of disease,
+            decay, or internal rot
+          </li>
+          <li>
+            <strong>Storm-damaged trees</strong> after hurricanes, tropical
+            storms, or heavy rainfall
+          </li>
+          <li>
+            <strong>Trees leaning toward structures</strong>, pools, fences, or
+            neighboring properties
+          </li>
+          <li>
+            <strong>Large limbs hanging over roofs or driveways</strong> creating
+            an immediate hazard
+          </li>
+          <li>
+            <strong>Roots lifting pavement or foundations</strong> and affecting
+            drainage or underground utilities
+          </li>
+          <li>
+            <strong>Non-compliant or protected trees</strong> requiring removal
+            as part of approved development or renovation plans
+          </li>
+        </ul>
+
+        <p class="mt-8 text-slate-600 leading-relaxed">
+          Our team evaluates each situation carefully and determines whether tree
+          removal, pruning, or arborist intervention is the safest and most
+          cost-effective solution for your Boca Raton property.
+        </p>
+
+      </div>
+
+      <!-- RIGHT: IMAGE -->
+      <div class="relative">
+        <div class="overflow-hidden rounded-3xl shadow-lg">
+          <img
+            src="/images/areas/boca-raton-tree-risk.jpg"
+            alt="Hazardous tree removal assessment in Boca Raton FL"
+            class="w-full h-full object-cover"
+            loading="lazy"
+          />
+        </div>
+      </div>
+
+    </div>
+
+  </div>
+</section>
+<!-- ================= EMERGENCY TREE REMOVAL – BOCA RATON ================= -->
+<section class="bg-teal-800 py-32 text-white">
+  <div class="max-w-7xl mx-auto px-6">
+
+    <div class="grid lg:grid-cols-2 gap-20 items-center">
+
+      <!-- LEFT: IMAGE -->
+      <div class="relative">
+        <div class="overflow-hidden rounded-3xl shadow-2xl">
+          <img
+            src="/images/areas/boca-raton-emergency-tree-removal.jpg"
+            alt="Emergency tree removal in Boca Raton after storm damage"
+            class="w-full h-full object-cover"
+            loading="lazy"
+          />
+        </div>
+      </div>
+
+      <!-- RIGHT: CONTENT -->
+      <div>
+
+        <span
+          class="inline-block mb-6 px-4 py-1 text-xs font-bold tracking-widest
+                 border border-white/50 rounded-full"
+        >
+          24/7 EMERGENCY RESPONSE
+        </span>
+
+        <h2 class="text-3xl md:text-4xl font-extrabold leading-tight">
+          Emergency Tree Removal Services in Boca Raton, FL
+        </h2>
+
+        <p class="mt-8 text-lg text-white/90 leading-relaxed">
+          Severe storms, hurricanes, and sudden structural failures can turn a
+          tree into an immediate danger. Our emergency tree removal crews provide
+          <strong>24/7 rapid response in Boca Raton</strong> to restore safety and
+          prevent further damage.
+        </p>
+
+        <p class="mt-6 text-white/90 leading-relaxed">
+          We handle urgent situations involving fallen trees, split trunks,
+          uprooted root systems, and trees entangled with power lines or resting
+          on homes, vehicles, and commercial properties.
+        </p>
+
+        <!-- EMERGENCY LIST -->
+        <ul class="mt-10 space-y-4 text-white/95 leading-relaxed">
+          <li>• Fallen trees blocking driveways, roads, or access points</li>
+          <li>• Storm-damaged trees threatening homes, roofs, or pools</li>
+          <li>• Broken limbs hanging over structures or pedestrian areas</li>
+          <li>• Trees leaning after flooding or soil saturation</li>
+          <li>• Emergency removal near power lines and utility infrastructure</li>
+        </ul>
+
+        <p class="mt-8 text-white/90 leading-relaxed">
+          Our crews arrive equipped with cranes, lifts, and rigging systems to
+          perform controlled emergency tree removal — even in tight spaces common
+          to Boca Raton residential communities.
+        </p>
+
+        <!-- CTA -->
+        <div class="mt-12 flex flex-wrap gap-6">
+          <a
+            href="tel:+18884521505"
+            class="inline-flex items-center gap-4 rounded-full
+                   bg-white px-10 py-4 text-teal-900 font-extrabold
+                   hover:bg-slate-100 transition"
+          >
+            📞 Call for Emergency Service
+            <span class="flex h-9 w-9 items-center justify-center rounded-full bg-teal-800 text-white">
+              ↗
+            </span>
+          </a>
+
+          <a
+            href="/emergency-tree-removal/"
+            class="inline-flex items-center gap-4 rounded-full
+                   border border-white/70 px-10 py-4 font-bold
+                   hover:bg-white/10 transition"
+          >
+            Learn About Emergency Tree Removal
+          </a>
+        </div>
+
+        <p class="mt-10 text-sm text-white/80">
+          Serving Boca Raton and surrounding South Florida communities — 24 hours
+          a day, 7 days a week.
+        </p>
+
+      </div>
+
+    </div>
+
+  </div>
+</section>
+<!-- ================= EQUIPMENT & EXPERTISE – BOCA RATON ================= -->
+<section class="bg-white py-32">
+  <div class="max-w-7xl mx-auto px-6">
+
+    <div class="grid lg:grid-cols-2 gap-20 items-center">
+
+      <!-- LEFT: CONTENT -->
+      <div>
+
+        <span
+          class="inline-block mb-6 px-4 py-1 text-xs font-bold tracking-widest
+                 text-teal-700 border border-dashed border-teal-600 rounded-full"
+        >
+          MODERN EQUIPMENT & EXPERTISE
+        </span>
+
+        <h2 class="text-3xl md:text-4xl font-extrabold text-slate-900 leading-tight">
+          Precision Tree Removal for Boca Raton Properties
+        </h2>
+
+        <p class="mt-8 text-lg text-slate-600 leading-relaxed">
+          Tree removal in Boca Raton often requires a higher level of precision
+          due to luxury homes, landscaped estates, pools, and tight property
+          layouts. Our crews use professional-grade equipment and proven removal
+          techniques to protect structures, hardscapes, and surrounding trees.
+        </p>
+
+        <p class="mt-6 text-slate-600 leading-relaxed">
+          Every project is planned and executed by experienced operators trained
+          in controlled dismantling, rigging, and crane-assisted tree removal —
+          ensuring safe results even for large or hazardous trees.
+        </p>
+
+        <!-- BULLET GRID -->
+        <div class="mt-10 grid sm:grid-cols-2 gap-6 text-slate-700">
+          <div>• Crane-assisted tree removal</div>
+          <div>• Aerial lifts & bucket trucks</div>
+          <div>• Precision rigging systems</div>
+          <div>• Controlled sectional dismantling</div>
+          <div>• Protection of roofs, pools & landscaping</div>
+          <div>• Fully insured & safety-compliant crews</div>
+        </div>
+
+        <p class="mt-8 text-slate-600 leading-relaxed">
+          Whether removing a storm-damaged tree or planning a complex removal
+          near a high-value property, our equipment and expertise allow us to
+          complete the job efficiently, cleanly, and with minimal disruption.
+        </p>
+
+        <!-- CTA -->
+        <div class="mt-12 flex flex-wrap gap-6">
+          <a
+            href="/tree-removal/"
+            class="inline-flex items-center gap-4 rounded-full
+                   bg-teal-700 px-10 py-4 text-white font-bold
+                   hover:bg-teal-800 transition"
+          >
+            Learn About Our Tree Removal Services
+            <span class="flex h-9 w-9 items-center justify-center rounded-full bg-white/15">
+              ↗
+            </span>
+          </a>
+
+          <a
+            href="/certified-arborist/"
+            class="inline-flex items-center gap-4 rounded-full
+                   border border-teal-700 px-10 py-4 text-teal-700 font-bold
+                   hover:bg-teal-700 hover:text-white transition"
+          >
+            Certified Arborist Services
+          </a>
+        </div>
+
+      </div>
+
+      <!-- RIGHT: IMAGE -->
+      <div class="relative">
+        <div class="overflow-hidden rounded-3xl shadow-xl">
+          <img
+            src="/images/areas/boca-raton-crane-tree-removal.jpg"
+            alt="Crane-assisted tree removal at a Boca Raton residential property"
+            class="w-full h-full object-cover"
+            loading="lazy"
+          />
+        </div>
+      </div>
+
+    </div>
+
+  </div>
+</section>
+<!-- ================= WHEN TREE REMOVAL IS NEEDED – BOCA RATON ================= -->
+<section class="bg-[#f4f8f6] py-32">
+  <div class="max-w-7xl mx-auto px-6">
+
+    <div class="grid lg:grid-cols-2 gap-20 items-center">
+
+      <!-- LEFT: IMAGE -->
+      <div class="relative">
+        <div class="overflow-hidden rounded-3xl shadow-xl">
+          <img
+            src="/images/areas/boca-raton-hazardous-tree.jpg"
+            alt="Hazardous tree threatening a residential property in Boca Raton"
+            class="w-full h-full object-cover"
+            loading="lazy"
+          />
+        </div>
+      </div>
+
+      <!-- RIGHT: CONTENT -->
+      <div>
+
+        <span
+          class="inline-block mb-6 px-4 py-1 text-xs font-bold tracking-widest
+                 text-teal-700 border border-dashed border-teal-600 rounded-full"
+        >
+          WHEN TREE REMOVAL IS NECESSARY
+        </span>
+
+        <h2 class="text-3xl md:text-4xl font-extrabold text-slate-900 leading-tight">
+          Signs You Need Professional Tree Removal in Boca Raton
+        </h2>
+
+        <p class="mt-8 text-lg text-slate-600 leading-relaxed">
+          Not every tree problem requires immediate removal, but certain warning
+          signs indicate a serious safety risk. In Boca Raton, mature trees,
+          shallow root systems, and storm exposure can quickly turn a tree into
+          a liability if left unaddressed.
+        </p>
+
+        <p class="mt-6 text-slate-600 leading-relaxed">
+          Professional tree removal is often required when a tree becomes
+          structurally unstable, poses a threat to nearby structures, or no
+          longer responds to corrective pruning or treatment.
+        </p>
+
+        <!-- LIST -->
+        <ul class="mt-10 space-y-4 text-slate-700 leading-relaxed">
+          <li>• Dead or dying trees with visible decay or fungal growth</li>
+          <li>• Trees leaning toward homes, pools, or neighboring properties</li>
+          <li>• Cracked trunks or major structural splits</li>
+          <li>• Root damage caused by erosion, flooding, or construction</li>
+          <li>• Trees damaged by hurricanes or severe storms</li>
+          <li>• Trees interfering with power lines or utility infrastructure</li>
+        </ul>
+
+        <p class="mt-8 text-slate-600 leading-relaxed">
+          Our experienced team evaluates each situation carefully and recommends
+          the safest solution — whether that involves selective removal, emergency
+          service, or certified arborist consultation.
+        </p>
+
+        <!-- CTA -->
+        <div class="mt-12 flex flex-wrap gap-6">
+          <a
+            href="/tree-removal/"
+            class="inline-flex items-center gap-4 rounded-full
+                   bg-teal-700 px-10 py-4 text-white font-bold
+                   hover:bg-teal-800 transition"
+          >
+            Tree Removal Services
+            <span class="flex h-9 w-9 items-center justify-center rounded-full bg-white/15">
+              ↗
+            </span>
+          </a>
+
+          <a
+            href="/certified-arborist/"
+            class="inline-flex items-center gap-4 rounded-full
+                   border border-teal-700 px-10 py-4 text-teal-700 font-bold
+                   hover:bg-teal-700 hover:text-white transition"
+          >
+            Request Arborist Evaluation
+          </a>
+        </div>
+
+      </div>
+
+    </div>
+
+  </div>
+</section>
+<!-- ================= TREE REMOVAL PERMITS – BOCA RATON ================= -->
+<section class="bg-white py-32">
+  <div class="max-w-7xl mx-auto px-6">
+
+    <div class="grid lg:grid-cols-2 gap-20 items-center">
+
+      <!-- LEFT: CONTENT -->
+      <div>
+
+        <span
+          class="inline-block mb-6 px-4 py-1 text-xs font-bold tracking-widest
+                 text-teal-700 border border-dashed border-teal-600 rounded-full"
+        >
+          LOCAL REGULATIONS & PERMITS
+        </span>
+
+        <h2 class="text-3xl md:text-4xl font-extrabold text-slate-900 leading-tight">
+          Tree Removal Permits & Regulations in Boca Raton, FL
+        </h2>
+
+        <p class="mt-8 text-lg text-slate-600 leading-relaxed">
+          Tree removal in Boca Raton is governed by strict municipal regulations
+          designed to protect native and mature trees. Removing a tree without
+          proper authorization can result in fines, stop-work orders, or
+          mandatory replacement requirements.
+        </p>
+
+        <p class="mt-6 text-slate-600 leading-relaxed">
+          Permits are commonly required for the removal of large trees,
+          protected species, or trees located within regulated zoning areas.
+          Emergency situations may qualify for expedited approval or exemptions,
+          but documentation is still often required.
+        </p>
+
+        <!-- LIST -->
+        <ul class="mt-10 space-y-4 text-slate-700 leading-relaxed">
+          <li>• Removal of protected or native tree species</li>
+          <li>• Trees exceeding diameter or height thresholds</li>
+          <li>• Tree removal related to new construction or renovations</li>
+          <li>• Properties located in environmentally sensitive zones</li>
+          <li>• HOA and commercial property requirements</li>
+        </ul>
+
+        <p class="mt-8 text-slate-600 leading-relaxed">
+          Our team assists homeowners, businesses, and contractors throughout
+          Boca Raton by coordinating with local authorities and providing
+          certified arborist documentation when required.
+        </p>
+
+        <!-- CTA -->
+        <div class="mt-12 flex flex-wrap gap-6">
+          <a
+            href="/certified-arborist/"
+            class="inline-flex items-center gap-4 rounded-full
+                   bg-teal-700 px-10 py-4 text-white font-bold
+                   hover:bg-teal-800 transition"
+          >
+            Certified Arborist Reports
+            <span class="flex h-9 w-9 items-center justify-center rounded-full bg-white/15">
+              ↗
+            </span>
+          </a>
+
+          <a
+            href="/contact-us/"
+            class="inline-flex items-center gap-4 rounded-full
+                   border border-teal-700 px-10 py-4 text-teal-700 font-bold
+                   hover:bg-teal-700 hover:text-white transition"
+          >
+            Permit Assistance & Consultation
+          </a>
+        </div>
+
+      </div>
+
+      <!-- RIGHT: IMAGE -->
+      <div class="relative">
+        <div class="overflow-hidden rounded-3xl shadow-xl">
+          <img
+            src="/images/areas/boca-raton-tree-permit.jpg"
+            alt="Tree removal permit evaluation and arborist inspection in Boca Raton"
+            class="w-full h-full object-cover"
+            loading="lazy"
+          />
+        </div>
+      </div>
+
+    </div>
+
+  </div>
+</section>
+<!-- ================= EMERGENCY TREE REMOVAL – BOCA RATON ================= -->
+<section class="bg-teal-800 py-32 text-white">
+  <div class="max-w-7xl mx-auto px-6">
+
+    <div class="grid lg:grid-cols-2 gap-20 items-center">
+
+      <!-- LEFT: IMAGE -->
+      <div class="relative">
+        <div class="overflow-hidden rounded-3xl shadow-2xl">
+          <img
+            src="/images/areas/boca-raton-emergency-tree-removal.jpg"
+            alt="Emergency tree removal after storm damage in Boca Raton"
+            class="w-full h-full object-cover"
+            loading="lazy"
+          />
+        </div>
+      </div>
+
+      <!-- RIGHT: CONTENT -->
+      <div>
+
+        <span
+          class="inline-block mb-6 px-4 py-1 text-xs font-bold tracking-widest
+                 border border-dashed border-white/60 rounded-full"
+        >
+          24/7 EMERGENCY RESPONSE
+        </span>
+
+        <h2 class="text-3xl md:text-4xl font-extrabold leading-tight">
+          Emergency Tree Removal Services in Boca Raton
+        </h2>
+
+        <p class="mt-8 text-lg text-white/90 leading-relaxed">
+          Severe storms, hurricanes, and sudden structural failures can turn a
+          tree into an immediate danger. Our emergency tree removal crews provide
+          fast, professional response throughout Boca Raton to restore safety
+          and prevent further property damage.
+        </p>
+
+        <p class="mt-6 text-white/85 leading-relaxed">
+          We handle fallen trees, split trunks, hanging limbs, and trees
+          threatening homes, vehicles, pools, and power lines. Every emergency
+          response follows strict safety protocols and controlled removal
+          procedures.
+        </p>
+
+        <!-- LIST -->
+        <ul class="mt-10 space-y-4 text-white/90 leading-relaxed">
+          <li>• Fallen trees blocking driveways or access roads</li>
+          <li>• Storm-damaged trees after hurricanes or heavy rain</li>
+          <li>• Broken or hanging limbs over roofs and vehicles</li>
+          <li>• Trees entangled with power lines or utilities</li>
+          <li>• Trees at risk of sudden collapse</li>
+        </ul>
+
+        <p class="mt-8 text-white/85 leading-relaxed">
+          Our Boca Raton emergency crews are equipped with cranes, lifts, and
+          advanced rigging systems to safely manage high-risk situations, even
+          in tight residential environments.
+        </p>
+
+        <!-- CTA -->
+        <div class="mt-12 flex flex-wrap gap-6">
+          <a
+            href="tel:18884521505"
+            class="inline-flex items-center gap-4 rounded-full
+                   bg-white px-10 py-4 text-teal-900 font-extrabold
+                   hover:bg-slate-100 transition"
+          >
+            📞 Call Now – 24/7 Emergency
+            <span class="flex h-9 w-9 items-center justify-center rounded-full bg-teal-700 text-white">
+              ↗
+            </span>
+          </a>
+
+          <a
+            href="/emergency-tree-removal/"
+            class="inline-flex items-center gap-4 rounded-full
+                   border border-white/70 px-10 py-4 text-white font-bold
+                   hover:bg-white/10 transition"
+          >
+            Emergency Tree Removal Services
+          </a>
+        </div>
+
+      </div>
+
+    </div>
+
+  </div>
+</section>
+<!-- ================= WHY CHOOSE US – BOCA RATON ================= -->
+<section class="bg-white py-32">
+  <div class="max-w-7xl mx-auto px-6">
+
+    <!-- HEADER -->
+    <div class="max-w-3xl mx-auto text-center mb-20">
+      <span
+        class="inline-block mb-6 px-4 py-1 text-xs font-bold tracking-widest
+               text-teal-700 border border-dashed border-teal-600 rounded-full"
+      >
+        WHY CHOOSE US
+      </span>
+
+      <h2 class="text-3xl md:text-4xl font-extrabold text-slate-900 leading-tight">
+        Trusted Tree Removal Experts in Boca Raton, FL
+      </h2>
+
+      <p class="mt-8 text-lg text-slate-600 leading-relaxed">
+        Choosing the right tree removal company matters — especially in a city
+        like Boca Raton where property value, safety, and compliance are critical.
+        SF Tree Removal combines professional expertise, modern equipment, and
+        local knowledge to deliver dependable results.
+      </p>
+    </div>
+
+    <!-- GRID -->
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-12">
+
+      <!-- CARD -->
+      <div class="bg-[#f4f8f6] rounded-3xl p-10">
+        <h3 class="text-xl font-extrabold text-slate-900 mb-4">
+          Local Boca Raton Experience
+        </h3>
+        <p class="text-slate-600 leading-relaxed">
+          We understand Boca Raton’s neighborhoods, tree species, soil
+          conditions, and permitting requirements — allowing us to plan and
+          execute removals efficiently and responsibly.
+        </p>
+      </div>
+
+      <!-- CARD -->
+      <div class="bg-[#f4f8f6] rounded-3xl p-10">
+        <h3 class="text-xl font-extrabold text-slate-900 mb-4">
+          Licensed, Insured & Certified
+        </h3>
+        <p class="text-slate-600 leading-relaxed">
+          Our tree removal company is fully licensed and insured, with access to
+          certified arborists for evaluations, reports, and compliance support
+          when required.
+        </p>
+      </div>
+
+      <!-- CARD -->
+      <div class="bg-[#f4f8f6] rounded-3xl p-10">
+        <h3 class="text-xl font-extrabold text-slate-900 mb-4">
+          Advanced Equipment & Safety
+        </h3>
+        <p class="text-slate-600 leading-relaxed">
+          We use cranes, lifts, and professional rigging systems to safely remove
+          trees near homes, pools, power lines, and other sensitive structures.
+        </p>
+      </div>
+
+      <!-- CARD -->
+      <div class="bg-[#f4f8f6] rounded-3xl p-10">
+        <h3 class="text-xl font-extrabold text-slate-900 mb-4">
+          Emergency Response 24/7
+        </h3>
+        <p class="text-slate-600 leading-relaxed">
+          Our emergency tree removal teams are available around the clock to
+          respond quickly after storms, hurricanes, or sudden tree failures.
+        </p>
+      </div>
+
+      <!-- CARD -->
+      <div class="bg-[#f4f8f6] rounded-3xl p-10">
+        <h3 class="text-xl font-extrabold text-slate-900 mb-4">
+          Clean, Controlled Worksites
+        </h3>
+        <p class="text-slate-600 leading-relaxed">
+          We prioritize property protection, debris control, and thorough
+          cleanup, leaving your Boca Raton property safe and orderly after
+          completion.
+        </p>
+      </div>
+
+      <!-- CARD -->
+      <div class="bg-[#f4f8f6] rounded-3xl p-10">
+        <h3 class="text-xl font-extrabold text-slate-900 mb-4">
+          Transparent Estimates
+        </h3>
+        <p class="text-slate-600 leading-relaxed">
+          We provide clear, honest pricing and explain every step of the process,
+          so there are no surprises before, during, or after tree removal.
+        </p>
+      </div>
+
+    </div>
+
+    <!-- CTA -->
+    <div class="mt-20 text-center">
+      <a
+        href="/contact-us/"
+        class="inline-flex items-center gap-4 rounded-full
+               bg-teal-700 px-12 py-4 text-white font-bold
+               hover:bg-teal-800 transition"
+      >
+        Request a Free Tree Removal Estimate
+        <span class="flex h-10 w-10 items-center justify-center rounded-full bg-white/15">
+          ↗
+        </span>
+      </a>
+    </div>
+
+  </div>
+</section>
+<!-- ================= FAQ – BOCA RATON ================= -->
+<section class="bg-[#f4f8f6] py-28">
+  <div class="max-w-5xl mx-auto px-6">
+
+    <!-- HEADER -->
+    <div class="text-center mb-20">
+      <span
+        class="inline-block mb-6 px-4 py-1 text-xs font-bold tracking-widest
+               text-teal-700 border border-dashed border-teal-600 rounded-full"
+      >
+        TREE REMOVAL FAQ
+      </span>
+
+      <h2 class="text-3xl md:text-4xl font-extrabold text-slate-900">
+        Tree Removal Questions in Boca Raton
+      </h2>
+
+      <p class="mt-6 max-w-3xl mx-auto text-lg text-slate-600 leading-relaxed">
+        Homeowners and property managers in Boca Raton often have questions
+        about tree removal safety, permits, emergency response, and pricing.
+        Below are answers to the most common concerns.
+      </p>
+    </div>
+
+    <!-- FAQ GRID -->
+    <div class="grid md:grid-cols-2 gap-10">
+
+      <div class="bg-white rounded-3xl p-10 shadow-sm">
+        <h3 class="font-extrabold text-slate-900 mb-4">
+          How much does tree removal cost in Boca Raton?
+        </h3>
+        <p class="text-slate-600 leading-relaxed">
+          Tree removal costs depend on tree size, location, accessibility, and
+          risk level. Properties in Boca Raton often involve mature trees near
+          homes or pools, which may require specialized equipment. We provide
+          free, transparent estimates.
+        </p>
+      </div>
+
+      <div class="bg-white rounded-3xl p-10 shadow-sm">
+        <h3 class="font-extrabold text-slate-900 mb-4">
+          Do I need a permit to remove a tree in Boca Raton?
+        </h3>
+        <p class="text-slate-600 leading-relaxed">
+          Many tree removals in Boca Raton require permits, especially for
+          protected species or large trees. Our team assists with permit
+          verification and certified arborist reports when required.
+        </p>
+      </div>
+
+      <div class="bg-white rounded-3xl p-10 shadow-sm">
+        <h3 class="font-extrabold text-slate-900 mb-4">
+          Do you offer emergency tree removal?
+        </h3>
+        <p class="text-slate-600 leading-relaxed">
+          Yes. We provide 24/7 emergency tree removal services in Boca Raton for
+          storm damage, fallen trees, and hazardous situations requiring
+          immediate action.
+        </p>
+      </div>
+
+      <div class="bg-white rounded-3xl p-10 shadow-sm">
+        <h3 class="font-extrabold text-slate-900 mb-4">
+          Is your company licensed and insured?
+        </h3>
+        <p class="text-slate-600 leading-relaxed">
+          Absolutely. SF Tree Removal is fully licensed and insured to protect
+          homeowners, businesses, and commercial properties throughout Boca
+          Raton and South Florida.
+        </p>
+      </div>
+
+      <div class="bg-white rounded-3xl p-10 shadow-sm">
+        <h3 class="font-extrabold text-slate-900 mb-4">
+          Can you remove trees near homes or power lines?
+        </h3>
+        <p class="text-slate-600 leading-relaxed">
+          Yes. We specialize in controlled tree removal near structures, pools,
+          and utilities using cranes, lifts, and professional rigging systems to
+          ensure maximum safety.
+        </p>
+      </div>
+
+      <div class="bg-white rounded-3xl p-10 shadow-sm">
+        <h3 class="font-extrabold text-slate-900 mb-4">
+          Do you provide cleanup after tree removal?
+        </h3>
+        <p class="text-slate-600 leading-relaxed">
+          Yes. Every tree removal project includes debris management and
+          site cleanup, leaving your Boca Raton property safe and orderly.
+        </p>
+      </div>
+
+    </div>
+
+  </div>
+</section>
+
+<!-- ================= FINAL CTA – BOCA RATON ================= -->
+<section class="bg-teal-900 py-32 text-white">
+  <div class="max-w-7xl mx-auto px-6 text-center">
+
+    <span
+      class="inline-block mb-6 px-4 py-1 text-xs font-bold tracking-widest
+             border border-dashed border-white/60 rounded-full"
+    >
+      READY TO GET STARTED
+    </span>
+
+    <h2 class="text-4xl md:text-5xl xl:text-6xl font-extrabold leading-tight">
+      Need Tree Removal in Boca Raton?
+      <br class="hidden sm:block" />
+      Get Professional Help Today
+    </h2>
+
+    <p class="mt-8 max-w-3xl mx-auto text-lg text-white/90">
+      Whether you need emergency tree removal, permit assistance, or scheduled
+      service, our experienced team is ready to protect your Boca Raton
+      property with safe, reliable solutions.
+    </p>
+
+    <div class="mt-14 flex flex-wrap justify-center gap-6">
+      <a
+        href="/contact-us/"
+        class="inline-flex items-center gap-4 rounded-full
+               bg-white px-12 py-5 text-teal-900 font-extrabold
+               hover:bg-slate-100 transition"
+      >
+        Request a Free Estimate
+        <span class="flex h-10 w-10 items-center justify-center rounded-full bg-teal-700 text-white">
+          ↗
+        </span>
+      </a>
+
+      <a
+        href="tel:18884521505"
+        class="inline-flex items-center gap-4 rounded-full
+               border border-white/70 px-12 py-5 text-white font-bold
+               hover:bg-white/10 transition"
+      >
+        📞 24/7 Emergency Line
+      </a>
+    </div>
+
+    <p class="mt-12 text-sm text-white/80">
+      Serving Boca Raton, Broward County & surrounding South Florida communities.
+    </p>
+
+  </div>
+</section>
+
+</BaseLayout>

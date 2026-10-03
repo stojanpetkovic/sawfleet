@@ -1,0 +1,1149 @@
+---
+import BaseLayout from "../../../layouts/BaseLayout.astro";
+
+const city = "Hollywood";
+const county = "Broward County";
+const state = "FL";
+const phone = "+1-888-452-1505";
+
+const title = `Tree Service in ${city}, ${state} | Professional & Emergency Tree Care`;
+const description =
+  `Professional tree service in ${city}, ${state}. Tree removal, emergency tree service, storm damage cleanup, and certified arborist services serving ${county} and surrounding South Florida areas.`;
+
+const canonical = "https://sftreeremoval.com/areas/hollywood-tree-service/";
+---
+
+<BaseLayout
+  title={title}
+  description={description}
+  canonical={canonical}
+>
+
+<!-- =========================================================
+  LOCAL BUSINESS SCHEMA – HOLLYWOOD
+========================================================= -->
+<script type="application/ld+json">
+{JSON.stringify({
+  "@context": "https://schema.org",
+  "@type": "LocalBusiness",
+  "@id": `${canonical}#localbusiness`,
+  "name": `SF Tree Removal – ${city}`,
+  "url": canonical,
+  "telephone": phone,
+  "priceRange": "$$",
+  "image": "https://sftreeremoval.com/images/og-default.jpg",
+  "address": {
+    "@type": "PostalAddress",
+    "addressLocality": city,
+    "addressRegion": state,
+    "addressCountry": "US"
+  },
+  "areaServed": [
+    { "@type": "City", "name": city },
+    { "@type": "AdministrativeArea", "name": county }
+  ],
+  "openingHoursSpecification": {
+    "@type": "OpeningHoursSpecification",
+    "dayOfWeek": [
+      "Monday","Tuesday","Wednesday","Thursday","Friday","Saturday","Sunday"
+    ],
+    "opens": "00:00",
+    "closes": "23:59"
+  },
+  "hasOfferCatalog": {
+    "@type": "OfferCatalog",
+    "name": "Tree Services",
+    "itemListElement": [
+      {
+        "@type": "Offer",
+        "itemOffered": {
+          "@type": "Service",
+          "name": "Tree Removal",
+          "areaServed": city
+        }
+      },
+      {
+        "@type": "Offer",
+        "itemOffered": {
+          "@type": "Service",
+          "name": "Emergency Tree Service",
+          "areaServed": city
+        }
+      },
+      {
+        "@type": "Offer",
+        "itemOffered": {
+          "@type": "Service",
+          "name": "Storm Damage Tree Cleanup",
+          "areaServed": city
+        }
+      },
+      {
+        "@type": "Offer",
+        "itemOffered": {
+          "@type": "Service",
+          "name": "Certified Arborist Services",
+          "areaServed": city
+        }
+      }
+    ]
+  }
+})}
+</script>
+
+<!-- =========================================================
+  BREADCRUMB SCHEMA
+========================================================= -->
+<script type="application/ld+json">
+{JSON.stringify({
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    {
+      "@type": "ListItem",
+      "position": 1,
+      "name": "Home",
+      "item": "https://sftreeremoval.com/"
+    },
+    {
+      "@type": "ListItem",
+      "position": 2,
+      "name": "Service Areas",
+      "item": "https://sftreeremoval.com/areas/"
+    },
+    {
+      "@type": "ListItem",
+      "position": 3,
+      "name": `${city} Tree Service`,
+      "item": canonical
+    }
+  ]
+})}
+</script>
+
+<!-- =========================================================
+  FAQ PAGE SCHEMA – HOLLYWOOD
+========================================================= -->
+<script type="application/ld+json">
+{JSON.stringify({
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {
+      "@type": "Question",
+      "name": `What tree services do you offer in ${city}?`,
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": `We provide full tree service in ${city}, including tree removal, emergency tree service, storm damage cleanup, and certified arborist services for residential and commercial properties.`
+      }
+    },
+    {
+      "@type": "Question",
+      "name": `Do you offer emergency tree service in ${city}?`,
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": `Yes. We provide 24/7 emergency tree service throughout ${city} and ${county} for fallen trees, storm damage, and hazardous situations.`
+      }
+    },
+    {
+      "@type": "Question",
+      "name": `Do I need a permit for tree removal in ${city}?`,
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": `Some tree removals in ${city} require permits, especially for protected species or large trees. Our team assists with permit verification and certified arborist reports when required.`
+      }
+    },
+    {
+      "@type": "Question",
+      "name": `Is your tree service company licensed and insured?`,
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": `Yes. Our tree service company serving ${city} is fully licensed and insured to protect homeowners, businesses, and commercial properties.`
+      }
+    },
+    {
+      "@type": "Question",
+      "name": `Can you handle trees near homes or power lines?`,
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": `Yes. We specialize in controlled tree service and removal near homes, roofs, and power lines using professional equipment such as cranes, lifts, and rigging systems.`
+      }
+    }
+  ]
+})}
+</script>
+
+<!-- ================= HERO – HOLLYWOOD ================= -->
+<section class="bg-teal-900 py-32 text-white">
+  <div class="max-w-7xl mx-auto px-6 text-center">
+
+    <!-- BADGE -->
+    <span
+      class="inline-block mb-6 px-4 py-1 text-xs font-bold tracking-widest
+             border border-dashed border-white/60 rounded-full"
+    >
+      PROFESSIONAL TREE SERVICE
+    </span>
+
+    <!-- H1 -->
+    <h1 class="text-4xl md:text-5xl xl:text-6xl font-extrabold leading-tight">
+      Professional Tree Service in Hollywood, FL
+    </h1>
+
+    <!-- SUBTEXT -->
+    <p class="mt-8 max-w-3xl mx-auto text-lg text-white/90 leading-relaxed">
+      SF Tree Removal provides licensed, insured, and professional tree services
+      in Hollywood, Florida. From routine tree care to emergency tree service
+      and storm damage cleanup, our crews serve residential and commercial
+      properties throughout Broward County.
+    </p>
+
+    <!-- CTA -->
+    <div class="mt-12 flex flex-wrap justify-center gap-6">
+      <a
+        href="tel:1-888-452-1505"
+        class="inline-flex items-center gap-4 rounded-full
+               bg-white px-10 py-4 text-teal-900 font-bold
+               hover:bg-slate-100 transition"
+      >
+        📞 Call 1-888-452-1505
+      </a>
+
+      <a
+        href="/contact-us/"
+        class="inline-flex items-center gap-4 rounded-full
+               border border-white/70 px-10 py-4 text-white font-bold
+               hover:bg-white/10 transition"
+      >
+        Request Free Estimate
+      </a>
+    </div>
+
+    <!-- TRUST -->
+    <p class="mt-10 text-sm text-white/80">
+      Emergency Tree Service • Hollywood • Broward County • South Florida
+    </p>
+
+  </div>
+</section>
+<!-- ================= TREE SERVICES OVERVIEW – HOLLYWOOD ================= -->
+<section class="bg-white py-32">
+  <div class="max-w-7xl mx-auto px-6">
+
+    <!-- HEADER -->
+    <div class="max-w-3xl mx-auto text-center mb-20">
+      <span
+        class="inline-block mb-6 px-4 py-1 text-xs font-bold tracking-widest
+               text-teal-700 border border-dashed border-teal-600 rounded-full"
+      >
+        OUR TREE SERVICES
+      </span>
+
+      <h2 class="text-4xl md:text-5xl font-extrabold text-slate-900 leading-tight mb-8">
+        Complete Tree Service Solutions
+        <br class="hidden sm:block" />
+        for Hollywood Properties
+      </h2>
+
+      <p class="text-lg text-slate-600 leading-relaxed">
+        Our Hollywood tree service team provides comprehensive solutions for
+        residential and commercial properties. From preventive tree care to
+        emergency response, we deliver safe, efficient, and fully compliant
+        services tailored to South Florida conditions.
+      </p>
+    </div>
+
+    <!-- SERVICES GRID -->
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-10">
+
+      <!-- SERVICE -->
+      <div class="bg-[#f4f8f6] rounded-3xl p-8">
+        <h3 class="text-xl font-extrabold text-slate-900 mb-4">
+          Tree Removal
+        </h3>
+        <p class="text-slate-600 leading-relaxed">
+          Safe and controlled tree removal for hazardous, damaged, or unwanted
+          trees near homes, buildings, and utilities throughout Hollywood.
+        </p>
+      </div>
+
+      <!-- SERVICE -->
+      <div class="bg-[#f4f8f6] rounded-3xl p-8">
+        <h3 class="text-xl font-extrabold text-slate-900 mb-4">
+          Emergency Tree Service
+        </h3>
+        <p class="text-slate-600 leading-relaxed">
+          24/7 emergency tree service in Hollywood for storm damage, fallen
+          trees, and situations requiring immediate professional response.
+        </p>
+      </div>
+
+      <!-- SERVICE -->
+      <div class="bg-[#f4f8f6] rounded-3xl p-8">
+        <h3 class="text-xl font-extrabold text-slate-900 mb-4">
+          Storm Damage Cleanup
+        </h3>
+        <p class="text-slate-600 leading-relaxed">
+          Rapid cleanup and removal of storm-damaged trees and debris to restore
+          safety and access after hurricanes and severe weather events.
+        </p>
+      </div>
+
+      <!-- SERVICE -->
+      <div class="bg-[#f4f8f6] rounded-3xl p-8">
+        <h3 class="text-xl font-extrabold text-slate-900 mb-4">
+          Certified Arborist Services
+        </h3>
+        <p class="text-slate-600 leading-relaxed">
+          Professional tree health assessments, arborist reports, and permit
+          support provided by certified arborists familiar with Hollywood
+          regulations.
+        </p>
+      </div>
+
+    </div>
+
+    <!-- CTA -->
+    <div class="mt-20 text-center">
+      <a
+        href="/contact-us/"
+        class="inline-flex items-center gap-4 rounded-full
+               bg-teal-700 px-10 py-4 text-white font-bold
+               hover:bg-teal-800 transition"
+      >
+        Get a Free Tree Service Estimate
+        <span class="flex h-10 w-10 items-center justify-center rounded-full bg-white/15">
+          ↗
+        </span>
+      </a>
+    </div>
+
+  </div>
+</section>
+<!-- ================= RESIDENTIAL & COMMERCIAL TREE SERVICE – HOLLYWOOD ================= -->
+<section class="bg-[#f4f8f6] py-32">
+  <div class="max-w-7xl mx-auto px-6">
+
+    <!-- HEADER -->
+    <div class="max-w-3xl mx-auto text-center mb-20">
+      <span
+        class="inline-block mb-6 px-4 py-1 text-xs font-bold tracking-widest
+               text-teal-700 border border-dashed border-teal-600 rounded-full"
+      >
+        RESIDENTIAL & COMMERCIAL
+      </span>
+
+      <h2 class="text-4xl md:text-5xl font-extrabold text-slate-900 leading-tight mb-8">
+        Residential & Commercial
+        <br class="hidden sm:block" />
+        Tree Service in Hollywood
+      </h2>
+
+      <p class="text-lg text-slate-600 leading-relaxed">
+        Our Hollywood tree service team works with homeowners, businesses, HOAs,
+        and property managers to deliver safe, reliable, and fully compliant
+        tree care solutions across Broward County.
+      </p>
+    </div>
+
+    <!-- GRID -->
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-16 items-start">
+
+      <!-- RESIDENTIAL -->
+      <div class="bg-white rounded-3xl p-10">
+        <h3 class="text-2xl font-extrabold text-slate-900 mb-6">
+          Residential Tree Service
+        </h3>
+
+        <p class="text-slate-700 leading-relaxed mb-6">
+          Homeowners in Hollywood rely on our residential tree services to
+          maintain safe, healthy, and visually appealing properties. We handle
+          trees located near homes, pools, fences, driveways, and power lines
+          with precision and care.
+        </p>
+
+        <ul class="list-disc list-inside space-y-3 text-slate-700">
+          <li>Tree removal near homes and roofs</li>
+          <li>Emergency tree service after storms</li>
+          <li>Hazardous tree assessments</li>
+          <li>Storm-damaged tree cleanup</li>
+          <li>Permit and compliance assistance</li>
+        </ul>
+      </div>
+
+      <!-- COMMERCIAL -->
+      <div class="bg-white rounded-3xl p-10">
+        <h3 class="text-2xl font-extrabold text-slate-900 mb-6">
+          Commercial Tree Service
+        </h3>
+
+        <p class="text-slate-700 leading-relaxed mb-6">
+          Commercial properties in Hollywood require experienced crews capable
+          of managing complex tree service projects while minimizing disruption
+          to operations and ensuring full compliance with safety standards.
+        </p>
+
+        <ul class="list-disc list-inside space-y-3 text-slate-700">
+          <li>Retail centers and office buildings</li>
+          <li>HOA and condominium communities</li>
+          <li>Hotels, schools, and municipal properties</li>
+          <li>Construction and land clearing support</li>
+          <li>Licensed and insured operations</li>
+        </ul>
+      </div>
+
+    </div>
+
+    <!-- CTA -->
+    <div class="mt-20 text-center">
+      <a
+        href="/contact-us/"
+        class="inline-flex items-center gap-4 rounded-full
+               bg-teal-700 px-10 py-4 text-white font-bold
+               hover:bg-teal-800 transition"
+      >
+        Schedule Tree Service in Hollywood
+        <span class="flex h-10 w-10 items-center justify-center rounded-full bg-white/15">
+          ↗
+        </span>
+      </a>
+    </div>
+
+  </div>
+</section>
+<!-- ================= EMERGENCY TREE SERVICE – HOLLYWOOD ================= -->
+<section class="bg-teal-900 py-32 text-white">
+  <div class="max-w-7xl mx-auto px-6">
+
+    <!-- HEADER -->
+    <div class="max-w-3xl mx-auto text-center mb-20">
+      <span
+        class="inline-block mb-6 px-4 py-1 text-xs font-bold tracking-widest
+               text-white/90 border border-dashed border-white/40 rounded-full"
+      >
+        24/7 EMERGENCY RESPONSE
+      </span>
+
+      <h2 class="text-4xl md:text-5xl font-extrabold leading-tight mb-8">
+        Emergency Tree Service
+        <br class="hidden sm:block" />
+        in Hollywood, Florida
+      </h2>
+
+      <p class="text-lg text-white/90 leading-relaxed">
+        Storms, hurricanes, and sudden tree failures can create immediate danger.
+        Our emergency tree service crews in Hollywood respond 24/7 to restore
+        safety, remove hazards, and prevent further damage to homes and businesses.
+      </p>
+    </div>
+
+    <!-- GRID -->
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-10">
+
+      <!-- CARD 1 -->
+      <div class="bg-white/10 rounded-3xl p-10">
+        <h3 class="text-2xl font-extrabold mb-4">
+          Storm & Hurricane Damage
+        </h3>
+        <p class="text-white/90 leading-relaxed">
+          South Florida storms and hurricanes often cause trees to uproot, snap,
+          or fall onto structures. We provide rapid emergency tree removal in
+          Hollywood to clear damage safely and efficiently.
+        </p>
+      </div>
+
+      <!-- CARD 2 -->
+      <div class="bg-white/10 rounded-3xl p-10">
+        <h3 class="text-2xl font-extrabold mb-4">
+          Fallen & Hazardous Trees
+        </h3>
+        <p class="text-white/90 leading-relaxed">
+          Trees blocking driveways, roads, or access points require immediate
+          professional removal. Our crews secure the area and perform controlled
+          removals using professional equipment.
+        </p>
+      </div>
+
+      <!-- CARD 3 -->
+      <div class="bg-white/10 rounded-3xl p-10">
+        <h3 class="text-2xl font-extrabold mb-4">
+          Power Line & Structural Risks
+        </h3>
+        <p class="text-white/90 leading-relaxed">
+          Trees entangled with power lines or leaning toward homes present serious
+          safety risks. We coordinate safe removal procedures to reduce danger
+          and liability.
+        </p>
+      </div>
+
+    </div>
+
+    <!-- CTA -->
+    <div class="mt-20 text-center">
+      <a
+        href={`tel:1-888-452-1505`}
+        class="inline-flex items-center gap-4 rounded-full
+               bg-white px-12 py-5 text-teal-900 font-extrabold
+               hover:bg-slate-100 transition"
+      >
+        📞 Call Now for Emergency Tree Service
+      </a>
+    </div>
+
+  </div>
+</section>
+<!-- ================= EQUIPMENT & SAFETY – HOLLYWOOD ================= -->
+<section class="bg-white py-32">
+  <div class="max-w-7xl mx-auto px-6">
+
+    <!-- HEADER -->
+    <div class="max-w-3xl mx-auto text-center mb-20">
+      <span
+        class="inline-block mb-6 px-4 py-1 text-xs font-bold tracking-widest
+               text-teal-700 border border-dashed border-teal-600 rounded-full"
+      >
+        PROFESSIONAL EQUIPMENT
+      </span>
+
+      <h2 class="text-4xl md:text-5xl font-extrabold text-slate-900 leading-tight mb-8">
+        Advanced Equipment for
+        <br class="hidden sm:block" />
+        Safe Tree Removal in Hollywood
+      </h2>
+
+      <p class="text-lg text-slate-600 leading-relaxed">
+        Tree removal in Hollywood often involves tight spaces, nearby structures,
+        and utility lines. Our crews rely on professional-grade equipment and
+        proven safety procedures to complete complex removals with precision
+        and minimal disruption.
+      </p>
+    </div>
+
+    <!-- GRID -->
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-10">
+
+      <!-- CARD 1 -->
+      <div class="bg-[#f4f8f6] rounded-3xl p-10">
+        <h3 class="text-2xl font-extrabold text-slate-900 mb-4">
+          Crane-Assisted Tree Removal
+        </h3>
+        <p class="text-slate-700 leading-relaxed">
+          Cranes allow us to safely remove large or unstable trees piece by piece,
+          reducing risk to homes, roofs, and surrounding property. This method
+          is ideal for confined residential and commercial locations in Hollywood.
+        </p>
+      </div>
+
+      <!-- CARD 2 -->
+      <div class="bg-[#f4f8f6] rounded-3xl p-10">
+        <h3 class="text-2xl font-extrabold text-slate-900 mb-4">
+          Lifts & Precision Cutting Tools
+        </h3>
+        <p class="text-slate-700 leading-relaxed">
+          Aerial lifts, bucket trucks, and precision cutting tools allow controlled
+          removal of limbs and trunks while maintaining full visibility and
+          operator safety throughout the process.
+        </p>
+      </div>
+
+      <!-- CARD 3 -->
+      <div class="bg-[#f4f8f6] rounded-3xl p-10">
+        <h3 class="text-2xl font-extrabold text-slate-900 mb-4">
+          Strict Safety Protocols
+        </h3>
+        <p class="text-slate-700 leading-relaxed">
+          Every project follows industry safety standards, OSHA guidelines, and
+          local regulations. Our trained crews evaluate risks before removal and
+          execute each step with precision and control.
+        </p>
+      </div>
+
+    </div>
+
+    <!-- BOTTOM TEXT -->
+    <div class="mt-20 max-w-4xl mx-auto text-center">
+      <p class="text-slate-600 leading-relaxed">
+        Using professional equipment combined with experienced operators allows
+        us to complete tree removal projects safely—even near buildings, power
+        lines, and high-traffic areas throughout Hollywood and Broward County.
+      </p>
+    </div>
+
+  </div>
+</section>
+<!-- ================= PERMITS & LOCAL REGULATIONS – HOLLYWOOD ================= -->
+<section class="bg-[#f4f8f6] py-32">
+  <div class="max-w-7xl mx-auto px-6">
+
+    <!-- HEADER -->
+    <div class="max-w-3xl mx-auto text-center mb-20">
+      <span
+        class="inline-block mb-6 px-4 py-1 text-xs font-bold tracking-widest
+               text-teal-700 border border-dashed border-teal-600 rounded-full"
+      >
+        PERMITS & REGULATIONS
+      </span>
+
+      <h2 class="text-4xl md:text-5xl font-extrabold text-slate-900 leading-tight mb-8">
+        Tree Removal Permits
+        <br class="hidden sm:block" />
+        in Hollywood, Florida
+      </h2>
+
+      <p class="text-lg text-slate-600 leading-relaxed">
+        Tree removal in Hollywood is often regulated by local ordinances designed
+        to protect urban tree canopy and public safety. Understanding when a
+        permit is required can prevent costly fines, delays, or compliance issues.
+      </p>
+    </div>
+
+    <!-- CONTENT GRID -->
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-16 items-start">
+
+      <!-- LEFT TEXT -->
+      <div class="space-y-8 text-slate-700 leading-relaxed">
+
+        <h3 class="text-2xl font-extrabold text-slate-900">
+          When Is a Tree Removal Permit Required?
+        </h3>
+
+        <p>
+          In many cases, the City of Hollywood and Broward County require a tree
+          removal permit before cutting or removing protected trees. Permits
+          are commonly needed when trees exceed specific trunk diameters,
+          belong to protected species, or are located within regulated zones.
+        </p>
+
+        <ul class="space-y-3 list-disc list-inside">
+          <li>Removal of protected or heritage trees</li>
+          <li>Tree removal related to construction or land development</li>
+          <li>Commercial property or multi-unit residential projects</li>
+          <li>Non-emergency tree removals on regulated properties</li>
+        </ul>
+
+        <p>
+          Emergency situations—such as storm-damaged or fallen trees posing
+          immediate danger—may qualify for expedited removal, but documentation
+          is often still required after the fact.
+        </p>
+
+      </div>
+
+      <!-- RIGHT TEXT -->
+      <div class="space-y-8 text-slate-700 leading-relaxed">
+
+        <h3 class="text-2xl font-extrabold text-slate-900">
+          How SF Tree Removal Helps With Compliance
+        </h3>
+
+        <p>
+          Our team understands local tree protection ordinances and works closely
+          with homeowners, property managers, and developers to ensure every
+          project complies with Hollywood and Broward County regulations.
+        </p>
+
+        <ul class="space-y-3 list-disc list-inside">
+          <li>Permit guidance and application support</li>
+          <li>Certified arborist evaluations and reports</li>
+          <li>Coordination with city and county requirements</li>
+          <li>Documentation for emergency tree removal cases</li>
+        </ul>
+
+        <p>
+          By handling permit-related requirements upfront, we help clients avoid
+          delays, penalties, and unnecessary rework—keeping projects moving
+          efficiently and legally.
+        </p>
+
+      </div>
+
+    </div>
+
+    <!-- BOTTOM CTA -->
+    <div class="mt-20 text-center">
+      <a
+        href="/certified-arborist/"
+        class="inline-flex items-center gap-4 rounded-full
+               bg-teal-700 px-10 py-4 text-white font-bold
+               hover:bg-teal-800 transition"
+      >
+        Arborist Reports & Permit Assistance
+        <span class="flex h-10 w-10 items-center justify-center rounded-full bg-white/15">
+          ↗
+        </span>
+      </a>
+    </div>
+
+  </div>
+</section>
+<!-- ================= EMERGENCY TREE REMOVAL – HOLLYWOOD ================= -->
+<section class="bg-teal-900 py-32 text-white">
+  <div class="max-w-7xl mx-auto px-6">
+
+    <!-- HEADER -->
+    <div class="max-w-3xl mx-auto text-center mb-20">
+      <span
+        class="inline-block mb-6 px-4 py-1 text-xs font-bold tracking-widest
+               border border-dashed border-white/60 rounded-full"
+      >
+        24/7 EMERGENCY SERVICE
+      </span>
+
+      <h2 class="text-4xl md:text-5xl xl:text-6xl font-extrabold leading-tight mb-8">
+        Emergency Tree Removal
+        <br class="hidden sm:block" />
+        in Hollywood, Florida
+      </h2>
+
+      <p class="text-lg text-white/90 leading-relaxed">
+        When storms, hurricanes, or sudden tree failures threaten your home,
+        business, or safety, immediate professional action is critical.
+        Our emergency tree removal crews respond 24/7 throughout Hollywood
+        and surrounding Broward County areas.
+      </p>
+    </div>
+
+    <!-- CONTENT GRID -->
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-16 items-start">
+
+      <!-- LEFT -->
+      <div class="space-y-8 text-white/90 leading-relaxed">
+
+        <h3 class="text-2xl font-extrabold text-white">
+          When to Call for Emergency Tree Removal
+        </h3>
+
+        <ul class="space-y-4 list-disc list-inside">
+          <li>Fallen trees blocking driveways, roads, or entrances</li>
+          <li>Storm-damaged trees after hurricanes or heavy winds</li>
+          <li>Large limbs hanging over homes, roofs, or vehicles</li>
+          <li>Trees leaning dangerously toward structures or power lines</li>
+          <li>Uprooted or unstable trees at risk of sudden collapse</li>
+        </ul>
+
+        <p>
+          Delaying emergency tree removal increases the risk of property damage,
+          injury, and liability. Our rapid-response teams arrive equipped to
+          stabilize the situation and safely remove hazards.
+        </p>
+
+      </div>
+
+      <!-- RIGHT -->
+      <div class="space-y-8 text-white/90 leading-relaxed">
+
+        <h3 class="text-2xl font-extrabold text-white">
+          Our Emergency Response Process
+        </h3>
+
+        <ol class="space-y-4 list-decimal list-inside">
+          <li>Immediate dispatch and on-site hazard assessment</li>
+          <li>Securing the area to protect people and property</li>
+          <li>Controlled tree removal using professional equipment</li>
+          <li>Debris removal and site cleanup</li>
+          <li>Post-storm documentation if permits are required</li>
+        </ol>
+
+        <p>
+          Our crews are trained to handle emergency situations involving
+          downed power lines, tight access areas, and complex removals
+          common in Hollywood neighborhoods and coastal zones.
+        </p>
+
+      </div>
+
+    </div>
+
+    <!-- CTA -->
+    <div class="mt-20 text-center">
+      <a
+        href={`tel:1-888-452-1505`}
+        class="inline-flex items-center gap-4 rounded-full
+               bg-white px-12 py-5 text-teal-900 font-extrabold
+               hover:bg-slate-100 transition"
+      >
+        📞 Call for Emergency Tree Removal
+      </a>
+
+      <p class="mt-6 text-sm text-white/80">
+        Serving Hollywood, Broward County & surrounding South Florida communities.
+      </p>
+    </div>
+
+  </div>
+</section>
+<!-- ================= EQUIPMENT & SAFETY STANDARDS – HOLLYWOOD ================= -->
+<section class="bg-white py-32">
+  <div class="max-w-7xl mx-auto px-6">
+
+    <!-- HEADER -->
+    <div class="max-w-3xl mx-auto text-center mb-20">
+      <span
+        class="inline-block mb-6 px-4 py-1 text-xs font-bold tracking-widest
+               text-teal-700 border border-dashed border-teal-600 rounded-full"
+      >
+        EQUIPMENT & SAFETY
+      </span>
+
+      <h2 class="text-4xl md:text-5xl font-extrabold text-slate-900 leading-tight mb-8">
+        Professional Tree Removal Equipment
+        <br class="hidden sm:block" />
+        & Strict Safety Standards
+      </h2>
+
+      <p class="text-lg text-slate-600 leading-relaxed">
+        Safe tree removal in Hollywood requires more than experience alone.
+        Our crews rely on professional-grade equipment and proven safety
+        protocols to handle complex removals while protecting people,
+        property, and surrounding structures.
+      </p>
+    </div>
+
+    <!-- CONTENT GRID -->
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-16 items-start">
+
+      <!-- LEFT -->
+      <div class="space-y-8 text-slate-700 leading-relaxed">
+
+        <h3 class="text-2xl font-extrabold text-slate-900">
+          Specialized Equipment for Complex Tree Removal
+        </h3>
+
+        <p>
+          Many properties in Hollywood feature tight access areas, mature trees,
+          and proximity to homes, pools, and power lines. Our equipment allows
+          for controlled, precision-based removals even in the most challenging
+          environments.
+        </p>
+
+        <ul class="space-y-3 list-disc list-inside">
+          <li>Cranes and lifting systems for large or hazardous trees</li>
+          <li>Aerial lifts and bucket trucks for elevated access</li>
+          <li>Precision cutting tools for controlled dismantling</li>
+          <li>Rigging systems to safely lower heavy sections</li>
+        </ul>
+
+        <p>
+          Using professional equipment reduces risk, minimizes property impact,
+          and ensures efficient completion of each tree removal project.
+        </p>
+
+      </div>
+
+      <!-- RIGHT -->
+      <div class="space-y-8 text-slate-700 leading-relaxed">
+
+        <h3 class="text-2xl font-extrabold text-slate-900">
+          Safety-First Tree Removal Procedures
+        </h3>
+
+        <p>
+          Tree removal can be dangerous when performed without proper planning
+          and safeguards. Our crews follow strict safety standards aligned with
+          industry best practices and local regulations.
+        </p>
+
+        <ul class="space-y-3 list-disc list-inside">
+          <li>Pre-removal risk assessment and hazard identification</li>
+          <li>Controlled work zones to protect occupants and pedestrians</li>
+          <li>Clear communication between ground and aerial crews</li>
+          <li>Compliance with OSHA and arboriculture safety guidelines</li>
+        </ul>
+
+        <p>
+          This disciplined approach is especially critical during emergency
+          tree removal situations involving storm damage or unstable trees.
+        </p>
+
+      </div>
+
+    </div>
+
+    <!-- CTA -->
+    <div class="mt-20 text-center">
+      <a
+        href="/tree-removal/"
+        class="inline-flex items-center gap-4 rounded-full
+               bg-teal-700 px-10 py-4 text-white font-bold
+               hover:bg-teal-800 transition"
+      >
+        Learn About Our Tree Removal Process
+        <span class="flex h-10 w-10 items-center justify-center rounded-full bg-white/15">
+          ↗
+        </span>
+      </a>
+    </div>
+
+  </div>
+</section>
+<!-- ================= WHY CHOOSE US – HOLLYWOOD ================= -->
+<section class="bg-[#f4f8f6] py-32">
+  <div class="max-w-7xl mx-auto px-6">
+
+    <!-- HEADER -->
+    <div class="max-w-3xl mx-auto text-center mb-20">
+      <span
+        class="inline-block mb-6 px-4 py-1 text-xs font-bold tracking-widest
+               text-teal-700 border border-dashed border-teal-600 rounded-full"
+      >
+        WHY CHOOSE US
+      </span>
+
+      <h2 class="text-4xl md:text-5xl font-extrabold text-slate-900 leading-tight mb-8">
+        Trusted Tree Removal Experts
+        <br class="hidden sm:block" />
+        in Hollywood, Florida
+      </h2>
+
+      <p class="text-lg text-slate-600 leading-relaxed">
+        Choosing the right tree removal company in Hollywood matters.
+        Our experience, local knowledge, and commitment to safety make
+        SF Tree Removal a trusted choice for homeowners, businesses,
+        and property managers across Broward County.
+      </p>
+    </div>
+
+    <!-- CARDS GRID -->
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-10">
+
+      <!-- CARD -->
+      <div class="bg-white rounded-3xl p-10 shadow-sm">
+        <h3 class="text-xl font-extrabold text-slate-900 mb-4">
+          Local Hollywood Experience
+        </h3>
+        <p class="text-slate-600 leading-relaxed">
+          We understand Hollywood neighborhoods, coastal conditions,
+          hurricane risks, and local regulations—allowing us to plan
+          and execute tree removals efficiently and safely.
+        </p>
+      </div>
+
+      <!-- CARD -->
+      <div class="bg-white rounded-3xl p-10 shadow-sm">
+        <h3 class="text-xl font-extrabold text-slate-900 mb-4">
+          Licensed, Insured & Certified
+        </h3>
+        <p class="text-slate-600 leading-relaxed">
+          Our tree removal services are fully licensed and insured,
+          with certified arborists available for evaluations,
+          permits, and compliance support.
+        </p>
+      </div>
+
+      <!-- CARD -->
+      <div class="bg-white rounded-3xl p-10 shadow-sm">
+        <h3 class="text-xl font-extrabold text-slate-900 mb-4">
+          24/7 Emergency Response
+        </h3>
+        <p class="text-slate-600 leading-relaxed">
+          Storms don’t follow business hours. Our emergency tree removal
+          crews are available around the clock to respond quickly
+          when safety is at risk.
+        </p>
+      </div>
+
+      <!-- CARD -->
+      <div class="bg-white rounded-3xl p-10 shadow-sm">
+        <h3 class="text-xl font-extrabold text-slate-900 mb-4">
+          Professional Equipment
+        </h3>
+        <p class="text-slate-600 leading-relaxed">
+          From cranes to precision rigging systems, we use modern
+          equipment designed to handle complex tree removals with
+          minimal impact on your property.
+        </p>
+      </div>
+
+      <!-- CARD -->
+      <div class="bg-white rounded-3xl p-10 shadow-sm">
+        <h3 class="text-xl font-extrabold text-slate-900 mb-4">
+          Safety-First Approach
+        </h3>
+        <p class="text-slate-600 leading-relaxed">
+          Every project begins with a detailed risk assessment.
+          Our crews follow strict safety protocols to protect
+          people, structures, and surrounding landscapes.
+        </p>
+      </div>
+
+      <!-- CARD -->
+      <div class="bg-white rounded-3xl p-10 shadow-sm">
+        <h3 class="text-xl font-extrabold text-slate-900 mb-4">
+          Transparent Pricing
+        </h3>
+        <p class="text-slate-600 leading-relaxed">
+          We provide clear estimates based on tree size, location,
+          and complexity—no hidden fees, no surprises.
+        </p>
+      </div>
+
+    </div>
+
+    <!-- CTA -->
+    <div class="mt-20 text-center">
+      <a
+        href="/contact-us/"
+        class="inline-flex items-center gap-4 rounded-full
+               bg-teal-700 px-10 py-4 text-white font-bold
+               hover:bg-teal-800 transition"
+      >
+        Request a Free Tree Removal Estimate
+        <span class="flex h-10 w-10 items-center justify-center rounded-full bg-white/15">
+          ↗
+        </span>
+      </a>
+    </div>
+
+  </div>
+</section>
+
+<!-- ================= FAQ – HOLLYWOOD ================= -->
+<section class="bg-white py-28">
+  <div class="max-w-4xl mx-auto px-6 text-center">
+
+    <!-- BADGE -->
+    <span
+      class="inline-block mb-6 px-4 py-1 text-xs font-bold tracking-widest
+             text-teal-700 border border-dashed border-teal-600 rounded-full"
+    >
+      FREQUENTLY ASKED QUESTIONS
+    </span>
+
+    <!-- TITLE -->
+    <h2 class="text-3xl md:text-4xl font-extrabold text-slate-900 mb-12">
+      Tree Service FAQs in Hollywood, Florida
+    </h2>
+
+    <!-- FAQ ITEMS -->
+    <div class="space-y-6 text-left">
+
+      <div class="bg-[#f4f8f6] rounded-2xl p-6">
+        <h3 class="font-bold text-slate-900 mb-2">
+          What tree services do you offer in Hollywood?
+        </h3>
+        <p class="text-slate-600 leading-relaxed">
+          We provide complete tree service in Hollywood, including tree removal,
+          emergency tree service, storm damage cleanup, and certified arborist
+          services for residential and commercial properties.
+        </p>
+      </div>
+
+      <div class="bg-[#f4f8f6] rounded-2xl p-6">
+        <h3 class="font-bold text-slate-900 mb-2">
+          Do you offer emergency tree service in Hollywood?
+        </h3>
+        <p class="text-slate-600 leading-relaxed">
+          Yes. Our crews are available 24/7 for emergency tree service throughout
+          Hollywood and Broward County, including fallen trees and storm-related hazards.
+        </p>
+      </div>
+
+      <div class="bg-[#f4f8f6] rounded-2xl p-6">
+        <h3 class="font-bold text-slate-900 mb-2">
+          Do I need a permit for tree removal in Hollywood?
+        </h3>
+        <p class="text-slate-600 leading-relaxed">
+          Some tree removals in Hollywood require permits, especially for protected
+          species or large trees. We assist with permit verification and certified
+          arborist reports when needed.
+        </p>
+      </div>
+
+      <div class="bg-[#f4f8f6] rounded-2xl p-6">
+        <h3 class="font-bold text-slate-900 mb-2">
+          Is your tree service company licensed and insured?
+        </h3>
+        <p class="text-slate-600 leading-relaxed">
+          Yes. Our Hollywood tree service company is fully licensed and insured to
+          protect homeowners, businesses, and commercial properties.
+        </p>
+      </div>
+
+      <div class="bg-[#f4f8f6] rounded-2xl p-6">
+        <h3 class="font-bold text-slate-900 mb-2">
+          Can you handle trees near homes or power lines?
+        </h3>
+        <p class="text-slate-600 leading-relaxed">
+          Absolutely. We specialize in controlled tree service near homes, roofs,
+          and power lines using cranes, lifts, and professional rigging systems.
+        </p>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ================= FINAL CTA – HOLLYWOOD ================= -->
+<section class="bg-teal-900 py-32 text-white">
+  <div class="max-w-7xl mx-auto px-6 text-center">
+
+    <!-- BADGE -->
+    <span
+      class="inline-block mb-8 px-4 py-1 text-xs font-bold tracking-widest
+             border border-dashed border-white/60 rounded-full"
+    >
+      GET STARTED TODAY
+    </span>
+
+    <!-- HEADLINE -->
+    <h2 class="text-4xl md:text-5xl xl:text-6xl font-extrabold leading-tight">
+      Need Professional Tree Service
+      <br class="hidden sm:block" />
+      in Hollywood, Florida?
+    </h2>
+
+    <!-- SUBTEXT -->
+    <p class="mt-8 max-w-3xl mx-auto text-lg text-white/90 leading-relaxed">
+      Whether you need emergency tree removal, storm damage cleanup,
+      or a certified arborist evaluation, SF Tree Removal is ready to help.
+      Our local crews proudly serve Hollywood and surrounding Broward County
+      communities with fast response and professional care.
+    </p>
+
+    <!-- CTA BUTTONS -->
+    <div class="mt-14 flex flex-wrap justify-center gap-6">
+
+      <!-- PRIMARY -->
+      <a
+        href="/contact-us/"
+        class="inline-flex items-center gap-4 rounded-full
+               bg-white px-12 py-5 text-teal-900 font-extrabold
+               hover:bg-slate-100 transition"
+      >
+        Request a Free Estimate
+        <span
+          class="flex h-10 w-10 items-center justify-center rounded-full
+                 bg-teal-700 text-white"
+        >
+          ↗
+        </span>
+      </a>
+
+      <!-- SECONDARY -->
+      <a
+        href="tel:18884521505"
+        class="inline-flex items-center gap-4 rounded-full
+               border border-white/70 px-12 py-5 text-white font-bold
+               hover:bg-white/10 transition"
+      >
+        📞 Call 24/7 Emergency Line
+      </a>
+
+    </div>
+
+    <!-- INTERNAL LINKS (SEO SAFE) -->
+    <div class="mt-14 text-sm text-white/80 space-x-4">
+      <a href="/tree-removal/" class="hover:underline">Tree Removal</a>
+      <span>•</span>
+      <a href="/emergency-tree-removal/" class="hover:underline">Emergency Tree Removal</a>
+      <span>•</span>
+      <a href="/certified-arborist/" class="hover:underline">Certified Arborist</a>
+      <span>•</span>
+      <a href="/areas/" class="hover:underline">All Service Areas</a>
+    </div>
+
+  </div>
+</section>
+
+
+</BaseLayout>

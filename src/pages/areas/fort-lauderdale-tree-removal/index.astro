@@ -1,0 +1,1316 @@
+---
+import BaseLayout from "../../../layouts/BaseLayout.astro";
+
+const city = "Fort Lauderdale";
+const county = "Broward County";
+const state = "FL";
+const phone = "+1-888-452-1505";
+
+const title = `Tree Removal Services in ${city}, ${state} | Emergency & Licensed Pros`;
+const description =
+  `Professional tree removal services in ${city}, ${state}. Emergency tree removal, storm damage cleanup, and certified arborist services serving ${county} and surrounding South Florida areas.`;
+
+const canonical = "https://sftreeremoval.com/areas/fort-lauderdale-tree-removal/";
+---
+
+<BaseLayout
+  title={title}
+  description={description}
+  canonical={canonical}
+>
+
+<!-- =========================================================
+  LOCAL BUSINESS SCHEMA – FORT LAUDERDALE
+========================================================= -->
+<script type="application/ld+json">
+{JSON.stringify({
+  "@context": "https://schema.org",
+  "@type": "LocalBusiness",
+  "@id": `${canonical}#localbusiness`,
+  "name": `SF Tree Removal – ${city}`,
+  "url": canonical,
+  "telephone": phone,
+  "priceRange": "$$",
+  "image": "https://sftreeremoval.com/images/og-default.jpg",
+  "address": {
+    "@type": "PostalAddress",
+    "addressLocality": city,
+    "addressRegion": state,
+    "addressCountry": "US"
+  },
+  "areaServed": [
+    { "@type": "City", "name": city },
+    { "@type": "AdministrativeArea", "name": county }
+  ],
+  "openingHoursSpecification": {
+    "@type": "OpeningHoursSpecification",
+    "dayOfWeek": [
+      "Monday","Tuesday","Wednesday","Thursday","Friday","Saturday","Sunday"
+    ],
+    "opens": "00:00",
+    "closes": "23:59"
+  },
+  "hasOfferCatalog": {
+    "@type": "OfferCatalog",
+    "name": "Tree Removal Services",
+    "itemListElement": [
+      {
+        "@type": "Offer",
+        "itemOffered": {
+          "@type": "Service",
+          "name": "Tree Removal",
+          "areaServed": city
+        }
+      },
+      {
+        "@type": "Offer",
+        "itemOffered": {
+          "@type": "Service",
+          "name": "Emergency Tree Removal",
+          "areaServed": city
+        }
+      },
+      {
+        "@type": "Offer",
+        "itemOffered": {
+          "@type": "Service",
+          "name": "Certified Arborist Services",
+          "areaServed": city
+        }
+      }
+    ]
+  }
+})}
+</script>
+
+<!-- =========================================================
+  BREADCRUMB SCHEMA
+========================================================= -->
+<script type="application/ld+json">
+{JSON.stringify({
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    {
+      "@type": "ListItem",
+      "position": 1,
+      "name": "Home",
+      "item": "https://sftreeremoval.com/"
+    },
+    {
+      "@type": "ListItem",
+      "position": 2,
+      "name": "Service Areas",
+      "item": "https://sftreeremoval.com/areas/"
+    },
+    {
+      "@type": "ListItem",
+      "position": 3,
+      "name": `${city} Tree Removal`,
+      "item": canonical
+    }
+  ]
+})}
+</script>
+
+<!-- =========================================================
+  FAQ PAGE SCHEMA – FORT LAUDERDALE
+========================================================= -->
+<script type="application/ld+json">
+{JSON.stringify({
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {
+      "@type": "Question",
+      "name": `How much does tree removal cost in ${city}?`,
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": `Tree removal costs in ${city} depend on the tree size, location, condition, and complexity. Emergency situations, proximity to structures, and permit requirements may affect pricing. Free estimates are available.`
+      }
+    },
+    {
+      "@type": "Question",
+      "name": `Do I need a permit to remove a tree in ${city}?`,
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": `Some trees in ${city} require permits for removal, especially protected species or large trees. Our team assists with permit verification and certified arborist reports when required.`
+      }
+    },
+    {
+      "@type": "Question",
+      "name": `Do you offer emergency tree removal in ${city}?`,
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": `Yes. We provide 24/7 emergency tree removal services throughout ${city} and ${county} for storm damage, fallen trees, and hazardous conditions.`
+      }
+    },
+    {
+      "@type": "Question",
+      "name": `Is your tree removal company licensed and insured?`,
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": `Yes. Our tree removal company serving ${city} is fully licensed and insured to protect homeowners, businesses, and commercial properties.`
+      }
+    },
+    {
+      "@type": "Question",
+      "name": `Can you remove trees near homes or power lines?`,
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": `Yes. We specialize in controlled tree removal near homes, roofs, and power lines using professional equipment such as cranes, lifts, and rigging systems.`
+      }
+    }
+  ]
+})}
+</script>
+
+  <!-- ================= HERO (CITY VISIBLE 100%) ================= -->
+  <section class="bg-teal-900 py-28 text-white">
+    <div class="max-w-7xl mx-auto px-6 text-center">
+
+      <span class="inline-block mb-6 px-4 py-1 text-xs font-bold tracking-widest
+                   border border-dashed border-white/60 rounded-full">
+        {city.toUpperCase()} TREE REMOVAL
+      </span>
+
+      <!-- ⬇⬇⬇ OVO JE KLJUČNO -->
+      <h1 class="text-4xl md:text-5xl xl:text-6xl font-extrabold leading-tight">
+        Tree Removal Services in {city}, {state}
+      </h1>
+
+      <p class="mt-8 max-w-3xl mx-auto text-lg text-white/90">
+        SF Tree Removal provides licensed and insured tree removal services in
+        {city}, {state}. We specialize in emergency tree removal, storm damage
+        cleanup, and certified arborist services across {county}.
+      </p>
+
+      <div class="mt-12">
+        <a
+          href="/contact-us/"
+          class="inline-flex items-center gap-4 rounded-full
+                 bg-white px-10 py-4 text-teal-900 font-extrabold
+                 hover:bg-slate-100 transition">
+          Request Free Estimate
+        </a>
+      </div>
+
+    </div>
+  </section>
+
+<!-- ================= CITY CONTENT ================= -->
+<section class="bg-white py-32">
+  <div class="max-w-7xl mx-auto px-6 space-y-32">
+
+    <!-- ================= INTRO ================= -->
+    <header class="max-w-4xl mx-auto text-center">
+      <h2 class="text-3xl md:text-4xl font-extrabold mb-8">
+        Professional Tree Removal Company in {city}
+      </h2>
+
+      <p class="text-lg text-slate-600 leading-relaxed">
+        SF Tree Removal is a trusted, licensed, and insured tree removal company
+        proudly serving homeowners and businesses throughout {city} and the
+        surrounding areas of {county}. With years of experience working in South
+        Florida’s unique climate, our team understands the challenges posed by
+        tropical storms, hurricanes, dense urban landscapes, and local tree
+        preservation regulations.
+      </p>
+    </header>
+
+    <!-- ================= SECTION 1 (IMAGE LEFT) ================= -->
+    <div class="grid lg:grid-cols-2 gap-16 items-center">
+
+      <!-- IMAGE -->
+      <div class="relative">
+        <img
+          src="/images/cities/fort-lauderdale-tree-removal-1.jpg"
+          alt={`Professional tree removal services in ${city}, FL`}
+          class="rounded-3xl shadow-lg w-full h-auto object-cover"
+          loading="lazy"
+        />
+      </div>
+
+      <!-- TEXT -->
+      <div class="space-y-6">
+        <h3 class="text-2xl font-extrabold text-slate-900">
+          Local Tree Removal Services Tailored to {city}
+        </h3>
+
+        <p class="text-slate-600 leading-relaxed">
+          Tree removal in {city} requires more than just cutting down a tree.
+          Local properties often feature mature trees located close to homes,
+          driveways, fences, pools, and power lines. Our professional tree removal
+          crews are trained to evaluate each situation carefully and develop a
+          safe removal plan that minimizes risk to people and property.
+        </p>
+
+        <p class="text-slate-600 leading-relaxed">
+          Whether you need the removal of a hazardous tree, storm-damaged limbs,
+          or an unwanted tree interfering with construction plans, our team
+          delivers precise and controlled results using modern equipment and
+          proven safety procedures.
+        </p>
+
+        <p class="text-slate-600 leading-relaxed">
+          Learn more about our complete
+          <a href="/tree-removal/" class="text-teal-700 font-semibold hover:underline">
+            tree removal services
+          </a>
+          and how we handle complex projects across South Florida.
+        </p>
+      </div>
+    </div>
+
+    <!-- ================= SECTION 2 (NO IMAGE – EMERGENCY) ================= -->
+    <div class="max-w-4xl mx-auto space-y-6">
+      <h3 class="text-2xl font-extrabold text-slate-900 text-center">
+        Emergency Tree Removal in {city}, FL
+      </h3>
+
+      <p class="text-slate-600 leading-relaxed text-center">
+        Severe weather events are common in {county}, making emergency tree
+        removal a critical service for property owners in {city}. High winds,
+        heavy rainfall, and saturated soil conditions can cause trees to uproot,
+        split, or fall without warning, creating immediate safety hazards.
+      </p>
+
+      <p class="text-slate-600 leading-relaxed text-center">
+        Our 24/7 emergency response teams handle fallen trees, leaning trees,
+        broken limbs, and trees entangled with power lines.
+        <a href="/emergency-tree-removal/" class="text-teal-700 font-semibold hover:underline">
+          Emergency tree removal
+        </a>
+        services help prevent injuries and additional property damage.
+      </p>
+    </div>
+
+    <!-- ================= SECTION 3 (IMAGE RIGHT) ================= -->
+    <div class="grid lg:grid-cols-2 gap-16 items-center">
+
+      <!-- TEXT -->
+      <div class="space-y-6 order-2 lg:order-1">
+        <h3 class="text-2xl font-extrabold text-slate-900">
+          Certified Arborist Support for Safe Tree Decisions
+        </h3>
+
+        <p class="text-slate-600 leading-relaxed">
+          Not every tree problem requires immediate removal. Consulting a
+          certified arborist helps determine whether a tree can be preserved,
+          pruned, or must be removed due to structural or health concerns.
+        </p>
+
+        <p class="text-slate-600 leading-relaxed">
+          Our arborists assist with protected tree species, permit applications,
+          insurance documentation, and development planning throughout {city}.
+        </p>
+
+        <p class="text-slate-600 leading-relaxed">
+          Learn more about our
+          <a href="/certified-arborist/" class="text-teal-700 font-semibold hover:underline">
+            certified arborist services
+          </a>
+          and how professional evaluations protect your property investment.
+        </p>
+      </div>
+
+      <!-- IMAGE -->
+      <div class="relative order-1 lg:order-2">
+        <img
+          src="/images/cities/fort-lauderdale-tree-removal-2.jpg"
+          alt={`Certified arborist tree assessment in ${city}, Florida`}
+          class="rounded-3xl shadow-lg w-full h-auto object-cover"
+          loading="lazy"
+        />
+      </div>
+    </div>
+
+    <!-- ================= FINAL LOCAL SEO ================= -->
+    <div class="max-w-4xl mx-auto text-center space-y-6">
+      <h3 class="text-2xl font-extrabold text-slate-900">
+        Tree Removal Services Near You in {city}
+      </h3>
+
+      <p class="text-slate-600 leading-relaxed">
+        SF Tree Removal proudly serves neighborhoods throughout {city} and nearby
+        communities in {county}. View all locations on our
+        <a href="/areas/" class="text-teal-700 font-semibold hover:underline">
+          service areas
+        </a>
+        page or contact us today for a free estimate.
+      </p>
+    </div>
+
+  </div>
+</section>
+<!-- ================= WHY CHOOSE US ================= -->
+<section class="bg-[#f4f8f6] py-32">
+  <div class="max-w-7xl mx-auto px-6">
+
+    <!-- TITLE -->
+    <header class="text-center max-w-4xl mx-auto mb-20">
+      <h2 class="text-3xl md:text-4xl font-extrabold text-slate-900 mb-8">
+        Why Homeowners and Businesses in {city} Choose SF Tree Removal
+      </h2>
+
+      <p class="text-lg text-slate-600 leading-relaxed">
+        Choosing the right tree removal company in {city} is not just about price —
+        it is about safety, experience, and trust. Property owners across {county}
+        rely on SF Tree Removal because we combine local knowledge, professional
+        expertise, and a commitment to doing the job right every time.
+      </p>
+    </header>
+
+    <!-- GRID -->
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-10 max-w-6xl mx-auto">
+
+      <!-- CARD 1 -->
+      <div class="bg-white rounded-3xl p-10">
+        <h3 class="text-xl font-extrabold text-slate-900 mb-4">
+          Local Tree Removal Experts
+        </h3>
+        <p class="text-slate-600 leading-relaxed">
+          Our crews work daily throughout {city} and nearby neighborhoods,
+          giving us firsthand knowledge of local tree species, property layouts,
+          and storm-related risks common in South Florida.
+        </p>
+      </div>
+
+      <!-- CARD 2 -->
+      <div class="bg-white rounded-3xl p-10">
+        <h3 class="text-xl font-extrabold text-slate-900 mb-4">
+          Licensed, Insured & Safety-Focused
+        </h3>
+        <p class="text-slate-600 leading-relaxed">
+          SF Tree Removal is fully licensed and insured, with strict safety
+          protocols in place on every job. From small residential removals to
+          complex commercial projects, safety is always our top priority.
+        </p>
+      </div>
+
+      <!-- CARD 3 -->
+      <div class="bg-white rounded-3xl p-10">
+        <h3 class="text-xl font-extrabold text-slate-900 mb-4">
+          Emergency Response When It Matters Most
+        </h3>
+        <p class="text-slate-600 leading-relaxed">
+          When storms impact {city}, fallen or unstable trees can create
+          immediate danger. Our team offers rapid emergency response to help
+          restore safety and prevent further property damage.
+        </p>
+      </div>
+
+    </div>
+
+    <!-- SUPPORTING TEXT -->
+    <div class="max-w-4xl mx-auto text-center mt-20 space-y-6">
+      <p class="text-slate-600 leading-relaxed">
+        In addition to tree removal, we work closely with certified arborists
+        when evaluations, reports, or permits are required. This ensures that
+        every tree-related decision is based on professional assessment and
+        compliance with local regulations in {county}.
+      </p>
+
+      <p class="text-slate-600 leading-relaxed">
+        Whether you need routine tree removal or urgent storm response, our
+        goal is to provide clear communication, reliable service, and results
+        you can trust throughout {city}.
+      </p>
+    </div>
+
+    <!-- CTA -->
+    <div class="mt-16 text-center">
+      <a
+        href="/contact-us/"
+        class="inline-flex items-center gap-4 rounded-full
+               bg-teal-700 px-10 py-4 text-white font-bold
+               hover:bg-teal-800 transition"
+      >
+        Request a Free Estimate
+        <span class="flex h-8 w-8 items-center justify-center rounded-full bg-white/15">
+          ↗
+        </span>
+      </a>
+    </div>
+
+  </div>
+</section>
+<!-- ================= LOCAL EMERGENCY CTA ================= -->
+<section class="relative bg-teal-900 py-32 text-white overflow-hidden">
+  <div class="max-w-7xl mx-auto px-6 text-center relative z-10">
+
+    <!-- BADGE -->
+    <span
+      class="inline-block mb-6 px-4 py-1 text-xs font-bold tracking-widest
+             text-white/90 border border-white/30 rounded-full"
+    >
+      24/7 EMERGENCY TREE REMOVAL
+    </span>
+
+    <!-- TITLE -->
+    <h2 class="text-4xl md:text-5xl font-extrabold leading-tight mb-8">
+      Tree Emergency in {city}?<br class="hidden sm:block" />
+      Get Immediate Professional Help
+    </h2>
+
+    <!-- TEXT -->
+    <p class="max-w-3xl mx-auto text-lg text-white/90 leading-relaxed">
+      Fallen trees, storm damage, or hazardous limbs can create serious risks to
+      your home, vehicles, and safety. Our emergency tree removal crews respond
+      quickly throughout {city} and {county} to secure the area and remove
+      dangerous trees safely and efficiently.
+    </p>
+
+    <!-- CTA -->
+    <div class="mt-12 flex flex-wrap justify-center gap-6">
+      <a
+        href="tel:18884521505"
+        class="inline-flex items-center gap-4 rounded-full
+               bg-white px-12 py-5 text-teal-900 font-extrabold
+               hover:bg-slate-100 transition"
+      >
+        📞 Call Now – 1-888-452-1505
+      </a>
+
+      <a
+        href="/emergency-tree-removal/"
+        class="inline-flex items-center gap-4 rounded-full
+               border border-white/40 px-12 py-5 text-white font-bold
+               hover:bg-white hover:text-teal-900 transition"
+      >
+        Emergency Service Details
+      </a>
+    </div>
+
+  </div>
+
+  <!-- BACKGROUND ACCENT -->
+  <div class="absolute inset-0 bg-gradient-to-b from-transparent to-black/20"></div>
+</section>
+<!-- ================= EMERGENCY RESPONSE PROCESS ================= -->
+<section class="relative bg-white py-32 overflow-hidden">
+  <div class="max-w-7xl mx-auto px-6 relative z-10">
+
+    <!-- HEADER -->
+    <div class="max-w-3xl mx-auto text-center mb-20">
+      <span
+        class="inline-block mb-6 px-4 py-1 text-xs font-bold tracking-widest
+               text-teal-700 border border-dashed border-teal-600 rounded-full"
+      >
+        OUR RESPONSE PROCESS
+      </span>
+
+      <h2 class="text-3xl md:text-4xl font-extrabold text-slate-900 leading-tight mb-6">
+        How Our Emergency Tree Removal Process Works
+      </h2>
+
+      <p class="text-lg text-slate-600 leading-relaxed">
+        When a tree emergency occurs, fast and controlled action is critical.
+        Our emergency tree removal process is designed to protect people,
+        property, and surrounding structures while restoring safety as quickly
+        as possible throughout {city} and {county}.
+      </p>
+    </div>
+
+    <!-- STEPS -->
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-10">
+
+      <!-- STEP 1 -->
+      <div class="bg-[#f4f8f6] rounded-3xl p-10">
+        <span class="block text-sm font-bold text-teal-700 mb-4">
+          STEP 1
+        </span>
+        <h3 class="text-xl font-extrabold text-slate-900 mb-4">
+          Immediate Emergency Call
+        </h3>
+        <p class="text-slate-600 leading-relaxed">
+          Once you contact our emergency line at
+          <strong>1-888-452-1505</strong>, our dispatch team gathers critical
+          details about the situation, location, and potential hazards to
+          prioritize response time.
+        </p>
+      </div>
+
+      <!-- STEP 2 -->
+      <div class="bg-[#f4f8f6] rounded-3xl p-10">
+        <span class="block text-sm font-bold text-teal-700 mb-4">
+          STEP 2
+        </span>
+        <h3 class="text-xl font-extrabold text-slate-900 mb-4">
+          On-Site Risk Assessment
+        </h3>
+        <p class="text-slate-600 leading-relaxed">
+          Our certified professionals arrive on-site to evaluate tree stability,
+          structural risks, power line proximity, and access conditions. Safety
+          planning begins before any cutting or removal takes place.
+        </p>
+      </div>
+
+      <!-- STEP 3 -->
+      <div class="bg-[#f4f8f6] rounded-3xl p-10">
+        <span class="block text-sm font-bold text-teal-700 mb-4">
+          STEP 3
+        </span>
+        <h3 class="text-xl font-extrabold text-slate-900 mb-4">
+          Controlled Tree Removal
+        </h3>
+        <p class="text-slate-600 leading-relaxed">
+          Using cranes, lifts, rigging systems, and professional cutting
+          techniques, we remove the tree in a controlled manner to prevent
+          further damage to homes, vehicles, or infrastructure.
+        </p>
+      </div>
+
+      <!-- STEP 4 -->
+      <div class="bg-[#f4f8f6] rounded-3xl p-10">
+        <span class="block text-sm font-bold text-teal-700 mb-4">
+          STEP 4
+        </span>
+        <h3 class="text-xl font-extrabold text-slate-900 mb-4">
+          Site Stabilization & Cleanup
+        </h3>
+        <p class="text-slate-600 leading-relaxed">
+          After removal, we clear debris, secure remaining hazards, and ensure
+          the property is safe for access. If additional services are needed,
+          our team provides expert recommendations.
+        </p>
+      </div>
+
+    </div>
+
+    <!-- TRUST LINE -->
+    <div class="mt-20 text-center">
+      <p class="text-sm text-slate-500 max-w-3xl mx-auto">
+        Our emergency response procedures follow industry safety standards and
+        are tailored to South Florida storm conditions, soil composition, and
+        residential property layouts.
+      </p>
+    </div>
+
+  </div>
+</section>
+<!-- ================= WHY PROFESSIONAL EMERGENCY TREE REMOVAL ================= -->
+<section class="relative bg-[#f4f8f6] py-32 overflow-hidden">
+  <div class="max-w-7xl mx-auto px-6 relative z-10">
+
+    <!-- HEADER -->
+    <div class="max-w-3xl mx-auto text-center mb-20">
+      <span
+        class="inline-block mb-6 px-4 py-1 text-xs font-bold tracking-widest
+               text-teal-700 border border-dashed border-teal-600 rounded-full"
+      >
+        WHY PROFESSIONALS MATTER
+      </span>
+
+      <h2 class="text-3xl md:text-4xl font-extrabold text-slate-900 leading-tight mb-6">
+        Why Emergency Tree Removal Should Only Be Handled by Professionals
+      </h2>
+
+      <p class="text-lg text-slate-600 leading-relaxed">
+        Emergency tree removal is one of the most dangerous services in the tree
+        care industry. Attempting to remove storm-damaged or unstable trees
+        without professional equipment and training significantly increases the
+        risk of injury, property damage, and legal liability.
+      </p>
+    </div>
+
+    <!-- CONTENT GRID -->
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-16 items-start">
+
+      <!-- LEFT: TEXT -->
+      <div class="space-y-8 text-slate-700 leading-relaxed">
+
+        <p>
+          After severe storms, hurricanes, or heavy rainfall, trees may become
+          structurally compromised without obvious warning signs. Internal
+          fractures, weakened root systems, and tension-loaded limbs can fail
+          suddenly, making emergency tree removal extremely hazardous.
+        </p>
+
+        <p>
+          Professional emergency tree removal crews are trained to identify
+          hidden risks, control falling forces, and safely dismantle trees using
+          cranes, lifts, rigging systems, and specialized cutting techniques.
+          This level of control is essential when working near homes, vehicles,
+          roadways, and power lines.
+        </p>
+
+        <p>
+          In South Florida, emergency tree situations often involve saturated
+          soil, limited access, and proximity to utilities. Licensed and insured
+          tree removal professionals understand local conditions, municipal
+          regulations, and industry safety standards required to perform the
+          work correctly.
+        </p>
+
+        <p>
+          Choosing a professional emergency tree removal company protects not
+          only your property, but also ensures compliance with insurance
+          requirements and reduces the risk of additional damage or costly
+          mistakes.
+        </p>
+
+      </div>
+
+      <!-- RIGHT: HIGHLIGHTS -->
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-8">
+
+        <div class="bg-white rounded-3xl p-8 shadow-sm">
+          <h3 class="text-lg font-extrabold text-slate-900 mb-3">
+            Advanced Safety Equipment
+          </h3>
+          <p class="text-slate-600">
+            Cranes, aerial lifts, rigging systems, and protective gear allow
+            controlled removal of unstable trees in high-risk environments.
+          </p>
+        </div>
+
+        <div class="bg-white rounded-3xl p-8 shadow-sm">
+          <h3 class="text-lg font-extrabold text-slate-900 mb-3">
+            Trained Emergency Crews
+          </h3>
+          <p class="text-slate-600">
+            Experienced operators trained to work under pressure and manage
+            unpredictable tree failures caused by storms or structural damage.
+          </p>
+        </div>
+
+        <div class="bg-white rounded-3xl p-8 shadow-sm">
+          <h3 class="text-lg font-extrabold text-slate-900 mb-3">
+            Insurance & Liability Protection
+          </h3>
+          <p class="text-slate-600">
+            Professional tree removal services are fully insured, protecting
+            homeowners and businesses from liability during emergency operations.
+          </p>
+        </div>
+
+        <div class="bg-white rounded-3xl p-8 shadow-sm">
+          <h3 class="text-lg font-extrabold text-slate-900 mb-3">
+            Local Compliance Expertise
+          </h3>
+          <p class="text-slate-600">
+            Knowledge of local permitting rules, protected species, and emergency
+            response requirements throughout {city} and {county}.
+          </p>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- CTA -->
+    <div class="mt-20 text-center">
+      <a
+        href="tel:1-888-452-1505"
+        class="inline-flex items-center gap-4 rounded-full
+               bg-teal-700 px-12 py-5 text-white font-extrabold
+               hover:bg-teal-800 transition"
+      >
+        📞 Call 1-888-452-1505 for Emergency Tree Removal
+      </a>
+    </div>
+
+  </div>
+</section>
+<!-- ================= COMMON EMERGENCY TREE SITUATIONS ================= -->
+<section class="bg-white py-32">
+  <div class="max-w-7xl mx-auto px-6">
+
+    <!-- HEADER -->
+    <div class="max-w-3xl mx-auto text-center mb-20">
+      <span
+        class="inline-block mb-6 px-4 py-1 text-xs font-bold tracking-widest
+               text-teal-700 border border-dashed border-teal-600 rounded-full"
+      >
+        EMERGENCY SCENARIOS
+      </span>
+
+      <h2 class="text-3xl md:text-4xl font-extrabold text-slate-900 leading-tight mb-6">
+        Common Emergency Tree Removal Situations in Fort Lauderdale
+      </h2>
+
+      <p class="text-lg text-slate-600 leading-relaxed">
+        Fort Lauderdale’s coastal climate, hurricane exposure, and dense
+        residential development create unique tree-related hazards. Emergency
+        tree removal is required when sudden damage places people, property,
+        or infrastructure at immediate risk.
+      </p>
+    </div>
+
+    <!-- GRID -->
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10">
+
+      <!-- ITEM -->
+      <div class="bg-[#f4f8f6] rounded-3xl p-10">
+        <h3 class="text-xl font-extrabold text-slate-900 mb-4">
+          Storm-Damaged or Fallen Trees
+        </h3>
+        <p class="text-slate-600 leading-relaxed">
+          Hurricanes and severe storms often cause trees to fall across
+          driveways, streets, rooftops, and commercial access points, requiring
+          immediate emergency tree removal.
+        </p>
+      </div>
+
+      <div class="bg-[#f4f8f6] rounded-3xl p-10">
+        <h3 class="text-xl font-extrabold text-slate-900 mb-4">
+          Leaning Trees After Heavy Rain or Flooding
+        </h3>
+        <p class="text-slate-600 leading-relaxed">
+          Saturated soil weakens root systems, causing trees to lean toward
+          homes, apartment buildings, and vehicles with little warning.
+        </p>
+      </div>
+
+      <div class="bg-[#f4f8f6] rounded-3xl p-10">
+        <h3 class="text-xl font-extrabold text-slate-900 mb-4">
+          Broken or Hanging Limbs
+        </h3>
+        <p class="text-slate-600 leading-relaxed">
+          Large cracked or suspended limbs over roofs, sidewalks, or parked
+          vehicles pose serious danger and require controlled professional
+          removal.
+        </p>
+      </div>
+
+      <div class="bg-[#f4f8f6] rounded-3xl p-10">
+        <h3 class="text-xl font-extrabold text-slate-900 mb-4">
+          Trees Entangled With Power Lines
+        </h3>
+        <p class="text-slate-600 leading-relaxed">
+          Trees contacting electrical lines present extreme safety risks and
+          require specialized emergency tree removal procedures to prevent
+          outages or injury.
+        </p>
+      </div>
+
+      <div class="bg-[#f4f8f6] rounded-3xl p-10">
+        <h3 class="text-xl font-extrabold text-slate-900 mb-4">
+          Uprooted or Structurally Unstable Trees
+        </h3>
+        <p class="text-slate-600 leading-relaxed">
+          Trees with exposed roots or compromised trunks can collapse without
+          warning, especially during wind or additional rainfall.
+        </p>
+      </div>
+
+      <div class="bg-[#f4f8f6] rounded-3xl p-10">
+        <h3 class="text-xl font-extrabold text-slate-900 mb-4">
+          Trees Threatening Commercial Properties
+        </h3>
+        <p class="text-slate-600 leading-relaxed">
+          Emergency tree situations affecting businesses, parking areas, or
+          public access points require rapid response to reduce liability and
+          operational disruption.
+        </p>
+      </div>
+
+    </div>
+
+    <!-- CTA -->
+    <div class="mt-20 text-center">
+      <a
+        href="tel:1-888-452-1505"
+        class="inline-flex items-center gap-4 rounded-full
+               bg-teal-700 px-12 py-5 text-white font-extrabold
+               hover:bg-teal-800 transition"
+      >
+        📞 24/7 Emergency Tree Removal in Fort Lauderdale
+      </a>
+    </div>
+
+  </div>
+</section>
+<!-- ================= EMERGENCY RESPONSE PROCESS ================= -->
+<section
+  class="relative py-32 bg-fixed bg-center bg-cover"
+  style="background-image:url('/images/emergency-response.jpg')"
+>
+  <!-- OVERLAY -->
+  <div class="absolute inset-0 bg-teal-900/80"></div>
+
+  <div class="relative z-10 max-w-7xl mx-auto px-6 text-white">
+
+    <!-- HEADER -->
+    <div class="max-w-3xl mx-auto text-center mb-20">
+      <span
+        class="inline-block mb-6 px-4 py-1 text-xs font-bold tracking-widest
+               border border-dashed border-white/60 rounded-full"
+      >
+        OUR PROCESS
+      </span>
+
+      <h2 class="text-3xl md:text-4xl font-extrabold leading-tight mb-6">
+        Our Emergency Tree Removal Process in Fort Lauderdale
+      </h2>
+
+      <p class="text-lg text-white/90 leading-relaxed">
+        When a tree emergency occurs, every minute matters. Our structured
+        response process ensures fast arrival, controlled removal, and maximum
+        safety for homes, businesses, and surrounding properties across
+        Fort Lauderdale.
+      </p>
+    </div>
+
+    <!-- PROCESS GRID -->
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-10">
+
+      <!-- STEP 1 -->
+      <div class="bg-white/10 backdrop-blur rounded-3xl p-8">
+        <span class="block text-sm font-bold text-teal-200 mb-3">
+          STEP 1
+        </span>
+        <h3 class="text-xl font-extrabold mb-4">
+          Immediate Call & Dispatch
+        </h3>
+        <p class="text-white/90 leading-relaxed">
+          Once you contact us, our emergency team is dispatched immediately.
+          We gather critical details and prepare the appropriate equipment
+          before arrival.
+        </p>
+      </div>
+
+      <!-- STEP 2 -->
+      <div class="bg-white/10 backdrop-blur rounded-3xl p-8">
+        <span class="block text-sm font-bold text-teal-200 mb-3">
+          STEP 2
+        </span>
+        <h3 class="text-xl font-extrabold mb-4">
+          On-Site Risk Assessment
+        </h3>
+        <p class="text-white/90 leading-relaxed">
+          Our professionals evaluate tree stability, structural tension,
+          proximity to buildings or power lines, and overall safety risks
+          before any cutting begins.
+        </p>
+      </div>
+
+      <!-- STEP 3 -->
+      <div class="bg-white/10 backdrop-blur rounded-3xl p-8">
+        <span class="block text-sm font-bold text-teal-200 mb-3">
+          STEP 3
+        </span>
+        <h3 class="text-xl font-extrabold mb-4">
+          Controlled Emergency Removal
+        </h3>
+        <p class="text-white/90 leading-relaxed">
+          Using cranes, lifts, and professional rigging systems, we remove the
+          hazardous tree or limbs in a controlled sequence to prevent further
+          damage.
+        </p>
+      </div>
+
+      <!-- STEP 4 -->
+      <div class="bg-white/10 backdrop-blur rounded-3xl p-8">
+        <span class="block text-sm font-bold text-teal-200 mb-3">
+          STEP 4
+        </span>
+        <h3 class="text-xl font-extrabold mb-4">
+          Site Stabilization & Cleanup
+        </h3>
+        <p class="text-white/90 leading-relaxed">
+          After the immediate danger is eliminated, we secure the area, remove
+          debris, and ensure the property is left safe and accessible.
+        </p>
+      </div>
+
+    </div>
+
+    <!-- TRUST LINE -->
+    <div class="mt-20 max-w-4xl mx-auto text-center">
+      <p class="text-lg text-white/90 leading-relaxed">
+        Our emergency tree removal process is designed to minimize risk,
+        prevent secondary damage, and restore safety as quickly as possible —
+        even in the most challenging Fort Lauderdale emergency situations.
+      </p>
+    </div>
+
+    <!-- CTA -->
+    <div class="mt-16 text-center">
+      <a
+        href="tel:1-888-452-1505"
+        class="inline-flex items-center gap-4 rounded-full
+               bg-white px-12 py-5 text-teal-900 font-extrabold
+               hover:bg-slate-100 transition"
+      >
+        📞 Call Now for Emergency Tree Removal
+      </a>
+    </div>
+
+  </div>
+</section>
+<!-- ================= EQUIPMENT & EXPERTISE ================= -->
+<section class="bg-white py-32">
+  <div class="max-w-7xl mx-auto px-6">
+
+    <!-- HEADER -->
+    <div class="max-w-3xl mx-auto text-center mb-20">
+      <span
+        class="inline-block mb-6 px-4 py-1 text-xs font-bold tracking-widest
+               text-teal-700 border border-dashed border-teal-600 rounded-full"
+      >
+        EQUIPMENT & EXPERTISE
+      </span>
+
+      <h2 class="text-3xl md:text-4xl font-extrabold text-slate-900 leading-tight mb-6">
+        Professional Equipment & Expert Crews for Emergency Tree Removal
+        in Fort Lauderdale
+      </h2>
+
+      <p class="text-lg text-slate-600 leading-relaxed">
+        Emergency tree removal is not routine work. It requires advanced
+        equipment, experienced operators, and proven safety procedures to
+        manage unstable trees, high-tension limbs, and complex removal
+        scenarios common in Fort Lauderdale.
+      </p>
+    </div>
+
+    <!-- CONTENT GRID -->
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
+
+      <!-- LEFT TEXT -->
+      <div class="space-y-6 text-slate-700 leading-relaxed">
+        <p>
+          Our emergency tree removal teams are equipped to handle hazardous
+          situations involving storm-damaged trees, fallen trunks, and trees
+          threatening homes, commercial buildings, and power lines. Every
+          operation is planned on-site to ensure controlled dismantling and
+          maximum safety.
+        </p>
+
+        <p>
+          We utilize professional-grade cranes, bucket trucks, rigging systems,
+          and precision cutting tools to safely remove trees in tight spaces,
+          near structures, and within densely developed Fort Lauderdale
+          neighborhoods.
+        </p>
+
+        <p>
+          Combined with years of hands-on experience, our crews understand how
+          to assess load distribution, structural stress, and failure points
+          before making a single cut. This expertise significantly reduces the
+          risk of secondary damage during emergency tree removal.
+        </p>
+
+        <p>
+          All work is performed in compliance with industry safety standards
+          and local regulations, ensuring reliable results even under extreme
+          conditions.
+        </p>
+      </div>
+
+      <!-- RIGHT HIGHLIGHTS -->
+      <div class="bg-[#f4f8f6] rounded-3xl p-10">
+        <ul class="space-y-5 text-slate-700 leading-relaxed list-disc list-inside">
+          <li>
+            Crane-assisted emergency tree removal for large or unstable trees
+          </li>
+          <li>
+            Bucket trucks and lifts for controlled access to damaged canopies
+          </li>
+          <li>
+            Professional rigging systems to manage high-tension limbs safely
+          </li>
+          <li>
+            Precision cutting equipment for confined residential areas
+          </li>
+          <li>
+            Experienced emergency crews trained in risk-based decision making
+          </li>
+          <li>
+            Compliance with Fort Lauderdale and South Florida safety standards
+          </li>
+        </ul>
+      </div>
+
+    </div>
+
+    <!-- BOTTOM TRUST -->
+    <div class="mt-20 max-w-4xl mx-auto text-center">
+      <p class="text-lg text-slate-700 leading-relaxed">
+        Proper equipment and experienced professionals are essential for safe
+        emergency tree removal. Attempting to remove hazardous trees without the
+        right tools or expertise can result in serious injury, property damage,
+        and costly mistakes.
+      </p>
+    </div>
+
+    <!-- CTA -->
+    <div class="mt-16 text-center">
+      <a
+        href="tel:1-888-452-1505"
+        class="inline-flex items-center gap-4 rounded-full
+               bg-teal-700 px-12 py-5 text-white font-extrabold
+               hover:bg-teal-800 transition"
+      >
+        📞 Call 1-888-452-1505 for Emergency Tree Removal
+      </a>
+    </div>
+
+  </div>
+</section>
+<!-- ================= SERVICE AREAS & NEIGHBORHOODS ================= -->
+<section class="bg-[#f4f8f6] py-32">
+  <div class="max-w-7xl mx-auto px-6">
+
+    <!-- HEADER -->
+    <div class="max-w-3xl mx-auto text-center mb-20">
+      <span
+        class="inline-block mb-6 px-4 py-1 text-xs font-bold tracking-widest
+               text-teal-700 border border-dashed border-teal-600 rounded-full"
+      >
+        SERVICE AREAS
+      </span>
+
+      <h2 class="text-3xl md:text-4xl font-extrabold text-slate-900 leading-tight mb-6">
+        Emergency Tree Removal Across Fort Lauderdale Neighborhoods
+      </h2>
+
+      <p class="text-lg text-slate-600 leading-relaxed">
+        Our emergency tree removal teams serve residential and commercial
+        properties throughout Fort Lauderdale. We understand the unique layout,
+        tree density, and storm exposure of each neighborhood, allowing for
+        faster response and safer removal.
+      </p>
+    </div>
+
+    <!-- GRID -->
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-10">
+
+      <!-- AREA -->
+      <div class="bg-white rounded-3xl p-10">
+        <h3 class="text-xl font-extrabold text-slate-900 mb-3">
+          Las Olas & Downtown Fort Lauderdale
+        </h3>
+        <p class="text-slate-600 leading-relaxed">
+          Emergency tree removal for high-density residential buildings,
+          commercial properties, and public access areas affected by storm
+          damage or fallen trees.
+        </p>
+      </div>
+
+      <div class="bg-white rounded-3xl p-10">
+        <h3 class="text-xl font-extrabold text-slate-900 mb-3">
+          Victoria Park
+        </h3>
+        <p class="text-slate-600 leading-relaxed">
+          Large mature trees and older landscapes often require crane-assisted
+          emergency tree removal to protect homes, vehicles, and nearby
+          structures.
+        </p>
+      </div>
+
+      <div class="bg-white rounded-3xl p-10">
+        <h3 class="text-xl font-extrabold text-slate-900 mb-3">
+          Rio Vista
+        </h3>
+        <p class="text-slate-600 leading-relaxed">
+          Waterfront properties and saturated soil conditions increase the risk
+          of uprooted trees during storms and heavy rainfall events.
+        </p>
+      </div>
+
+      <div class="bg-white rounded-3xl p-10">
+        <h3 class="text-xl font-extrabold text-slate-900 mb-3">
+          Wilton Manors
+        </h3>
+        <p class="text-slate-600 leading-relaxed">
+          Emergency response for fallen trees, hanging limbs, and power line
+          hazards affecting residential neighborhoods and local businesses.
+        </p>
+      </div>
+
+      <div class="bg-white rounded-3xl p-10">
+        <h3 class="text-xl font-extrabold text-slate-900 mb-3">
+          Coral Ridge
+        </h3>
+        <p class="text-slate-600 leading-relaxed">
+          High-value properties require controlled emergency tree removal to
+          prevent secondary damage to structures, landscaping, and driveways.
+        </p>
+      </div>
+
+      <div class="bg-white rounded-3xl p-10">
+        <h3 class="text-xl font-extrabold text-slate-900 mb-3">
+          Surrounding Fort Lauderdale Areas
+        </h3>
+        <p class="text-slate-600 leading-relaxed">
+          Our teams also serve nearby communities and bordering areas within
+          Broward County for urgent tree removal needs.
+        </p>
+      </div>
+
+    </div>
+
+    <!-- LOCAL TRUST -->
+    <div class="mt-20 max-w-4xl mx-auto text-center">
+      <p class="text-lg text-slate-700 leading-relaxed">
+        Familiarity with Fort Lauderdale neighborhoods allows our emergency tree
+        removal crews to arrive prepared, select the right equipment, and work
+        efficiently under pressure — especially during post-storm conditions.
+      </p>
+    </div>
+
+    <!-- CTA -->
+    <div class="mt-16 text-center">
+      <a
+        href="tel:1-888-452-1505"
+        class="inline-flex items-center gap-4 rounded-full
+               bg-teal-700 px-12 py-5 text-white font-extrabold
+               hover:bg-teal-800 transition"
+      >
+        📞 Emergency Tree Removal Near You in Fort Lauderdale
+      </a>
+    </div>
+
+  </div>
+</section>
+<!-- ================= EMERGENCY TREE REMOVAL FAQ ================= -->
+<section class="bg-white py-28">
+  <div class="max-w-4xl mx-auto px-6">
+
+    <!-- HEADER -->
+    <div class="text-center mb-16">
+      <span
+        class="inline-block mb-4 px-4 py-1 text-xs font-bold tracking-widest
+               text-teal-700 border border-dashed border-teal-600 rounded-full"
+      >
+        FREQUENTLY ASKED QUESTIONS
+      </span>
+
+      <h2 class="text-3xl md:text-4xl font-extrabold text-slate-900 leading-tight mb-6">
+        Emergency Tree Removal FAQs in Fort Lauderdale
+      </h2>
+
+      <p class="text-slate-600 leading-relaxed">
+        Clear answers to the most common questions homeowners and businesses ask
+        when facing an emergency tree situation in Fort Lauderdale.
+      </p>
+    </div>
+
+    <!-- FAQ GRID -->
+    <div class="grid grid-cols-1 gap-6">
+
+      <!-- FAQ ITEM -->
+      <div class="rounded-2xl border border-gray-200 p-6">
+        <h3 class="font-extrabold text-slate-900 mb-2">
+          What qualifies as emergency tree removal in Fort Lauderdale?
+        </h3>
+        <p class="text-slate-600 leading-relaxed">
+          Emergency tree removal is required when a tree or large limb poses an
+          immediate threat to people, homes, vehicles, or power lines due to
+          storm damage, structural failure, or instability.
+        </p>
+      </div>
+
+      <div class="rounded-2xl border border-gray-200 p-6">
+        <h3 class="font-extrabold text-slate-900 mb-2">
+          Do you provide 24/7 emergency tree removal services?
+        </h3>
+        <p class="text-slate-600 leading-relaxed">
+          Yes. We offer 24/7 emergency tree removal throughout Fort Lauderdale
+          and surrounding areas to respond quickly after storms, hurricanes,
+          or unexpected tree failures.
+        </p>
+      </div>
+
+      <div class="rounded-2xl border border-gray-200 p-6">
+        <h3 class="font-extrabold text-slate-900 mb-2">
+          How fast can you respond to a tree emergency?
+        </h3>
+        <p class="text-slate-600 leading-relaxed">
+          Response times vary based on weather conditions and demand, but our
+          emergency crews prioritize immediate hazards and are dispatched as
+          quickly as possible across Fort Lauderdale.
+        </p>
+      </div>
+
+      <div class="rounded-2xl border border-gray-200 p-6">
+        <h3 class="font-extrabold text-slate-900 mb-2">
+          Do I need a permit for emergency tree removal?
+        </h3>
+        <p class="text-slate-600 leading-relaxed">
+          In most emergency situations involving immediate danger, permits are
+          not required prior to removal. If documentation is needed afterward,
+          our team can assist with local Fort Lauderdale requirements.
+        </p>
+      </div>
+
+      <div class="rounded-2xl border border-gray-200 p-6">
+        <h3 class="font-extrabold text-slate-900 mb-2">
+          Is emergency tree removal covered by insurance?
+        </h3>
+        <p class="text-slate-600 leading-relaxed">
+          Many homeowner insurance policies cover emergency tree removal caused
+          by storms or fallen trees. We can provide documentation to support
+          insurance claims when applicable.
+        </p>
+      </div>
+
+      <div class="rounded-2xl border border-gray-200 p-6">
+        <h3 class="font-extrabold text-slate-900 mb-2">
+          Can you remove trees near power lines?
+        </h3>
+        <p class="text-slate-600 leading-relaxed">
+          Yes. We use specialized equipment and follow strict safety procedures
+          when performing emergency tree removal near power lines, often in
+          coordination with utility providers.
+        </p>
+      </div>
+
+    </div>
+
+    <!-- CTA -->
+    <div class="mt-14 text-center">
+      <a
+        href="tel:1-888-452-1505"
+        class="inline-flex items-center gap-4 rounded-full
+               bg-teal-700 px-10 py-4 text-white font-extrabold
+               hover:bg-teal-800 transition"
+      >
+        📞 Call 1-888-452-1505 for Emergency Tree Removal
+      </a>
+    </div>
+
+  </div>
+</section>
+<!-- ================= FINAL EMERGENCY CTA ================= -->
+<section class="bg-teal-900 py-32 text-white">
+  <div class="max-w-7xl mx-auto px-6 text-center">
+
+    <!-- HEADLINE -->
+    <h2 class="text-4xl md:text-5xl xl:text-6xl font-extrabold leading-tight">
+      Emergency Tree Removal in Fort Lauderdale
+      <br class="hidden sm:block" />
+      Call Now for Immediate Assistance
+    </h2>
+
+    <!-- SUBTEXT -->
+    <p class="mt-8 max-w-3xl mx-auto text-lg text-white/90 leading-relaxed">
+      If a fallen tree, storm damage, or unstable limbs are putting your
+      property at risk, our emergency tree removal crews are available 24/7
+      throughout Fort Lauderdale and surrounding Broward County areas.
+      Fast response. Professional equipment. Safe results.
+    </p>
+
+    <!-- PRIMARY CTA -->
+    <div class="mt-14">
+      <a
+        href="tel:1-888-452-1505"
+        class="inline-flex items-center gap-4 rounded-full
+               bg-white px-14 py-6 text-teal-900 font-extrabold text-lg
+               hover:bg-slate-100 transition"
+      >
+        📞 Call 1-888-452-1505 Now
+      </a>
+    </div>
+
+    <!-- TRUST LINE -->
+    <p class="mt-12 text-sm text-white/80">
+      24/7 Emergency Tree Removal • Fort Lauderdale • Broward County • South Florida
+    </p>
+
+  </div>
+</section>
+
+</BaseLayout>

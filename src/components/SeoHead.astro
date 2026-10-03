@@ -1,0 +1,95 @@
+---
+const {
+  title,
+  description,
+  canonical,
+  ogImage,
+  noindex = false,
+} = Astro.props;
+
+/* =====================
+   GLOBAL SITE CONFIG
+===================== */
+const siteName = "SF Tree Removal";
+const siteUrl = "https://sftreeremoval.com";
+const logoUrl = `${siteUrl}/images/logo.png`;
+
+/* =====================
+   META FALLBACKS
+===================== */
+const metaTitle = title ?? `${siteName} | Professional Tree Service South Florida`;
+
+const metaDescription =
+  description ??
+  "Professional tree removal and tree service in South Florida. Emergency tree removal, certified arborists, and modern equipment.";
+
+const metaCanonical = canonical ?? siteUrl;
+
+const metaOgImage = ogImage
+  ? `${siteUrl}${ogImage}`
+  : `${siteUrl}/images/og-default.jpg`;
+
+/* =====================
+   ORGANIZATION SCHEMA
+===================== */
+const organizationSchema = {
+  "@context": "https://schema.org",
+  "@type": "Organization",
+  "@id": `${siteUrl}#organization`,
+  "name": siteName,
+  "url": siteUrl,
+  "logo": {
+    "@type": "ImageObject",
+    "url": logoUrl,
+    "width": 500,
+    "height": 200
+  },
+  "contactPoint": {
+    "@type": "ContactPoint",
+    "telephone": "+1-888-452-1505",
+    "contactType": "customer service",
+    "areaServed": "US-FL",
+    "availableLanguage": ["English"]
+  },
+  "sameAs": [
+    "https://www.facebook.com/",
+    "https://www.linkedin.com/"
+  ]
+};
+---
+
+<!-- ================= BASIC ================= -->
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+
+<title>{metaTitle}</title>
+<meta name="description" content={metaDescription} />
+<link rel="canonical" href={metaCanonical} />
+
+{noindex && <meta name="robots" content="noindex, nofollow" />}
+
+<!-- ================= OPEN GRAPH ================= -->
+<meta property="og:type" content="website" />
+<meta property="og:site_name" content={siteName} />
+<meta property="og:title" content={metaTitle} />
+<meta property="og:description" content={metaDescription} />
+<meta property="og:url" content={metaCanonical} />
+<meta property="og:image" content={metaOgImage} />
+<meta property="og:image:width" content="1200" />
+<meta property="og:image:height" content="630" />
+
+<!-- ================= TWITTER ================= -->
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:title" content={metaTitle} />
+<meta name="twitter:description" content={metaDescription} />
+<meta name="twitter:image" content={metaOgImage} />
+
+<!-- ================= FAVICONS ================= -->
+<link rel="icon" href="/favicon.ico" />
+<link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+
+<!-- ================= ORGANIZATION SCHEMA ================= -->
+<script type="application/ld+json">
+{JSON.stringify(organizationSchema)}
+</script>
+

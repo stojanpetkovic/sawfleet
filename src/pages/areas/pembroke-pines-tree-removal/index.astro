@@ -1,0 +1,896 @@
+---
+import BaseLayout from "../../../layouts/BaseLayout.astro";
+
+const city = "Pembroke Pines";
+const county = "Broward County";
+const state = "FL";
+const phone = "+1-888-452-1505";
+
+const title = `${city} Tree Removal Services | SF Tree Removal`;
+const description =
+  `Professional tree removal services in ${city}, ${state}. Emergency tree removal, storm damage cleanup, and certified arborist services serving ${county} and surrounding South Florida areas.`;
+
+const canonical = "https://sftreeremoval.com/areas/pembroke-pines-tree-removal/";
+---
+
+<BaseLayout
+  title={title}
+  description={description}
+  canonical={canonical}
+>
+
+<!-- =========================================================
+  LOCAL BUSINESS SCHEMA – PEMBROKE PINES
+========================================================= -->
+<script type="application/ld+json">
+{JSON.stringify({
+  "@context": "https://schema.org",
+  "@type": "LocalBusiness",
+  "@id": `${canonical}#localbusiness`,
+  "name": `SF Tree Removal – ${city}`,
+  "url": canonical,
+  "telephone": phone,
+  "priceRange": "$$",
+  "image": "https://sftreeremoval.com/images/og-default.jpg",
+  "address": {
+    "@type": "PostalAddress",
+    "addressLocality": city,
+    "addressRegion": state,
+    "addressCountry": "US"
+  },
+  "areaServed": [
+    { "@type": "City", "name": city },
+    { "@type": "AdministrativeArea", "name": county }
+  ],
+  "openingHoursSpecification": {
+    "@type": "OpeningHoursSpecification",
+    "dayOfWeek": [
+      "Monday","Tuesday","Wednesday","Thursday","Friday","Saturday","Sunday"
+    ],
+    "opens": "00:00",
+    "closes": "23:59"
+  },
+  "hasOfferCatalog": {
+    "@type": "OfferCatalog",
+    "name": "Tree Removal Services",
+    "itemListElement": [
+      {
+        "@type": "Offer",
+        "itemOffered": {
+          "@type": "Service",
+          "name": "Tree Removal",
+          "areaServed": city
+        }
+      },
+      {
+        "@type": "Offer",
+        "itemOffered": {
+          "@type": "Service",
+          "name": "Emergency Tree Removal",
+          "areaServed": city
+        }
+      },
+      {
+        "@type": "Offer",
+        "itemOffered": {
+          "@type": "Service",
+          "name": "Storm Damage Tree Cleanup",
+          "areaServed": city
+        }
+      },
+      {
+        "@type": "Offer",
+        "itemOffered": {
+          "@type": "Service",
+          "name": "Certified Arborist Services",
+          "areaServed": city
+        }
+      }
+    ]
+  }
+})}
+</script>
+
+<!-- =========================================================
+  BREADCRUMB SCHEMA
+========================================================= -->
+<script type="application/ld+json">
+{JSON.stringify({
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    {
+      "@type": "ListItem",
+      "position": 1,
+      "name": "Home",
+      "item": "https://sftreeremoval.com/"
+    },
+    {
+      "@type": "ListItem",
+      "position": 2,
+      "name": "Service Areas",
+      "item": "https://sftreeremoval.com/areas/"
+    },
+    {
+      "@type": "ListItem",
+      "position": 3,
+      "name": `${city} Tree Removal`,
+      "item": canonical
+    }
+  ]
+})}
+</script>
+
+<!-- =========================================================
+  FAQ PAGE SCHEMA – PEMBROKE PINES
+========================================================= -->
+<script type="application/ld+json">
+{JSON.stringify({
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {
+      "@type": "Question",
+      "name": `Do you offer tree removal services in ${city}?`,
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": `Yes. We provide professional tree removal services throughout ${city}, including residential and commercial properties across ${county}.`
+      }
+    },
+    {
+      "@type": "Question",
+      "name": `Is emergency tree removal available in ${city}?`,
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": `Yes. Our crews provide 24/7 emergency tree removal in ${city} for fallen trees, storm damage, and hazardous situations.`
+      }
+    },
+    {
+      "@type": "Question",
+      "name": `Do I need a permit for tree removal in ${city}?`,
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": `Some tree removals in ${city} require permits, especially for protected trees. We assist with permit verification and certified arborist reports when needed.`
+      }
+    },
+    {
+      "@type": "Question",
+      "name": `Are your tree removal services licensed and insured?`,
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": `Yes. Our tree removal company serving ${city} is fully licensed and insured for your protection and peace of mind.`
+      }
+    }
+  ]
+})}
+</script>
+<!-- ================= HERO – PEMBROKE PINES ================= -->
+<section class="bg-teal-900 py-32 text-white">
+  <div class="max-w-7xl mx-auto px-6 text-center">
+
+    <!-- BADGE -->
+    <span
+      class="inline-block mb-6 px-4 py-1 text-xs font-bold tracking-widest
+             border border-dashed border-white/60 rounded-full"
+    >
+      PEMBROKE PINES TREE REMOVAL
+    </span>
+
+    <!-- H1 -->
+    <h1 class="text-4xl md:text-5xl xl:text-6xl font-extrabold leading-tight">
+      Professional Tree Removal Services
+      <br class="hidden sm:block" />
+      in Pembroke Pines, Florida
+    </h1>
+
+    <!-- SUBTEXT -->
+    <p class="mt-8 max-w-3xl mx-auto text-lg text-white/90 leading-relaxed">
+      SF Tree Removal provides safe, efficient, and fully insured tree removal
+      services for homeowners and businesses in Pembroke Pines.
+      From hazardous tree removal to storm damage cleanup, our experienced crews
+      are ready to respond quickly and professionally.
+    </p>
+
+    <!-- CTA -->
+    <div class="mt-14 flex flex-wrap justify-center gap-6">
+
+      <!-- PRIMARY -->
+      <a
+        href="/contact-us/"
+        class="inline-flex items-center gap-4 rounded-full
+               bg-white px-12 py-5 text-teal-900 font-extrabold
+               hover:bg-slate-100 transition"
+      >
+        Request a Free Estimate
+        <span
+          class="flex h-10 w-10 items-center justify-center rounded-full
+                 bg-teal-700 text-white"
+        >
+          ↗
+        </span>
+      </a>
+
+      <!-- SECONDARY -->
+      <a
+        href="tel:18884521505"
+        class="inline-flex items-center gap-4 rounded-full
+               border border-white/70 px-12 py-5 text-white font-bold
+               hover:bg-white/10 transition"
+      >
+        📞 24/7 Emergency Service
+      </a>
+
+    </div>
+
+    <!-- TRUST LINE -->
+    <p class="mt-12 text-sm text-white/80">
+      Serving Pembroke Pines and surrounding Broward County communities.
+    </p>
+
+  </div>
+</section>
+<!-- ================= CITY INTRO – PEMBROKE PINES ================= -->
+<section class="bg-white py-32">
+  <div class="max-w-4xl mx-auto px-6 text-center">
+
+    <h2 class="text-3xl md:text-4xl font-extrabold text-slate-900 mb-10">
+      Trusted Tree Removal Company in Pembroke Pines
+    </h2>
+
+    <p class="text-lg text-slate-600 leading-relaxed mb-8">
+      Pembroke Pines is known for its residential neighborhoods, commercial
+      properties, and mature tree landscapes that require professional care.
+      At SF Tree Removal, we provide reliable tree removal services tailored
+      to the specific needs of Pembroke Pines homeowners and businesses.
+    </p>
+
+    <p class="text-lg text-slate-600 leading-relaxed">
+      Our local crews understand the challenges posed by South Florida weather,
+      seasonal storms, and local permitting requirements. Whether you’re dealing
+      with a hazardous tree, storm damage, or planning property improvements,
+      our team delivers safe, compliant, and efficient tree removal solutions
+      throughout Pembroke Pines and surrounding Broward County areas.
+    </p>
+
+  </div>
+</section>
+<!-- ================= WHAT WE DO – PEMBROKE PINES ================= -->
+<section class="bg-[#f4f8f6] py-32">
+  <div class="max-w-7xl mx-auto px-6">
+
+    <!-- HEADER -->
+    <div class="max-w-3xl mx-auto text-center mb-20">
+      <span
+        class="inline-block mb-6 px-4 py-1 text-xs font-bold tracking-widest
+               text-teal-700 border border-dashed border-teal-600 rounded-full"
+      >
+        OUR SERVICES
+      </span>
+
+      <h2 class="text-3xl md:text-4xl font-extrabold text-slate-900 leading-tight mb-8">
+        Professional Tree Removal Services
+        <br class="hidden sm:block" />
+        in Pembroke Pines, FL
+      </h2>
+
+      <p class="text-lg text-slate-600 leading-relaxed">
+        SF Tree Removal provides a full range of tree removal and tree care
+        services in Pembroke Pines, designed to protect your property,
+        enhance safety, and ensure compliance with local regulations.
+      </p>
+    </div>
+
+    <!-- SERVICES GRID -->
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-10">
+
+      <!-- SERVICE CARD -->
+      <a
+        href="/tree-removal/"
+        class="group bg-white rounded-3xl p-10 shadow-sm transition
+               hover:shadow-lg"
+      >
+        <h3 class="text-xl font-extrabold text-slate-900 mb-4">
+          Tree Removal
+        </h3>
+        <p class="text-slate-600 leading-relaxed">
+          Safe and controlled removal of hazardous, damaged, or unwanted trees
+          using professional equipment and proven safety procedures.
+        </p>
+      </a>
+
+      <!-- SERVICE CARD -->
+      <a
+        href="/emergency-tree-removal/"
+        class="group bg-white rounded-3xl p-10 shadow-sm transition
+               hover:shadow-lg"
+      >
+        <h3 class="text-xl font-extrabold text-slate-900 mb-4">
+          Emergency Tree Removal
+        </h3>
+        <p class="text-slate-600 leading-relaxed">
+          24/7 emergency response for fallen trees, storm damage, and dangerous
+          situations threatening homes or businesses.
+        </p>
+      </a>
+
+      <!-- SERVICE CARD -->
+      <a
+        href="/certified-arborist/"
+        class="group bg-white rounded-3xl p-10 shadow-sm transition
+               hover:shadow-lg"
+      >
+        <h3 class="text-xl font-extrabold text-slate-900 mb-4">
+          Certified Arborist Services
+        </h3>
+        <p class="text-slate-600 leading-relaxed">
+          Professional tree assessments, risk evaluations, and arborist reports
+          to support permits, preservation, and long-term tree health.
+        </p>
+      </a>
+
+    </div>
+
+    <!-- CTA -->
+    <div class="mt-20 text-center">
+      <a
+        href="/tree-services/"
+        class="inline-flex items-center gap-4 rounded-full
+               bg-teal-700 px-10 py-4 text-white font-bold
+               hover:bg-teal-800 transition"
+      >
+        View All Tree Services
+        <span class="flex h-10 w-10 items-center justify-center rounded-full bg-white/15">
+          ↗
+        </span>
+      </a>
+    </div>
+
+  </div>
+</section>
+<!-- ================= WHEN TREE REMOVAL IS NEEDED – PEMBROKE PINES ================= -->
+<section class="bg-white py-32">
+  <div class="max-w-7xl mx-auto px-6">
+
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
+
+      <!-- LEFT TEXT -->
+      <div>
+        <h2 class="text-3xl md:text-4xl font-extrabold text-slate-900 mb-8">
+          When Do You Need Tree Removal
+          <br class="hidden sm:block" />
+          in Pembroke Pines?
+        </h2>
+
+        <p class="text-lg text-slate-600 leading-relaxed mb-10">
+          Trees play an important role in Pembroke Pines landscapes, but damaged
+          or unstable trees can quickly become a safety hazard. Professional
+          tree removal is often necessary to prevent property damage, personal
+          injury, and costly repairs—especially in South Florida’s storm-prone
+          climate.
+        </p>
+
+        <ul class="space-y-4 text-slate-700 leading-relaxed">
+          <li>• Dead or dying trees showing signs of decay or disease</li>
+          <li>• Trees leaning toward homes, fences, or nearby structures</li>
+          <li>• Storm-damaged or fallen trees after heavy rain or wind</li>
+          <li>• Broken or hanging limbs threatening roofs or vehicles</li>
+          <li>• Trees interfering with power lines or access points</li>
+        </ul>
+
+        <div class="mt-10">
+          <a
+            href="/emergency-tree-removal/"
+            class="inline-flex items-center gap-3 text-teal-700 font-bold hover:underline"
+          >
+            Emergency Tree Removal Services
+            <span class="inline-block">→</span>
+          </a>
+        </div>
+      </div>
+
+      <!-- RIGHT IMAGE -->
+      <div class="relative">
+        <div class="overflow-hidden rounded-3xl">
+          <img
+            src="/images/tree-removal/pembroke-pines-hazard-tree.jpg"
+            alt="Hazardous tree removal in Pembroke Pines Florida"
+            class="w-full h-full object-cover"
+            loading="lazy"
+          />
+        </div>
+      </div>
+
+    </div>
+
+  </div>
+</section>
+<!-- ================= EMERGENCY TREE REMOVAL – PEMBROKE PINES ================= -->
+<section class="bg-teal-800 py-32 text-white">
+  <div class="max-w-7xl mx-auto px-6">
+
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
+
+      <!-- LEFT IMAGE -->
+      <div class="relative">
+        <div class="overflow-hidden rounded-3xl">
+          <img
+            src="/images/emergency/pembroke-pines-storm-tree.jpg"
+            alt="Emergency tree removal after storm in Pembroke Pines Florida"
+            class="w-full h-full object-cover"
+            loading="lazy"
+          />
+        </div>
+      </div>
+
+      <!-- RIGHT TEXT -->
+      <div>
+        <span
+          class="inline-block mb-6 px-4 py-1 text-xs font-bold tracking-widest
+                 border border-dashed border-white/60 rounded-full"
+        >
+          24/7 EMERGENCY SERVICE
+        </span>
+
+        <h2 class="text-3xl md:text-4xl font-extrabold mb-8">
+          Emergency Tree Removal
+          <br class="hidden sm:block" />
+          in Pembroke Pines, FL
+        </h2>
+
+        <p class="text-lg text-white/90 leading-relaxed mb-8">
+          Severe storms, heavy rain, and strong winds can cause sudden tree
+          failures in Pembroke Pines. Fallen trees, broken limbs, or uprooted
+          root systems require immediate professional attention to restore
+          safety and prevent further damage.
+        </p>
+
+        <p class="text-lg text-white/90 leading-relaxed mb-10">
+          Our emergency tree removal crews are available 24/7 to respond quickly,
+          secure hazardous areas, and perform controlled removals using
+          professional equipment and strict safety protocols.
+        </p>
+
+        <!-- CTA -->
+        <div class="flex flex-wrap gap-6">
+          <a
+            href="tel:18884521505"
+            class="inline-flex items-center gap-4 rounded-full
+                   bg-white px-10 py-4 text-teal-900 font-extrabold
+                   hover:bg-slate-100 transition"
+          >
+            📞 Call for Emergency Service
+          </a>
+
+          <a
+            href="/emergency-tree-removal/"
+            class="inline-flex items-center gap-4 rounded-full
+                   border border-white/70 px-10 py-4 text-white font-bold
+                   hover:bg-white/10 transition"
+          >
+            Learn About Emergency Tree Removal
+          </a>
+        </div>
+
+      </div>
+
+    </div>
+
+  </div>
+</section>
+<!-- ================= EQUIPMENT & EXPERTISE – PEMBROKE PINES ================= -->
+<section class="bg-white py-32">
+  <div class="max-w-7xl mx-auto px-6">
+
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
+
+      <!-- LEFT TEXT -->
+      <div>
+        <h2 class="text-3xl md:text-4xl font-extrabold text-slate-900 mb-8">
+          Modern Equipment & Experienced
+          <br class="hidden sm:block" />
+          Tree Removal Experts
+        </h2>
+
+        <p class="text-lg text-slate-600 leading-relaxed mb-8">
+          Safe tree removal in Pembroke Pines requires more than basic tools.
+          Our crews use modern equipment and proven techniques to handle
+          complex removals with precision and control—especially in tight
+          residential areas and near structures.
+        </p>
+
+        <p class="text-lg text-slate-600 leading-relaxed mb-10">
+          By combining professional-grade cranes, lifts, and rigging systems
+          with experienced operators, we reduce risk, protect surrounding
+          property, and complete each project efficiently and safely.
+        </p>
+
+        <ul class="space-y-4 text-slate-700 leading-relaxed">
+          <li>• Crane-assisted tree removal for large or hazardous trees</li>
+          <li>• Precision cutting and controlled dismantling</li>
+          <li>• Safe operations near homes, roofs, and power lines</li>
+          <li>• Industry-standard safety protocols on every job</li>
+        </ul>
+
+        <div class="mt-10">
+          <a
+            href="/tree-removal/"
+            class="inline-flex items-center gap-3 text-teal-700 font-bold hover:underline"
+          >
+            Learn More About Our Tree Removal Process
+            <span class="inline-block">→</span>
+          </a>
+        </div>
+      </div>
+
+      <!-- RIGHT IMAGE -->
+      <div class="relative">
+        <div class="overflow-hidden rounded-3xl">
+          <img
+            src="/images/equipment/crane-tree-removal-pembroke-pines.jpg"
+            alt="Crane-assisted tree removal in Pembroke Pines Florida"
+            class="w-full h-full object-cover"
+            loading="lazy"
+          />
+        </div>
+      </div>
+
+    </div>
+
+  </div>
+</section>
+<!-- ================= WHY CHOOSE US – PEMBROKE PINES ================= -->
+<section class="bg-[#f4f8f6] py-32">
+  <div class="max-w-7xl mx-auto px-6">
+
+    <!-- HEADER -->
+    <div class="max-w-3xl mx-auto text-center mb-20">
+      <span
+        class="inline-block mb-6 px-4 py-1 text-xs font-bold tracking-widest
+               text-teal-700 border border-dashed border-teal-600 rounded-full"
+      >
+        WHY CHOOSE US
+      </span>
+
+      <h2 class="text-3xl md:text-4xl font-extrabold text-slate-900 leading-tight mb-8">
+        Trusted Tree Removal Experts
+        <br class="hidden sm:block" />
+        in Pembroke Pines, Florida
+      </h2>
+
+      <p class="text-lg text-slate-600 leading-relaxed">
+        Homeowners and businesses in Pembroke Pines rely on SF Tree Removal
+        for safe, professional, and fully insured tree services.
+        Our experience, local knowledge, and safety-first approach
+        set us apart from other tree removal companies in Broward County.
+      </p>
+    </div>
+
+    <!-- GRID -->
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-10">
+
+      <div class="bg-white rounded-3xl p-10 shadow-sm">
+        <h3 class="text-xl font-extrabold text-slate-900 mb-4">
+          Local Pembroke Pines Experience
+        </h3>
+        <p class="text-slate-600 leading-relaxed">
+          We understand local neighborhoods, tree species, storm patterns,
+          and city requirements—allowing us to deliver efficient and compliant
+          tree removal services.
+        </p>
+      </div>
+
+      <div class="bg-white rounded-3xl p-10 shadow-sm">
+        <h3 class="text-xl font-extrabold text-slate-900 mb-4">
+          Licensed & Fully Insured
+        </h3>
+        <p class="text-slate-600 leading-relaxed">
+          Our tree removal services are fully licensed and insured,
+          protecting your home, business, and surrounding property
+          throughout every phase of the job.
+        </p>
+      </div>
+
+      <div class="bg-white rounded-3xl p-10 shadow-sm">
+        <h3 class="text-xl font-extrabold text-slate-900 mb-4">
+          24/7 Emergency Response
+        </h3>
+        <p class="text-slate-600 leading-relaxed">
+          When storms strike, our emergency crews respond quickly to
+          hazardous trees, fallen limbs, and storm-related damage
+          across Pembroke Pines.
+        </p>
+      </div>
+
+      <div class="bg-white rounded-3xl p-10 shadow-sm">
+        <h3 class="text-xl font-extrabold text-slate-900 mb-4">
+          Advanced Equipment
+        </h3>
+        <p class="text-slate-600 leading-relaxed">
+          We use modern cranes, lifts, and rigging systems to safely
+          remove large or complex trees with minimal disruption
+          to your property.
+        </p>
+      </div>
+
+      <div class="bg-white rounded-3xl p-10 shadow-sm">
+        <h3 class="text-xl font-extrabold text-slate-900 mb-4">
+          Safety-First Process
+        </h3>
+        <p class="text-slate-600 leading-relaxed">
+          Every project begins with a detailed risk assessment,
+          followed by controlled removal procedures designed
+          to protect people and structures.
+        </p>
+      </div>
+
+      <div class="bg-white rounded-3xl p-10 shadow-sm">
+        <h3 class="text-xl font-extrabold text-slate-900 mb-4">
+          Clear, Honest Pricing
+        </h3>
+        <p class="text-slate-600 leading-relaxed">
+          We provide transparent estimates based on tree size,
+          location, and complexity—no hidden fees or surprises.
+        </p>
+      </div>
+
+    </div>
+
+    <!-- CTA -->
+    <div class="mt-20 text-center">
+      <a
+        href="/contact-us/"
+        class="inline-flex items-center gap-4 rounded-full
+               bg-teal-700 px-10 py-4 text-white font-bold
+               hover:bg-teal-800 transition"
+      >
+        Request a Free Tree Removal Estimate
+        <span class="flex h-10 w-10 items-center justify-center rounded-full bg-white/15">
+          ↗
+        </span>
+      </a>
+    </div>
+
+  </div>
+</section>
+<!-- ================= SERVICE AREAS NEAR PEMBROKE PINES ================= -->
+<section class="bg-white py-32">
+  <div class="max-w-7xl mx-auto px-6">
+
+    <!-- HEADER -->
+    <div class="max-w-3xl mx-auto text-center mb-20">
+      <span
+        class="inline-block mb-6 px-4 py-1 text-xs font-bold tracking-widest
+               text-teal-700 border border-dashed border-teal-600 rounded-full"
+      >
+        SERVICE AREAS
+      </span>
+
+      <h2 class="text-3xl md:text-4xl font-extrabold text-slate-900 leading-tight mb-8">
+        Tree Removal Services
+        <br class="hidden sm:block" />
+        Near Pembroke Pines, FL
+      </h2>
+
+      <p class="text-lg text-slate-600 leading-relaxed">
+        In addition to serving Pembroke Pines, SF Tree Removal provides
+        professional tree removal and emergency tree services throughout
+        nearby cities and communities across Broward County.
+      </p>
+    </div>
+
+    <!-- AREAS GRID -->
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-10">
+
+      <!-- AREA -->
+      <a
+        href="/areas/hollywood-tree-service/"
+        class="group bg-[#f4f8f6] rounded-3xl p-10 transition
+               hover:bg-white hover:shadow-lg"
+      >
+        <h3 class="text-xl font-extrabold text-slate-900 mb-3">
+          Hollywood
+        </h3>
+        <p class="text-slate-600 leading-relaxed mb-6">
+          Residential and commercial tree services, storm response,
+          and emergency tree removal solutions.
+        </p>
+        <span class="inline-flex items-center gap-2 text-sm font-bold text-teal-700">
+          Hollywood Tree Service
+          <span class="flex h-7 w-7 items-center justify-center rounded-full bg-teal-700 text-white">
+            ↗
+          </span>
+        </span>
+      </a>
+
+      <!-- AREA -->
+      <a
+        href="/areas/fort-lauderdale-tree-removal/"
+        class="group bg-[#f4f8f6] rounded-3xl p-10 transition
+               hover:bg-white hover:shadow-lg"
+      >
+        <h3 class="text-xl font-extrabold text-slate-900 mb-3">
+          Fort Lauderdale
+        </h3>
+        <p class="text-slate-600 leading-relaxed mb-6">
+          Full-service tree removal, certified arborist services,
+          and hurricane damage cleanup.
+        </p>
+        <span class="inline-flex items-center gap-2 text-sm font-bold text-teal-700">
+          Fort Lauderdale Tree Removal
+          <span class="flex h-7 w-7 items-center justify-center rounded-full bg-teal-700 text-white">
+            ↗
+          </span>
+        </span>
+      </a>
+
+      <!-- AREA -->
+      <a
+        href="/areas/broward-county-tree-removal/"
+        class="group bg-[#f4f8f6] rounded-3xl p-10 transition
+               hover:bg-white hover:shadow-lg"
+      >
+        <h3 class="text-xl font-extrabold text-slate-900 mb-3">
+          Broward County
+        </h3>
+        <p class="text-slate-600 leading-relaxed mb-6">
+          County-wide coverage for emergency tree removal,
+          storm response, and scheduled tree services.
+        </p>
+        <span class="inline-flex items-center gap-2 text-sm font-bold text-teal-700">
+          Broward County Tree Removal
+          <span class="flex h-7 w-7 items-center justify-center rounded-full bg-teal-700 text-white">
+            ↗
+          </span>
+        </span>
+      </a>
+
+    </div>
+
+    <!-- BOTTOM LINK -->
+    <div class="mt-20 text-center">
+      <a
+        href="/areas/"
+        class="inline-flex items-center gap-4 rounded-full
+               bg-teal-700 px-10 py-4 text-white font-bold
+               hover:bg-teal-800 transition"
+      >
+        View All Service Areas
+        <span class="flex h-10 w-10 items-center justify-center rounded-full bg-white/15">
+          ↗
+        </span>
+      </a>
+    </div>
+
+  </div>
+</section>
+<!-- ================= FAQ – PEMBROKE PINES ================= -->
+<section class="bg-[#f4f8f6] py-28">
+  <div class="max-w-4xl mx-auto px-6 text-center">
+
+    <!-- BADGE -->
+    <span
+      class="inline-block mb-6 px-4 py-1 text-xs font-bold tracking-widest
+             text-teal-700 border border-dashed border-teal-600 rounded-full"
+    >
+      FREQUENTLY ASKED QUESTIONS
+    </span>
+
+    <!-- TITLE -->
+    <h2 class="text-3xl md:text-4xl font-extrabold text-slate-900 mb-12">
+      Tree Removal FAQs in Pembroke Pines, Florida
+    </h2>
+
+    <!-- FAQ BLOCKS -->
+    <div class="space-y-6 text-left">
+
+      <div class="bg-white rounded-2xl p-6 shadow-sm">
+        <h3 class="font-bold text-slate-900 mb-2">
+          Do you offer tree removal services in Pembroke Pines?
+        </h3>
+        <p class="text-slate-600 leading-relaxed">
+          Yes. SF Tree Removal provides professional tree removal services
+          throughout Pembroke Pines for residential and commercial properties,
+          including hazardous and storm-damaged trees.
+        </p>
+      </div>
+
+      <div class="bg-white rounded-2xl p-6 shadow-sm">
+        <h3 class="font-bold text-slate-900 mb-2">
+          Is emergency tree removal available in Pembroke Pines?
+        </h3>
+        <p class="text-slate-600 leading-relaxed">
+          Absolutely. Our crews are available 24/7 for emergency tree removal
+          in Pembroke Pines, responding quickly to fallen trees, storm damage,
+          and urgent safety hazards.
+        </p>
+      </div>
+
+      <div class="bg-white rounded-2xl p-6 shadow-sm">
+        <h3 class="font-bold text-slate-900 mb-2">
+          Do I need a permit to remove a tree in Pembroke Pines?
+        </h3>
+        <p class="text-slate-600 leading-relaxed">
+          Some tree removals in Pembroke Pines require permits, especially for
+          protected species or large trees. Our team assists with permit
+          verification and certified arborist reports when required.
+        </p>
+      </div>
+
+      <div class="bg-white rounded-2xl p-6 shadow-sm">
+        <h3 class="font-bold text-slate-900 mb-2">
+          Are your tree removal services licensed and insured?
+        </h3>
+        <p class="text-slate-600 leading-relaxed">
+          Yes. Our Pembroke Pines tree removal services are fully licensed
+          and insured to protect homeowners, businesses, and surrounding
+          properties.
+        </p>
+      </div>
+
+      <div class="bg-white rounded-2xl p-6 shadow-sm">
+        <h3 class="font-bold text-slate-900 mb-2">
+          Can you remove trees near homes or power lines?
+        </h3>
+        <p class="text-slate-600 leading-relaxed">
+          Yes. We specialize in controlled tree removal near homes, roofs,
+          fences, and power lines using cranes, lifts, and professional
+          rigging systems.
+        </p>
+      </div>
+
+    </div>
+
+  </div>
+</section>
+<!-- ================= FINAL CTA – PEMBROKE PINES ================= -->
+<section class="bg-teal-900 py-32 text-white">
+  <div class="max-w-7xl mx-auto px-6 text-center">
+
+    <!-- BADGE -->
+    <span
+      class="inline-block mb-8 px-4 py-1 text-xs font-bold tracking-widest
+             text-teal-200 border border-dashed border-teal-300 rounded-full"
+    >
+      24/7 TREE REMOVAL SERVICE
+    </span>
+
+    <!-- TITLE -->
+    <h2 class="text-4xl md:text-5xl font-extrabold leading-tight mb-8">
+      Need Tree Removal in Pembroke Pines?
+      <br class="hidden sm:block" />
+      Call Now for Immediate Assistance
+    </h2>
+
+    <!-- SUBTEXT -->
+    <p class="max-w-3xl mx-auto text-lg text-white/90 leading-relaxed mb-12">
+      Whether you are dealing with storm damage, a fallen tree, or a hazardous
+      situation near your home or business, our professional crews are ready
+      to respond. We provide fast, safe, and fully insured tree removal
+      services throughout Pembroke Pines and surrounding Broward County areas.
+    </p>
+
+    <!-- CTA BUTTONS -->
+    <div class="flex flex-wrap justify-center gap-6">
+      <a
+        href={`tel:${phone}`}
+        class="inline-flex items-center gap-4 rounded-full
+               bg-white px-12 py-5 text-teal-900 font-extrabold
+               hover:bg-slate-100 transition"
+      >
+        📞 Call Now
+      </a>
+
+      <a
+        href="/contact-us/"
+        class="inline-flex items-center gap-4 rounded-full
+               border-2 border-white px-12 py-5 text-white font-extrabold
+               hover:bg-white hover:text-teal-900 transition"
+      >
+        Request Free Estimate
+      </a>
+    </div>
+
+  </div>
+</section>
+
+</BaseLayout>

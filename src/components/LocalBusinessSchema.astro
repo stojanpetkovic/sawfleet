@@ -1,0 +1,89 @@
+---
+const {
+  name = "SF Tree Removal",
+  url = "https://sftreeremoval.com",
+  area = "South Florida",
+  telephone = "+1-888-452-1505",
+  image = "/images/og-default.jpg",
+  priceRange = "$$",
+  streetAddress = "South Florida",
+  addressLocality = "Fort Lauderdale",
+  addressRegion = "FL",
+  postalCode = "33301",
+  addressCountry = "US",
+  latitude = 26.1224,
+  longitude = -80.1373,
+  openingHours = "Mo-Su 00:00-23:59"
+} = Astro.props;
+
+/* =====================
+   LOCAL BUSINESS SCHEMA
+===================== */
+const localBusinessSchema = {
+  "@context": "https://schema.org",
+  "@type": "TreeService",
+  "@id": `${url}#localbusiness`,
+  "name": name,
+  "url": url,
+  "image": `${url}${image}`,
+  "priceRange": priceRange,
+  "telephone": telephone,
+  "areaServed": {
+    "@type": "AdministrativeArea",
+    "name": area
+  },
+  "address": {
+    "@type": "PostalAddress",
+    "streetAddress": streetAddress,
+    "addressLocality": addressLocality,
+    "addressRegion": addressRegion,
+    "postalCode": postalCode,
+    "addressCountry": addressCountry
+  },
+  "geo": {
+    "@type": "GeoCoordinates",
+    "latitude": latitude,
+    "longitude": longitude
+  },
+  "openingHoursSpecification": {
+    "@type": "OpeningHoursSpecification",
+    "dayOfWeek": [
+      "Monday","Tuesday","Wednesday",
+      "Thursday","Friday","Saturday","Sunday"
+    ],
+    "opens": "00:00",
+    "closes": "23:59"
+  },
+  "hasOfferCatalog": {
+    "@type": "OfferCatalog",
+    "name": "Tree Services",
+    "itemListElement": [
+      {
+        "@type": "Offer",
+        "itemOffered": {
+          "@type": "Service",
+          "name": "Tree Removal"
+        }
+      },
+      {
+        "@type": "Offer",
+        "itemOffered": {
+          "@type": "Service",
+          "name": "Emergency Tree Removal"
+        }
+      },
+      {
+        "@type": "Offer",
+        "itemOffered": {
+          "@type": "Service",
+          "name": "Certified Arborist Services"
+        }
+      }
+    ]
+  }
+};
+---
+
+<script type="application/ld+json">
+{JSON.stringify(localBusinessSchema)}
+</script>

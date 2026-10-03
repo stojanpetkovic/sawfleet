@@ -1,0 +1,1091 @@
+---
+import BaseLayout from "../../../layouts/BaseLayout.astro";
+
+const city = "Miami";
+const county = "Miami-Dade County";
+const state = "FL";
+const phone = "+1-888-452-1505";
+
+const title = `Tree Removal Services in ${city}, ${state} | Emergency & Licensed Pros`;
+const description =
+  `Professional tree removal services in ${city}, ${state}. Emergency tree removal, storm damage cleanup, and certified arborist services serving ${county} and surrounding South Florida areas.`;
+
+const canonical = "https://sftreeremoval.com/areas/miami-tree-removal/";
+---
+
+<BaseLayout
+  title={title}
+  description={description}
+  canonical={canonical}
+>
+
+<!-- =========================================================
+  LOCAL BUSINESS SCHEMA – MIAMI
+========================================================= -->
+<script type="application/ld+json">
+{JSON.stringify({
+  "@context": "https://schema.org",
+  "@type": "LocalBusiness",
+  "@id": `${canonical}#localbusiness`,
+  "name": `SF Tree Removal – ${city}`,
+  "url": canonical,
+  "telephone": phone,
+  "priceRange": "$$",
+  "image": "https://sftreeremoval.com/images/og-default.jpg",
+  "address": {
+    "@type": "PostalAddress",
+    "addressLocality": city,
+    "addressRegion": state,
+    "addressCountry": "US"
+  },
+  "areaServed": [
+    { "@type": "City", "name": city },
+    { "@type": "AdministrativeArea", "name": county }
+  ],
+  "openingHoursSpecification": {
+    "@type": "OpeningHoursSpecification",
+    "dayOfWeek": [
+      "Monday","Tuesday","Wednesday","Thursday","Friday","Saturday","Sunday"
+    ],
+    "opens": "00:00",
+    "closes": "23:59"
+  },
+  "hasOfferCatalog": {
+    "@type": "OfferCatalog",
+    "name": "Tree Removal Services",
+    "itemListElement": [
+      {
+        "@type": "Offer",
+        "itemOffered": {
+          "@type": "Service",
+          "name": "Tree Removal",
+          "areaServed": city
+        }
+      },
+      {
+        "@type": "Offer",
+        "itemOffered": {
+          "@type": "Service",
+          "name": "Emergency Tree Removal",
+          "areaServed": city
+        }
+      },
+      {
+        "@type": "Offer",
+        "itemOffered": {
+          "@type": "Service",
+          "name": "Certified Arborist Services",
+          "areaServed": city
+        }
+      }
+    ]
+  }
+})}
+</script>
+
+<!-- =========================================================
+  BREADCRUMB SCHEMA
+========================================================= -->
+<script type="application/ld+json">
+{JSON.stringify({
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    {
+      "@type": "ListItem",
+      "position": 1,
+      "name": "Home",
+      "item": "https://sftreeremoval.com/"
+    },
+    {
+      "@type": "ListItem",
+      "position": 2,
+      "name": "Service Areas",
+      "item": "https://sftreeremoval.com/areas/"
+    },
+    {
+      "@type": "ListItem",
+      "position": 3,
+      "name": `${city} Tree Removal`,
+      "item": canonical
+    }
+  ]
+})}
+</script>
+
+<!-- =========================================================
+  FAQ PAGE SCHEMA – MIAMI
+========================================================= -->
+<script type="application/ld+json">
+{JSON.stringify({
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {
+      "@type": "Question",
+      "name": `How much does tree removal cost in ${city}?`,
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": `Tree removal costs in ${city} depend on the tree size, location, condition, and complexity. Emergency situations, proximity to structures, and permit requirements may affect pricing. Free estimates are available.`
+      }
+    },
+    {
+      "@type": "Question",
+      "name": `Do I need a permit to remove a tree in ${city}?`,
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": `Some trees in ${city} require permits for removal, especially protected species or large trees. Our team assists with permit verification and certified arborist reports when required.`
+      }
+    },
+    {
+      "@type": "Question",
+      "name": `Do you offer emergency tree removal in ${city}?`,
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": `Yes. We provide 24/7 emergency tree removal services throughout ${city} and ${county} for storm damage, fallen trees, and hazardous conditions.`
+      }
+    },
+    {
+      "@type": "Question",
+      "name": `Is your tree removal company licensed and insured?`,
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": `Yes. Our tree removal company serving ${city} is fully licensed and insured to protect homeowners, businesses, and commercial properties.`
+      }
+    },
+    {
+      "@type": "Question",
+      "name": `Can you remove trees near homes or power lines?`,
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": `Yes. We specialize in controlled tree removal near homes, roofs, and power lines using professional equipment such as cranes, lifts, and rigging systems.`
+      }
+    }
+  ]
+})}
+</script>
+
+  <!-- ================= HERO: MIAMI TREE REMOVAL ================= -->
+<section class="relative bg-teal-900 py-32 text-white overflow-hidden">
+  <div class="max-w-7xl mx-auto px-6 text-center relative z-10">
+
+    <!-- BADGE -->
+    <span
+      class="inline-block mb-6 px-4 py-1 text-xs font-bold tracking-widest
+             border border-dashed border-white/60 rounded-full"
+    >
+      MIAMI TREE REMOVAL SERVICES
+    </span>
+
+    <!-- TITLE -->
+    <h1 class="text-4xl md:text-5xl xl:text-6xl font-extrabold leading-tight">
+      Professional Tree Removal in Miami, FL
+    </h1>
+
+    <!-- SUBTITLE -->
+    <p class="mt-8 max-w-3xl mx-auto text-lg text-white/90 leading-relaxed">
+      Licensed and insured tree removal company serving residential, commercial,
+      and high-density properties across Miami. From routine tree removal to
+      24/7 emergency response, we provide safe, compliant solutions tailored to
+      Miami’s urban landscape and tropical climate.
+    </p>
+
+    <!-- CTAs -->
+    <div class="mt-12 flex flex-wrap justify-center gap-6">
+      <a
+        href="tel:1-888-452-1505"
+        class="inline-flex items-center gap-4 rounded-full
+               bg-white px-12 py-5 text-teal-900 font-extrabold
+               hover:bg-slate-100 transition"
+      >
+        📞 Call 1-888-452-1505
+      </a>
+
+      <a
+        href="/contact-us/"
+        class="inline-flex items-center gap-4 rounded-full
+               border border-white/70 px-12 py-5 text-white font-bold
+               hover:bg-white/10 transition"
+      >
+        Request Free Estimate
+      </a>
+    </div>
+
+    <!-- TRUST LINE -->
+    <p class="mt-12 text-sm text-white/80">
+      Serving Miami • Miami-Dade County • South Florida
+    </p>
+
+  </div>
+
+  <!-- SUBTLE OVERLAY DECOR -->
+  <div class="absolute inset-0 bg-gradient-to-b from-black/10 to-black/40"></div>
+</section>
+
+<!-- ================= LOCAL INTRO: MIAMI CONTEXT ================= -->
+<section class="bg-white py-28">
+  <div class="max-w-4xl mx-auto px-6 text-center">
+
+    <h2 class="text-3xl md:text-4xl font-extrabold text-slate-900 mb-8">
+      Trusted Tree Removal Company Serving Miami Properties
+    </h2>
+
+    <p class="text-lg text-slate-600 leading-relaxed">
+      Miami’s dense urban development, coastal exposure, and tropical weather
+      create unique challenges for tree removal. From palm tree removal and
+      hurricane-related damage to tight access conditions near condos and
+      commercial buildings, our crews understand the local permitting
+      requirements and safety standards that apply throughout Miami and
+      Miami-Dade County.
+    </p>
+
+    <p class="mt-6 text-lg text-slate-600 leading-relaxed">
+      We work with homeowners, HOAs, property managers, and businesses to
+      deliver professional tree removal services that prioritize safety,
+      efficiency, and compliance with local regulations.
+    </p>
+
+  </div>
+</section>
+<!-- ================= WHEN TREE REMOVAL IS NEEDED (MIAMI) ================= -->
+<section class="bg-[#f4f8f6] py-32">
+  <div class="max-w-7xl mx-auto px-6">
+
+    <!-- HEADER -->
+    <div class="max-w-3xl mx-auto text-center mb-20">
+      <span
+        class="inline-block mb-6 px-4 py-1 text-xs font-bold tracking-widest
+               text-teal-700 border border-dashed border-teal-600 rounded-full"
+      >
+        WHEN TREE REMOVAL IS REQUIRED
+      </span>
+
+      <h2 class="text-3xl md:text-4xl font-extrabold text-slate-900 leading-tight mb-6">
+        When Do You Need Professional Tree Removal in Miami?
+      </h2>
+
+      <p class="text-lg text-slate-600 leading-relaxed">
+        Miami’s tropical climate, high-density neighborhoods, and hurricane
+        exposure make timely tree removal essential for protecting homes,
+        commercial properties, and public spaces. Certain conditions indicate
+        when professional tree removal is necessary to reduce risk and maintain
+        safety.
+      </p>
+    </div>
+
+    <!-- CONTENT GRID -->
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-12">
+
+      <!-- LEFT -->
+      <div class="space-y-6 text-slate-700 leading-relaxed">
+        <p>
+          Tree removal is often required when trees become structurally unsafe,
+          diseased, or incompatible with surrounding development. In Miami,
+          this frequently includes palm trees damaged by storms, mature trees
+          encroaching on buildings, or root systems disrupting foundations and
+          underground utilities.
+        </p>
+
+        <p>
+          Properties near the coast or in flood-prone areas are especially
+          vulnerable to soil saturation, which weakens root stability and
+          increases the likelihood of tree failure during high winds or heavy
+          rainfall.
+        </p>
+
+        <p>
+          In urban Miami neighborhoods, limited access and close proximity to
+          neighboring structures require careful planning and professional
+          equipment to safely remove trees without causing secondary damage.
+        </p>
+      </div>
+
+      <!-- RIGHT -->
+      <div class="bg-white rounded-3xl p-10">
+        <ul class="space-y-5 text-slate-700 leading-relaxed list-disc list-inside">
+          <li>
+            Dead, dying, or diseased trees that pose safety risks
+          </li>
+          <li>
+            Storm-damaged or hurricane-impacted trees and palm trees
+          </li>
+          <li>
+            Trees leaning toward homes, condos, or commercial buildings
+          </li>
+          <li>
+            Roots damaging sidewalks, driveways, or underground utilities
+          </li>
+          <li>
+            Trees interfering with power lines or nearby structures
+          </li>
+          <li>
+            Tree removal required for construction, renovations, or property
+            redevelopment
+          </li>
+        </ul>
+      </div>
+
+    </div>
+
+    <!-- BOTTOM NOTE -->
+    <div class="mt-20 max-w-4xl mx-auto text-center">
+      <p class="text-lg text-slate-700 leading-relaxed">
+        Addressing tree hazards early helps prevent emergency situations,
+        reduce liability, and maintain compliance with Miami and Miami-Dade
+        County regulations.
+      </p>
+    </div>
+
+  </div>
+</section>
+<!-- ================= EMERGENCY VS STANDARD TREE REMOVAL (MIAMI) ================= -->
+<section class="bg-white py-32">
+  <div class="max-w-7xl mx-auto px-6">
+
+    <!-- HEADER -->
+    <div class="max-w-3xl mx-auto text-center mb-20">
+      <span
+        class="inline-block mb-6 px-4 py-1 text-xs font-bold tracking-widest
+               text-teal-700 border border-dashed border-teal-600 rounded-full"
+      >
+        MIAMI TREE REMOVAL OPTIONS
+      </span>
+
+      <h2 class="text-3xl md:text-4xl font-extrabold text-slate-900 leading-tight mb-6">
+        Emergency Tree Removal vs Standard Tree Removal in Miami
+      </h2>
+
+      <p class="text-lg text-slate-600 leading-relaxed">
+        Not every tree removal situation in Miami requires an emergency response.
+        Understanding the difference between emergency and standard tree removal
+        helps property owners act quickly when necessary and plan efficiently
+        when time allows.
+      </p>
+    </div>
+
+    <!-- COMPARISON GRID -->
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-12">
+
+      <!-- STANDARD -->
+      <div class="rounded-3xl bg-[#f4f8f6] p-12">
+        <h3 class="text-2xl font-extrabold text-slate-900 mb-6">
+          Standard Tree Removal
+        </h3>
+
+        <p class="text-slate-700 leading-relaxed mb-6">
+          Standard tree removal is planned, non-urgent work typically scheduled
+          in advance. In Miami, this often involves trees removed for property
+          improvements, landscaping upgrades, or long-term safety concerns.
+        </p>
+
+        <ul class="space-y-4 text-slate-700 list-disc list-inside">
+          <li>Non-hazardous trees scheduled for removal</li>
+          <li>Permit-based removals in Miami-Dade County</li>
+          <li>Tree removal for renovations or new construction</li>
+          <li>Gradual tree decline or structural concerns</li>
+          <li>Coordinated access planning for tight urban spaces</li>
+        </ul>
+      </div>
+
+      <!-- EMERGENCY -->
+      <div class="rounded-3xl bg-teal-900 p-12 text-white">
+        <h3 class="text-2xl font-extrabold mb-6">
+          Emergency Tree Removal
+        </h3>
+
+        <p class="text-white/90 leading-relaxed mb-6">
+          Emergency tree removal is required when a tree presents an immediate
+          danger to people, property, or infrastructure. In Miami, hurricanes,
+          tropical storms, and saturated soil conditions frequently cause sudden
+          tree failures.
+        </p>
+
+        <ul class="space-y-4 text-white/90 list-disc list-inside">
+          <li>Fallen or storm-damaged trees blocking access</li>
+          <li>Trees leaning toward homes, condos, or businesses</li>
+          <li>Broken limbs hanging over roofs or vehicles</li>
+          <li>Trees entangled with power lines</li>
+          <li>Unstable palms or uprooted trees after storms</li>
+        </ul>
+
+        <div class="mt-10">
+          <a
+            href="tel:1-888-452-1505"
+            class="inline-flex items-center gap-4 rounded-full
+                   bg-white px-10 py-4 text-teal-900 font-extrabold
+                   hover:bg-slate-100 transition"
+          >
+            📞 24/7 Emergency Tree Removal
+          </a>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- BOTTOM NOTE -->
+    <div class="mt-20 max-w-4xl mx-auto text-center">
+      <p class="text-lg text-slate-700 leading-relaxed">
+        If you’re unsure whether your situation qualifies as an emergency,
+        our Miami tree removal specialists can quickly assess the risk and
+        recommend the safest course of action.
+      </p>
+    </div>
+
+  </div>
+</section>
+<!-- ================= EMERGENCY TREE REMOVAL IN MIAMI ================= -->
+<section class="bg-teal-900 py-32 text-white relative overflow-hidden">
+  <div class="max-w-7xl mx-auto px-6 relative z-10">
+
+    <!-- HEADER -->
+    <div class="max-w-3xl mx-auto text-center mb-20">
+      <span
+        class="inline-block mb-6 px-4 py-1 text-xs font-bold tracking-widest
+               border border-dashed border-white/60 rounded-full"
+      >
+        24/7 EMERGENCY TREE REMOVAL – MIAMI
+      </span>
+
+      <h2 class="text-4xl md:text-5xl xl:text-6xl font-extrabold leading-tight mb-8">
+        Emergency Tree Removal in Miami
+        <br class="hidden sm:block" />
+        Fast Response When Every Minute Matters
+      </h2>
+
+      <p class="text-lg text-white/90 leading-relaxed">
+        Miami’s tropical climate, hurricane seasons, and saturated soil conditions
+        frequently lead to sudden tree failures. When a tree threatens your home,
+        business, or safety, immediate professional action is critical.
+      </p>
+    </div>
+
+    <!-- CONTENT GRID -->
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-16 items-start">
+
+      <!-- LEFT TEXT -->
+      <div class="space-y-8 text-white/90 leading-relaxed">
+        <p>
+          Our emergency tree removal services in Miami are designed to address
+          dangerous situations caused by hurricanes, tropical storms, heavy rain,
+          and high winds. We respond 24/7 to restore safety and prevent further
+          property damage.
+        </p>
+
+        <p>
+          From fallen trees blocking driveways and roads to unstable palms leaning
+          toward structures, our emergency crews arrive fully equipped to perform
+          controlled removals in high-risk environments.
+        </p>
+
+        <ul class="space-y-4 list-disc list-inside">
+          <li>Hurricane-damaged and storm-fallen trees</li>
+          <li>Trees threatening homes, condos, and commercial buildings</li>
+          <li>Emergency removal near power lines and utilities</li>
+          <li>Uprooted palms and saturated root systems</li>
+          <li>Blocked access to properties, garages, and roads</li>
+        </ul>
+      </div>
+
+      <!-- RIGHT CTA BLOCK -->
+      <div class="rounded-3xl bg-white p-12 text-slate-900 shadow-xl">
+        <h3 class="text-2xl font-extrabold mb-6">
+          Immediate Emergency Response
+        </h3>
+
+        <p class="text-slate-700 leading-relaxed mb-8">
+          If you are facing a tree emergency in Miami, do not wait. Delaying action
+          increases the risk of injury, property damage, and costly repairs.
+        </p>
+
+        <div class="space-y-4">
+          <a
+            href="tel:1-888-452-1505"
+            class="flex items-center justify-center gap-4 rounded-full
+                   bg-teal-700 px-10 py-4 text-white font-extrabold
+                   hover:bg-teal-800 transition"
+          >
+            📞 Call Now – 24/7 Emergency
+          </a>
+
+          <a
+            href="/contact-us/"
+            class="flex items-center justify-center gap-4 rounded-full
+                   border border-teal-700 px-10 py-4 text-teal-700 font-bold
+                   hover:bg-teal-700 hover:text-white transition"
+          >
+            Request Emergency Assistance
+          </a>
+        </div>
+
+        <p class="mt-6 text-sm text-slate-500 text-center">
+          Serving all Miami neighborhoods & Miami-Dade County
+        </p>
+      </div>
+
+    </div>
+
+  </div>
+</section>
+<!-- ================= EQUIPMENT & SAFETY STANDARDS – MIAMI ================= -->
+<section class="bg-white py-32">
+  <div class="max-w-7xl mx-auto px-6">
+
+    <!-- HEADER -->
+    <div class="max-w-3xl mx-auto text-center mb-20">
+      <span
+        class="inline-block mb-6 px-4 py-1 text-xs font-bold tracking-widest
+               text-teal-700 border border-dashed border-teal-600 rounded-full"
+      >
+        EQUIPMENT & SAFETY
+      </span>
+
+      <h2 class="text-4xl md:text-5xl font-extrabold text-slate-900 leading-tight mb-8">
+        Professional Tree Removal Equipment
+        <br class="hidden sm:block" />
+        & Safety Standards in Miami
+      </h2>
+
+      <p class="text-lg text-slate-600 leading-relaxed">
+        Tree removal in Miami requires specialized equipment and strict safety
+        procedures due to dense urban development, hurricane exposure, and
+        proximity to homes, high-rises, and power lines.
+      </p>
+    </div>
+
+    <!-- CONTENT GRID -->
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-16 items-start">
+
+      <!-- LEFT TEXT -->
+      <div class="space-y-8 text-slate-700 leading-relaxed">
+        <p>
+          Our Miami tree removal crews operate with professional-grade equipment
+          designed for complex urban environments. From large residential trees
+          to tight-access removals in downtown and coastal neighborhoods, every
+          job is planned with precision and safety in mind.
+        </p>
+
+        <p>
+          We strictly follow industry best practices, OSHA safety standards, and
+          local regulations to ensure every tree removal project is completed
+          without unnecessary risk to people, structures, or surrounding
+          property.
+        </p>
+
+        <p>
+          This level of preparation is essential in Miami, where tree removals
+          often involve working near:
+        </p>
+
+        <ul class="list-disc list-inside space-y-3">
+          <li>Residential homes, condos, and apartment buildings</li>
+          <li>Commercial properties and retail centers</li>
+          <li>Power lines, utilities, and street infrastructure</li>
+          <li>Storm-damaged or hurricane-weakened trees</li>
+        </ul>
+      </div>
+
+      <!-- RIGHT BLOCK -->
+      <div class="bg-[#f4f8f6] rounded-3xl p-12">
+        <h3 class="text-2xl font-extrabold text-slate-900 mb-6">
+          Equipment & Safety Measures We Use
+        </h3>
+
+        <ul class="space-y-4 text-slate-700 leading-relaxed">
+          <li>
+            <strong>Crane-assisted tree removal</strong> for large or hazardous
+            trees near structures
+          </li>
+          <li>
+            <strong>Aerial lifts and bucket trucks</strong> for controlled access
+            in tight spaces
+          </li>
+          <li>
+            <strong>Rigging systems</strong> to safely lower limbs and trunks
+            without property damage
+          </li>
+          <li>
+            <strong>Professional chainsaws & cutting tools</strong> maintained to
+            industry standards
+          </li>
+          <li>
+            <strong>Traffic and site control</strong> for public and commercial
+            locations
+          </li>
+        </ul>
+
+        <p class="mt-8 text-slate-600">
+          Combined with experienced operators and certified arborist oversight,
+          our equipment allows us to perform safe, efficient tree removal across
+          all Miami neighborhoods.
+        </p>
+      </div>
+
+    </div>
+
+  </div>
+</section>
+<!-- ================= TREE REMOVAL PERMITS & REGULATIONS – MIAMI ================= -->
+<section class="bg-[#f4f8f6] py-32">
+  <div class="max-w-7xl mx-auto px-6">
+
+    <!-- HEADER -->
+    <div class="max-w-3xl mx-auto text-center mb-20">
+      <span
+        class="inline-block mb-6 px-4 py-1 text-xs font-bold tracking-widest
+               text-teal-700 border border-dashed border-teal-600 rounded-full"
+      >
+        PERMITS & REGULATIONS
+      </span>
+
+      <h2 class="text-4xl md:text-5xl font-extrabold text-slate-900 leading-tight mb-8">
+        Tree Removal Permits
+        <br class="hidden sm:block" />
+        & Local Regulations in Miami
+      </h2>
+
+      <p class="text-lg text-slate-600 leading-relaxed">
+        Tree removal in Miami is regulated by city and county ordinances designed
+        to protect urban canopy, coastal ecosystems, and public safety. Removing
+        a tree without proper approval can result in fines, delays, and legal
+        issues.
+      </p>
+    </div>
+
+    <!-- CONTENT GRID -->
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-16 items-start">
+
+      <!-- LEFT TEXT -->
+      <div class="space-y-8 text-slate-700 leading-relaxed">
+        <p>
+          In many Miami neighborhoods, a <strong>tree removal permit</strong> is
+          required before cutting or removing certain trees — especially
+          protected species, large canopy trees, or trees located near public
+          rights-of-way.
+        </p>
+
+        <p>
+          Regulations may vary depending on whether the property falls under the
+          City of Miami, Miami-Dade County, or a local municipality with its own
+          tree protection rules.
+        </p>
+
+        <p>
+          Our team understands local requirements and helps property owners avoid
+          costly mistakes by determining when permits are required and how to
+          proceed legally.
+        </p>
+
+        <ul class="list-disc list-inside space-y-3">
+          <li>Protected and heritage tree regulations</li>
+          <li>Minimum tree size and species restrictions</li>
+          <li>Permit requirements for residential properties</li>
+          <li>Commercial and HOA approval processes</li>
+          <li>Emergency removal exceptions after storms</li>
+        </ul>
+      </div>
+
+      <!-- RIGHT BLOCK -->
+      <div class="bg-white rounded-3xl p-12 shadow-sm">
+        <h3 class="text-2xl font-extrabold text-slate-900 mb-6">
+          How We Help With Permits & Compliance
+        </h3>
+
+        <ul class="space-y-4 text-slate-700 leading-relaxed">
+          <li>
+            <strong>Permit requirement evaluation</strong> before any tree
+            removal work begins
+          </li>
+          <li>
+            <strong>Certified arborist reports</strong> when documentation is
+            required by the city or county
+          </li>
+          <li>
+            <strong>Emergency removal guidance</strong> when immediate action is
+            needed after storms or hurricanes
+          </li>
+          <li>
+            <strong>Coordination with local authorities</strong> and HOAs
+          </li>
+          <li>
+            <strong>Code-compliant tree removal</strong> to protect homeowners
+            and businesses
+          </li>
+        </ul>
+
+        <p class="mt-8 text-slate-600">
+          Whether you need full permit support or emergency assistance, our Miami
+          tree removal specialists ensure every project is handled safely,
+          legally, and professionally.
+        </p>
+      </div>
+
+    </div>
+
+  </div>
+</section>
+<!-- ================= RESIDENTIAL & COMMERCIAL TREE REMOVAL – MIAMI ================= -->
+<section class="bg-white py-32">
+  <div class="max-w-7xl mx-auto px-6">
+
+    <!-- HEADER -->
+    <div class="max-w-3xl mx-auto text-center mb-20">
+      <span
+        class="inline-block mb-6 px-4 py-1 text-xs font-bold tracking-widest
+               text-teal-700 border border-dashed border-teal-600 rounded-full"
+      >
+        RESIDENTIAL & COMMERCIAL
+      </span>
+
+      <h2 class="text-4xl md:text-5xl font-extrabold text-slate-900 leading-tight mb-8">
+        Residential & Commercial
+        <br class="hidden sm:block" />
+        Tree Removal Services in Miami
+      </h2>
+
+      <p class="text-lg text-slate-600 leading-relaxed">
+        We provide professional tree removal services for homeowners, businesses,
+        property managers, and commercial facilities throughout Miami. Each
+        project is tailored to the property type, safety requirements, and local
+        regulations.
+      </p>
+    </div>
+
+    <!-- GRID -->
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-16 items-start">
+
+      <!-- LEFT -->
+      <div class="space-y-8 text-slate-700 leading-relaxed">
+        <h3 class="text-2xl font-extrabold text-slate-900">
+          Residential Tree Removal
+        </h3>
+
+        <p>
+          Miami homeowners often face challenges with trees growing close to
+          homes, roofs, pools, driveways, and power lines. Our residential tree
+          removal services focus on protecting your property while removing
+          hazardous or unwanted trees safely and efficiently.
+        </p>
+
+        <ul class="list-disc list-inside space-y-3">
+          <li>Tree removal near homes and roofs</li>
+          <li>Storm-damaged and fallen trees</li>
+          <li>Tree removal in tight or confined spaces</li>
+          <li>Protection of landscaping and hardscapes</li>
+          <li>Permit and compliance assistance</li>
+        </ul>
+
+        <p>
+          Whether you own a single-family home, condominium, or rental property,
+          our Miami tree removal crews ensure clean, controlled results.
+        </p>
+      </div>
+
+      <!-- RIGHT -->
+      <div class="space-y-8 text-slate-700 leading-relaxed">
+        <h3 class="text-2xl font-extrabold text-slate-900">
+          Commercial Tree Removal
+        </h3>
+
+        <p>
+          Commercial properties in Miami require experienced crews capable of
+          managing complex tree removal projects without disrupting operations
+          or compromising safety. We work with businesses, HOAs, developers, and
+          property managers across South Florida.
+        </p>
+
+        <ul class="list-disc list-inside space-y-3">
+          <li>Commercial and industrial properties</li>
+          <li>Retail centers and office buildings</li>
+          <li>HOA and condominium associations</li>
+          <li>Construction and land clearing projects</li>
+          <li>Liability-focused, insured operations</li>
+        </ul>
+
+        <p>
+          Our commercial tree removal services in Miami are planned carefully to
+          minimize downtime, ensure code compliance, and protect surrounding
+          structures.
+        </p>
+      </div>
+
+    </div>
+
+    <!-- CTA -->
+    <div class="mt-20 text-center">
+      <a
+        href="/contact-us/"
+        class="inline-flex items-center gap-4 rounded-full
+               bg-teal-700 px-10 py-4 text-white font-bold
+               hover:bg-teal-800 transition"
+      >
+        Request a Free Tree Removal Estimate
+        <span class="flex h-10 w-10 items-center justify-center rounded-full bg-white/15">
+          ↗
+        </span>
+      </a>
+    </div>
+
+  </div>
+</section>
+<!-- ================= WHY CHOOSE US – MIAMI ================= -->
+<section class="bg-[#f4f8f6] py-32">
+  <div class="max-w-7xl mx-auto px-6">
+
+    <!-- HEADER -->
+    <div class="max-w-3xl mx-auto text-center mb-20">
+      <span
+        class="inline-block mb-6 px-4 py-1 text-xs font-bold tracking-widest
+               text-teal-700 border border-dashed border-teal-600 rounded-full"
+      >
+        WHY CHOOSE US
+      </span>
+
+      <h2 class="text-4xl md:text-5xl font-extrabold text-slate-900 leading-tight mb-8">
+        Why Miami Property Owners
+        <br class="hidden sm:block" />
+        Trust Our Tree Removal Company
+      </h2>
+
+      <p class="text-lg text-slate-600 leading-relaxed">
+        Choosing the right tree removal company in Miami means prioritizing
+        safety, experience, and local expertise. Our team delivers professional,
+        compliant, and reliable tree removal services tailored to South Florida
+        conditions.
+      </p>
+    </div>
+
+    <!-- GRID -->
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10">
+
+      <!-- CARD -->
+      <div class="bg-white rounded-3xl p-10">
+        <h3 class="text-xl font-extrabold text-slate-900 mb-4">
+          Licensed & Fully Insured
+        </h3>
+        <p class="text-slate-600 leading-relaxed">
+          Our Miami tree removal services are fully licensed and insured, giving
+          homeowners, businesses, and HOAs peace of mind on every project.
+        </p>
+      </div>
+
+      <!-- CARD -->
+      <div class="bg-white rounded-3xl p-10">
+        <h3 class="text-xl font-extrabold text-slate-900 mb-4">
+          Local Miami Expertise
+        </h3>
+        <p class="text-slate-600 leading-relaxed">
+          We understand Miami’s soil conditions, tree species, hurricane risks,
+          and permitting requirements, allowing us to plan removals accurately
+          and safely.
+        </p>
+      </div>
+
+      <!-- CARD -->
+      <div class="bg-white rounded-3xl p-10">
+        <h3 class="text-xl font-extrabold text-slate-900 mb-4">
+          Modern Equipment & Techniques
+        </h3>
+        <p class="text-slate-600 leading-relaxed">
+          From cranes and lifts to precision cutting systems, we use professional
+          equipment to handle complex tree removals with minimal impact.
+        </p>
+      </div>
+
+      <!-- CARD -->
+      <div class="bg-white rounded-3xl p-10">
+        <h3 class="text-xl font-extrabold text-slate-900 mb-4">
+          Safety-First Operations
+        </h3>
+        <p class="text-slate-600 leading-relaxed">
+          Every Miami tree removal project follows strict safety protocols to
+          protect people, structures, vehicles, and surrounding landscaping.
+        </p>
+      </div>
+
+      <!-- CARD -->
+      <div class="bg-white rounded-3xl p-10">
+        <h3 class="text-xl font-extrabold text-slate-900 mb-4">
+          Residential & Commercial Solutions
+        </h3>
+        <p class="text-slate-600 leading-relaxed">
+          We provide scalable tree removal services for homes, businesses,
+          construction sites, and large commercial properties throughout Miami.
+        </p>
+      </div>
+
+      <!-- CARD -->
+      <div class="bg-white rounded-3xl p-10">
+        <h3 class="text-xl font-extrabold text-slate-900 mb-4">
+          Fast Response & Clear Communication
+        </h3>
+        <p class="text-slate-600 leading-relaxed">
+          From initial assessment to project completion, we maintain clear
+          communication and fast response times across all Miami service areas.
+        </p>
+      </div>
+
+    </div>
+
+    <!-- CTA -->
+    <div class="mt-20 text-center">
+      <a
+        href="/contact-us/"
+        class="inline-flex items-center gap-4 rounded-full
+               bg-teal-700 px-10 py-4 text-white font-bold
+               hover:bg-teal-800 transition"
+      >
+        Schedule Your Miami Tree Removal
+        <span class="flex h-10 w-10 items-center justify-center rounded-full bg-white/15">
+          ↗
+        </span>
+      </a>
+    </div>
+
+  </div>
+</section>
+<!-- ================= TREE REMOVAL FAQ – MIAMI ================= -->
+<section class="bg-white py-32">
+  <div class="max-w-5xl mx-auto px-6">
+
+    <!-- HEADER -->
+    <div class="max-w-3xl mx-auto text-center mb-20">
+      <span
+        class="inline-block mb-6 px-4 py-1 text-xs font-bold tracking-widest
+               text-teal-700 border border-dashed border-teal-600 rounded-full"
+      >
+        TREE REMOVAL FAQ
+      </span>
+
+      <h2 class="text-4xl md:text-5xl font-extrabold text-slate-900 leading-tight mb-8">
+        Miami Tree Removal
+        <br class="hidden sm:block" />
+        Frequently Asked Questions
+      </h2>
+
+      <p class="text-lg text-slate-600 leading-relaxed">
+        Property owners in Miami often have questions about permits, pricing,
+        emergency response, and safety. Below are answers to the most common
+        questions we receive regarding professional tree removal services.
+      </p>
+    </div>
+
+    <!-- FAQ GRID -->
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-10 text-left">
+
+      <!-- FAQ ITEM -->
+      <div class="bg-[#f4f8f6] rounded-3xl p-10">
+        <h3 class="text-xl font-extrabold text-slate-900 mb-4">
+          How much does tree removal cost in Miami?
+        </h3>
+        <p class="text-slate-600 leading-relaxed">
+          Tree removal costs in Miami depend on the tree’s size, location,
+          condition, and complexity. Factors such as proximity to structures,
+          power lines, and permit requirements can also affect pricing. We offer
+          free on-site estimates to provide accurate quotes.
+        </p>
+      </div>
+
+      <!-- FAQ ITEM -->
+      <div class="bg-[#f4f8f6] rounded-3xl p-10">
+        <h3 class="text-xl font-extrabold text-slate-900 mb-4">
+          Do I need a permit to remove a tree in Miami?
+        </h3>
+        <p class="text-slate-600 leading-relaxed">
+          Some trees in Miami require permits for removal, especially protected
+          species or trees over a certain size. Our team assists with permit
+          verification and can coordinate certified arborist reports when needed.
+        </p>
+      </div>
+
+      <!-- FAQ ITEM -->
+      <div class="bg-[#f4f8f6] rounded-3xl p-10">
+        <h3 class="text-xl font-extrabold text-slate-900 mb-4">
+          Do you offer emergency tree removal in Miami?
+        </h3>
+        <p class="text-slate-600 leading-relaxed">
+          Yes. We provide 24/7 emergency tree removal services throughout Miami
+          for storm damage, fallen trees, and hazardous situations requiring
+          immediate professional response.
+        </p>
+      </div>
+
+      <!-- FAQ ITEM -->
+      <div class="bg-[#f4f8f6] rounded-3xl p-10">
+        <h3 class="text-xl font-extrabold text-slate-900 mb-4">
+          Is your tree removal company licensed and insured?
+        </h3>
+        <p class="text-slate-600 leading-relaxed">
+          Absolutely. Our Miami tree removal company is fully licensed and
+          insured, ensuring compliance with local regulations and protection
+          for homeowners, businesses, and commercial properties.
+        </p>
+      </div>
+
+      <!-- FAQ ITEM -->
+      <div class="bg-[#f4f8f6] rounded-3xl p-10">
+        <h3 class="text-xl font-extrabold text-slate-900 mb-4">
+          Can you remove trees near homes or power lines?
+        </h3>
+        <p class="text-slate-600 leading-relaxed">
+          Yes. We specialize in controlled tree removal near homes, roofs,
+          pools, and power lines using professional equipment such as cranes,
+          lifts, and precision rigging systems.
+        </p>
+      </div>
+
+      <!-- FAQ ITEM -->
+      <div class="bg-[#f4f8f6] rounded-3xl p-10">
+        <h3 class="text-xl font-extrabold text-slate-900 mb-4">
+          How quickly can you respond to a tree emergency?
+        </h3>
+        <p class="text-slate-600 leading-relaxed">
+          Our emergency crews are positioned throughout Miami and can typically
+          respond quickly, depending on weather conditions and call volume.
+          Safety assessments are performed immediately upon arrival.
+        </p>
+      </div>
+
+    </div>
+
+  </div>
+</section>
+<!-- ================= FINAL EMERGENCY CTA – MIAMI ================= -->
+<section class="bg-teal-900 py-32 text-white">
+  <div class="max-w-7xl mx-auto px-6 text-center">
+
+    <!-- HEADLINE -->
+    <h2 class="text-4xl md:text-5xl xl:text-6xl font-extrabold leading-tight">
+      Emergency Tree Removal in Miami
+      <br class="hidden sm:block" />
+      Call Now for Immediate Service
+    </h2>
+
+    <!-- SUBTEXT -->
+    <p class="mt-8 max-w-3xl mx-auto text-lg text-white/90 leading-relaxed">
+      If a tree has fallen, is leaning dangerously, or poses a threat to your
+      home or business, our emergency tree removal crews are available 24/7
+      across Miami and surrounding South Florida areas. Fast response, licensed
+      professionals, and safe results you can trust.
+    </p>
+
+    <!-- PRIMARY CTA -->
+    <div class="mt-14">
+      <a
+        href="tel:1-888-452-1505"
+        class="inline-flex items-center gap-4 rounded-full
+               bg-white px-14 py-6 text-teal-900 font-extrabold text-lg
+               hover:bg-slate-100 transition"
+      >
+        📞 Call 1-888-452-1505 Now
+      </a>
+    </div>
+
+    <!-- TRUST LINE -->
+    <p class="mt-12 text-sm text-white/80">
+      24/7 Emergency Tree Removal • Miami • Miami-Dade County • South Florida
+    </p>
+
+  </div>
+</section>
+
+</BaseLayout>
