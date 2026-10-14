@@ -10,20 +10,20 @@ const {
 } = Astro.props;
 ---
 
-<section class="px-4 py-16 sm:px-6 lg:py-24">
-  <div class="relative mx-auto max-w-5xl overflow-hidden rounded-3xl bg-gradient-to-br from-primary-700 via-primary-800 to-secondary-900 px-6 py-14 text-center shadow-2xl sm:px-12 lg:py-20" data-reveal="zoom">
+<section class="px-4 py-12 sm:px-6 sm:py-16 lg:py-24">
+  <div class="relative mx-auto max-w-5xl overflow-hidden rounded-3xl bg-gradient-to-br from-primary-700 via-primary-800 to-secondary-900 px-5 py-10 text-center shadow-2xl sm:px-12 sm:py-14 lg:py-20" data-reveal="zoom">
     <div class="absolute inset-0 opacity-30" aria-hidden="true"><div class="bg-grid-pattern absolute inset-0 [mask-image:radial-gradient(ellipse_at_center,black,transparent_75%)]" style="filter:invert(1) brightness(2)"></div></div>
     <div class="pointer-events-none absolute -right-12 -top-12 size-64 animate-blob rounded-full bg-accent opacity-25 blur-3xl" aria-hidden="true"></div>
     <div class="pointer-events-none absolute -bottom-16 -left-10 size-64 animate-blob rounded-full bg-primary-400 opacity-25 blur-3xl [animation-delay:-5s]" aria-hidden="true"></div>
-    <h2 class="relative font-heading text-h2 font-extrabold text-white">{title}</h2>
-    <p class="relative mx-auto mt-5 max-w-xl text-lg leading-relaxed text-white/85">{text}</p>
-    <div class="relative mt-9 flex flex-col items-center gap-4 sm:flex-row sm:justify-center">
-      <a href="/contact-us/" class="btn btn-accent group px-8 !py-4 !text-lg">
+    <h2 class="relative font-heading text-2xl font-extrabold leading-tight text-white sm:text-h2">{title}</h2>
+    <p class="relative mx-auto mt-4 max-w-xl text-base leading-relaxed text-white/85 sm:mt-5 sm:text-lg">{text}</p>
+    <div class="relative mt-7 flex flex-col gap-3 sm:mt-9 sm:flex-row sm:items-center sm:justify-center sm:gap-4">
+      <a href="/contact-us/" class="btn btn-accent group w-full justify-center px-6 !py-3.5 !text-base sm:w-auto sm:px-8 sm:!py-4 sm:!text-lg">
         Request a Free Estimate
         <svg class="size-5 transition group-hover:translate-x-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M13 7l5 5m0 0l-5 5m5-5H6" /></svg>
       </a>
-      <a href="/tree-care-guides/" class="btn btn-outline-light px-8 !py-4 !text-lg">Read Our Blog</a>
+      <a href="/tree-care-guides/" class="btn btn-outline-light w-full justify-center px-6 !py-3.5 !text-base sm:w-auto sm:px-8 sm:!py-4 sm:!text-lg">Read Our Blog</a>
     </div>
-    <p class="relative mt-6 text-sm text-white/60">Free, no obligation. Active in the Fort Lauderdale area, adding more areas.</p>
+    <p class="relative mt-5 text-xs text-white/70 sm:mt-6 sm:text-sm">Free, no obligation. Active in the Fort Lauderdale area, adding more areas.</p>
   </div>
 </section>
