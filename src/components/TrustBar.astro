@@ -1,30 +1,57 @@
 ---
-// A colored statement band under the hero, with four short promises we can keep.
-const items = [
-  { label: "Free estimates" },
-  { label: "No obligation" },
-  { label: "Active in Fort Lauderdale area" },
-  { label: "Urgent requests flagged" },
+// A colored statement band under the hero. The badges are promises the site can keep;
+// licence and insurance are shown as something to ask each pro for, never as our own.
+const badges = [
+  { title: "Free estimates", text: "No cost to ask", icon: "M12 8c-1.7 0-3 .9-3 2.2s1.3 2 3 2 3 .8 3 2-1.3 2.3-3 2.3m0-8.5V6m0 12v-1.5" },
+  { title: "No obligation", text: "Compare, then decide", icon: "M9 12l2 2 4-4m5 2a8 8 0 11-16 0 8 8 0 0116 0z" },
+  { title: "Fort Lauderdale area", text: "Active coverage now", icon: "M12 21s-7-6.2-7-11a7 7 0 1114 0c0 4.8-7 11-7 11zm0-8.5a2.5 2.5 0 100-5 2.5 2.5 0 000 5z" },
+  { title: "Urgent flagged", text: "Storm damage first", icon: "M13 2L4 14h7l-1 8 9-12h-7l1-8z" },
 ];
 ---
 
-<section class="relative overflow-hidden bg-gradient-to-r from-primary-800 to-primary-700 py-12 text-white md:py-16" aria-label="What you get" data-no-reveal>
-  <div class="mx-auto grid max-w-site items-center gap-8 px-4 sm:px-6 md:grid-cols-2">
-    <p class="font-heading text-3xl font-bold leading-tight md:text-4xl">
-      One request. <span class="rounded-md bg-accent px-2 py-0.5 text-black">Local</span> pros.<br class="hidden sm:block" />
-      A free estimate.
-    </p>
-    <ul class="grid gap-3 sm:grid-cols-2 md:justify-self-end" role="list">
+<section class="trust relative overflow-hidden bg-gradient-to-r from-primary-900 via-primary-800 to-primary-700 py-14 text-white md:py-20" aria-label="What you get" data-no-reveal>
+  <div class="trust-blob trust-blob-a" aria-hidden="true"></div>
+  <div class="trust-blob trust-blob-b" aria-hidden="true"></div>
+  <div class="relative mx-auto grid max-w-site items-center gap-10 px-4 sm:px-6 lg:grid-cols-[1fr_1.4fr]">
+    <div data-reveal="left">
+      <p class="font-heading text-3xl font-bold leading-tight md:text-4xl">
+        One request. <span class="trust-mark rounded-md bg-accent px-2 py-0.5 text-black">Local</span> pros.<br class="hidden sm:block" />
+        A free estimate.
+      </p>
+      <p class="mt-4 max-w-md text-white/75">
+        Independent local tree pros answer your request directly. Always ask for proof of licence and insurance before work starts.
+      </p>
+    </div>
+    <ul class="grid grid-cols-2 gap-3 sm:gap-4 md:grid-cols-4 lg:grid-cols-2 xl:grid-cols-4" role="list">
       {
-        items.map(({ label }) => (
-          <li class="flex items-center gap-2.5 text-white/90">
-            <svg class="size-5 shrink-0 text-accent" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7" />
-            </svg>
-            <span class="font-medium">{label}</span>
+        badges.map((b, i) => (
+          <li class="trust-badge group rounded-2xl border border-white/15 bg-white/10 p-4 text-center backdrop-blur-sm" data-reveal="zoom" style={`--reveal-delay:${i * 110}ms`}>
+            <span class="trust-icon mx-auto mb-3 grid size-12 place-items-center rounded-full bg-accent text-black">
+              <svg class="size-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d={b.icon} />
+              </svg>
+            </span>
+            <span class="block font-heading text-sm font-bold leading-tight sm:text-base">{b.title}</span>
+            <span class="mt-1 block text-xs text-white/70">{b.text}</span>
           </li>
         ))
       }
     </ul>
   </div>
 </section>
+
+<style>
+  .trust-blob { position: absolute; border-radius: 9999px; filter: blur(60px); opacity: 0.35; pointer-events: none; }
+  .trust-blob-a { width: 22rem; height: 22rem; left: -6rem; top: -8rem; background: var(--color-accent, #e6ee54); animation: trust-drift 14s ease-in-out infinite; }
+  .trust-blob-b { width: 18rem; height: 18rem; right: -4rem; bottom: -8rem; background: #0a9a47; animation: trust-drift 18s ease-in-out infinite reverse; }
+  .trust-badge { transition: transform 0.3s ease, background-color 0.3s ease; }
+  .trust-badge:hover { transform: translateY(-4px); background-color: rgb(255 255 255 / 0.16); }
+  .trust-icon { position: relative; }
+  .trust-icon::after { content: ""; position: absolute; inset: 0; border-radius: 9999px; border: 2px solid var(--color-accent, #e6ee54); animation: trust-ring 2.8s ease-out infinite; }
+  @keyframes trust-drift { 0%, 100% { transform: translate(0, 0); } 50% { transform: translate(40px, 24px); } }
+  @keyframes trust-ring { 0% { transform: scale(1); opacity: 0.8; } 100% { transform: scale(1.6); opacity: 0; } }
+  @media (prefers-reduced-motion: reduce) {
+    .trust-blob, .trust-icon::after { animation: none; }
+    .trust-badge { transition: none; }
+  }
+</style>

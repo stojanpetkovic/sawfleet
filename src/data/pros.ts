@@ -25,6 +25,8 @@ export interface Pro {
   instagram?: string;
   /** What the company says about itself; shown as the company's own statements. */
   claims: string[];
+  /** Credentials the company displays on its own website, with a public page where one exists. */
+  credentials: { label: string; note: string; href?: string }[];
 }
 
 export const pros: Pro[] = [
@@ -61,6 +63,18 @@ export const pros: Pro[] = [
       'BBB accredited business',
       'ISA certified arborist and tree risk assessment credentials',
       'Emergency response available 24/7',
+      'Free arborist report and permit coordination',
+      'Rated 4.9 on Google from 427 reviews (figure shown on its website)',
+    ],
+    credentials: [
+      { label: 'Licensed & insured', note: 'Stated on treejaws.com' },
+      { label: 'ISA Certified Arborist', note: 'Badge shown on treejaws.com' },
+      {
+        label: 'BBB Accredited Business',
+        note: 'Check the public BBB profile',
+        href: 'https://www.bbb.org/us/fl/fort-lauderdale/profile/tree-removal/tree-jaws-0633-92055671',
+      },
+      { label: 'Workers’ compensation', note: 'Stated on treejaws.com' },
     ],
   },
 ];
