@@ -1,0 +1,108 @@
+---
+import CityPage from "../../../components/CityPage.astro";
+
+const intro = [
+  "Hialeah is a dense city of small lots, where mango, avocado, ficus and royal palms grow close together and often very close to houses, fences and overhead lines. Trees here tend to be well established and crowded.",
+  "Send one request and we will try to match you with an independent tree care professional. We are adding professionals in Hialeah and cannot promise a response yet, so you can also tell us you want to be notified. SF Tree Removal is an online service; we don't do the work ourselves, so you agree the scope and price directly with the professional you are matched with."
+];
+
+const conditions = [
+  {
+    "name": "Small lots",
+    "note": "Little space between trees, houses and neighbors makes the fall zone small."
+  },
+  {
+    "name": "Fruit trees",
+    "note": "Mango and avocado are common and need regular thinning."
+  },
+  {
+    "name": "Ficus and roots",
+    "note": "Roots crack walls and pavement on tight lots."
+  },
+  {
+    "name": "Power lines",
+    "note": "Many lots have lines close to the canopy; the utility handles trees at the lines."
+  }
+];
+
+const notes = "<p>Dense lots change how a removal is done: more rigging, more lowering by hand, and extra care for neighbors' fences and cars. Say how close the tree is to the property line when you request an estimate.</p><p>We could not confirm Hialeah's own tree rules from an official source, so the county code is the baseline and the county tree program can say whether the city or the county has jurisdiction for your address.</p>";
+
+const trees = [
+  {
+    "name": "Mango",
+    "note": "Large fruit tree with heavy limbs that can fail in wind. Often needs thinning and fruit-drop cleanup."
+  },
+  {
+    "name": "Avocado",
+    "note": "Brittle wood that breaks in storms; frequent thinning keeps it safer."
+  },
+  {
+    "name": "Ficus",
+    "note": "Fast-growing with aggressive roots that crowd walls, pipes and pools. A frequent reason for removal requests."
+  },
+  {
+    "name": "Royal palm",
+    "note": "Tall and straight, often next to pools and houses. Lowering the crown needs care near screens and pavers."
+  },
+  {
+    "name": "Royal poinciana",
+    "note": "Spectacular in bloom but with weak, brittle wood that fails in storms."
+  },
+  {
+    "name": "Australian pine",
+    "note": "An invasive species that topples easily in storms and is commonly removed rather than kept."
+  }
+];
+
+const nearby = [
+  {
+    "name": "Miami Gardens",
+    "href": "/areas/miami-gardens-tree-removal/"
+  },
+  {
+    "name": "Doral",
+    "href": "/areas/doral-tree-removal/"
+  },
+  {
+    "name": "Miami",
+    "href": "/areas/miami-tree-removal/"
+  }
+];
+
+const faqs = [
+  {
+    "q": "How much does tree removal cost in Hialeah?",
+    "a": "It depends on the size of the tree, how close it is to the house, pool or power lines, and whether a crane is needed. You will get a free estimate for your specific tree; see our <a href=\"/tree-care-guides/tree-removal-cost-south-florida/\">cost guide</a>."
+  },
+  {
+    "q": "Do I need a permit to remove a tree in Hialeah?",
+    "a": "Often, but it depends on the tree, the property and the rules where you live. Use the <a href=\"/permit-checker/\">permit checker</a> for what Hialeah and its county say, and confirm with the city."
+  },
+  {
+    "q": "Can I get emergency tree help in Hialeah?",
+    "a": "Choose Emergency Tree Removal in the <a href=\"/contact-us/\">form</a>. The request is flagged as urgent for local professionals; we cannot promise an arrival time. If anyone is in danger, call 911."
+  },
+  {
+    "q": "Who does the work?",
+    "a": "An independent tree care professional in Miami-Dade County. SF Tree Removal is an online service; we do not perform the work. Ask for proof of license and insurance first."
+  }
+];
+---
+
+<CityPage
+  city="Hialeah"
+  county="Miami-Dade County"
+  title="Tree Removal in Hialeah, FL | Free Estimates"
+  description="Free tree removal estimates in Hialeah, FL: removal, trimming, stump grinding and storm cleanup from independent local pros."
+  lead="Get a free tree removal estimate from independent local professionals in Hialeah and north-central Miami-Dade."
+  intro={intro}
+  conditions={conditions}
+  permitId="hialeah"
+  nearby={nearby}
+  faqs={faqs}
+  image="climber-rope"
+  image2="canopy-climber"
+  image3="tree-on-house"
+  notes={notes}
+  trees={trees}
+/>

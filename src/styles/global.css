@@ -1,36 +1,252 @@
 @import 'tailwindcss';
 
 /*
-  The default border color has changed to `currentcolor` in Tailwind CSS v4,
-  so we've added these compatibility styles to make sure everything still
-  looks the same as it did with Tailwind CSS v3.
-
-  If we ever want to remove these styles, we need to add an explicit border
-  color utility to any element that depends on these defaults.
+  Visual design adapted from the MIT-licensed "astro-sassify-template"
+  (github.com/larry-xue/astro-sassify-template): airy light layout, Lexend
+  headings over Inter, pill labels, soft-shadow cards, lime call-to-action
+  buttons and a colored statement band. The violet of the original is swapped
+  for forest green; change the palette here and everything follows.
 */
+@theme {
+  /* Sampled from the logo: shield gradient #10c860 to #007838, wordmark green #008840. */
+  --color-primary-50: #effcf4;
+  --color-primary-100: #d5f7e2;
+  --color-primary-200: #abefc6;
+  --color-primary-300: #72e3a1;
+  --color-primary-400: #10c860;
+  --color-primary-500: #0eb356;
+  --color-primary-600: #0a9a47;
+  --color-primary-700: #007838;
+  --color-primary-800: #00602d;
+  --color-primary-900: #004a23;
+  --color-primary-950: #002916;
+
+  --color-secondary-50: #f8fafc;
+  --color-secondary-100: #f1f5f9;
+  --color-secondary-200: #e2e8f0;
+  --color-secondary-300: #cbd5e1;
+  --color-secondary-400: #94a3b8;
+  --color-secondary-500: #64748b;
+  --color-secondary-600: #475569;
+  --color-secondary-700: #334155;
+  --color-secondary-800: #1e293b;
+  --color-secondary-900: #1a2a36; /* logo navy */
+  --color-secondary-950: #0f1b24;
+
+  --color-accent-100: #f8fadc;
+  --color-accent-300: #eef484;
+  --color-accent-400: #e6ee54;
+  --color-accent-500: #d9e11a;
+  --color-accent-600: #bbc40f;
+
+  /* Aliases the components use. */
+  --color-primary: var(--color-primary-700);
+  --color-primary-fg: #ffffff;
+  --color-accent: var(--color-accent-400);
+  --color-accent-fg: #000000;
+  --color-background: #ffffff;
+  --color-surface: #f8fafc;
+  --color-border: #e2e8f0;
+  --color-text: #1a2a36;
+  --color-text-muted: #475569;
+  --color-dark: #0f1b24;
+  --color-dark-surface: #1a2a36;
+
+  --text-lead: clamp(1.0625rem, 1.8vw, 1.25rem);
+  --text-h3: clamp(1.2rem, 2vw, 1.4rem);
+  --text-h2: clamp(1.75rem, 3.2vw, 2.5rem);
+  --text-h1: clamp(2.25rem, 5vw, 3.5rem);
+  --text-display: clamp(2.5rem, 5.4vw, 4rem);
+
+  --container-site: 80rem;
+  --spacing-section: clamp(3rem, 7vw, 6rem);
+
+  --animate-slide-up: slideUp 0.7s cubic-bezier(0.22, 1, 0.36, 1) both;
+  --animate-fade-in: fadeIn 0.8s ease-out both;
+  --animate-float: float 6s ease-in-out infinite;
+  --animate-float-slow: float 9s ease-in-out infinite;
+  --animate-blob: blob 14s ease-in-out infinite;
+  @keyframes slideUp {
+    0% { transform: translateY(24px); opacity: 0; }
+    100% { transform: translateY(0); opacity: 1; }
+  }
+  @keyframes fadeIn {
+    0% { opacity: 0; }
+    100% { opacity: 1; }
+  }
+  @keyframes float {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-10px); }
+  }
+  @keyframes blob {
+    0%, 100% { transform: translate(0, 0) scale(1); }
+    33% { transform: translate(24px, -18px) scale(1.08); }
+    66% { transform: translate(-18px, 14px) scale(0.94); }
+  }
+}
+
+/* Astro's font optimizer defines --font-display and --font-body at runtime. */
+@theme inline {
+  --font-heading: var(--font-display), 'Lexend', ui-sans-serif, system-ui, sans-serif;
+  --font-body: var(--font-body), 'Inter', ui-sans-serif, system-ui, sans-serif;
+}
+
 @layer base {
   *,
   ::after,
   ::before,
   ::backdrop,
   ::file-selector-button {
-    border-color: var(--color-gray-200, currentcolor);
+    border-color: var(--color-border, currentcolor);
+  }
+
+  html {
+    scroll-behavior: smooth;
+    scroll-padding-top: 5rem;
+  }
+
+  html,
+  body {
+    overflow-x: clip;
+  }
+
+  body {
+    font-family: var(--font-body);
+    color: var(--color-text);
+    background: var(--color-background);
+  }
+
+  h1,
+  h2,
+  h3,
+  h4 {
+    font-family: var(--font-heading);
+    line-height: 1.15;
+    letter-spacing: -0.015em;
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--color-primary-600);
+    outline-offset: 2px;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+      scroll-behavior: auto !important;
+    }
   }
 }
 
-/* Long-form text (guides, permits, legal pages). */
 @layer components {
+  /* Buttons */
+  .btn {
+    @apply inline-flex min-h-[44px] items-center justify-center gap-2 rounded-lg px-6 py-3 text-base font-medium shadow-md transition-all duration-300 hover:shadow-lg;
+  }
+  .btn-accent {
+    @apply bg-accent text-accent-fg hover:bg-accent-500;
+  }
+  .btn-outline {
+    @apply border-2 border-secondary-300 bg-transparent text-text shadow-none hover:bg-secondary-100 hover:shadow-none;
+  }
+  .btn-outline-light {
+    @apply border-2 border-white/40 bg-transparent text-white shadow-none hover:border-white hover:bg-white/10 hover:shadow-none;
+  }
+
+  /* Pill label above a heading */
+  .topper {
+    @apply inline-block rounded-full bg-primary-100 px-4 py-1 text-sm font-medium text-primary-700;
+  }
+
+  /* Form fields shared by every form on the site */
+  .field-label {
+    @apply mb-1.5 block text-sm font-semibold text-secondary-800;
+  }
+  .field-hint {
+    @apply mt-1.5 text-xs text-secondary-500;
+  }
+  .field-input {
+    @apply w-full rounded-xl border border-secondary-300 bg-white px-4 py-3.5 text-base text-secondary-900 shadow-sm transition placeholder:text-secondary-400 focus:border-primary-600 focus:outline-none focus:ring-4 focus:ring-primary-600/15;
+  }
+  .field-input[aria-invalid="true"] {
+    @apply border-red-500 ring-4 ring-red-500/10;
+  }
+  .field-error {
+    @apply mt-1.5 text-sm font-medium text-red-600;
+  }
+  .form-card {
+    @apply rounded-3xl border border-secondary-200 bg-white p-6 shadow-xl sm:p-10;
+  }
+
+  /* Selectable tile (radio or checkbox); the input is the first child */
+  .tile-body {
+    @apply relative flex h-full gap-3 rounded-2xl border-2 border-secondary-200 bg-white p-4 text-left shadow-sm transition duration-200 hover:-translate-y-0.5 hover:border-primary-300 hover:shadow-md;
+  }
+  .tile > input:checked + .tile-body {
+    @apply border-primary-600 bg-primary-50 shadow-md;
+  }
+  .tile > input:focus-visible + .tile-body {
+    @apply ring-4 ring-primary-600/25;
+  }
+  .tile > input:checked + .tile-body .tile-check {
+    @apply scale-100 opacity-100;
+  }
+  .tile-check {
+    @apply absolute right-3 top-3 grid size-5 scale-50 place-items-center rounded-full bg-primary-600 text-white opacity-0 transition duration-200;
+  }
+  .tile-icon {
+    @apply grid size-11 shrink-0 place-items-center rounded-xl bg-primary-100 text-primary-700 transition;
+  }
+  .tile > input:checked + .tile-body .tile-icon {
+    @apply bg-primary-600 text-white;
+  }
+
+  /* Soft-shadow card that lifts on hover */
+  .card {
+    @apply overflow-hidden rounded-xl border border-secondary-200 bg-white shadow-md transition duration-300 hover:-translate-y-1 hover:border-primary-200 hover:shadow-xl;
+  }
+  .card-static {
+    @apply overflow-hidden rounded-xl border border-secondary-200 bg-white shadow-md;
+  }
+
+  /* Short green rule under section headings */
+  .heading-rule::after {
+    content: "";
+    display: block;
+    width: 3.5rem;
+    height: 4px;
+    margin: 1rem auto 0;
+    border-radius: 9999px;
+    background: linear-gradient(90deg, var(--color-primary-500), var(--color-accent));
+  }
+
+  /* Faint grid used behind the page headers */
+  .bg-grid-pattern {
+    background-image:
+      linear-gradient(to right, rgb(0 120 56 / 0.07) 1px, transparent 1px),
+      linear-gradient(to bottom, rgb(0 120 56 / 0.07) 1px, transparent 1px);
+    background-size: 40px 40px;
+  }
+
+  /* Long-form text (guides, permits, legal pages). */
   .prose-sf {
-    @apply max-w-3xl text-lg leading-relaxed text-slate-700;
+    @apply max-w-3xl text-lg leading-relaxed text-secondary-600;
   }
   .prose-sf > * + * {
     @apply mt-5;
   }
+  .prose-sf h1 {
+    @apply text-h1 font-bold text-text;
+  }
   .prose-sf h2 {
-    @apply mt-14 text-2xl font-extrabold text-slate-900 md:text-3xl;
+    @apply mt-14 text-h2 font-bold text-text;
   }
   .prose-sf h3 {
-    @apply mt-10 text-xl font-bold text-slate-900;
+    @apply mt-10 text-h3 font-semibold text-text;
   }
   .prose-sf ul {
     @apply list-disc space-y-2 pl-6;
@@ -39,21 +255,80 @@
     @apply list-decimal space-y-2 pl-6;
   }
   .prose-sf a {
-    @apply font-semibold text-teal-700 underline underline-offset-2 hover:text-teal-900;
+    @apply font-semibold text-primary-700 underline underline-offset-2 hover:text-primary-900;
   }
   .prose-sf strong {
-    @apply text-slate-900;
+    @apply text-text;
   }
   .prose-sf table {
     @apply w-full text-left text-base;
   }
   .prose-sf th {
-    @apply border-b-2 border-slate-200 py-3 pr-4 font-bold text-slate-900;
+    @apply border-b-2 border-border py-3 pr-4 font-semibold text-text;
   }
   .prose-sf td {
-    @apply border-b border-slate-200 py-3 pr-4;
+    @apply border-b border-border py-3 pr-4;
   }
   .prose-sf .note {
-    @apply rounded-2xl bg-[#f4f8f6] p-6 text-base;
+    @apply rounded-xl border border-primary-200 bg-primary-50 p-6 text-base;
   }
 }
+
+/* Scroll reveal: content is visible without JavaScript; the hidden start state
+   only applies once the page has added the "js" class. */
+@layer utilities {
+  .js [data-reveal] {
+    opacity: 0;
+    transform: translateY(28px);
+    transition:
+      opacity 0.7s cubic-bezier(0.22, 1, 0.36, 1),
+      transform 0.7s cubic-bezier(0.22, 1, 0.36, 1);
+    transition-delay: var(--reveal-delay, 0ms);
+    will-change: opacity, transform;
+  }
+  .js [data-reveal="left"] { transform: translateX(-32px); }
+  .js [data-reveal="right"] { transform: translateX(32px); }
+  .js [data-reveal="zoom"] { transform: scale(0.94); }
+  .js [data-reveal].is-visible {
+    opacity: 1;
+    transform: none;
+  }
+  .delay-100 { animation-delay: 100ms; }
+  .delay-200 { animation-delay: 200ms; }
+  .delay-300 { animation-delay: 300ms; }
+  .delay-500 { animation-delay: 500ms; }
+
+  @media (prefers-reduced-motion: reduce) {
+    .js [data-reveal] {
+      opacity: 1;
+      transform: none;
+      transition: none;
+    }
+  }
+}
+
+header.is-scrolled {
+  box-shadow: 0 6px 24px rgba(15, 27, 36, 0.08);
+}
+
+/* The bottom bar steps aside while the mobile menu is open. */
+.menu-open #mobile-cta {
+  transform: translateY(100%);
+}
+
+/* Multi-step forms: all steps show without JavaScript. */
+.js form[data-steps] [data-step]:not(.is-current) {
+  display: none;
+}
+form[data-steps] [data-step].is-current {
+  animation: slideUp 0.45s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+/* Step controls: Back and Continue only exist when the script can drive them;
+   the final button only shows on the last step. */
+form[data-steps] .js-only { display: none; }
+.js form[data-steps] .js-only { display: inline-flex; }
+.js form[data-steps] [data-submit] { display: none; }
+.js form[data-steps][data-last] [data-submit] { display: inline-flex; }
+.js form[data-steps][data-last] [data-next] { display: none; }
+.js form[data-steps][data-first] [data-back] { visibility: hidden; }

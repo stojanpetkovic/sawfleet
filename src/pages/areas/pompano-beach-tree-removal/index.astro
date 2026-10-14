@@ -1,0 +1,108 @@
+---
+import CityPage from "../../../components/CityPage.astro";
+
+const intro = [
+  "Pompano Beach mixes coastal neighborhoods, canals and older residential streets with mature oaks, palms and ficus close to houses, pools and power lines. When one becomes a risk, it has to come down without damaging the property around it.",
+  "Send one request and an independent tree care professional in the Fort Lauderdale area will contact you with a free estimate. SF Tree Removal is an online service that connects you with them; we don't do the work ourselves, so you agree the scope and price directly."
+];
+
+const conditions = [
+  {
+    "name": "Salt air and coastal wind",
+    "note": "Storms and salt air stress trees near the coast, and weakened limbs can fall without warning."
+  },
+  {
+    "name": "Palms near pools and houses",
+    "note": "Royal, coconut and other palms need careful lowering of the crown next to pools, pavers and roofs."
+  },
+  {
+    "name": "Waterfront and canal lots",
+    "note": "Limited access and seawalls make some removals harder, so describe access when you send the request."
+  },
+  {
+    "name": "Storm season",
+    "note": "Saturated soil and strong wind bring down leaning and damaged trees. Trim and assess before the season where you can."
+  }
+];
+
+const nearby = [
+  {
+    "name": "Fort Lauderdale",
+    "href": "/areas/fort-lauderdale-tree-removal/"
+  },
+  {
+    "name": "Hollywood",
+    "href": "/areas/hollywood-tree-service/"
+  },
+  {
+    "name": "Broward County",
+    "href": "/areas/broward-county-tree-removal/"
+  }
+];
+
+const faqs = [
+  {
+    "q": "How much does tree removal cost in Pompano Beach?",
+    "a": "It depends on the size of the tree, how close it is to the house, pool or power lines, and whether a crane is needed. You will get a free estimate for your specific tree; see our <a href=\"/tree-care-guides/tree-removal-cost-south-florida/\">cost guide</a>."
+  },
+  {
+    "q": "Do I need a permit to remove a tree in Pompano Beach?",
+    "a": "Often yes, depending on the tree, the property and the city's rules, unless a certified arborist documents that the tree is dangerous. See our <a href=\"/tree-removal-permits/\">permit guide</a> and confirm with the city."
+  },
+  {
+    "q": "Can I get emergency tree help in Pompano Beach?",
+    "a": "Choose Emergency Tree Removal in the <a href=\"/contact-us/\">form</a>. The request is flagged as urgent for local professionals; we cannot promise an arrival time. If anyone is in danger, call 911."
+  },
+  {
+    "q": "Who does the work?",
+    "a": "An independent tree care professional in Broward County. SF Tree Removal is an online service; we do not perform the work. Ask for proof of license and insurance first."
+  }
+];
+
+const notes = "<p>Pompano Beach has a long Atlantic shoreline, the Intracoastal Waterway and many canals, and the city has been recognized as a Tree City USA community, so tree rules are taken seriously. Salt air and wind are hard on coastal trees, and heavy rain loosens roots.</p><p>Many requests are about palms near pools, large shade trees over roofs and trees damaged in storms. The city's rules restrict severe pruning and topping, so ask for pruning done to a recognized standard.</p>";
+
+const trees = [
+  {
+    "name": "Coconut palm",
+    "note": "Heavy coconuts and fronds fall on roofs, cars and pool decks, so regular trimming matters."
+  },
+  {
+    "name": "Sabal palm",
+    "note": "Florida’s state tree and very wind tolerant, but often over-trimmed. Ask for dead fronds only."
+  },
+  {
+    "name": "Sea grape",
+    "note": "Salt-tolerant coastal native, often shaped as hedge or tree. Trimming should not strip the plant."
+  },
+  {
+    "name": "Live oak",
+    "note": "Wide, heavy limbs that often grow over roofs and driveways. Removal needs rigging so big pieces are lowered, not dropped."
+  },
+  {
+    "name": "Ficus",
+    "note": "Fast-growing with aggressive roots that crowd walls, pipes and pools. A frequent reason for removal requests."
+  },
+  {
+    "name": "Buttonwood",
+    "note": "Salt-tolerant coastal tree, often near docks and seawalls where access is limited."
+  }
+];
+---
+
+<CityPage
+  city="Pompano Beach"
+  county="Broward County"
+  title="Tree Removal in Pompano Beach, FL | Free Estimates"
+  description="Free tree removal estimates in Pompano Beach, FL: removal, trimming, stump grinding and storm cleanup from independent local pros."
+  lead="Get a free tree removal estimate from independent local professionals in Pompano Beach and across Broward County."
+  intro={intro}
+  conditions={conditions}
+  permitId="pompano-beach"
+  nearby={nearby}
+  faqs={faqs}
+  image="chainsaw"
+  image2="trunk-bucket"
+  image3="broken-tree"
+  notes={notes}
+  trees={trees}
+/>

@@ -2,94 +2,106 @@
 import BaseLayout from "../../layouts/BaseLayout.astro";
 import PageHero from "../../components/PageHero.astro";
 import CtaBand from "../../components/CtaBand.astro";
+import Faq from "../../components/Faq.astro";
 import { business } from "../../config/business";
 
 const faqs = [
   {
+    q: "What is SF Tree Removal?",
+    a: `An online service that connects South Florida property owners with independent local tree care professionals. You send one request, and an independent professional contacts you with a free estimate in our active area (Fort Lauderdale and the surrounding area); elsewhere we try to match you but cannot promise a response. We do not perform the work ourselves.`,
+  },
+  {
     q: "How much does tree removal cost in South Florida?",
-    a: `It depends on the size of the tree, how close it is to the house, power lines or a pool, and how much access there is for equipment. A small tree in an open yard costs far less than a large oak over a roof that needs climbing or a crane. We give a free estimate after seeing the tree; our <a href="/tree-care-guides/tree-removal-cost-south-florida/">cost guide</a> explains what drives the price.`,
+    a: `It depends on the size of the tree, how close it is to the house, power lines or a pool, and how much access there is for equipment. A small tree in an open yard costs far less than a large oak over a roof that needs climbing or a crane. The estimate you receive is for your specific tree; our <a href="/tree-care-guides/tree-removal-cost-south-florida/">cost guide</a> explains what drives the price.`,
   },
   {
     q: "Do I need a permit to remove a tree?",
     a: `Often yes, but it depends on your city, the type and size of the tree, and whether it is dangerous. Florida law exempts dangerous trees on residential property when a certified arborist documents the risk. See our <a href="/tree-removal-permits/">permit guide</a> for details.`,
   },
   {
-    q: "Do you offer emergency tree removal?",
-    a: `Yes. For a tree on a house, car or driveway, or one hanging over power lines after a storm, send us the <a href="/contact-us/">contact form</a> and choose Emergency Tree Removal so we can prioritise it. Stay away from any tree touching power lines and call your utility company as well.`,
+    q: "Can you help with emergency tree removal?",
+    a: `For a tree on a house, car or driveway, or one hanging over power lines after a storm, send the <a href="/contact-us/">contact form</a> and choose Emergency Tree Removal so the request is flagged as urgent for local professionals. We cannot promise an arrival time. Stay away from any tree touching power lines, call your utility company, and call 911 if anyone is in danger.`,
   },
   {
     q: "Are the estimates really free?",
-    a: `Yes. Tell us about the job through the <a href="/contact-us/">contact form</a> and we'll get back to you with a free, no-obligation estimate.`,
+    a: `Yes. Sending a request is free and you are under no obligation. The independent professional who contacts you gives you a free estimate; you decide whether to accept it.`,
+  },
+  {
+    q: "Who actually does the work?",
+    a: `An independent tree care professional, matched to your request. You agree the scope, price and schedule with them directly. We recommend asking for proof of license and insurance before work starts.`,
   },
   {
     q: "Is cleanup included?",
-    a: "Yes. Unless we agree otherwise, we cut up and haul away the wood and branches and leave the yard clean. If you'd like to keep firewood or mulch, just tell us.",
+    a: "It varies between professionals, so ask for it to be stated in the estimate: whether the wood and branches are hauled away and the yard is left clean. If you want to keep firewood or mulch, say so.",
   },
   {
-    q: "Do you grind the stump?",
-    a: `Stump grinding is available with any removal and quoted together with it. Grinding takes the stump below ground level so you can lay sod or plant again. Read more on our <a href="/tree-services/">tree services</a> page.`,
-  },
-  {
-    q: "How long does a tree removal take?",
-    a: "Most residential removals take a few hours. Large trees close to structures, crane work or several trees on one property can take a full day or more.",
+    q: "Is stump grinding available?",
+    a: `Usually, and it is normally quoted together with the removal. Grinding takes the stump below ground level so you can lay sod or plant again. Read more on our <a href="/tree-services/">tree services</a> page.`,
   },
   {
     q: "Will my homeowner's insurance pay for tree removal?",
-    a: "Policies usually cover removal when a tree falls on a covered structure, such as the house or a fence, and often not when a tree falls in the yard without damage. Check your policy, take photos before work starts, and keep our invoice for the claim.",
+    a: "Policies usually cover removal when a tree falls on a covered structure, such as the house or a fence, and often not when a tree falls in the yard without damage. Check your policy, take photos before work starts, and keep the invoice for the claim.",
   },
   {
-    q: "Can you remove palm trees?",
-    a: "Yes. We remove and trim royal, coconut and other palms, including tall palms next to pools, houses and pavers.",
+    q: "Can palm trees be removed or trimmed?",
+    a: "Yes. Royal, coconut and other palms can be removed or trimmed, including tall palms next to pools, houses and pavers. Mention the surroundings in your request.",
   },
   {
-    q: "Which areas do you serve?",
-    a: `We work across Miami-Dade, Broward and Palm Beach County. See all <a href="/areas/">service areas</a>.`,
+    q: "Which areas do you cover?",
+    a: `Miami-Dade, Broward and Palm Beach County. See all <a href="/areas/">service areas</a>.`,
   },
   {
-    q: "When should I call an arborist instead of just removing the tree?",
-    a: `When you aren't sure the tree has to go, when you need documentation for a permit or the state exemption, or when a valuable tree shows signs of disease or damage. Learn more about our <a href="/certified-arborist/">arborist services</a>.`,
+    q: "When should I ask for an arborist instead of just removing the tree?",
+    a: `When you are not sure the tree has to go, when you need documentation for a permit or the state exemption, or when a valuable tree shows signs of disease or damage. Learn more about <a href="/certified-arborist/">arborist assessments</a>.`,
+  },
+  {
+    q: "How can I tell if a tree is dead or just dormant?",
+    a: `Scratch a small twig: green underneath means it is alive, dry and brown means it is dead. Also look for bare branches out of season, peeling bark and fungus at the base. Many South Florida trees stay green all year, so a bare tree in summer is a warning sign. See <a href="/tree-care-guides/signs-a-tree-needs-to-be-removed/">8 warning signs a tree needs to be removed</a>.`,
+  },
+  {
+    q: "What is the best time of year to trim or remove a tree?",
+    a: `Trees here grow almost all year, so there is no strict off-season. Late winter and spring are good for assessments and structural pruning before hurricane season, which runs June 1 to November 30. Dead and hazardous limbs should be removed whenever you find them.`,
+  },
+  {
+    q: "Can I remove or trim a tree myself?",
+    a: `Small, low branches yes, but large trees, anything near the house, a pool or power lines, and work that needs a ladder, saw or climbing is dangerous and a leading cause of injuries. Never trim near power lines. Hire a professional with the right equipment and insurance, and check <a href="/tree-removal-permits/">permit rules</a> first.`,
+  },
+  {
+    q: "Who is responsible if a tree on a neighbor's property falls on mine?",
+    a: `It depends on the tree's condition and the circumstances, for example whether the owner knew it was dead or hazardous. Photograph the damage, tell your insurer, and speak to an attorney if there is a dispute. We cannot give legal advice.`,
+  },
+  {
+    q: "Do you work with HOAs, condominiums and businesses?",
+    a: `Yes, requests can be for homes, HOAs, condominium associations and commercial properties. Mention the type of property and any association rules in your request, since associations often need to approve the work.`,
+  },
+  {
+    q: "What should I include in my request?",
+    a: `The type and size of the tree, where it is, what is wrong, what you want done (removal, trimming, stump grinding or an assessment) and any access limits such as gates. Photos help. See <a href="/contact-us/">the contact page</a> for a checklist.`,
+  },
+  {
+    q: "How do I compare estimates?",
+    a: `Compare the written scope (which trees, stump, cleanup and haul-away), the price and payment terms, proof of license and insurance, who handles any permit, and the timing. The cheapest quote is not always the best if it leaves things out. Read <a href="/how-it-works/">how to compare estimates</a>.`,
+  },
+  {
+    q: "What if I am not sure whether I need removal or just pruning?",
+    a: `Ask for an <a href="/certified-arborist/">arborist assessment</a>. It can confirm that the tree is healthy and needs only pruning, or document the risk if removal is the right call.`,
   },
 ];
 
-const strip = (html: string) => html.replace(/<[^>]+>/g, "");
-const faqSchema = {
-  "@context": "https://schema.org",
-  "@type": "FAQPage",
-  mainEntity: faqs.map((f) => ({
-    "@type": "Question",
-    name: f.q,
-    acceptedAnswer: { "@type": "Answer", text: strip(f.a) },
-  })),
-};
 ---
 
 <BaseLayout
   title="Tree Removal FAQ | SF Tree Removal South Florida"
-  description="Answers to common questions about tree removal in South Florida: cost, permits, emergency service, cleanup, stump grinding, insurance and the areas we serve."
+  description="Answers to common questions about tree removal in South Florida: cost, permits, emergency service, cleanup, stump grinding, insurance and how the service works."
 >
-  <script type="application/ld+json" set:html={JSON.stringify(faqSchema)} />
-
   <PageHero
     badge="FAQ"
     title="Frequently Asked Questions"
-    lead="Straight answers to the questions homeowners ask us most about tree removal, permits, emergencies and cost."
+    lead="Straight answers to common questions about tree removal, permits, emergencies, cost and how this service works."
+    image="broken-tree"
   />
 
-  <section class="bg-[#f4f8f6] py-24">
-    <div class="mx-auto max-w-3xl space-y-4 px-6">
-      {
-        faqs.map((f) => (
-          <details class="group rounded-2xl bg-white p-6 shadow-sm open:shadow-md">
-            <summary class="flex cursor-pointer list-none items-center justify-between gap-6 text-lg font-bold text-slate-900 [&::-webkit-details-marker]:hidden">
-              {f.q}
-              <span class="grid h-8 w-8 shrink-0 place-items-center rounded-full bg-teal-700 text-white transition group-open:rotate-45" aria-hidden="true">+</span>
-            </summary>
-            <div class="prose-sf mt-4 text-base" set:html={`<p>${f.a}</p>`} />
-          </details>
-        ))
-      }
-    </div>
-  </section>
+  <Faq faqs={faqs} title="Tree Removal Questions, Answered" />
 
-  <CtaBand title="Still Have a Question?" text="Send us a message and we'll get back to you with an answer and a free estimate." />
+  <CtaBand title="Still Have a Question?" text="Ask in the form and we will point you in the right direction. You can request a free estimate at the same time." />
 </BaseLayout>

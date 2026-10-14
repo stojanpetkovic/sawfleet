@@ -1,0 +1,113 @@
+---
+import CountyPage from "../../../components/CountyPage.astro";
+
+const cities = [
+  {
+    "name": "Miami",
+    "href": "/areas/miami-tree-removal/"
+  },
+  {
+    "name": "Miami Gardens"
+  },
+  {
+    "name": "North Miami Beach"
+  },
+  {
+    "name": "Hialeah"
+  },
+  {
+    "name": "Coral Gables"
+  },
+  {
+    "name": "Doral"
+  },
+  {
+    "name": "Miami Beach"
+  },
+  {
+    "name": "Homestead"
+  },
+  {
+    "name": "Cutler Bay"
+  },
+  {
+    "name": "Kendall"
+  },
+  {
+    "name": "Pinecrest"
+  },
+  {
+    "name": "Aventura"
+  }
+];
+
+const trees = [
+  {
+    "name": "Live oaks and banyans",
+    "note": "Wide canopies with heavy limbs that grow over roofs and driveways. Banyan roots lift pavement and walls."
+  },
+  {
+    "name": "Mahogany and black olive",
+    "note": "Common street and yard trees whose roots can lift sidewalks and whose limbs break in storms."
+  },
+  {
+    "name": "Ficus",
+    "note": "Fast-growing trees with aggressive roots that crowd foundations, walls and pools."
+  },
+  {
+    "name": "Royal and coconut palms",
+    "note": "Tall palms near pools and houses, where falling fronds and coconuts are a real hazard."
+  },
+  {
+    "name": "Mango and avocado",
+    "note": "Fruit trees with heavy, brittle limbs that fail in wind and need regular thinning."
+  },
+  {
+    "name": "Australian pine and Brazilian pepper",
+    "note": "Invasive species that topple easily in storms and are commonly removed rather than kept."
+  }
+];
+
+const permits = [
+  "In Miami-Dade, the county's environmental code makes it unlawful to remove a tree without a county permit unless an exemption applies, with several exemptions for trees in the yard of an existing single-family home. Cities inside the county, such as Miami, Doral and Miami Lakes, can add their own rules.",
+  "Under Florida Statute 163.045, a homeowner may remove a tree on residential property without a local permit when a certified arborist or licensed landscape architect documents that the tree poses an unacceptable risk. Keep that documentation. Always confirm with the county or your city before work starts."
+];
+
+const notes = "<p>Miami-Dade sits on limestone bedrock with a high water table, so many trees have shallow roots and uproot in saturated soil. The county has a tropical climate that allows a huge range of species, from native oaks and gumbo limbo to imported mango, banyan and royal poinciana.</p><p>Hurricane exposure is the biggest factor. Trees that are dead, weakly attached or crowded are the first to fail, so many requests come in before and after the season. Invasive species such as Australian pine and Brazilian pepper are also commonly removed.</p><p>The county's tree rules and those of its many cities differ, so check before cutting. Tell the professional about pools, enclosures and overhead lines when you request an estimate.</p>";
+
+const faqs = [
+  {
+    "q": "How much does tree removal cost in Miami-Dade County?",
+    "a": "It depends on the size of the tree, how close it is to the house, pool or power lines, and whether a crane is needed. You will get a free estimate for your specific tree; see our <a href=\"/tree-care-guides/tree-removal-cost-south-florida/\">cost guide</a>."
+  },
+  {
+    "q": "Do I need a permit to remove a tree in Miami-Dade County?",
+    "a": "Often yes, depending on the tree, the property and the city or county rules, unless a certified arborist documents that the tree is dangerous. See our <a href=\"/tree-removal-permits/\">permit guide</a> and confirm with your city."
+  },
+  {
+    "q": "Can I get emergency tree help in Miami-Dade County?",
+    "a": "Choose Emergency Tree Removal in the <a href=\"/contact-us/\">form</a>. The request is flagged as urgent for local professionals; we cannot promise an arrival time. If anyone is in danger, call 911."
+  },
+  {
+    "q": "Who does the work?",
+    "a": "An independent tree care professional who works in Miami-Dade County. SF Tree Removal is an online service; we do not perform the work. Ask for proof of license and insurance first."
+  }
+];
+---
+
+<CountyPage
+  county="Miami-Dade County"
+  title="Tree Removal in Miami-Dade County, FL | Free Estimates"
+  description="Free tree removal estimates from independent local pros across Miami-Dade County, from Miami and Hialeah to Homestead and Aventura."
+  lead="Get a free tree removal estimate from independent local professionals across Miami-Dade County."
+  intro={["From waterfront homes in Miami Beach to suburban streets in Kendall and Homestead, Miami-Dade County has a lot of large trees growing close to houses, pools and power lines. When one of them becomes a risk, it needs to come down safely, without damage to the property around it.", "SF Tree Removal is an online service that connects property owners with independent tree care professionals. We are adding professionals in Miami-Dade County; send a request and we will try to match you, but we cannot promise a response yet. We do not perform the work ourselves; the professional you choose agrees the scope, price and schedule with you."]}
+  cities={cities}
+  trees={trees}
+  permits={permits}
+  image="crane-lift"
+  image2="trunk-cutting"
+  image3="tree-on-house"
+  notes={notes}
+  faqs={faqs}
+  permitGuide="/tree-care-guides/miami-dade-county-tree-removal-permit/"
+/>

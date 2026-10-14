@@ -1,0 +1,33 @@
+---
+import { business } from "../config/business";
+import { guides } from "../config/guides";
+
+// Real counts taken from this site's own content, so they cannot drift.
+const stats = [
+  { n: 3, label: "Counties with local guides", hint: "Miami-Dade, Broward, Palm Beach" },
+  { n: business.cities.length, label: "City pages", hint: "Conditions, permits and costs" },
+  { n: 5, label: "Services to request", hint: "Removal to arborist reports" },
+  { n: guides.length, label: "Plain-language guides", hint: "Costs, permits, storms" },
+];
+---
+
+<section class="relative overflow-hidden bg-secondary-900 py-14 text-white sm:py-16" aria-label="The service in numbers" data-no-reveal>
+  <div class="pointer-events-none absolute -left-20 -top-20 size-72 rounded-full bg-primary-600 opacity-30 blur-3xl" aria-hidden="true"></div>
+  <div class="pointer-events-none absolute -bottom-24 right-0 size-72 rounded-full bg-accent opacity-10 blur-3xl" aria-hidden="true"></div>
+  <div class="relative mx-auto max-w-site px-4 sm:px-6">
+    <dl class="grid grid-cols-2 gap-8 lg:grid-cols-4">
+      {
+        stats.map((s) => (
+          <div data-reveal class="text-center lg:text-left">
+            <dt class="sr-only">{s.label}</dt>
+            <dd>
+              <span class="font-heading text-5xl font-extrabold text-accent sm:text-6xl" data-count={s.n}>{s.n}</span>
+              <span class="mt-1 block font-heading text-lg font-semibold text-white">{s.label}</span>
+              <span class="mt-1 block text-sm text-white/60">{s.hint}</span>
+            </dd>
+          </div>
+        ))
+      }
+    </dl>
+  </div>
+</section>

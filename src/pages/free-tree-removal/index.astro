@@ -1,0 +1,87 @@
+---
+import ServicePage from "../../components/ServicePage.astro";
+
+const faqs = [
+  {
+    q: "Is there really free tree removal in South Florida?",
+    a: `Free estimates are common, and some situations cost you nothing (see above), but the removal itself is normally paid work. We did not find a county-wide program that removes private trees for free in Miami-Dade, Broward or Palm Beach County. Some cities and housing agencies run assistance for low-income or senior homeowners, so ask yours.`,
+  },
+  {
+    q: "What does SF Tree Removal charge?",
+    a: `Nothing. Sending a request is free and you are under no obligation. SF Tree Removal is an online service that passes your request to an independent professional, who gives you a free estimate where we are active (Fort Lauderdale area). Any price for the work itself is agreed between you and that professional.`,
+  },
+  {
+    q: "Will insurance pay for tree removal?",
+    a: `Policies usually cover removal when a tree falls on a covered structure such as the house or a fence, and often not when a tree falls in the yard without damage. Check your policy, take photos before anything is moved, and keep the invoice for the claim.`,
+  },
+  {
+    q: "Who removes a tree on the street or touching power lines?",
+    a: `Trees in the public right-of-way are usually the responsibility of the city or county, and trees touching power lines are handled by the utility (in most of South Florida, FPL). Do not cut them yourself. Call the city or the utility first.`,
+  },
+  {
+    q: "Can I get a discount by letting the crew keep the wood?",
+    a: `Some professionals take the wood or chips into account in the price, and many homeowners keep firewood or mulch themselves. Ask for it to be written in the estimate. Be careful with anyone who asks for payment in advance or knocks on doors after a storm.`,
+  },
+];
+const extras = [
+  {
+    "topper": "Who owns the tree",
+    "title": "Public Trees and Private Trees",
+    "image": "bucket-truck",
+    "html": "<p>Who pays depends on whose tree it is. A tree in the public right-of-way, such as along the street or on the swale, is normally maintained by the city or county. A tree on your lot is yours. Trees that touch or approach power lines are handled by the utility, and trees in a utility easement may be trimmed under its program.</p><p>If you are not sure where your property line ends, check your survey or ask your city before paying for a removal that is not yours to pay for.</p>"
+  },
+  {
+    "topper": "Storms",
+    "title": "Storm Debris Pickup Is Not Tree Removal",
+    "image": "storm-uproot",
+    "html": "<p>After a declared storm, local governments often collect debris placed at the curb. That covers cleanup of what is already cut up, not cutting down a standing tree or removing one that is still on a structure. Rules on where to place debris and how long collection lasts are set by each city, so check its website.</p><p>See <a href=\"/tree-care-guides/tree-removal-after-hurricane/\">what to do after a hurricane</a> for the full list of steps.</p>"
+  }
+];
+---
+
+<ServicePage
+  title="Free Tree Removal in South Florida | What's Really Free"
+  description="What is actually free when you need a tree removed in South Florida: estimates, public trees, insurance and assistance programs, and what to avoid."
+  service={{
+    name: "Free Tree Removal Estimates",
+    serviceType: "Tree removal estimate matching",
+    description: "Free estimates for tree removal from independent local professionals in South Florida.",
+  }}
+  badge="FREE TREE REMOVAL"
+  h1="Free Tree Removal in South Florida"
+  lead="Free estimates are easy to get. Free removal is rarer. Here is what is actually free, and how to avoid overpaying."
+  intro={[
+    "People search for “free tree removal” for different reasons: a dead tree they cannot afford to take down, a tree that fell in a storm, or just a quote with no strings. The honest answer is that <strong>the estimate is free, the removal usually is not</strong>, but there are situations where the cost falls on someone else.",
+    "SF Tree Removal is an online service. Send one request and we connect you with an independent tree care professional for a <strong>free, no-obligation estimate</strong>. We are active in the Fort Lauderdale area and adding more areas. We do not perform the work ourselves, so we cannot promise free removal, but we can point you to the places where help may exist.",
+  ]}
+  coversTitle="Where You May Not Have to Pay"
+  covers={[
+    { name: "The estimate", note: "Every request through this site is free, with no obligation to hire anyone. Compare the estimate before you decide." },
+    { name: "Trees owned by the city or county", note: "A tree in the public right-of-way, such as on the swale or along the street, is generally the city's or county's responsibility. Report it instead of paying for it." },
+    { name: "Trees touching power lines", note: "Trees near energized lines are handled by the utility, in most of South Florida FPL. Never cut them yourself, and report them." },
+    { name: "Insurance claims", note: "If a tree fell on a covered structure such as the house or a fence, your policy may pay for removal. Photograph the damage first." },
+    { name: "Assistance programs", note: "Some cities and housing agencies help low-income or senior homeowners remove hazardous trees. Programs and funding change, so ask your city's code compliance or housing department." },
+    { name: "Storm debris pickup", note: "After a declared storm, local governments may collect debris you place at the curb. That covers cleanup, not cutting down a standing tree." },
+  ]}
+  detailTitle="How to Pay Less When You Do Have to Pay"
+  detail={`<ul>
+  <li><strong>Get an arborist's opinion if the tree may be a risk.</strong> Under Florida Statute 163.045, a homeowner of a detached single-family home can remove a tree that an ISA certified arborist or Florida licensed landscape architect documents as an unacceptable risk without a local permit, fee or replacement tree. That can save money on permits. See our <a href="/tree-removal-permits/">permit guide</a>.</li>
+  <li><strong>Ask for stump grinding, cleanup and wood haul-away to be stated in the estimate</strong>, so you can compare like with like. Our <a href="/stump-grinding/">stump grinding</a> page explains what to ask.</li>
+  <li><strong>Combine jobs.</strong> Removing one tree and trimming another in the same visit is usually cheaper than two separate trips.</li>
+  <li><strong>Understand the price drivers</strong> before you call: size, access, nearness to the house or power lines, and whether a crane is needed. See <a href="/tree-care-guides/tree-removal-cost-south-florida/">how much tree removal costs in South Florida</a>.</li>
+</ul>
+<h3>Warning signs of a bad “free” offer</h3>
+<ul>
+  <li>A crew that knocks on your door right after a storm and asks for cash up front.</li>
+  <li>No written scope, or no proof of license and insurance when you ask.</li>
+  <li>A very low price that does not mention cleanup, stump or hauling.</li>
+</ul>
+<p>Rules about who may remove a tree, and when, vary by city. When in doubt, ask your city before work starts.</p>`}
+  faqs={faqs}
+  image="uprooted-yard"
+  introImage="fallen-on-car"
+  introTitle="The Honest Answer About \u201cFree\u201d"
+  extras={extras}
+  ctaTitle="Get Your Free Estimate"
+  ctaText="Tell us about the tree. We connect you with an independent professional for a free estimate, and you decide whether to go ahead."
+/>

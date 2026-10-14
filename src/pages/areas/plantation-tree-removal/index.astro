@@ -1,0 +1,108 @@
+---
+import CityPage from "../../../components/CityPage.astro";
+
+const intro = [
+  "Plantation is a mature central Broward city with leafy neighborhoods, large lots and many established trees. Large oaks and palms stand close to houses and walls, and the city has a clear process for hazardous trees.",
+  "Send one request and an independent tree care professional in the Fort Lauderdale area will contact you with a free estimate. SF Tree Removal is an online service that connects you with them; we don't do the work ourselves, so you agree the scope and price directly."
+];
+
+const conditions = [
+  {
+    "name": "Established neighborhoods",
+    "note": "Large trees on older lots grow close to roofs and walls."
+  },
+  {
+    "name": "Hazard-tree process",
+    "note": "The city applies the state exemption when an arborist documents the risk."
+  },
+  {
+    "name": "Replacement",
+    "note": "Without the exemption, a permit and replacement trees are expected."
+  },
+  {
+    "name": "Storm damage",
+    "note": "Strong wind and saturated soil bring down trees and limbs."
+  }
+];
+
+const notes = "<p>Plantation publishes a decision guide for the state hazard-tree exemption: a single-family owner with a report from an ISA certified arborist or Florida landscape architect that the tree presents a danger can remove it without a permit or replacement. Without that report the owner applies for a permit and mitigates under city code.</p><p>That makes an arborist assessment especially useful here, both for deciding whether a tree has to go and for the paperwork.</p>";
+
+const trees = [
+  {
+    "name": "Live oak",
+    "note": "Wide, heavy limbs that often grow over roofs and driveways. Removal needs rigging so big pieces are lowered, not dropped."
+  },
+  {
+    "name": "Mahogany",
+    "note": "Large shade tree with a broad canopy. Branch failure in storms is common, so structure and dead wood matter."
+  },
+  {
+    "name": "Royal palm",
+    "note": "Tall and straight, often next to pools and houses. Lowering the crown needs care near screens and pavers."
+  },
+  {
+    "name": "Ficus",
+    "note": "Fast-growing with aggressive roots that crowd walls, pipes and pools. A frequent reason for removal requests."
+  },
+  {
+    "name": "Black olive",
+    "note": "A common street and yard tree whose roots lift sidewalks and whose fruit stains pavers."
+  },
+  {
+    "name": "Australian pine",
+    "note": "An invasive species that topples easily in storms and is commonly removed rather than kept."
+  }
+];
+
+const nearby = [
+  {
+    "name": "Davie",
+    "href": "/areas/davie-tree-removal/"
+  },
+  {
+    "name": "Fort Lauderdale",
+    "href": "/areas/fort-lauderdale-tree-removal/"
+  },
+  {
+    "name": "Broward County",
+    "href": "/areas/broward-county-tree-removal/"
+  }
+];
+
+const faqs = [
+  {
+    "q": "How much does tree removal cost in Plantation?",
+    "a": "It depends on the size of the tree, how close it is to the house, pool or power lines, and whether a crane is needed. You will get a free estimate for your specific tree; see our <a href=\"/tree-care-guides/tree-removal-cost-south-florida/\">cost guide</a>."
+  },
+  {
+    "q": "Do I need a permit to remove a tree in Plantation?",
+    "a": "Often, but it depends on the tree, the property and the rules where you live. Use the <a href=\"/permit-checker/\">permit checker</a> for what Plantation and its county say, and confirm with the city."
+  },
+  {
+    "q": "Can I get emergency tree help in Plantation?",
+    "a": "Choose Emergency Tree Removal in the <a href=\"/contact-us/\">form</a>. The request is flagged as urgent for local professionals; we cannot promise an arrival time. If anyone is in danger, call 911."
+  },
+  {
+    "q": "Who does the work?",
+    "a": "An independent tree care professional in Broward County. SF Tree Removal is an online service; we do not perform the work. Ask for proof of license and insurance first."
+  }
+];
+---
+
+<CityPage
+  city="Plantation"
+  county="Broward County"
+  title="Tree Removal in Plantation, FL | Free Estimates"
+  description="Free tree removal estimates in Plantation, FL: removal, trimming, stump grinding and storm cleanup from independent local pros."
+  lead="Get a free tree removal estimate from independent local professionals in Plantation and central Broward."
+  intro={intro}
+  conditions={conditions}
+  permitId="plantation"
+  nearby={nearby}
+  faqs={faqs}
+  image="canopy-climber"
+  image2="ladder-oak"
+  image3="broken-tree"
+  notes={notes}
+  trees={trees}
+/>

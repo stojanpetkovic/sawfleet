@@ -47,6 +47,21 @@ for (const form of document.querySelectorAll<HTMLFormElement>('form[data-lead-fo
     }
 
     const source = attribution();
+    const data = fieldsOf(form);
+    // A request meant for a listed company: make it unmistakable where it came
+    // from, so it can be passed on by hand with the origin intact.
+    const forwardTo = form.dataset.forwardTo;
+    if (forwardTo) {
+      data.source_site = 'sftreeremoval.com (SF Tree Removal)';
+      data.forward_to = forwardTo;
+      data.forward_note = [
+        `NEW REQUEST FROM SFTREEREMOVAL.COM (SF Tree Removal directory), for ${forwardTo}.`,
+        `Customer: ${data.name || ''} | ${data.phone || ''} | ${data.email || 'no email'}`,
+        `Location: ${data.city || ''} | Service: ${data.service || ''}`,
+        `Message: ${data.message || ''}`,
+        `Sent from: ${location.href.split('#')[0]}`,
+      ].join('\n');
+    }
     try {
       const response = await fetch(ENDPOINT, {
         method: 'POST',
@@ -58,18 +73,19 @@ for (const form of document.querySelectorAll<HTMLFormElement>('form[data-lead-fo
           page_url: location.href.split('#')[0],
           referrer: source.referrer || '',
           utm: source.utm || {},
-          data: fieldsOf(form),
+          data,
         }),
       });
       const result = (await response.json().catch(() => ({}))) as { ok?: boolean; error?: string };
       if (!response.ok || !result.ok) throw new Error(result.error || String(response.status));
 
       try {
+        sessionStorage.setItem('sf_lead_coverage', data.coverage_status || '');
         sessionStorage.setItem('sf_lead_sent', form.dataset.leadForm || 'form');
       } catch {
         // Storage blocked: the thank-you page simply skips its conversion event.
       }
-      location.href = '/thank-you/';
+      location.href = form.dataset.redirect || '/thank-you/';
     } catch (error) {
       const tooMany = error instanceof Error && error.message === 'rate_limited';
       showError(

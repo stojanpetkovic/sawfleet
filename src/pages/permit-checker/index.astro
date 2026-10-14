@@ -1,0 +1,139 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import PageHero from "../../components/PageHero.astro";
+import PermitChecker from "../../components/PermitChecker.astro";
+import SectionHeading from "../../components/SectionHeading.astro";
+import SplitSection from "../../components/SplitSection.astro";
+import Faq from "../../components/Faq.astro";
+import CtaBand from "../../components/CtaBand.astro";
+import Disclosure from "../../components/Disclosure.astro";
+import { jurisdictions, counties, stateRule, type CountyId } from "../../data/permits";
+import { business } from "../../config/business";
+
+const statusLabel = { permit: "Permit usually needed", size: "Depends on tree size", exempt: "Often exempt (single-family)", ask: "Ask the city" } as const;
+const statusClass = {
+  permit: "bg-amber-100 text-amber-900",
+  size: "bg-amber-100 text-amber-900",
+  exempt: "bg-primary-100 text-primary-800",
+  ask: "bg-secondary-100 text-secondary-700",
+} as const;
+const countyIds = Object.keys(counties) as CountyId[];
+
+const faqs = [
+  {
+    q: "Do I need a permit to remove a tree in South Florida?",
+    a: `Often, but it depends on where the tree is, what kind of property it is on, and the tree itself. Many cities require a permit before removing a living tree, a few exempt typical single-family yard trees, and a dangerous tree on a single-family home can be exempt under state law when an arborist documents the risk. Use the tool above for your city.`,
+  },
+  {
+    q: "What is the state exemption for dangerous trees?",
+    a: `${stateRule.text} See <a href="${stateRule.url}" target="_blank" rel="noopener noreferrer">${stateRule.label}</a> and our <a href="/tree-removal-permits/">permit guide</a>.`,
+  },
+  {
+    q: "Is this tool legal advice?",
+    a: `No. It is general guidance based on the official pages listed for each city, and the rules change. Always confirm with your city or county, and check your HOA's rules, before cutting a tree.`,
+  },
+  {
+    q: "What if my city is not listed?",
+    a: `Choose "Other city" under your county. Most cities have their own tree ordinance, so ask your city. The county baseline shown in the tool tells you where to start.`,
+  },
+  {
+    q: "Do I need a permit to trim a tree?",
+    a: `Usually not for normal pruning done to the ANSI A300 standard, but heavy pruning or topping that effectively destroys a tree can be treated as removal in some places, such as Miami-Dade. See <a href="/tree-trimming/">tree trimming</a>.`,
+  },
+  {
+    q: "Who can I ask to check my tree?",
+    a: `An ISA certified arborist can assess a tree and write the report some cities and the state exemption rely on. See <a href="/certified-arborist/">arborist assessments</a>, or <a href="/contact-us/">request a free estimate</a> and ask the professional what applies to your address.`,
+  },
+];
+
+const appSchema = {
+  "@context": "https://schema.org",
+  "@type": "WebApplication",
+  name: "Tree Removal Permit Checker for South Florida",
+  url: `${business.url}/permit-checker/`,
+  applicationCategory: "UtilitiesApplication",
+  operatingSystem: "Any",
+  description: "Free tool that shows what South Florida cities and counties say about tree removal permits, with links to the official source.",
+  offers: { "@type": "Offer", price: "0", priceCurrency: "USD" },
+  provider: { "@id": `${business.url}/#business` },
+};
+---
+
+<BaseLayout
+  title="Tree Removal Permit Checker | South Florida Cities"
+  description="Free tool: choose your city and tree type to see what South Florida cities say about tree removal permits, with links to the official source."
+>
+  <script type="application/ld+json" set:html={JSON.stringify(appSchema)} />
+
+  <PageHero
+    badge="FREE TOOL"
+    title="Do I Need a Permit to Remove a Tree?"
+    lead="Choose your city, property and tree. See what that place says, with a link to the official source."
+    actions={false}
+    image="climber-rope"
+  />
+
+  <section class="py-section">
+    <div class="mx-auto max-w-4xl px-4 sm:px-6">
+      <PermitChecker />
+    </div>
+  </section>
+
+  <SplitSection
+    topper="How it works"
+    title="What This Tool Does, and What It Does Not"
+    image="arborist-inspect"
+    tone="tint"
+    html={`<p>The tool reads the rules published by each place, pairs them with the state hazard-tree exemption and shows the result with a link to the source. Every entry shows how reliable the source is, and where we could not confirm a city's own rules we say so instead of guessing.</p><p>It does not know your exact property, zoning, historic status or HOA rules, and cities update their codes. Treat the answer as a starting point, then confirm with your city or county before you cut.</p>`}
+  />
+
+  <section class="py-section">
+    <div class="mx-auto max-w-site px-4 sm:px-6">
+      <SectionHeading topper="City by city" title="What Each Place Says" description="The same information as the tool, for every place we cover. Open a place for the details and the source." />
+      {
+        countyIds.map((c) => (
+          <div class="mb-12 last:mb-0">
+            <h3 class="mb-5 font-heading text-2xl font-extrabold text-secondary-900">{counties[c]}</h3>
+            <div class="space-y-3">
+              {jurisdictions.filter((j) => j.county === c).map((j) => (
+                <details class="group card-static p-5" id={j.id}>
+                  <summary class="flex cursor-pointer list-none items-start justify-between gap-4 [&::-webkit-details-marker]:hidden">
+                    <div>
+                      <h4 class="font-heading text-lg font-semibold text-secondary-900">Do I need a permit to remove a tree in {j.name.split(" (")[0]}?</h4>
+                      <p class="mt-1 text-sm text-secondary-600">{j.headline}</p>
+                    </div>
+                    <span class:list={["mt-1 shrink-0 rounded-full px-3 py-1 text-xs font-bold", statusClass[j.status]]}>{statusLabel[j.status]}</span>
+                  </summary>
+                  <div class="mt-4 space-y-3 border-t border-secondary-100 pt-4 text-secondary-700">
+                    <p>{j.summary}</p>
+                    {j.palms && <p><strong>Palms:</strong> {j.palms}</p>}
+                    {j.dead && <p><strong>Dead trees:</strong> {j.dead}</p>}
+                    {j.invasive && <p><strong>Invasive species:</strong> {j.invasive}</p>}
+                    {j.publicTrees && <p><strong>Public trees:</strong> {j.publicTrees}</p>}
+                    <p class="text-sm text-secondary-500">
+                      Source: <a class="font-semibold text-primary-700 underline" href={j.source.url} target="_blank" rel="noopener noreferrer">{j.source.label}</a>
+                      {j.phone && <> · Phone: {j.phone}</>}
+                      {" · "}Confidence: {j.confidence === "official" ? "official page" : j.confidence === "partial" ? "official page, partly dated or unclear" : "not confirmed, ask the city"}
+                    </p>
+                    <p class="flex flex-wrap gap-3 pt-1">
+                      <a href={`/permit-checker/?j=${j.id}`} class="text-sm font-semibold text-primary-700 underline">Check a specific tree here</a>
+                      {j.page && <a href={j.page} class="text-sm font-semibold text-primary-700 underline">{j.name.split(" (")[0]} tree removal page</a>}
+                    </p>
+                  </div>
+                </details>
+              ))}
+            </div>
+          </div>
+        ))
+      }
+    </div>
+  </section>
+
+  <Faq faqs={faqs} />
+
+  <section class="py-10">
+    <div class="mx-auto max-w-3xl px-4 sm:px-6"><Disclosure variant="card" /></div>
+  </section>
+
+  <CtaBand title="Know What You Need? Get an Estimate" text="Tell us about the tree. We connect you with an independent professional for a free estimate who can tell you what is usually required for your address." />
+</BaseLayout>

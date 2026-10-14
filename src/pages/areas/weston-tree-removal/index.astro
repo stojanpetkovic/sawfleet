@@ -1,0 +1,108 @@
+---
+import CityPage from "../../../components/CityPage.astro";
+
+const intro = [
+  "Weston is a planned city of gated communities, lakes and golf courses on the edge of the Everglades. Its trees are mature and plentiful, and the city has one of the strictest tree ordinances in Broward.",
+  "Send one request and we will try to match you with an independent tree care professional. We are adding professionals in Weston and cannot promise a response yet, so you can also tell us you want to be notified. SF Tree Removal is an online service; we don't do the work ourselves, so you agree the scope and price directly with the professional you are matched with."
+];
+
+const conditions = [
+  {
+    "name": "Strict ordinance",
+    "note": "Weston protects its trees under Chapter 122 and regulates who may work on them."
+  },
+  {
+    "name": "Registered tree services",
+    "note": "Unless you do the work yourself, trimming and removal must be done by a tree service registered with the city."
+  },
+  {
+    "name": "Gated communities",
+    "note": "Associations set rules on hours, equipment and cleanup."
+  },
+  {
+    "name": "Lakes and canals",
+    "note": "Waterfront and lakeside lots can limit access."
+  }
+];
+
+const notes = "<p>The City of Weston describes its tree ordinance as very strict. Removals go through a permit, with preservation, relocation, replacement or a payment into the tree trust. Unless you do the work yourself, trimming, removal and root pruning must be done by a tree service registered with the city.</p><p>That is worth asking about when you get an estimate. The city's tree preservation division can say what applies to your property.</p>";
+
+const trees = [
+  {
+    "name": "Live oak",
+    "note": "Wide, heavy limbs that often grow over roofs and driveways. Removal needs rigging so big pieces are lowered, not dropped."
+  },
+  {
+    "name": "Mahogany",
+    "note": "Large shade tree with a broad canopy. Branch failure in storms is common, so structure and dead wood matter."
+  },
+  {
+    "name": "Royal palm",
+    "note": "Tall and straight, often next to pools and houses. Lowering the crown needs care near screens and pavers."
+  },
+  {
+    "name": "Black olive",
+    "note": "A common street and yard tree whose roots lift sidewalks and whose fruit stains pavers."
+  },
+  {
+    "name": "Ficus",
+    "note": "Fast-growing with aggressive roots that crowd walls, pipes and pools. A frequent reason for removal requests."
+  },
+  {
+    "name": "Queen palm",
+    "note": "Fast growing and short lived; prone to disease and to toppling in saturated soil."
+  }
+];
+
+const nearby = [
+  {
+    "name": "Davie",
+    "href": "/areas/davie-tree-removal/"
+  },
+  {
+    "name": "Pembroke Pines",
+    "href": "/areas/pembroke-pines-tree-removal/"
+  },
+  {
+    "name": "Broward County",
+    "href": "/areas/broward-county-tree-removal/"
+  }
+];
+
+const faqs = [
+  {
+    "q": "How much does tree removal cost in Weston?",
+    "a": "It depends on the size of the tree, how close it is to the house, pool or power lines, and whether a crane is needed. You will get a free estimate for your specific tree; see our <a href=\"/tree-care-guides/tree-removal-cost-south-florida/\">cost guide</a>."
+  },
+  {
+    "q": "Do I need a permit to remove a tree in Weston?",
+    "a": "Often, but it depends on the tree, the property and the rules where you live. Use the <a href=\"/permit-checker/\">permit checker</a> for what Weston and its county say, and confirm with the city."
+  },
+  {
+    "q": "Can I get emergency tree help in Weston?",
+    "a": "Choose Emergency Tree Removal in the <a href=\"/contact-us/\">form</a>. The request is flagged as urgent for local professionals; we cannot promise an arrival time. If anyone is in danger, call 911."
+  },
+  {
+    "q": "Who does the work?",
+    "a": "An independent tree care professional in Broward County. SF Tree Removal is an online service; we do not perform the work. Ask for proof of license and insurance first."
+  }
+];
+---
+
+<CityPage
+  city="Weston"
+  county="Broward County"
+  title="Tree Removal in Weston, FL | Free Estimates"
+  description="Free tree removal estimates in Weston, FL: removal, trimming, stump grinding and storm cleanup from independent local pros."
+  lead="Get a free tree removal estimate from independent local professionals in Weston and western Broward."
+  intro={intro}
+  conditions={conditions}
+  permitId="weston"
+  nearby={nearby}
+  faqs={faqs}
+  image="brick-house-climber"
+  image2="aerial-lift"
+  image3="canopy-climber"
+  notes={notes}
+  trees={trees}
+/>

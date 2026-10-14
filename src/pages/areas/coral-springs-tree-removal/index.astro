@@ -1,0 +1,108 @@
+---
+import CityPage from "../../../components/CityPage.astro";
+
+const intro = [
+  "Coral Springs is a planned city of HOA communities, with trees planted close to houses, walls, pools and screen enclosures. As oaks, ficus and palms mature, roots and limbs start to cause problems.",
+  "Send one request and we will try to match you with an independent tree care professional. We are adding professionals in Coral Springs and cannot promise a response yet, so you can also tell us you want to be notified. SF Tree Removal is an online service; we don't do the work ourselves, so you agree the scope and price directly with the professional you are matched with."
+];
+
+const conditions = [
+  {
+    "name": "HOA communities",
+    "note": "Most Coral Springs neighborhoods have an association, and the city's residential tree permit process asks for HOA approval."
+  },
+  {
+    "name": "Trees close to houses and walls",
+    "note": "Roots lift pavers and crack walls, and limbs reach roofs."
+  },
+  {
+    "name": "Storm damage",
+    "note": "Strong wind and saturated soil bring down trees and limbs onto fences, cars and roofs."
+  },
+  {
+    "name": "Replacement requirements",
+    "note": "Removing a tree can require replacing it, so ask what the city expects before work starts."
+  }
+];
+
+const nearby = [
+  {
+    "name": "Pompano Beach",
+    "href": "/areas/pompano-beach-tree-removal/"
+  },
+  {
+    "name": "Deerfield Beach",
+    "href": "/areas/deerfield-beach-tree-removal/"
+  },
+  {
+    "name": "Broward County",
+    "href": "/areas/broward-county-tree-removal/"
+  }
+];
+
+const faqs = [
+  {
+    "q": "How much does tree removal cost in Coral Springs?",
+    "a": "It depends on the size of the tree, how close it is to the house, pool or power lines, and whether a crane is needed. You will get a free estimate for your specific tree; see our <a href=\"/tree-care-guides/tree-removal-cost-south-florida/\">cost guide</a>."
+  },
+  {
+    "q": "Do I need a permit to remove a tree in Coral Springs?",
+    "a": "Often yes, depending on the tree, the property and the city's rules, unless a certified arborist documents that the tree is dangerous. See our <a href=\"/tree-removal-permits/\">permit guide</a> and confirm with the city."
+  },
+  {
+    "q": "Can I get emergency tree help in Coral Springs?",
+    "a": "Choose Emergency Tree Removal in the <a href=\"/contact-us/\">form</a>. The request is flagged as urgent for local professionals; we cannot promise an arrival time. If anyone is in danger, call 911."
+  },
+  {
+    "q": "Who does the work?",
+    "a": "An independent tree care professional in Broward County. SF Tree Removal is an online service; we do not perform the work. Ask for proof of license and insurance first."
+  }
+];
+
+const notes = "<p>Coral Springs is a planned city of homeowners' associations, and the city's residential tree removal permit asks for HOA approval, a survey or sketch and can require replacement trees within a set time. Start with the association and the city, and then book the work.</p><p>Trees planted close to houses and walls over decades are the most common reason for requests, especially roots that lift pavers and crack walls, and limbs that reach roofs and screen enclosures.</p>";
+
+const trees = [
+  {
+    "name": "Ficus",
+    "note": "Fast-growing with aggressive roots that crowd walls, pipes and pools. A frequent reason for removal requests."
+  },
+  {
+    "name": "Black olive",
+    "note": "A common street and yard tree whose roots lift sidewalks and whose fruit stains pavers."
+  },
+  {
+    "name": "Live oak",
+    "note": "Wide, heavy limbs that often grow over roofs and driveways. Removal needs rigging so big pieces are lowered, not dropped."
+  },
+  {
+    "name": "Queen palm",
+    "note": "Fast growing and short lived; prone to disease and to toppling in saturated soil."
+  },
+  {
+    "name": "Royal palm",
+    "note": "Tall and straight, often next to pools and houses. Lowering the crown needs care near screens and pavers."
+  },
+  {
+    "name": "Mahogany",
+    "note": "Large shade tree with a broad canopy. Branch failure in storms is common, so structure and dead wood matter."
+  }
+];
+---
+
+<CityPage
+  city="Coral Springs"
+  county="Broward County"
+  title="Tree Removal in Coral Springs, FL | Free Estimates"
+  description="Free tree removal estimates in Coral Springs, FL: removal, trimming, stump grinding and storm cleanup from independent local pros."
+  lead="Get a free tree removal estimate from independent local professionals in Coral Springs and northwest Broward County."
+  intro={intro}
+  conditions={conditions}
+  permitId="coral-springs"
+  nearby={nearby}
+  faqs={faqs}
+  image="brick-house-climber"
+  image2="canopy-climber"
+  image3="broken-tree"
+  notes={notes}
+  trees={trees}
+/>

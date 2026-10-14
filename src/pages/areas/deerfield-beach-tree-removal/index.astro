@@ -1,0 +1,108 @@
+---
+import CityPage from "../../../components/CityPage.astro";
+
+const intro = [
+  "Deerfield Beach sits on the coast at the northern edge of Broward, with beachside streets, canal lots and inland communities. Palms, sea grapes, ficus and oaks grow close to houses and pools, and coastal wind is hard on them.",
+  "Send one request and we will try to match you with an independent tree care professional. We are adding professionals in Deerfield Beach and cannot promise a response yet, so you can also tell us you want to be notified. SF Tree Removal is an online service; we don't do the work ourselves, so you agree the scope and price directly with the professional you are matched with."
+];
+
+const conditions = [
+  {
+    "name": "Salt air and coastal wind",
+    "note": "Storms and salt air stress trees near the coast, and weakened limbs can fall."
+  },
+  {
+    "name": "Palms near pools and houses",
+    "note": "Tall palms need careful lowering of the crown next to pools, pavers and roofs."
+  },
+  {
+    "name": "Canal and waterfront lots",
+    "note": "Limited access makes some removals harder, so describe access in your request."
+  },
+  {
+    "name": "Storm season",
+    "note": "Saturated soil and strong wind make leaning and damaged trees urgent."
+  }
+];
+
+const nearby = [
+  {
+    "name": "Pompano Beach",
+    "href": "/areas/pompano-beach-tree-removal/"
+  },
+  {
+    "name": "Boca Raton",
+    "href": "/areas/boca-raton-tree-removal/"
+  },
+  {
+    "name": "Broward County",
+    "href": "/areas/broward-county-tree-removal/"
+  }
+];
+
+const faqs = [
+  {
+    "q": "How much does tree removal cost in Deerfield Beach?",
+    "a": "It depends on the size of the tree, how close it is to the house, pool or power lines, and whether a crane is needed. You will get a free estimate for your specific tree; see our <a href=\"/tree-care-guides/tree-removal-cost-south-florida/\">cost guide</a>."
+  },
+  {
+    "q": "Do I need a permit to remove a tree in Deerfield Beach?",
+    "a": "Often yes, depending on the tree, the property and the city's rules, unless a certified arborist documents that the tree is dangerous. See our <a href=\"/tree-removal-permits/\">permit guide</a> and confirm with the city."
+  },
+  {
+    "q": "Can I get emergency tree help in Deerfield Beach?",
+    "a": "Choose Emergency Tree Removal in the <a href=\"/contact-us/\">form</a>. The request is flagged as urgent for local professionals; we cannot promise an arrival time. If anyone is in danger, call 911."
+  },
+  {
+    "q": "Who does the work?",
+    "a": "An independent tree care professional in Broward County. SF Tree Removal is an online service; we do not perform the work. Ask for proof of license and insurance first."
+  }
+];
+
+const notes = "<p>Deerfield Beach is a coastal city at the northern end of Broward, with beachside streets, canal lots and inland communities. Palms and sea grapes dominate near the shore, with oaks and ficus further inland.</p><p>Salt air, wind and heavy rain are the main stressors. Requests usually involve trimming tall palms, removing dead or leaning trees and clearing limbs from roofs after storms.</p>";
+
+const trees = [
+  {
+    "name": "Coconut palm",
+    "note": "Heavy coconuts and fronds fall on roofs, cars and pool decks, so regular trimming matters."
+  },
+  {
+    "name": "Sea grape",
+    "note": "Salt-tolerant coastal native, often shaped as hedge or tree. Trimming should not strip the plant."
+  },
+  {
+    "name": "Sabal palm",
+    "note": "Florida’s state tree and very wind tolerant, but often over-trimmed. Ask for dead fronds only."
+  },
+  {
+    "name": "Ficus",
+    "note": "Fast-growing with aggressive roots that crowd walls, pipes and pools. A frequent reason for removal requests."
+  },
+  {
+    "name": "Live oak",
+    "note": "Wide, heavy limbs that often grow over roofs and driveways. Removal needs rigging so big pieces are lowered, not dropped."
+  },
+  {
+    "name": "Buttonwood",
+    "note": "Salt-tolerant coastal tree, often near docks and seawalls where access is limited."
+  }
+];
+---
+
+<CityPage
+  city="Deerfield Beach"
+  county="Broward County"
+  title="Tree Removal in Deerfield Beach, FL | Free Estimates"
+  description="Free tree removal estimates in Deerfield Beach, FL: removal, trimming, stump grinding and storm cleanup from independent local pros."
+  lead="Get a free tree removal estimate from independent local professionals in Deerfield Beach and northern Broward County."
+  intro={intro}
+  conditions={conditions}
+  permitId="deerfield-beach"
+  nearby={nearby}
+  faqs={faqs}
+  image="chainsaw"
+  image2="beach-palms"
+  image3="fallen-on-car"
+  notes={notes}
+  trees={trees}
+/>

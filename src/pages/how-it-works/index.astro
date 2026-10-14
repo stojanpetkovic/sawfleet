@@ -1,0 +1,83 @@
+---
+import ServicePage from "../../components/ServicePage.astro";
+
+const faqs = [
+  {
+    q: "What is SF Tree Removal?",
+    a: `An online service that connects South Florida property owners with independent local tree care professionals. You send one request, and an independent professional contacts you with a free estimate in our active area (Fort Lauderdale and the surrounding area); elsewhere we try to match you but cannot promise a response. We do not perform the work ourselves.`,
+  },
+  {
+    q: "Does SF Tree Removal charge me anything?",
+    a: `No. Sending a request is free and you are under no obligation. Any price for the work itself is agreed between you and the independent professional.`,
+  },
+  {
+    q: "Who is responsible for the work?",
+    a: `The professional you choose. You agree the scope, price and schedule with them directly, and the work is covered by that agreement. SF Tree Removal is not a party to it.`,
+  },
+  {
+    q: "How do I know the professional is licensed and insured?",
+    a: `Ask for proof of license and insurance before work starts, and get the scope and price in writing. We recommend this for every tree job, from any company.`,
+  },
+  {
+    q: "What happens to the details I send?",
+    a: `We pass your request (name, phone, city and job description) to the professional who responds to it. We do not sell your information. See the <a href="/privacy-policy/">Privacy Policy</a>.`,
+  },
+];
+const extras = [
+  {
+    "topper": "Urgent requests",
+    "title": "How Emergency Requests Are Handled",
+    "image": "fallen-on-car",
+    "html": "<p>Choose <strong>Emergency Tree Removal</strong> in the form and describe what happened. We flag the request as urgent when we pass it to an independent professional. We are active in the Fort Lauderdale area; elsewhere we are adding professionals and cannot promise a response. Even where we are active we cannot promise an arrival time, because speed depends on availability and conditions, and it is slower right after a major storm.</p><p>If anyone is in danger, call 911. If a tree is touching a power line, stay far away and call the utility.</p>"
+  },
+  {
+    "topper": "Your details",
+    "title": "Your Information and Privacy",
+    "image": "canopy-climber",
+    "html": "<p>We share your name, phone number, city and job description with the professional who answers your request, and we do not sell your information to anyone else. We use cookie-free visit statistics and Google Analytics, as described in the <a href=\"/privacy-policy/\">Privacy Policy</a>.</p><p>Nothing you send obliges you to hire anyone.</p>"
+  }
+];
+---
+
+<ServicePage
+  title="How SF Tree Removal Works | Free Local Estimates"
+  description="How SF Tree Removal works: send one request, an independent pro gives you a free estimate in our active area, and you decide. What we do and don't."
+  service={{
+    name: "Tree Service Estimate Matching",
+    serviceType: "Tree service estimate matching",
+    description: "An online service that connects South Florida property owners with independent local tree care professionals for free estimates.",
+  }}
+  badge="HOW IT WORKS"
+  h1="How SF Tree Removal Works"
+  lead="One request, an independent professional, a free estimate. Here is exactly what happens, where we are active and what we do and don't do."
+  intro={[
+    "SF Tree Removal is an <strong>online service</strong>, not a tree company. We help property owners in Miami-Dade, Broward and Palm Beach County get a free estimate for tree removal, trimming, stump grinding, emergency work or an arborist assessment, without calling around.",
+    "You describe the job once. We pass the request to an independent tree care professional, and in our active area (Fort Lauderdale and the surrounding area) they contact you. Elsewhere we are adding professionals, so we try to match you but cannot promise a response. You compare, ask questions and decide. There is no obligation at any step.",
+  ]}
+  coversTitle="What We Do and Don't Do"
+  covers={[
+    { name: "We pass your request on", note: "We send your details to an independent professional where we are active (Fort Lauderdale area), and flag emergencies as urgent." },
+    { name: "We publish plain-language guides", note: "Costs, permits, storm preparation and warning signs, so you know what to ask before anyone arrives." },
+    { name: "We don't perform the work", note: "We have no crews or equipment. The professional you choose does the job and is responsible for it." },
+    { name: "We don't set the price", note: "The estimate comes from the professional. You agree the scope, price and schedule directly with them." },
+    { name: "We don't promise an arrival time", note: "Speed depends on local availability, especially after a major storm. Emergency requests go first, but we cannot guarantee a time." },
+    { name: "We don't replace your own checks", note: "Always confirm license, insurance and permit requirements for your address before work starts." },
+  ]}
+  detailTitle="How to Compare Estimates"
+  detail={`<ul>
+  <li><strong>Written scope:</strong> which trees, which limbs, and whether stump grinding, cleanup and wood haul-away are included.</li>
+  <li><strong>Price and payment terms:</strong> be wary of anyone who wants full payment in advance.</li>
+  <li><strong>Proof of license and insurance:</strong> ask for it, and for the name of the insurer if you want to verify it.</li>
+  <li><strong>Permits:</strong> who gets the permit if one is needed, and whether the price includes it. See our <a href="/tree-removal-permits/">permit guide</a>.</li>
+  <li><strong>Method and equipment:</strong> for large trees near houses, how the pieces will be lowered and what protects the roof, pool and fence.</li>
+  <li><strong>Timing:</strong> when the work can start and how long it will take.</li>
+</ul>
+<p>Not sure what a fair price looks like? Read <a href="/tree-care-guides/tree-removal-cost-south-florida/">how much tree removal costs in South Florida</a>, or see <a href="/free-tree-removal/">what is actually free</a>.</p>`}
+  faqs={faqs}
+  image="hero-crane"
+  introImage="aerial-lift"
+  introTitle="A Simple Way to Get a Local Estimate"
+  extras={extras}
+  ctaTitle="Send Your Request"
+  ctaText="Tell us about the tree. We connect you with an independent professional for a free estimate, and you decide whether to go ahead."
+/>

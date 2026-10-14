@@ -1,0 +1,108 @@
+---
+import CityPage from "../../../components/CityPage.astro";
+
+const intro = [
+  "Miramar is a city of planned residential communities, lakes and wide streets with mature oaks, ficus and palms planted close to houses, pools and screen enclosures. As they grow, roots and limbs start to cause problems.",
+  "Send one request and we will try to match you with an independent tree care professional. We are adding professionals in Miramar and cannot promise a response yet, so you can also tell us you want to be notified. SF Tree Removal is an online service; we don't do the work ourselves, so you agree the scope and price directly with the professional you are matched with."
+];
+
+const conditions = [
+  {
+    "name": "HOA communities",
+    "note": "Many Miramar neighborhoods have association rules about removing or replacing trees. Check with yours before work starts."
+  },
+  {
+    "name": "Trees close to enclosures and pools",
+    "note": "Limbs reach roofs and screen enclosures, and roots lift pavers and pool decks."
+  },
+  {
+    "name": "Lakefront lots",
+    "note": "Access around lakes and canals can limit equipment, so describe access when you send the request."
+  },
+  {
+    "name": "Storm damage",
+    "note": "Strong wind and saturated soil bring down trees and limbs onto fences, cars and roofs."
+  }
+];
+
+const nearby = [
+  {
+    "name": "Pembroke Pines",
+    "href": "/areas/pembroke-pines-tree-removal/"
+  },
+  {
+    "name": "Davie",
+    "href": "/areas/davie-tree-removal/"
+  },
+  {
+    "name": "Broward County",
+    "href": "/areas/broward-county-tree-removal/"
+  }
+];
+
+const faqs = [
+  {
+    "q": "How much does tree removal cost in Miramar?",
+    "a": "It depends on the size of the tree, how close it is to the house, pool or power lines, and whether a crane is needed. You will get a free estimate for your specific tree; see our <a href=\"/tree-care-guides/tree-removal-cost-south-florida/\">cost guide</a>."
+  },
+  {
+    "q": "Do I need a permit to remove a tree in Miramar?",
+    "a": "Often yes, depending on the tree, the property and the city's rules, unless a certified arborist documents that the tree is dangerous. See our <a href=\"/tree-removal-permits/\">permit guide</a> and confirm with the city."
+  },
+  {
+    "q": "Can I get emergency tree help in Miramar?",
+    "a": "Choose Emergency Tree Removal in the <a href=\"/contact-us/\">form</a>. The request is flagged as urgent for local professionals; we cannot promise an arrival time. If anyone is in danger, call 911."
+  },
+  {
+    "q": "Who does the work?",
+    "a": "An independent tree care professional in Broward County. SF Tree Removal is an online service; we do not perform the work. Ask for proof of license and insurance first."
+  }
+];
+
+const notes = "<p>Miramar is made up of planned residential communities, lakes and wide streets. Many properties have trees that were planted close to walls, pools and screen enclosures, and as they grow they cause trouble for roofs and pavers.</p><p>Associations often have rules about removing and replacing trees, and storms bring requests for fallen limbs and uprooted trees. Palms and ficus are the most common subjects.</p>";
+
+const trees = [
+  {
+    "name": "Ficus",
+    "note": "Fast-growing with aggressive roots that crowd walls, pipes and pools. A frequent reason for removal requests."
+  },
+  {
+    "name": "Black olive",
+    "note": "A common street and yard tree whose roots lift sidewalks and whose fruit stains pavers."
+  },
+  {
+    "name": "Royal palm",
+    "note": "Tall and straight, often next to pools and houses. Lowering the crown needs care near screens and pavers."
+  },
+  {
+    "name": "Queen palm",
+    "note": "Fast growing and short lived; prone to disease and to toppling in saturated soil."
+  },
+  {
+    "name": "Mahogany",
+    "note": "Large shade tree with a broad canopy. Branch failure in storms is common, so structure and dead wood matter."
+  },
+  {
+    "name": "Earleaf acacia",
+    "note": "Fast-growing, weak-wooded and short-lived; often fails in wind and is a common removal."
+  }
+];
+---
+
+<CityPage
+  city="Miramar"
+  county="Broward County"
+  title="Tree Removal in Miramar, FL | Free Estimates"
+  description="Free tree removal estimates in Miramar, FL: removal, trimming, stump grinding and storm cleanup from independent local pros."
+  lead="Get a free tree removal estimate from independent local professionals in Miramar and southwest Broward County."
+  intro={intro}
+  conditions={conditions}
+  permitId="miramar"
+  nearby={nearby}
+  faqs={faqs}
+  image="ladder-oak"
+  image2="canopy-climber"
+  image3="storm-uproot"
+  notes={notes}
+  trees={trees}
+/>

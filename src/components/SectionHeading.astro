@@ -1,0 +1,17 @@
+---
+interface Props {
+  topper?: string;
+  title: string;
+  description?: string;
+  align?: "center" | "left";
+  /** Light text for use on a dark background. */
+  dark?: boolean;
+}
+const { topper, title, description, align = "center", dark = false } = Astro.props;
+---
+
+<div class:list={["mb-12 max-w-3xl lg:mb-16", align === "center" ? "mx-auto text-center" : ""]}>
+  {topper && <span class:list={["topper mb-4", dark && "!bg-white/10 !text-accent"]}>{topper}</span>}
+  <h2 class:list={["font-heading text-h2 font-extrabold", align === "center" && "heading-rule", dark ? "text-white" : "text-secondary-900"]}>{title}</h2>
+  {description && <p class:list={["mt-5 text-lg leading-relaxed", dark ? "text-white/80" : "text-secondary-600"]}>{description}</p>}
+</div>

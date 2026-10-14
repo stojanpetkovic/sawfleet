@@ -1,5 +1,7 @@
 ---
-import { business } from '../config/business';
+import { business, businessId, websiteId } from '../config/business';
+import { breadcrumbsFor } from '../lib/breadcrumbs';
+import { activePlaces } from '../config/coverage';
 
 interface Props {
   title?: string;
@@ -7,29 +9,143 @@ interface Props {
   /** Ignored: the canonical address is derived from the page's own URL. */
   canonical?: string;
   ogImage?: string;
+  ogImageAlt?: string;
   noindex?: boolean;
+  /** "article" adds the article meta tags; every other page is a website page. */
+  type?: 'website' | 'article';
+  published?: string;
+  modified?: string;
+  /** A service this page is about. Becomes a Service node run by the business. */
+  service?: { name: string; serviceType: string; description: string };
+  /** A place this page is about. Becomes a Service node limited to that place. */
+  area?: { name: string; type: 'City' | 'AdministrativeArea'; county?: string };
+  /** The kind of page, when it is more specific than a plain WebPage. */
+  pageType?: 'WebPage' | 'AboutPage' | 'ContactPage' | 'CollectionPage';
 }
 
-const { title, description, ogImage = '/images/og-default.jpg', noindex = false } = Astro.props;
+const {
+  title,
+  description,
+  ogImage = '/images/og-default.jpg',
+  ogImageAlt = 'SF Tree Removal crew removing a tree in South Florida',
+  noindex = false,
+  type = 'website',
+  published,
+  modified,
+  service,
+  area,
+  pageType = 'WebPage',
+} = Astro.props;
 
 const metaTitle = title ?? `${business.name} | Professional Tree Service South Florida`;
 const metaDescription =
   description ??
-  'Professional tree removal and tree service in South Florida. Emergency tree removal, certified arborists, and modern equipment.';
+  'Free tree removal estimates in the Fort Lauderdale area, plus permit rules, costs and guides for South Florida.';
 
 // Built from the route itself, so it always matches the address the page is
 // served at (with the trailing slash every link on the site uses).
 const canonical = new URL(Astro.url.pathname, Astro.site).href;
 const ogImageUrl = new URL(ogImage, Astro.site).href;
+const trail = breadcrumbsFor(Astro.url.pathname);
+const pageId = `${canonical}#webpage`;
 
-const organizationSchema = {
-  '@context': 'https://schema.org',
+// An online service, not a local business: no street address, opening hours or
+// price range, because the work is done by independent contractors.
+const businessNode = {
   '@type': 'Organization',
-  '@id': `${business.url}/#organization`,
+  '@id': businessId,
   name: business.name,
   url: `${business.url}/`,
+  description: business.description,
+  slogan: 'Free tree removal estimates from local South Florida pros',
   logo: { '@type': 'ImageObject', url: `${business.url}/images/logo.png`, width: 512, height: 512 },
+  image: `${business.url}/images/og-default.jpg`,
+  sameAs: [business.profiles.google, business.profiles.instagram],
+  // Only where requests can be matched today; guides cover more of South Florida.
+  areaServed: [{ '@type': 'AdministrativeArea', name: 'Broward County' }, ...activePlaces().map((p) => ({ '@type': 'City', name: p.name }))],
+  knowsAbout: [
+    'Tree removal',
+    'Emergency tree removal',
+    'Storm damage cleanup',
+    'Tree trimming and pruning',
+    'Palm tree trimming',
+    'Stump grinding',
+    'Tree risk assessment',
+    'Tree removal permits in Florida',
+  ],
 };
+
+const graph: Record<string, unknown>[] = [
+  businessNode,
+  {
+    '@type': 'WebSite',
+    '@id': websiteId,
+    url: `${business.url}/`,
+    name: business.name,
+    inLanguage: 'en-US',
+    publisher: { '@id': businessId },
+  },
+  {
+    '@type': pageType,
+    '@id': pageId,
+    url: canonical,
+    name: metaTitle,
+    description: metaDescription,
+    inLanguage: 'en-US',
+    isPartOf: { '@id': websiteId },
+    about: { '@id': businessId },
+    primaryImageOfPage: { '@type': 'ImageObject', url: ogImageUrl },
+    ...(published && { datePublished: published }),
+    ...(modified && { dateModified: modified }),
+    ...(trail.length > 1 && { breadcrumb: { '@id': `${canonical}#breadcrumb` } }),
+  },
+];
+
+if (trail.length > 1) {
+  graph.push({
+    '@type': 'BreadcrumbList',
+    '@id': `${canonical}#breadcrumb`,
+    itemListElement: trail.map((c, i) => ({
+      '@type': 'ListItem',
+      position: i + 1,
+      name: c.name,
+      item: new URL(c.href, Astro.site).href,
+    })),
+  });
+}
+
+if (service) {
+  graph.push({
+    '@type': 'Service',
+    '@id': `${canonical}#service`,
+    name: service.name,
+    serviceType: service.serviceType,
+    description: service.description,
+    url: canonical,
+    broker: { '@id': businessId },
+    areaServed: [{ '@type': 'AdministrativeArea', name: 'Broward County' }, ...activePlaces().map((p) => ({ '@type': 'City', name: p.name }))],
+    mainEntityOfPage: { '@id': pageId },
+  });
+}
+
+if (area) {
+  graph.push({
+    '@type': 'Service',
+    '@id': `${canonical}#service`,
+    name: `Tree removal estimates in ${area.name}`,
+    serviceType: 'Tree service estimate matching',
+    description: metaDescription,
+    url: canonical,
+    broker: { '@id': businessId },
+    areaServed: [
+      { '@type': area.type, name: area.name },
+      ...(area.county ? [{ '@type': 'AdministrativeArea', name: area.county }] : []),
+    ],
+    mainEntityOfPage: { '@id': pageId },
+  });
+}
+
+const jsonLd = { '@context': 'https://schema.org', '@graph': graph };
 ---
 
 <meta charset="utf-8" />
@@ -38,26 +154,33 @@ const organizationSchema = {
 <title>{metaTitle}</title>
 <meta name="description" content={metaDescription} />
 <link rel="canonical" href={canonical} />
-<meta name="robots" content={noindex ? 'noindex, follow' : 'index, follow, max-image-preview:large'} />
+<meta name="robots" content={noindex ? 'noindex, follow' : 'index, follow, max-image-preview:large, max-snippet:-1'} />
+<meta name="theme-color" content="#0a9a47" />
 
-<meta property="og:type" content="website" />
+<meta property="og:type" content={type} />
 <meta property="og:site_name" content={business.name} />
 <meta property="og:locale" content="en_US" />
 <meta property="og:title" content={metaTitle} />
 <meta property="og:description" content={metaDescription} />
 <meta property="og:url" content={canonical} />
 <meta property="og:image" content={ogImageUrl} />
+<meta property="og:image:alt" content={ogImageAlt} />
 <meta property="og:image:width" content="1200" />
 <meta property="og:image:height" content="630" />
+{type === 'article' && published && <meta property="article:published_time" content={published} />}
+{type === 'article' && (modified ?? published) && <meta property="article:modified_time" content={modified ?? published} />}
 
 <meta name="twitter:card" content="summary_large_image" />
 <meta name="twitter:title" content={metaTitle} />
 <meta name="twitter:description" content={metaDescription} />
 <meta name="twitter:image" content={ogImageUrl} />
+<meta name="twitter:image:alt" content={ogImageAlt} />
 
-<link rel="icon" href="/favicon.svg" type="image/svg+xml" />
 <link rel="icon" href="/favicon.ico" sizes="any" />
+<link rel="icon" href="/favicon-32.png" type="image/png" sizes="32x32" />
+<link rel="icon" href="/icon-192.png" type="image/png" sizes="192x192" />
 <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+<link rel="manifest" href="/site.webmanifest" />
 <link rel="sitemap" href="/sitemap-index.xml" />
 
-<script type="application/ld+json" set:html={JSON.stringify(organizationSchema)} />
+<script type="application/ld+json" set:html={JSON.stringify(jsonLd)} />

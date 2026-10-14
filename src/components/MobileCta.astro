@@ -1,0 +1,35 @@
+---
+// A bar fixed to the bottom of the screen on phones, always in reach: the main
+// action plus a direct route to the emergency form. Hidden on pages where the
+// form itself is the page, and while the menu is open.
+import { season } from "../config/season";
+const path = Astro.url.pathname;
+const hidden = ["/contact-us/", "/thank-you/", "/404/"].includes(path);
+---
+
+{
+  !hidden && (
+    <>
+      <div class="h-[76px] lg:hidden" aria-hidden="true"></div>
+      <div
+        id="mobile-cta"
+        class="fixed inset-x-0 bottom-0 z-40 border-t border-secondary-200 bg-white/95 px-3 pb-[max(0.75rem,env(safe-area-inset-bottom))] pt-2.5 shadow-[0_-10px_30px_rgba(15,27,36,0.14)] backdrop-blur-md transition-transform duration-300 lg:hidden"
+      >
+        <div class="mx-auto flex max-w-md items-stretch gap-2.5">
+          <a
+            href="/emergency-tree-removal/"
+            class:list={["flex min-h-[52px] items-center justify-center rounded-xl border-2 text-[11px] font-bold uppercase leading-tight transition active:scale-95", season.alert ? "grow flex-row gap-2 border-red-600 bg-red-600 px-4 text-sm text-white" : "flex-col border-red-200 bg-red-50 px-4 text-red-700"]}
+            aria-label="Emergency tree removal"
+          >
+            <svg class="size-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.2" d="M13 10V3L4 14h7v7l9-11h-7z" /></svg>
+            Urgent
+          </a>
+          <a href="/contact-us/" class:list={["btn btn-accent group !min-h-[52px] !rounded-xl !text-base font-semibold", season.alert ? "" : "grow"]}>
+            Get a Free Estimate
+            <svg class="size-5 transition group-active:translate-x-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M13 7l5 5m0 0l-5 5m5-5H6" /></svg>
+          </a>
+        </div>
+      </div>
+    </>
+  )
+}

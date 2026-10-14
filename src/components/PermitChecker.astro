@@ -1,0 +1,367 @@
+---
+import Tile from "./Tile.astro";
+import { jurisdictions, otherCity, counties, stateRule, type CountyId } from "../data/permits";
+
+// A three-step guide: where, what kind of property, what kind of tree. The
+// answer comes from src/data/permits.ts and always links to the source. It is
+// general guidance, not legal advice. Without JavaScript the table of every
+// place on the page still carries the same information.
+const countyIds = Object.keys(counties) as CountyId[];
+const payload = { jurisdictions, otherCity, counties, state: stateRule };
+
+const icon = {
+  single: "M3 12l9-9 9 9M5 10v10a1 1 0 001 1h3v-6h6v6h3a1 1 0 001-1V10",
+  duplex: "M3 21h18M5 21V7l7-4 7 4v14M9 21v-6h6v6M9 10h.01M15 10h.01",
+  multi: "M4 21V5a2 2 0 012-2h8a2 2 0 012 2v16M16 9h2a2 2 0 012 2v10M8 7h4M8 11h4M8 15h4M3 21h18",
+  commercial: "M3 21h18M5 21V10l7-5 7 5v11M9 21v-5h6v5M9 12h.01M15 12h.01",
+  healthy: "M12 22v-8M12 14c-4 0-7-3-7-6.5S8 1 12 1s7 3 7 6.5S16 14 12 14z",
+  dead: "M12 22a10 10 0 100-20 10 10 0 000 20zM9 9l6 6M15 9l-6 6",
+  hazard: "M12 9v4m0 4h.01M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z",
+  palm: "M12 22V10M12 10C9 7 6 8 3 12M12 10c3-3 6-2 9 2M12 10C12 5 9 3 6 4M12 10c0-5 3-7 6-6",
+  invasive: "M11 20A7 7 0 019.8 6.1C15.5 5 17 4.48 19 2c1 2 2 4.18 2 8 0 5.5-4.78 10-10 10zM2 21c0-3 1.85-5.36 5.08-6C9.5 14.52 12 13 13 12",
+  public: "M4 22L8 2M20 22L16 2M12 5v3M12 11v3M12 17v3",
+  mangrove: "M2 14c2-2 4-2 6 0s4 2 6 0 4-2 6 0M2 19c2-2 4-2 6 0s4 2 6 0 4-2 6 0M12 3v8M9 6l3 5 3-5",
+};
+const properties = [
+  { v: "single", l: "Single-family home", d: "Detached house on its own lot", i: icon.single },
+  { v: "duplex", l: "Duplex or townhome", d: "Two-family or attached home", i: icon.duplex },
+  { v: "multi", l: "Condo, HOA or multifamily", d: "Common areas and apartment buildings", i: icon.multi },
+  { v: "commercial", l: "Commercial or vacant lot", d: "Business property or empty land", i: icon.commercial },
+];
+const treeTypes = [
+  { v: "healthy", l: "Healthy tree", d: "Alive and sound, but unwanted or in the way", i: icon.healthy },
+  { v: "dead", l: "Dead tree", d: "No living leaves or growth", i: icon.dead },
+  { v: "hazard", l: "Hazardous tree", d: "I have, or can get, an arborist report", i: icon.hazard },
+  { v: "palm", l: "Palm", d: "Royal, coconut, queen and other palms", i: icon.palm },
+  { v: "invasive", l: "Invasive species", d: "Australian pine, Brazilian pepper, melaleuca", i: icon.invasive },
+  { v: "public", l: "Street or swale tree", d: "In the public right-of-way", i: icon.public },
+  { v: "mangrove", l: "Mangrove", d: "Along a shoreline or waterway", i: icon.mangrove },
+];
+---
+
+<div id="permit-tool" class="form-card" data-no-reveal>
+  <!-- Progress -->
+  <div class="relative mb-8">
+    <div class="absolute left-[16.6%] right-[16.6%] top-5 h-1 rounded-full bg-secondary-100" aria-hidden="true">
+      <div id="pc-fill" class="h-full w-0 rounded-full bg-primary-600 transition-all duration-500"></div>
+    </div>
+    <ol class="relative grid grid-cols-3 text-center">
+      {
+        ["Where", "Property", "Tree"].map((t, i) => (
+          <li>
+            <button type="button" data-goto={i + 1} class="group flex w-full flex-col items-center gap-1.5 rounded-xl p-1 focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-primary-600/25">
+              <span data-dot class="grid size-10 place-items-center rounded-full bg-secondary-100 font-heading font-bold text-secondary-500 transition">{i + 1}</span>
+              <span class="text-xs font-semibold text-secondary-700 sm:text-sm">{t}</span>
+              <span data-answer class="line-clamp-1 max-w-full px-1 text-[11px] font-medium text-primary-700 sm:text-xs"></span>
+            </button>
+          </li>
+        ))
+      }
+    </ol>
+  </div>
+
+  <form id="permit-form" novalidate onsubmit="return false">
+    <!-- Step 1: where -->
+    <section data-panel="1" aria-labelledby="pc-h1">
+      <h2 id="pc-h1" class="font-heading text-2xl font-extrabold text-secondary-900">Where is the tree?</h2>
+      <p class="mt-1 text-secondary-600">Choose your county, then your city. Not listed? Pick “Other city”.</p>
+      <div class="mt-5 flex flex-wrap gap-2" role="tablist" aria-label="County">
+        {
+          countyIds.map((c, i) => (
+            <button type="button" role="tab" data-county-tab={c} aria-selected={i === 0 ? "true" : "false"} class="rounded-full border border-secondary-300 bg-white px-4 py-2 text-sm font-semibold text-secondary-800 transition aria-selected:border-primary-600 aria-selected:bg-primary-600 aria-selected:text-white">
+              {counties[c]}
+            </button>
+          ))
+        }
+      </div>
+      {
+        countyIds.map((c, i) => (
+          <div data-county-panel={c} hidden={i !== 0} class="mt-5 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+            {jurisdictions.filter((j) => j.county === c).map((j) => <Tile name="place" value={j.id} label={j.name.split(" (")[0]} description={j.id.endsWith("-county") ? "Unincorporated areas and cities without their own rules" : ""} />)}
+            <Tile name="place" value={`other-${c}`} label="Other city" description={`Another city in ${counties[c]}`} />
+          </div>
+        ))
+      }
+    </section>
+
+    <!-- Step 2: property -->
+    <section data-panel="2" hidden aria-labelledby="pc-h2">
+      <h2 id="pc-h2" class="font-heading text-2xl font-extrabold text-secondary-900">What kind of property is it?</h2>
+      <p class="mt-1 text-secondary-600">The state hazard-tree exemption covers detached single-family homes only.</p>
+      <div class="mt-5 grid gap-3 sm:grid-cols-2">
+        {properties.map((p) => <Tile name="property" value={p.v} label={p.l} description={p.d} icon={p.i} />)}
+      </div>
+    </section>
+
+    <!-- Step 3: tree -->
+    <section data-panel="3" hidden aria-labelledby="pc-h3">
+      <h2 id="pc-h3" class="font-heading text-2xl font-extrabold text-secondary-900">What kind of tree?</h2>
+      <p class="mt-1 text-secondary-600">Pick the closest match.</p>
+      <div class="mt-5 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+        {treeTypes.map((t) => <Tile name="tree" value={t.v} label={t.l} description={t.d} icon={t.i} />)}
+      </div>
+    </section>
+
+    <div class="mt-6 flex items-center justify-between border-t border-secondary-100 pt-5">
+      <button type="button" id="pc-back" class="btn btn-outline !px-5 invisible">← Back</button>
+      <button type="button" id="pc-reset" class="text-sm font-semibold text-secondary-500 underline underline-offset-2 hover:text-secondary-800">Start over</button>
+    </div>
+  </form>
+
+  <div id="permit-result" class="mt-8" aria-live="polite" tabindex="-1"></div>
+  <p class="mt-6 text-xs leading-relaxed text-secondary-500">General guidance based on official sources, not legal advice. Rules change and may differ for your address. Always confirm with your city or county, and check your HOA, before cutting a tree.</p>
+</div>
+
+<script type="application/json" id="permit-data" set:html={JSON.stringify(payload)} />
+
+<script>
+  type Status = "permit" | "size" | "exempt" | "ask";
+  interface J {
+    id: string; name: string; county: string; page?: string; status: Status; headline: string; summary: string;
+    palms?: string; dead?: string; invasive?: string; publicTrees?: string; confidence: string;
+    source: { label: string; url: string }; phone?: string;
+  }
+  interface Data {
+    jurisdictions: J[];
+    otherCity: Record<string, { name: string; summary: string; source: { label: string; url: string } }>;
+    counties: Record<string, string>;
+    state: { label: string; url: string; text: string };
+  }
+
+  const data = JSON.parse(document.getElementById("permit-data")!.textContent || "{}") as Data;
+  const $ = <T extends HTMLElement>(sel: string, root: ParentNode = document) => root.querySelector<T>(sel)!;
+  const form = $("#permit-form") as HTMLFormElement;
+  const out = $("#permit-result");
+  const fill = $("#pc-fill");
+  const backBtn = $("#pc-back") as HTMLButtonElement;
+  const esc = (s: string) => s.replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" })[c]!);
+
+  const labels = {
+    property: { single: "Single-family home", duplex: "Duplex or townhome", multi: "Condo, HOA or multifamily", commercial: "Commercial or vacant lot" } as Record<string, string>,
+    tree: { healthy: "Healthy tree", dead: "Dead tree", hazard: "Hazardous tree", palm: "Palm", invasive: "Invasive species", public: "Street or swale tree", mangrove: "Mangrove" } as Record<string, string>,
+  };
+  const levels = {
+    green: { band: "from-primary-600 to-primary-500", ring: "border-primary-300", soft: "bg-primary-50", chip: "Likely no city permit", icon: "M5 13l4 4L19 7" },
+    amber: { band: "from-amber-500 to-amber-400", ring: "border-amber-300", soft: "bg-amber-50", chip: "A permit is usually needed", icon: "M12 9v4m0 4h.01M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z" },
+    red: { band: "from-red-600 to-red-500", ring: "border-red-300", soft: "bg-red-50", chip: "Special rules: do not cut yet", icon: "M6 18L18 6M6 6l12 12" },
+  } as const;
+
+  const state = { place: "", property: "", tree: "", step: 1 };
+
+  function find(place: string) {
+    const isOther = place.startsWith("other-");
+    const county = isOther ? place.slice(6) : data.jurisdictions.find((j) => j.id === place)?.county ?? "";
+    const j = data.jurisdictions.find((x) => x.id === place) ?? null;
+    const other = isOther ? data.otherCity[county] : null;
+    return { j, other, county, name: j ? j.name.split(" (")[0] : other?.name ?? "" };
+  }
+
+  function decide() {
+    const { j, other, county, name } = find(state.place);
+    const residential = state.property === "single" || state.property === "duplex";
+    const reasons: string[] = [];
+    const next: string[] = [];
+    let level: keyof typeof levels = "amber";
+    let title = "";
+    let short = "";
+
+    if (state.tree === "mangrove") {
+      level = "red";
+      title = "Mangroves are protected by state law";
+      short = "Do not trim or remove mangroves before you have checked.";
+      reasons.push("Mangroves are protected in Florida (Mangrove Trimming and Preservation Act). Trimming or removing them usually needs a state or local permit and a qualified professional, even on your own waterfront.");
+      next.push("Contact the Florida Department of Environmental Protection and your county or city before any cutting.");
+    } else if (state.tree === "public") {
+      level = "red";
+      title = "Trees in the public right-of-way are usually not yours to remove";
+      short = "Report it to the city or county instead of cutting it.";
+      reasons.push("A tree in the swale, along the street or in an easement generally belongs to the city, county or utility. Removing it needs a separate permit or the owner's action.");
+      if (j?.publicTrees) reasons.push(j.publicTrees);
+      reasons.push("Trees touching power lines are handled by the utility. Never cut them yourself.");
+      next.push(`Contact ${name || "your city or county"} public works or urban forestry about the tree.`);
+    } else if (!residential) {
+      level = "amber";
+      title = "A permit is generally required";
+      short = "Stricter rules apply to this kind of property.";
+      reasons.push(`Condominiums, association common areas, multifamily, commercial and vacant property are usually regulated more strictly, and the state hazard-tree exemption does not cover them (${data.state.label}).`);
+      reasons.push("Your association or property manager may also need to approve the work.");
+      if (j?.status === "exempt") reasons.push(`Any exemption for single-family homes in ${name} does not automatically apply to this property type.`);
+      next.push("Ask your association or property manager what approval is needed.");
+    } else if (state.tree === "hazard") {
+      level = "green";
+      title = "The state exemption may apply";
+      short = "With a signed arborist report, no permit, fee or replacement tree can be required.";
+      reasons.push(data.state.text);
+      reasons.push("Some cities still ask to see the report, so keep it with your records.");
+      if (j?.dead) reasons.push(j.dead);
+      next.push("Get a signed ISA tree risk assessment (or a Florida landscape architect report) before you cut.");
+    } else if (state.tree === "dead") {
+      level = j?.status === "exempt" ? "green" : "amber";
+      title = level === "green" ? "A dead tree is often exempt" : "Dead trees are often simpler, but confirm";
+      short = "Many places treat a dead tree more simply than a healthy one.";
+      reasons.push(j?.dead ?? "Many cities treat a dead tree more simply than a healthy one, but some still want a photo, an inspection or an arborist report, and may require replacement.");
+      reasons.push("A written arborist report that the tree is dead or hazardous is the safest proof, and can bring the state exemption into play.");
+      next.push("Photograph the tree and get an arborist report if you can.");
+    } else if (state.tree === "invasive") {
+      level = "green";
+      title = "Invasive species are often exempt";
+      short = "Only species on the local list qualify, so confirm yours is on it.";
+      reasons.push(j?.invasive ?? "Many cities and counties exempt listed invasive species such as Australian pine, Brazilian pepper and melaleuca. The exemption applies only to species on the local list.");
+      next.push("Confirm the species with the city or county before cutting.");
+    } else if (state.tree === "palm") {
+      level = j?.status === "exempt" ? "green" : "amber";
+      title = level === "green" ? "Palms are probably exempt for a typical single-family yard" : "Palms are often regulated like trees";
+      short = "Check whether your palm is above the local size threshold.";
+      reasons.push(j?.palms ?? "Many cities regulate palms like trees, often above a trunk-height or diameter threshold. Ask the city whether your palm is covered.");
+    } else {
+      level = j?.status === "exempt" ? "green" : "amber";
+      if (j?.status === "exempt") { title = "Probably no permit for a typical single-family yard tree"; short = "The place's own rules exempt typical yard trees, with limits."; }
+      else if (j?.status === "permit") { title = "A permit is usually needed"; short = "Apply before cutting. Work without a permit can bring fines and replacement."; }
+      else if (j?.status === "size") { title = "It depends on the size of the tree"; short = "A permit is needed above the local size threshold."; }
+      else { title = other ? "Most cities require a permit, but rules vary" : "This place has its own rules; ask before you cut"; short = "Confirm with the city before cutting."; }
+      reasons.push(j?.headline ?? "Most South Florida cities have their own tree ordinance, and a permit is common before a living tree is removed. The county code is the baseline where a city has no rules of its own.");
+      if (j?.status === "exempt") reasons.push("The exemption has limits: other property types, specimen or protected trees, historic or coastal areas and trees outside your property lines can still be regulated.");
+      reasons.push("Your HOA or condominium association may require approval even when the city does not.");
+      if (j?.status === "exempt") next.push("Check your HOA rules and confirm with the city if your tree is large, protected or near the property line.");
+      if (j?.status === "size") next.push("Measure the trunk (diameter at 4.5 feet, or clear trunk height for palms) to see if you are over the threshold.");
+    }
+
+    const phone = j?.phone;
+    if (level === "amber" || level === "red") {
+      next.unshift(`Confirm with ${name || "your city"}${phone ? ` (${phone})` : ""} what applies to your address.`);
+      if (residential && state.tree !== "mangrove" && state.tree !== "public") next.push("If the tree may be a risk, an arborist report can exempt a single-family home from the permit.");
+    }
+    next.push("Ask any tree company who handles the permit, and whether it is in the price.");
+    return { level, title, short, reasons, next, name, county, j, other, phone };
+  }
+
+  const confidenceText: Record<string, string> = {
+    official: "Official page",
+    partial: "Official page, partly dated or unclear",
+    general: "Not confirmed: ask the city",
+  };
+
+  function render() {
+    const r = decide();
+    const s = levels[r.level];
+    const src = r.j?.source ?? r.other?.source;
+    const summary = r.j?.summary ?? r.other?.summary ?? "";
+    const q = new URLSearchParams({ j: state.place, p: state.property, t: state.tree });
+    const isFll = r.j?.id === "fort-lauderdale";
+    out.innerHTML = `
+      <div class="overflow-hidden rounded-3xl border-2 ${s.ring} bg-white shadow-xl">
+        <div class="flex items-center gap-4 bg-gradient-to-r ${s.band} px-6 py-5 text-white">
+          <span class="grid size-12 shrink-0 place-items-center rounded-2xl bg-white/20"><svg class="size-7" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="${s.icon}"/></svg></span>
+          <div><p class="text-xs font-bold uppercase tracking-wider text-white/85">${s.chip}</p><h3 class="font-heading text-xl font-extrabold leading-tight sm:text-2xl">${esc(r.title)}</h3></div>
+        </div>
+        <div class="grid gap-6 p-6 sm:p-8 lg:grid-cols-[1.2fr_1fr]">
+          <div>
+            <p class="text-lg font-semibold text-secondary-900">${esc(r.short)}</p>
+            <h4 class="mt-5 font-heading text-sm font-bold uppercase tracking-wider text-secondary-500">Why</h4>
+            <ul class="mt-2 space-y-2 text-secondary-700">${r.reasons.map((p) => `<li class="flex gap-2"><span class="mt-2 size-1.5 shrink-0 rounded-full bg-primary-600"></span><span>${esc(p)}</span></li>`).join("")}</ul>
+            <h4 class="mt-6 font-heading text-sm font-bold uppercase tracking-wider text-secondary-500">Next steps</h4>
+            <ol class="mt-2 space-y-2">${r.next.map((p, i) => `<li class="flex gap-3"><span class="grid size-6 shrink-0 place-items-center rounded-full bg-primary-100 text-xs font-bold text-primary-800">${i + 1}</span><span class="text-secondary-700">${esc(p)}</span></li>`).join("")}</ol>
+          </div>
+          <aside class="rounded-2xl ${s.soft} p-5 text-sm leading-relaxed text-secondary-700">
+            <p class="font-heading text-base font-bold text-secondary-900">What ${esc(r.name)} says</p>
+            ${r.j ? `<p class="mt-2 font-semibold text-secondary-900">${esc(r.j.headline)}</p>` : ""}
+            <p class="mt-2">${esc(summary)}</p>
+            ${src ? `<p class="mt-3"><a class="font-semibold text-primary-700 underline" href="${src.url}" target="_blank" rel="noopener noreferrer">${esc(src.label)} ↗</a></p>` : ""}
+            ${r.phone ? `<p class="mt-1">Phone to confirm: <a class="font-semibold text-primary-700" href="tel:${r.phone.replace(/[^0-9]/g, "")}">${esc(r.phone)}</a></p>` : ""}
+            ${r.j ? `<p class="mt-3 inline-block rounded-full bg-white px-3 py-1 text-xs font-semibold text-secondary-600 ring-1 ring-secondary-200">${confidenceText[r.j.confidence] ?? ""}</p>` : ""}
+          </aside>
+        </div>
+        <div class="flex flex-wrap items-center gap-3 border-t border-secondary-100 bg-secondary-50 px-6 py-4 sm:px-8">
+          <a href="/contact-us/" class="btn btn-accent">Get a free estimate</a>
+          <a href="/certified-arborist/" class="btn btn-outline">Arborist assessment</a>
+          ${isFll ? `<a href="/find-a-pro/fort-lauderdale/" class="btn btn-outline">Tree service in Fort Lauderdale</a>` : r.j?.page ? `<a href="${r.j.page}" class="btn btn-outline">${esc(r.name)} tree page</a>` : ""}
+          <button type="button" id="pc-copy" class="ml-auto text-sm font-semibold text-primary-700 underline underline-offset-2">Copy link to this result</button>
+        </div>
+      </div>`;
+    $("#pc-copy", out).addEventListener("click", async (e) => {
+      const btn = e.currentTarget as HTMLElement;
+      try { await navigator.clipboard.writeText(`${location.origin}${location.pathname}?${q}`); btn.textContent = "Link copied"; } catch { btn.textContent = "Copy failed"; }
+    });
+    history.replaceState(null, "", `${location.pathname}?${q}`);
+  }
+
+  function setStep(n: number, scroll = false) {
+    state.step = n;
+    form.querySelectorAll<HTMLElement>("[data-panel]").forEach((p) => (p.hidden = Number(p.dataset.panel) !== n));
+    const done = [state.place, state.property, state.tree];
+    document.querySelectorAll<HTMLElement>("[data-dot]").forEach((d, i) => {
+      const on = i + 1 === n || !!done[i];
+      d.classList.toggle("bg-primary-600", on);
+      d.classList.toggle("text-white", on);
+      d.classList.toggle("bg-secondary-100", !on);
+      d.classList.toggle("text-secondary-500", !on);
+      d.textContent = done[i] && i + 1 !== n ? "✓" : String(i + 1);
+    });
+    const answers = [
+      state.place ? find(state.place).name : "",
+      state.property ? labels.property[state.property] : "",
+      state.tree ? labels.tree[state.tree] : "",
+    ];
+    document.querySelectorAll<HTMLElement>("[data-answer]").forEach((a, i) => (a.textContent = answers[i]));
+    fill.style.width = `${Math.min(100, ((done.filter(Boolean).length || 0) / 2) * 100)}%`;
+    backBtn.classList.toggle("invisible", n === 1);
+    if (scroll) $("#permit-tool").scrollIntoView({ behavior: "smooth", block: "start" });
+  }
+
+  function update(advance: boolean) {
+    const complete = state.place && state.property && state.tree;
+    if (complete) {
+      setStep(state.step);
+      render();
+      if (advance) window.setTimeout(() => out.scrollIntoView({ behavior: "smooth", block: "start" }), 150);
+    } else {
+      out.innerHTML = "";
+      if (advance) setStep(!state.place ? 1 : !state.property ? 2 : 3, false);
+      else setStep(state.step);
+    }
+  }
+
+  form.addEventListener("change", (e) => {
+    const t = e.target as HTMLInputElement;
+    if (t.name === "place") { state.place = t.value; if (!state.property) state.step = 2; }
+    else if (t.name === "property") { state.property = t.value; if (!state.tree) state.step = 3; }
+    else if (t.name === "tree") { state.tree = t.value; }
+    update(true);
+  });
+
+  document.querySelectorAll<HTMLElement>("[data-goto]").forEach((b) => b.addEventListener("click", () => setStep(Number(b.dataset.goto), true)));
+  backBtn.addEventListener("click", () => setStep(Math.max(1, state.step - 1)));
+  $("#pc-reset").addEventListener("click", () => {
+    form.reset();
+    Object.assign(state, { place: "", property: "", tree: "", step: 1 });
+    out.innerHTML = "";
+    history.replaceState(null, "", location.pathname);
+    setStep(1, true);
+  });
+
+  document.querySelectorAll<HTMLButtonElement>("[data-county-tab]").forEach((tab) =>
+    tab.addEventListener("click", () => {
+      document.querySelectorAll<HTMLButtonElement>("[data-county-tab]").forEach((t) => t.setAttribute("aria-selected", String(t === tab)));
+      document.querySelectorAll<HTMLElement>("[data-county-panel]").forEach((p) => (p.hidden = p.dataset.countyPanel !== tab.dataset.countyTab));
+    }),
+  );
+
+  // Start from the address: ?j=fort-lauderdale&p=single&t=palm
+  const q = new URLSearchParams(location.search);
+  const pick = (name: string, value: string | null) => {
+    if (!value) return false;
+    const input = form.querySelector<HTMLInputElement>(`input[name="${name}"][value="${CSS.escape(value)}"]`);
+    if (!input) return false;
+    input.checked = true;
+    return true;
+  };
+  if (pick("place", q.get("j"))) {
+    state.place = q.get("j")!;
+    const county = find(state.place).county;
+    document.querySelector<HTMLButtonElement>(`[data-county-tab="${county}"]`)?.click();
+    state.step = 2;
+  }
+  if (pick("property", q.get("p"))) { state.property = q.get("p")!; if (state.place) state.step = 3; }
+  if (pick("tree", q.get("t"))) state.tree = q.get("t")!;
+  update(false);
+</script>

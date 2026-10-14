@@ -1,225 +1,104 @@
 ---
 import BaseLayout from "../../layouts/BaseLayout.astro";
+import PageHero from "../../components/PageHero.astro";
+import Disclosure from "../../components/Disclosure.astro";
+import CtaBand from "../../components/CtaBand.astro";
+import SplitSection from "../../components/SplitSection.astro";
+import SectionHeading from "../../components/SectionHeading.astro";
+import AreaMap from "../../components/AreaMap.astro";
+import { counties, type CountyId } from "../../data/permits";
+import { countyPages, placeHref, placesIn, places } from "../../data/places";
+import { isActivePlace, coverage } from "../../config/coverage";
 
-const title = "Service Areas | Tree Removal Services Across South Florida";
+const title = "Service Areas | Tree Removal in South Florida";
 const description =
-  "SF Tree Removal proudly serves Miami, Fort Lauderdale, Broward County, and surrounding South Florida communities with professional tree removal, emergency services, and certified arborist solutions.";
-const canonical = "https://sftreeremoval.com/areas/";
+  "Free tree removal estimates from independent local pros in Miami, Fort Lauderdale, Hollywood, Pembroke Pines, Boca Raton and across South Florida.";
+
+const countyList = (Object.keys(counties) as CountyId[]).map((id) => ({
+  id,
+  name: counties[id],
+  href: countyPages[id],
+  cities: placesIn(id).map((p) => ({ name: p.name, href: placeHref(p) })),
+}));
 ---
 
-<BaseLayout title={title} description={description} canonical={canonical}>
+<BaseLayout title={title} description={description} pageType="CollectionPage">
+  <PageHero
+    badge="SERVICE AREAS"
+    title="Tree Removal Across South Florida"
+    lead="We connect property owners in Miami-Dade, Broward and Palm Beach County with independent local tree care professionals."
+    image="beach-palms"
+  />
 
-  <!-- ================= HERO ================= -->
-  <section class="bg-teal-900 py-28 text-white">
-    <div class="max-w-7xl mx-auto px-6 text-center">
-
-      <span
-        class="inline-block mb-6 px-4 py-1 text-xs font-bold tracking-widest
-               border border-dashed border-white/60 rounded-full"
-      >
-        SERVICE AREAS
-      </span>
-
-      <h1 class="text-4xl md:text-5xl xl:text-6xl font-extrabold leading-tight">
-        Tree Removal Services
-        <br class="hidden sm:block" />
-        Across South Florida
-      </h1>
-
-      <p class="mt-8 max-w-3xl mx-auto text-lg text-white/90">
-        We provide professional tree removal, emergency response, and certified
-        arborist services across major cities and counties in South Florida.
-        Our local crews ensure fast response times and compliance with local
-        regulations.
-      </p>
-
-    </div>
-  </section>
-
-  <!-- ================= INTRO ================= -->
-  <section class="bg-white py-32">
-    <div class="max-w-4xl mx-auto px-6 text-center">
-
-      <h2 class="text-3xl md:text-4xl font-extrabold text-slate-900 mb-8">
-        Local Tree Removal Experts Near You
-      </h2>
-
-      <p class="text-lg text-slate-600 leading-relaxed">
-        SF Tree Removal operates throughout South Florida, serving homeowners,
-        businesses, and property managers with safe, efficient, and insured tree
-        services. From emergency tree removal to long-term arborist care, our
-        teams understand local tree species, weather risks, and municipal
-        requirements.
-      </p>
-
-    </div>
-  </section>
-
-  <!-- ================= SERVICE AREAS GRID ================= -->
-  <section class="bg-[#f4f8f6] py-32">
-    <div class="max-w-7xl mx-auto px-6">
-
-      <h2 class="text-3xl md:text-4xl font-extrabold text-slate-900 mb-16 text-center">
-        Cities & Counties We Serve
-      </h2>
-
-      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-10">
-
-        <!-- MIAMI -->
-        <a
-          href="/areas/miami-tree-removal/"
-          class="group bg-white rounded-3xl p-10 transition hover:shadow-lg"
-        >
-          <h3 class="text-2xl font-extrabold text-slate-900 mb-3">
-            Miami
-          </h3>
-          <p class="text-slate-600 mb-6">
-            Emergency tree removal, storm damage cleanup, and full-service tree
-            care for residential and commercial properties.
-          </p>
-          <span class="inline-flex items-center gap-2 font-bold text-teal-700">
-            Miami Tree Removal
-            <span class="flex h-7 w-7 items-center justify-center rounded-full bg-teal-700 text-white">↗</span>
-          </span>
-        </a>
-
-        <!-- FORT LAUDERDALE -->
-        <a
-          href="/areas/fort-lauderdale-tree-removal/"
-          class="group bg-white rounded-3xl p-10 transition hover:shadow-lg"
-        >
-          <h3 class="text-2xl font-extrabold text-slate-900 mb-3">
-            Fort Lauderdale
-          </h3>
-          <p class="text-slate-600 mb-6">
-            Professional tree removal, permit guidance, and certified arborist
-            services throughout Fort Lauderdale.
-          </p>
-          <span class="inline-flex items-center gap-2 font-bold text-teal-700">
-            Fort Lauderdale Tree Removal
-            <span class="flex h-7 w-7 items-center justify-center rounded-full bg-teal-700 text-white">↗</span>
-          </span>
-        </a>
-
-        <!-- HOLLYWOOD -->
-        <a
-          href="/areas/hollywood-tree-service/"
-          class="group bg-white rounded-3xl p-10 transition hover:shadow-lg"
-        >
-          <h3 class="text-2xl font-extrabold text-slate-900 mb-3">
-            Hollywood
-          </h3>
-          <p class="text-slate-600 mb-6">
-            Reliable tree service solutions for homes and businesses, including
-            emergency response and scheduled maintenance.
-          </p>
-          <span class="inline-flex items-center gap-2 font-bold text-teal-700">
-            Hollywood Tree Service
-            <span class="flex h-7 w-7 items-center justify-center rounded-full bg-teal-700 text-white">↗</span>
-          </span>
-        </a>
-
-        <!-- PEMBROKE PINES -->
-        <a
-          href="/areas/pembroke-pines-tree-removal/"
-          class="group bg-white rounded-3xl p-10 transition hover:shadow-lg"
-        >
-          <h3 class="text-2xl font-extrabold text-slate-900 mb-3">
-            Pembroke Pines
-          </h3>
-          <p class="text-slate-600 mb-6">
-            Fast emergency tree removal and long-term tree care programs designed
-            for local properties.
-          </p>
-          <span class="inline-flex items-center gap-2 font-bold text-teal-700">
-            Pembroke Pines Tree Removal
-            <span class="flex h-7 w-7 items-center justify-center rounded-full bg-teal-700 text-white">↗</span>
-          </span>
-        </a>
-
-        <!-- BOCA RATON -->
-        <a
-          href="/areas/boca-raton-tree-removal/"
-          class="group bg-white rounded-3xl p-10 transition hover:shadow-lg"
-        >
-          <h3 class="text-2xl font-extrabold text-slate-900 mb-3">
-            Boca Raton
-          </h3>
-          <p class="text-slate-600 mb-6">
-            High-end tree removal and certified arborist services for residential
-            and commercial properties.
-          </p>
-          <span class="inline-flex items-center gap-2 font-bold text-teal-700">
-            Boca Raton Tree Removal
-            <span class="flex h-7 w-7 items-center justify-center rounded-full bg-teal-700 text-white">↗</span>
-          </span>
-        </a>
-
-        <!-- BROWARD COUNTY -->
-        <a
-          href="/areas/broward-county-tree-removal/"
-          class="group bg-white rounded-3xl p-10 transition hover:shadow-lg"
-        >
-          <h3 class="text-2xl font-extrabold text-slate-900 mb-3">
-            Broward County
-          </h3>
-          <p class="text-slate-600 mb-6">
-            County-wide coverage for emergency tree removal, storm response, and
-            scheduled tree services.
-          </p>
-          <span class="inline-flex items-center gap-2 font-bold text-teal-700">
-            Broward County Tree Removal
-            <span class="flex h-7 w-7 items-center justify-center rounded-full bg-teal-700 text-white">↗</span>
-          </span>
-        </a>
-
-        <!-- PALM BEACH COUNTY -->
-        <a
-          href="/areas/palm-beach-county-tree-removal/"
-          class="group bg-white rounded-3xl p-10 transition hover:shadow-lg"
-        >
-          <h3 class="text-2xl font-extrabold text-slate-900 mb-3">
-            Palm Beach County
-          </h3>
-          <p class="text-slate-600 mb-6">
-            Tree removal, palm work and storm response from Boca Raton to Jupiter.
-          </p>
-          <span class="inline-flex items-center gap-2 font-semibold text-teal-700">
-            Palm Beach County Tree Removal
-            <span class="transition group-hover:translate-x-1">↗</span>
-          </span>
-        </a>
-
+  <section id="coverage" class="scroll-mt-28 bg-secondary-50 py-section">
+    <div class="mx-auto max-w-4xl px-4 sm:px-6">
+      <SectionHeading topper="Coverage" title="Where We Are Active" description={`Active now: ${coverage.activeLabel}. Everywhere else we are adding professionals: send a request and we try to match you, with no promise of a response.`} />
+      <div class="grid gap-6 md:grid-cols-2">
+        <div class="card-static border-primary-300 p-6">
+          <p class="mb-3 inline-block rounded-full bg-primary-600 px-3 py-1 text-xs font-bold uppercase tracking-wide text-white">Active now</p>
+          <ul class="space-y-2">{places.filter((p) => isActivePlace(p.id)).map((p) => <li><a href={placeHref(p)} class="font-semibold text-primary-800 hover:underline">{p.name}</a></li>)}</ul>
+          <p class="mt-4 text-sm text-secondary-600">An independent professional contacts you with a free estimate. <a href="/find-a-pro/fort-lauderdale/" class="font-semibold text-primary-700 underline">See who is listed</a>.</p>
+        </div>
+        <div class="card-static p-6">
+          <p class="mb-3 inline-block rounded-full bg-amber-500 px-3 py-1 text-xs font-bold uppercase tracking-wide text-black">Being added</p>
+          <ul class="grid grid-cols-2 gap-x-4 gap-y-1.5 text-sm">{places.filter((p) => !isActivePlace(p.id)).map((p) => <li><a href={placeHref(p)} class="text-secondary-700 hover:text-primary-700 hover:underline">{p.name}</a></li>)}</ul>
+          <p class="mt-4 text-sm text-secondary-600">Tree company in one of these cities? <a href="/for-pros/" class="font-semibold text-primary-700 underline">Get listed</a>.</p>
+        </div>
       </div>
     </div>
   </section>
 
-  <!-- ================= FINAL CTA ================= -->
-  <section class="bg-teal-800 py-32 text-white">
-    <div class="max-w-7xl mx-auto px-6 text-center">
-
-      <h2 class="text-4xl md:text-5xl font-extrabold leading-tight">
-        Looking for Tree Removal Near You?
-      </h2>
-
-      <p class="mt-8 max-w-3xl mx-auto text-lg text-white/90">
-        Contact our local teams today for fast response, professional service,
-        and expert tree care anywhere in South Florida.
-      </p>
-
-      <div class="mt-12">
-        <a
-          href="/contact-us/"
-          class="inline-flex items-center gap-4 rounded-full
-                 bg-white px-12 py-5 text-teal-800 font-extrabold
-                 hover:bg-slate-100 transition"
-        >
-          Request a Free Estimate
-          <span class="flex h-10 w-10 items-center justify-center rounded-full bg-teal-700 text-white">↗</span>
-        </a>
-      </div>
-
+  <section class="py-section">
+    <div class="mx-auto max-w-site px-4 sm:px-6">
+      <SectionHeading topper="Interactive map" title="Find Your City on the Map" description={`${places.length} cities across three counties. Select a county to focus, then a city for its page.`} />
+      <AreaMap />
     </div>
   </section>
 
+  <section class="bg-white py-section">
+    <div class="mx-auto max-w-site px-4 sm:px-6">
+      <div class="prose-sf mx-auto max-w-3xl text-center">
+        <p>
+          Pick your city for local conditions, permit notes and common questions, or go straight to the
+          <a href="/contact-us/">contact form</a>. Not on the list? Ask: the professionals we connect you with work across
+          each county.
+        </p>
+      </div>
+      <div class="mt-16 grid gap-8 md:grid-cols-3">
+        {
+          countyList.map((c) => (
+            <div class="rounded-xl bg-secondary-50 p-8">
+              <h2 class="text-xl font-bold text-text">
+                {c.href ? <a href={c.href} class="hover:text-primary-900">{c.name}</a> : c.name}
+              </h2>
+              <ul class="mt-6 space-y-3">
+                {
+                  c.cities.map((city) => (
+                    <li>
+                      <a href={city.href} class="block rounded-lg bg-primary-600 px-5 py-3 font-medium text-white shadow-md transition hover:bg-primary-700">
+                        {city.name} ↗
+                      </a>
+                    </li>
+                  ))
+                }
+              </ul>
+              {c.href && <a href={c.href} class="mt-6 inline-block font-semibold text-primary hover:underline">County overview ↗</a>}
+            </div>
+          ))
+        }
+      </div>
+      <div class="mx-auto mt-14 max-w-3xl"><Disclosure variant="card" /></div>
+    </div>
+  </section>
+
+  <SplitSection
+    topper="Three counties"
+    title="Miami-Dade, Broward and Palm Beach County"
+    image="crane-lift"
+    reverse
+    tone="tint"
+    html={`<p><strong>Miami-Dade</strong> has the largest canopy and the most variety, from live oaks and banyans to palms and mango trees, on limestone with shallow roots. <strong>Broward</strong> is dense suburbs and waterfront, where trees stand close to houses, pools and canals. <strong>Palm Beach County</strong> mixes coastal barrier islands with inland communities and large lots.</p><p>Tree rules, permits and associations differ by city, so each city page notes what to check. If your city is not listed, send a request and tell us where the tree is.</p>`}
+  />
+
+  <CtaBand title="Request a Free Estimate in Your City" />
 </BaseLayout>

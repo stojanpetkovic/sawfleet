@@ -1,0 +1,44 @@
+---
+import { coverage } from "../config/coverage";
+
+// Says plainly whether this place has a professional behind it today.
+interface Props {
+  place: string;
+  state: "active" | "partial" | "waiting";
+  /** Set on waiting pages so the contact form can start with the city filled in. */
+  city?: string;
+}
+const { place, state, city } = Astro.props;
+---
+
+<section class="px-4 pt-8 sm:px-6" data-no-reveal>
+  <div class:list={["mx-auto flex max-w-5xl flex-col gap-4 rounded-2xl border-2 p-5 sm:flex-row sm:items-center sm:justify-between sm:p-6", state === "waiting" ? "border-amber-300 bg-amber-50" : "border-primary-300 bg-primary-50"]}>
+    <div class="flex gap-4">
+      <span class:list={["mt-0.5 grid size-10 shrink-0 place-items-center rounded-xl text-white", state === "waiting" ? "bg-amber-500" : "bg-primary-600"]} aria-hidden="true">
+        {
+          state === "waiting" ? (
+            <svg class="size-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+          ) : (
+            <svg class="size-6" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" /></svg>
+          )
+        }
+      </span>
+      <div>
+        <p class="font-heading text-lg font-bold text-secondary-900">
+          {state === "active" && <>Active in {place}</>}
+          {state === "partial" && <>Active in the Fort Lauderdale area</>}
+          {state === "waiting" && <>We are adding professionals in {place}</>}
+        </p>
+        <p class="mt-1 text-sm leading-relaxed text-secondary-700">
+          {state === "active" && <>Send a request and an independent professional contacts you with a free estimate. Sponsored: Tree Jaws serves {coverage.activeLabel.toLowerCase()}.</>}
+          {state === "partial" && <>In {place}, {coverage.activeLabel.toLowerCase()} is active; other parts of the county are being added. Send a request and we will match you where we can.</>}
+          {state === "waiting" && <>We do not have a professional in {place} yet. Send a request and we will try to match you, but we cannot promise a response. Or tell us you want to be notified, and tree companies can get listed.</>}
+        </p>
+      </div>
+    </div>
+    <div class="flex shrink-0 flex-wrap gap-3">
+      <a href={city ? `/contact-us/?city=${encodeURIComponent(city)}` : "/contact-us/"} class="btn btn-accent">{state === "waiting" ? "Send a request anyway" : "Request a free estimate"}</a>
+      {state === "waiting" && <a href="#interest" class="btn btn-outline">Notify me</a>}
+    </div>
+  </div>
+</section>

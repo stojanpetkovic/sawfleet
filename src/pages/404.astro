@@ -1,0 +1,41 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import PageHero from "../components/PageHero.astro";
+
+const links = [
+  { href: "/tree-removal/", text: "Tree Removal" },
+  { href: "/emergency-tree-removal/", text: "Emergency Tree Removal" },
+  { href: "/areas/", text: "Service Areas" },
+  { href: "/tree-care-guides/", text: "Tree Care Guides" },
+  { href: "/faq/", text: "FAQ" },
+  { href: "/contact-us/", text: "Contact Us" },
+];
+---
+
+<BaseLayout
+  title="Page Not Found | SF Tree Removal"
+  description="This page does not exist. Use the links to find tree removal, emergency service, service areas and guides."
+  noindex
+>
+  <PageHero
+    badge="ERROR 404"
+    title="This page isn't here"
+    lead="The address may have changed or been typed wrong. Try one of these instead, or send us a request and we'll point you the right way."
+  />
+
+  <section class="bg-secondary-50 py-section">
+    <div class="mx-auto max-w-3xl px-4 sm:px-6">
+      <ul class="grid gap-4 sm:grid-cols-2">
+        {
+          links.map((l) => (
+            <li>
+              <a href={l.href} class="block rounded-xl bg-white px-4 sm:px-6 py-5 font-bold text-text transition hover:shadow-lg hover:text-primary-900">
+                {l.text} ↗
+              </a>
+            </li>
+          ))
+        }
+      </ul>
+    </div>
+  </section>
+</BaseLayout>

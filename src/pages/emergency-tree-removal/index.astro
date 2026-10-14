@@ -1,572 +1,88 @@
 ---
-import BaseLayout from "../../layouts/BaseLayout.astro";
-import LocalBusinessSchema from "../../components/LocalBusinessSchema.astro";
+import ServicePage from "../../components/ServicePage.astro";
 
+const faqs = [
+  {
+    q: "What counts as an emergency?",
+    a: `A tree or large limb on a house, car, fence or driveway; a tree blocking the only way in or out; a leaning or split tree that is about to fall; or any tree touching power lines. If anyone is in danger, call 911 first.`,
+  },
+  {
+    q: "How fast will someone respond?",
+    a: `Emergency requests are flagged as urgent when we pass them to local professionals. Speed depends on their availability and on conditions, and it is slower after a major storm when everyone needs help at once. We cannot promise an arrival time, so send the request as early as you can.`,
+  },
+  {
+    q: "What do I do about a tree on a power line?",
+    a: `Stay away from it and keep others away, and assume every line is live. Call your power company (in most of South Florida, FPL) and 911 if there is immediate danger. Only the utility or specialist crews should work on trees touching lines.`,
+  },
+  {
+    q: "Will insurance cover the removal?",
+    a: `Policies usually cover removal when a tree falls on a covered structure such as the house or a fence, and often not when it falls in the yard without damage. Check your policy, take photos before anything is moved, and keep the professional's invoice for the claim.`,
+  },
+  {
+    q: "Who does the emergency work?",
+    a: `An independent tree care professional, matched to your request. SF Tree Removal is an online service that passes your request on; we do not perform the work. Agree the price and scope with the professional and ask for proof of license and insurance before work starts.`,
+  },
+];
+const extras = [
+  {
+    "topper": "Why it is different",
+    "title": "How an Emergency Job Is Different",
+    "image": "storm-uproot",
+    "html": "<p>A fallen tree is rarely a simple removal. The wood may be under tension, resting on a roof or lines, or hiding damage underneath. A professional will usually secure the area first, decide the order in which pieces come off, and often use a crane or lift to take the weight off the structure.</p><p>The goal is to make things safe and stop further damage, such as water coming through a damaged roof. Permanent repairs, and sometimes the full removal of the stump, can follow later.</p>"
+  },
+  {
+    "topper": "After the tree is off",
+    "title": "Insurance, Documentation and Next Steps",
+    "image": "broken-tree",
+    "html": "<p>Before anything is moved, photograph the tree, the damage and the surroundings from several angles. Keep every invoice, including temporary roof cover, because many policies reimburse the cost of protecting the property from further damage.</p><p>Policies usually cover removal when a tree falls on a covered structure and often not when it falls in the yard without damage. Call your insurer early, and ask what they need from the professional who does the work.</p><p>If a permit would normally be required to remove the tree, ask your city how it handles emergency removals. Many allow them when a tree is an imminent danger, but may ask for photos or a report afterward. See our guide to <a href=\"/tree-care-guides/tree-removal-after-hurricane/\">tree removal after a hurricane</a>.</p>"
+  },
+  {
+    "topper": "Prevention",
+    "title": "Prepare Before the Next Storm",
+    "image": "canopy-climber",
+    "html": "<p>Most storm damage starts with a tree that was already weak: dead limbs, a split trunk, decay or lifted roots. A health check and structural pruning before the season on June 1 are cheaper than an emergency in August.</p><p>Read <a href=\"/tree-care-guides/hurricane-tree-preparation/\">how to prepare your trees for hurricane season</a>, and see <a href=\"/tree-trimming/\">tree trimming</a> for what good pruning looks like. University of Florida research shows topping and heavy thinning make trees weaker, not stronger.</p>"
+  }
+];
 ---
 
-<BaseLayout
-  title="Emergency Tree Removal South Florida | 24/7 Storm Damage Response"
-  description="24/7 emergency tree removal services in South Florida. Fast response for storm damage, fallen trees, and hazardous situations threatening homes and businesses."
-  canonical="https://sftreeremoval.com/emergency-tree-removal/"
->
-  <!-- ================= LOCAL BUSINESS SCHEMA ================= -->
-  <LocalBusinessSchema />
-
-  <!-- ================= HERO ================= -->
-  <section class="bg-teal-900 py-28 text-white">
-    <div class="max-w-7xl mx-auto px-6 text-center">
-
-      <span
-        class="inline-block mb-6 px-4 py-1 text-xs font-bold tracking-widest
-               border border-dashed border-white/60 rounded-full"
-      >
-        24/7 EMERGENCY SERVICE
-      </span>
-
-      <h1 class="text-4xl md:text-5xl xl:text-6xl font-extrabold leading-tight">
-        Emergency Tree Removal<br class="hidden sm:block" />
-        in South Florida
-      </h1>
-
-      <p class="mt-8 max-w-3xl mx-auto text-lg text-white/90">
-        Immediate response for storm damage, fallen trees, and hazardous
-        situations threatening homes, businesses, and power lines across
-        South Florida.
-      </p>
-
-      <div class="mt-12 flex flex-wrap justify-center gap-6">
-
-        <a
-          href="/contact-us/"
-          class="inline-flex items-center gap-4 rounded-full
-                 border border-white/70 px-10 py-4 text-white font-bold
-                 hover:bg-white/10 transition"
-        >
-          Request Immediate Help
-        </a>
-      </div>
-
-    </div>
-  </section>
-
-<!-- ================= COMMON EMERGENCY TREE SITUATIONS ================= -->
-<section class="bg-[#f4f8f6] py-32">
-  <div class="max-w-7xl mx-auto px-6">
-
-    <!-- HEADER -->
-    <div class="max-w-4xl mx-auto text-center mb-20">
-      <h2 class="text-3xl md:text-4xl font-extrabold text-slate-900 mb-6">
-        Common Emergency Tree Situations
-      </h2>
-      <p class="text-lg text-slate-600 leading-relaxed">
-        Emergency tree removal is required when damaged or unstable trees create
-        immediate safety risks. Below are the most common situations that require
-        urgent professional response.
-      </p>
-    </div>
-
-    <!-- INCIDENT GRID -->
-    <div class="max-w-5xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-8">
-
-      <!-- ITEM -->
-      <div class="bg-white rounded-3xl p-8">
-        <h3 class="text-lg font-extrabold text-slate-900 mb-3">
-          Storm-Damaged or Fallen Trees
-        </h3>
-        <p class="text-slate-600 leading-relaxed">
-          Trees that have fallen or sustained storm damage may block driveways,
-          roads, or restrict access to homes and businesses, requiring immediate
-          removal to restore safety and access.
-        </p>
-      </div>
-
-      <!-- ITEM -->
-      <div class="bg-white rounded-3xl p-8">
-        <h3 class="text-lg font-extrabold text-slate-900 mb-3">
-          Trees Leaning Toward Structures
-        </h3>
-        <p class="text-slate-600 leading-relaxed">
-          After storms, flooding, or soil saturation, trees may begin leaning
-          toward homes, buildings, or fences, increasing the risk of sudden
-          collapse.
-        </p>
-      </div>
-
-      <!-- ITEM -->
-      <div class="bg-white rounded-3xl p-8">
-        <h3 class="text-lg font-extrabold text-slate-900 mb-3">
-          Broken or Hanging Limbs
-        </h3>
-        <p class="text-slate-600 leading-relaxed">
-          Large broken limbs hanging over roofs, vehicles, or walkways pose an
-          immediate danger to people and property and must be removed safely.
-        </p>
-      </div>
-
-      <!-- ITEM -->
-      <div class="bg-white rounded-3xl p-8">
-        <h3 class="text-lg font-extrabold text-slate-900 mb-3">
-          Trees Entangled with Power Lines
-        </h3>
-        <p class="text-slate-600 leading-relaxed">
-          Trees in contact with power lines require controlled, professional
-          removal to avoid electrocution, outages, and further infrastructure
-          damage.
-        </p>
-      </div>
-
-      <!-- ITEM (FULL WIDTH) -->
-      <div class="bg-white rounded-3xl p-8 md:col-span-2">
-        <h3 class="text-lg font-extrabold text-slate-900 mb-3">
-          Uprooted or Structurally Unstable Trees
-        </h3>
-        <p class="text-slate-600 leading-relaxed">
-          Trees with exposed or compromised root systems are at high risk of
-          sudden collapse, especially during high winds or heavy rainfall,
-          requiring immediate professional assessment and removal.
-        </p>
-      </div>
-
-    </div>
-
-    <!-- CTA -->
-    <div class="mt-20 text-center">
-      <a
-        href="/contact-us/"
-        class="inline-flex items-center gap-4 rounded-full
-               bg-teal-700 px-12 py-5 text-white font-extrabold
-               hover:bg-teal-800 transition"
-      >
-        Request Emergency Service
-        <span class="flex h-10 w-10 items-center justify-center rounded-full bg-white/15">
-          ↗
-        </span>
-      </a>
-
-      <p class="mt-6 text-sm text-slate-500">
-        Available 24/7 for emergency tree removal across South Florida
-      </p>
-    </div>
-
-  </div>
-</section>
-
-<!-- ================= COMMON TREE EMERGENCY SITUATIONS ================= -->
-<section class="bg-white py-32">
-  <div class="max-w-7xl mx-auto px-6">
-
-    <!-- HEADER -->
-    <div class="max-w-4xl mx-auto text-center mb-16">
-      <h2 class="text-3xl md:text-4xl font-extrabold text-slate-900 mb-6">
-        Common Tree Emergency Situations
-      </h2>
-      <p class="text-lg text-slate-600 leading-relaxed">
-        Tree emergencies often occur without warning and require immediate,
-        professional tree removal services. Below are the most common emergency
-        situations we respond to across South Florida.
-      </p>
-    </div>
-
-    <!-- CONTENT -->
-    <div class="max-w-4xl mx-auto space-y-8 text-slate-700 leading-relaxed">
-
-      <p>
-        <strong class="text-slate-900">
-          Storm-damaged or fallen trees
-        </strong>
-        are one of the most frequent reasons for emergency tree removal.
-        Hurricanes, tropical storms, and high winds can cause trees to fall
-        across driveways, roads, or directly onto homes and commercial
-        buildings, creating immediate safety hazards.
-      </p>
-
-      <p>
-        <strong class="text-slate-900">
-          Trees leaning after hurricanes or heavy rain
-        </strong>
-        often indicate compromised root systems caused by flooding or soil
-        saturation. These trees may collapse suddenly and require urgent
-        professional assessment and removal.
-      </p>
-
-      <p>
-        <strong class="text-slate-900">
-          Broken or hanging limbs
-        </strong>
-        pose a serious risk when suspended over roofs, vehicles, walkways, or
-        public areas. Emergency tree service is necessary to safely remove these
-        limbs before they fall and cause injury or property damage.
-      </p>
-
-      <p>
-        <strong class="text-slate-900">
-          Trees entangled with power lines
-        </strong>
-        require controlled emergency tree removal performed by experienced
-        crews using specialized equipment. These situations are extremely
-        dangerous and should never be handled without professional support.
-      </p>
-
-      <p>
-        <strong class="text-slate-900">
-          Uprooted or structurally unstable trees
-        </strong>
-        with exposed or weakened root systems are at high risk of sudden
-        collapse, especially during additional storms or high winds. Immediate
-        action helps prevent further damage and ensures public safety.
-      </p>
-
-    </div>
-
-  </div>
-</section>
-
-<!-- ================= EMERGENCY RESPONSE PROCESS ================= -->
-<section
-  class="relative py-32 bg-fixed bg-center bg-cover"
-  style="background-image:url('/images/emergency-tree-removal/emergency-response-process.jpg')"
->
-  <!-- OVERLAY -->
-  <div class="absolute inset-0 bg-teal-900/70"></div>
-
-  <div class="relative z-10 max-w-7xl mx-auto px-6 text-white">
-
-    <!-- HEADER -->
-    <div class="max-w-4xl mx-auto text-center mb-20">
-      <h2 class="text-3xl md:text-4xl font-extrabold mb-6">
-        Our Emergency Tree Removal Response Process
-      </h2>
-      <p class="text-lg text-white/90 leading-relaxed">
-        When a tree emergency occurs, fast and organized action is critical.
-        Our emergency tree removal process is designed to secure your property,
-        eliminate hazards, and restore safety as quickly as possible.
-      </p>
-    </div>
-
-    <!-- STEPS -->
-    <div class="max-w-5xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-10">
-
-      <!-- STEP 1 -->
-      <div class="bg-white/95 text-slate-900 rounded-3xl p-8">
-        <span class="block text-sm font-bold text-teal-700 mb-4">
-          STEP 1
-        </span>
-        <h3 class="text-xl font-extrabold mb-4">
-          Immediate Emergency Assessment
-        </h3>
-        <p class="text-slate-600 leading-relaxed">
-          Our emergency response team arrives quickly to assess storm damage,
-          fallen trees, and hazardous conditions. We identify immediate risks to
-          people, structures, vehicles, and power lines.
-        </p>
-      </div>
-
-      <!-- STEP 2 -->
-      <div class="bg-white/95 text-slate-900 rounded-3xl p-8">
-        <span class="block text-sm font-bold text-teal-700 mb-4">
-          STEP 2
-        </span>
-        <h3 class="text-xl font-extrabold mb-4">
-          Site Securing & Safety Measures
-        </h3>
-        <p class="text-slate-600 leading-relaxed">
-          Before removal begins, we secure the area using professional safety
-          protocols. This includes stabilizing trees, controlling access, and
-          preparing equipment to prevent further damage or injury.
-        </p>
-      </div>
-
-      <!-- STEP 3 -->
-      <div class="bg-white/95 text-slate-900 rounded-3xl p-8">
-        <span class="block text-sm font-bold text-teal-700 mb-4">
-          STEP 3
-        </span>
-        <h3 class="text-xl font-extrabold mb-4">
-          Controlled Emergency Tree Removal
-        </h3>
-        <p class="text-slate-600 leading-relaxed">
-          Using cranes, lifts, and precision cutting techniques, our crew
-          performs controlled tree removal. Debris is cleared efficiently to
-          restore safe access to your property.
-        </p>
-      </div>
-
-    </div>
-
-    <!-- BOTTOM LINE -->
-    <div class="mt-20 text-center">
-      <p class="text-white/90 text-lg">
-        Available 24/7 for emergency tree removal across South Florida.
-      </p>
-    </div>
-
-  </div>
-</section>
-
-<!-- ================= EMERGENCY SERVICE AREA ================= -->
-<section class="bg-[#f4f8f6] py-32">
-  <div class="max-w-7xl mx-auto px-6">
-
-    <!-- HEADER -->
-    <div class="max-w-4xl mx-auto text-center mb-16">
-      <h2 class="text-3xl md:text-4xl font-extrabold text-slate-900 mb-6">
-        Emergency Tree Removal Across South Florida
-      </h2>
-
-      <p class="text-lg text-slate-600 leading-relaxed">
-        Our emergency tree removal teams are available 24/7 throughout South
-        Florida, providing rapid response for storm damage, fallen trees, and
-        hazardous situations that require immediate professional action.
-      </p>
-    </div>
-
-    <!-- CONTENT -->
-    <div class="max-w-5xl mx-auto space-y-8 text-slate-700 leading-relaxed">
-
-      <p>
-        We proudly serve homeowners, businesses, and property managers across
-        <strong class="text-slate-900">Miami</strong>,
-        <strong class="text-slate-900">Fort Lauderdale</strong>,
-        <strong class="text-slate-900">Broward County</strong>, and surrounding
-        South Florida communities. Our local emergency crews understand the
-        unique risks caused by hurricanes, tropical storms, heavy rainfall, and
-        high winds common to this region.
-      </p>
-
-      <p>
-        Because tree emergencies often occur outside normal business hours, our
-        teams remain on standby day and night. Whether a tree has fallen across
-        a driveway, damaged a roof, blocked a roadway, or become entangled with
-        power lines, we respond quickly to restore safety and access.
-      </p>
-
-      <p>
-        With strategically positioned crews and professional equipment, we are
-        able to provide <strong class="text-slate-900">fast emergency tree
-        removal services</strong> throughout South Florida without delays. Our
-        priority is to secure the site, prevent further damage, and complete
-        controlled tree removal as efficiently as possible.
-      </p>
-
-    </div>
-
-    <!-- CTA -->
-    <div class="mt-20 text-center">
-      <a
-        href="/contact-us/"
-        class="inline-flex items-center gap-4 rounded-full
-               bg-teal-700 px-12 py-5 text-white font-extrabold
-               hover:bg-teal-800 transition"
-      >
-        Request Emergency Service
-        <span class="flex h-10 w-10 items-center justify-center rounded-full bg-white/15">
-          ↗
-        </span>
-      </a>
-
-      <p class="mt-6 text-sm text-slate-500">
-        24/7 emergency response across Miami, Fort Lauderdale & Broward County
-      </p>
-    </div>
-
-  </div>
-</section>
-
-<!-- ================= EMERGENCY TREE REMOVAL FAQ ================= -->
-<section class="bg-white py-28">
-  <div class="max-w-7xl mx-auto px-6">
-
-    <!-- HEADER -->
-    <div class="max-w-3xl mx-auto text-center mb-16">
-      <h2 class="text-3xl md:text-4xl font-extrabold text-slate-900 mb-4">
-        Emergency Tree Removal FAQs
-      </h2>
-      <p class="text-lg text-slate-600 leading-relaxed">
-        Below are answers to the most common questions about emergency tree
-        removal services in South Florida. If you are facing a tree emergency,
-        our team is available 24/7 for immediate assistance.
-      </p>
-    </div>
-
-    <!-- FAQ LIST -->
-    <div class="max-w-3xl mx-auto divide-y divide-slate-200">
-
-      <!-- FAQ ITEM -->
-      <div class="py-6">
-        <h3 class="text-lg font-extrabold text-slate-900 mb-2">
-          What is considered an emergency tree removal?
-        </h3>
-        <p class="text-slate-600 leading-relaxed">
-          Emergency tree removal is required when a tree poses an immediate risk
-          to people, property, or infrastructure. This includes storm-damaged or
-          fallen trees, trees leaning toward structures, broken limbs hanging
-          overhead, and trees entangled with power lines.
-        </p>
-      </div>
-
-      <!-- FAQ ITEM -->
-      <div class="py-6">
-        <h3 class="text-lg font-extrabold text-slate-900 mb-2">
-          Do you provide 24/7 emergency tree removal services?
-        </h3>
-        <p class="text-slate-600 leading-relaxed">
-          Yes. We provide 24/7 emergency tree removal services across South
-          Florida, including nights, weekends, and holidays. Our emergency crews
-          are on standby to respond quickly to urgent situations.
-        </p>
-      </div>
-
-      <!-- FAQ ITEM -->
-      <div class="py-6">
-        <h3 class="text-lg font-extrabold text-slate-900 mb-2">
-          How fast can your emergency tree removal team respond?
-        </h3>
-        <p class="text-slate-600 leading-relaxed">
-          Response times depend on location and severity, but our goal is to
-          dispatch an emergency tree removal crew as quickly as possible. With
-          teams positioned throughout South Florida, we are able to provide
-          rapid response to storm damage and hazardous tree situations.
-        </p>
-      </div>
-
-      <!-- FAQ ITEM -->
-      <div class="py-6">
-        <h3 class="text-lg font-extrabold text-slate-900 mb-2">
-          Can you remove trees that are on or near power lines?
-        </h3>
-        <p class="text-slate-600 leading-relaxed">
-          Yes. Trees entangled with power lines require controlled, professional
-          emergency tree removal using specialized equipment and strict safety
-          protocols. These situations should never be handled without trained,
-          licensed professionals.
-        </p>
-      </div>
-
-      <!-- FAQ ITEM -->
-      <div class="py-6">
-        <h3 class="text-lg font-extrabold text-slate-900 mb-2">
-          Is emergency tree removal more expensive?
-        </h3>
-        <p class="text-slate-600 leading-relaxed">
-          Emergency tree removal costs vary depending on tree size, location,
-          accessibility, and the complexity of the situation. While emergency
-          jobs may involve additional resources, we provide transparent pricing
-          and clear estimates before work begins whenever possible.
-        </p>
-      </div>
-
-      <!-- FAQ ITEM -->
-      <div class="py-6">
-        <h3 class="text-lg font-extrabold text-slate-900 mb-2">
-          Do I need a permit for emergency tree removal?
-        </h3>
-        <p class="text-slate-600 leading-relaxed">
-          Permit requirements vary by city and county in South Florida. In many
-          emergency situations, immediate removal is allowed to prevent further
-          damage or danger. Our team can assist with local regulations and any
-          required documentation.
-        </p>
-      </div>
-
-      <!-- FAQ ITEM -->
-      <div class="py-6">
-        <h3 class="text-lg font-extrabold text-slate-900 mb-2">
-          What happens after the emergency tree is removed?
-        </h3>
-        <p class="text-slate-600 leading-relaxed">
-          After emergency tree removal, our crew performs complete cleanup,
-          including debris removal and clearing access to your property.
-          Additional services such as stump grinding or follow-up tree care can
-          be arranged if needed.
-        </p>
-      </div>
-
-      <!-- FAQ ITEM -->
-      <div class="py-6">
-        <h3 class="text-lg font-extrabold text-slate-900 mb-2">
-          Are your emergency tree removal services licensed and insured?
-        </h3>
-        <p class="text-slate-600 leading-relaxed">
-          Yes. SF Tree Removal is fully licensed and insured, ensuring that every
-          emergency tree removal project meets professional safety, liability,
-          and quality standards.
-        </p>
-      </div>
-
-    </div>
-
-    <!-- CTA -->
-    <div class="mt-14 text-center">
-      <a
-        href="/contact-us/"
-        class="inline-flex items-center gap-3 rounded-full
-               bg-teal-700 px-10 py-4 text-white font-extrabold
-               hover:bg-teal-800 transition"
-      >
-        Request Emergency Service
-        <span class="flex h-8 w-8 items-center justify-center rounded-full bg-white/15">
-          ↗
-        </span>
-      </a>
-
-      <p class="mt-4 text-sm text-slate-500">
-        24/7 emergency response across South Florida
-      </p>
-    </div>
-
-  </div>
-</section>
-
-<!-- ================= FINAL EMERGENCY CTA ================= -->
-<section class="relative bg-teal-900 py-32 text-white overflow-hidden">
-  <div class="max-w-7xl mx-auto px-6 text-center">
-
-    <!-- URGENCY BADGE -->
-    <span
-      class="inline-block mb-8 px-4 py-1 text-xs font-bold tracking-widest
-             border border-dashed border-white/60 rounded-full"
-    >
-      24/7 EMERGENCY TREE REMOVAL
-    </span>
-
-    <!-- HEADLINE -->
-    <h2 class="text-4xl md:text-5xl xl:text-6xl font-extrabold leading-tight">
-      Tree Emergency?
-      <br class="hidden sm:block" />
-      Request Immediate Assistance
-    </h2>
-
-    <!-- SUPPORTING LINE -->
-    <p class="mt-8 max-w-3xl mx-auto text-lg text-white/90">
-      Fallen trees, storm damage, or hazardous situations require fast,
-      professional action. Our emergency tree removal crews are available
-      around the clock across South Florida.
-    </p>
-
-    <!-- PRIMARY ACTION -->
-    <div class="mt-14">
-      <a
-        href="/contact-us/"
-        class="inline-flex items-center gap-4 rounded-full
-               bg-white px-14 py-6 text-teal-900 text-lg font-extrabold
-               hover:bg-slate-100 transition"
-      >
-        Request a Free Estimate
-        <span
-          class="flex h-10 w-10 items-center justify-center rounded-full
-                 bg-teal-900 text-white"
-        >
-          ↗
-        </span>
-      </a>
-    </div>
-
-    <!-- TRUST LINE -->
-    <p class="mt-10 text-sm text-white/70">
-      Licensed & insured · Rapid emergency response · Serving all of South Florida
-    </p>
-
-  </div>
-</section>
-
-</BaseLayout>
+<ServicePage
+  title="Emergency Tree Removal in South Florida | Urgent Help"
+  description="Tree on your house, car or driveway? Send an urgent request and we flag it for independent local tree pros in South Florida."
+  service={{
+    name: "Emergency Tree Removal Requests",
+    serviceType: "Emergency tree removal request matching",
+    description: "Urgent requests for fallen and hazardous trees passed to independent local tree care professionals in South Florida.",
+  }}
+  badge="EMERGENCY TREE REMOVAL"
+  h1="Emergency Tree Removal in South Florida"
+  lead="A tree on your house, car or driveway? Send an urgent request and we flag it for independent local professionals."
+  intro={[
+    "Storms, heavy rain and saturated soil bring down trees in South Florida every year. When one lands on a roof, a car or a driveway, you need a professional with the right equipment, quickly.",
+    "Choose <strong>Emergency Tree Removal</strong> in the <a href=\"/contact-us/\">contact form</a> and describe what happened. We flag the request as urgent and pass it to an independent tree care professional. We are active in the Fort Lauderdale area and adding professionals elsewhere, so outside it we cannot promise a response or an arrival time (<a href=\"/areas/#coverage\">coverage</a>). We do not perform the work ourselves.",
+  ]}
+  coversTitle="Situations We Flag as Urgent"
+  covers={[
+    { name: "Tree on a house or roof", note: "Do not go under it. Keep everyone out of the affected rooms and photograph the damage for your insurer before anything is moved." },
+    { name: "Tree on a car or driveway", note: "A blocked driveway can trap vehicles and delay emergency access. Describe how the tree is lying and what it blocks." },
+    { name: "Hanging or split limbs", note: "Broken limbs caught in the canopy can drop without warning. Keep people and pets clear until a professional has looked at it." },
+    { name: "Uprooted or leaning trees", note: "A tree leaning after a storm, with lifted soil at the base, can fall further. Treat it as unstable." },
+    { name: "Trees touching power lines", note: "Stay far away, assume the line is live, and call your power company. Do not try to move or cut the tree." },
+    { name: "Palms and fences after a storm", note: "Downed palms, fallen fences and debris piles that block access or threaten a neighbor's property." },
+  ]}
+  detailTitle="What to Do Right After a Tree Falls"
+  detail={`<ol>
+  <li><strong>Make sure everyone is safe.</strong> If anyone is hurt or in danger, call 911.</li>
+  <li><strong>Stay away from power lines</strong> and anything touching them. Call your power company.</li>
+  <li><strong>Photograph the damage</strong> from several angles before anything is moved, for your insurance claim.</li>
+  <li><strong>Send the urgent request</strong> through the <a href="/contact-us/">contact form</a> with your city, what the tree is on, and your phone number.</li>
+  <li><strong>Be careful with door-to-door crews</strong> after a storm. Ask for proof of license and insurance before anyone starts, and get the price and scope in writing.</li>
+</ol>
+<p>Do not climb the tree or use a chainsaw on a tree that is under tension, on a structure or near lines. Planning how the pieces come down is what makes the job safe. For preparing before the next storm, read our <a href="/tree-care-guides/hurricane-tree-preparation/">hurricane tree checklist</a>.</p>`}
+  faqs={faqs}
+  image="fallen-on-car"
+  introImage="tree-on-house"
+  introTitle="Urgent Help After a Fall or Storm"
+  extras={extras}
+  ctaTitle="Send an Urgent Request"
+  ctaText="Choose Emergency Tree Removal in the form and tell us what happened. We flag it as urgent and pass it to local professionals."
+/>

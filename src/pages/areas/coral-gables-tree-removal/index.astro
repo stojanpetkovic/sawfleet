@@ -1,0 +1,108 @@
+---
+import CityPage from "../../../components/CityPage.astro";
+
+const intro = [
+  "Coral Gables is known as the City Beautiful for its tree canopy: giant banyans, mahogany and live oaks arch over many streets. That canopy is protected, and so tree work there is more regulated than in most places.",
+  "Send one request and we will try to match you with an independent tree care professional. We are adding professionals in Coral Gables and cannot promise a response yet, so you can also tell us you want to be notified. SF Tree Removal is an online service; we don't do the work ourselves, so you agree the scope and price directly with the professional you are matched with."
+];
+
+const conditions = [
+  {
+    "name": "Protected canopy",
+    "note": "The city protects its trees, and the public right-of-way has its own permit."
+  },
+  {
+    "name": "Historic neighborhoods",
+    "note": "Older homes sit under big trees whose limbs reach roofs."
+  },
+  {
+    "name": "Banyans and strangler figs",
+    "note": "Huge canopies and aerial roots need space and planning."
+  },
+  {
+    "name": "Roots and utilities",
+    "note": "Roots near pipes, walls and sidewalks are a frequent issue."
+  }
+];
+
+const notes = "<p>In Coral Gables, removing or relocating trees in the public right-of-way needs a separate tree removal permit under the city code, and the city has directed tree surveys and protection measures for demolition and design review. We could not confirm residential thresholds, so ask the city.</p><p>A good arborist report is often the best way to show that a tree is a risk, and it can bring the state hazard-tree exemption into play for single-family homes.</p>";
+
+const trees = [
+  {
+    "name": "Banyan and strangler fig",
+    "note": "Huge canopies and aerial roots that can lift pavement and walls; removal needs planning and space."
+  },
+  {
+    "name": "Mahogany",
+    "note": "Large shade tree with a broad canopy. Branch failure in storms is common, so structure and dead wood matter."
+  },
+  {
+    "name": "Live oak",
+    "note": "Wide, heavy limbs that often grow over roofs and driveways. Removal needs rigging so big pieces are lowered, not dropped."
+  },
+  {
+    "name": "Royal palm",
+    "note": "Tall and straight, often next to pools and houses. Lowering the crown needs care near screens and pavers."
+  },
+  {
+    "name": "Gumbo limbo",
+    "note": "A strong native shade tree, valued for storm resistance; removal usually only when dead or crowded."
+  },
+  {
+    "name": "Black olive",
+    "note": "A common street and yard tree whose roots lift sidewalks and whose fruit stains pavers."
+  }
+];
+
+const nearby = [
+  {
+    "name": "Miami",
+    "href": "/areas/miami-tree-removal/"
+  },
+  {
+    "name": "Doral",
+    "href": "/areas/doral-tree-removal/"
+  },
+  {
+    "name": "Miami-Dade County",
+    "href": "/areas/miami-dade-county-tree-removal/"
+  }
+];
+
+const faqs = [
+  {
+    "q": "How much does tree removal cost in Coral Gables?",
+    "a": "It depends on the size of the tree, how close it is to the house, pool or power lines, and whether a crane is needed. You will get a free estimate for your specific tree; see our <a href=\"/tree-care-guides/tree-removal-cost-south-florida/\">cost guide</a>."
+  },
+  {
+    "q": "Do I need a permit to remove a tree in Coral Gables?",
+    "a": "Often, but it depends on the tree, the property and the rules where you live. Use the <a href=\"/permit-checker/\">permit checker</a> for what Coral Gables and its county say, and confirm with the city."
+  },
+  {
+    "q": "Can I get emergency tree help in Coral Gables?",
+    "a": "Choose Emergency Tree Removal in the <a href=\"/contact-us/\">form</a>. The request is flagged as urgent for local professionals; we cannot promise an arrival time. If anyone is in danger, call 911."
+  },
+  {
+    "q": "Who does the work?",
+    "a": "An independent tree care professional in Miami-Dade County. SF Tree Removal is an online service; we do not perform the work. Ask for proof of license and insurance first."
+  }
+];
+---
+
+<CityPage
+  city="Coral Gables"
+  county="Miami-Dade County"
+  title="Tree Removal in Coral Gables, FL | Free Estimates"
+  description="Free tree removal estimates in Coral Gables, FL: removal, trimming, stump grinding and storm cleanup from independent local pros."
+  lead="Get a free tree removal estimate from independent local professionals in Coral Gables and the Coral Gables area."
+  intro={intro}
+  conditions={conditions}
+  permitId="coral-gables"
+  nearby={nearby}
+  faqs={faqs}
+  image="aerial-lift"
+  image2="climber-rope"
+  image3="crane-lift"
+  notes={notes}
+  trees={trees}
+/>

@@ -3,13 +3,17 @@ import Header from "../components/Header.astro";
 import Footer from "../components/Footer.astro";
 import SeoHead from "../components/SeoHead.astro";
 import Tracking from "../components/Tracking.astro";
+import MobileCta from "../components/MobileCta.astro";
+import SeasonBanner from "../components/SeasonBanner.astro";
+import { Font } from "astro:assets";
 import "../styles/global.css";
 
+// Everything except the content goes straight to SeoHead, which owns the meta
+// tags and the structured data.
 const {
   title = "SF Tree Removal | Professional Tree Service South Florida",
-  description = "Professional tree removal and tree service in South Florida. Emergency tree removal, certified arborists, and modern equipment.",
-  ogImage = "/images/og-default.jpg",
-  noindex = false,
+  description = "Free tree removal estimates in the Fort Lauderdale area, plus permit rules, costs and guides for South Florida.",
+  ...seo
 } = Astro.props;
 ---
 
@@ -17,26 +21,27 @@ const {
 <html lang="en" class="scroll-smooth">
   <head>
     <!-- ================= SEO META ================= -->
-    <SeoHead
-      title={title}
-      description={description}
-      ogImage={ogImage}
-      noindex={noindex}
-    />
+    <SeoHead title={title} description={description} {...seo} />
 
-    <!-- ================= GOOGLE FONT ================= -->
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap"
-      rel="stylesheet"
-    />
+    <!-- ================= FONTS ================= -->
+    <Font cssVariable="--font-display" preload />
+    <Font cssVariable="--font-body" preload />
+    <script is:inline>document.documentElement.classList.add("js");</script>
   </head>
 
-  <body class="min-h-screen bg-white font-sans text-slate-900 antialiased">
+  <body class="min-h-screen bg-white font-sans text-text antialiased">
+
+    <a
+      href="#content"
+      class="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-[100] focus:rounded-md focus:bg-primary focus:px-4 focus:py-2 focus:font-semibold focus:text-primary-fg"
+    >
+      Skip to content
+    </a>
 
     <!-- ================= TRACKING ================= -->
     <Tracking />
+
+    <SeasonBanner />
 
     <!-- ================= HEADER ================= -->
     <Header />
@@ -49,8 +54,12 @@ const {
     <!-- ================= FOOTER ================= -->
     <Footer />
 
+    <MobileCta />
+
     <script>
       import "../scripts/lead-forms";
+      import "../scripts/enhance";
+      import "../scripts/steps";
     </script>
 
   </body>

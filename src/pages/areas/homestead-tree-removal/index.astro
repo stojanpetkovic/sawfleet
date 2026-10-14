@@ -1,0 +1,108 @@
+---
+import CityPage from "../../../components/CityPage.astro";
+
+const intro = [
+  "Homestead is at the southern edge of the metro area, next to the farmland of the Redland: mango, avocado and lychee groves, nurseries and large lots with mature fruit trees, palms and oaks.",
+  "Send one request and we will try to match you with an independent tree care professional. We are adding professionals in Homestead and cannot promise a response yet, so you can also tell us you want to be notified. SF Tree Removal is an online service; we don't do the work ourselves, so you agree the scope and price directly with the professional you are matched with."
+];
+
+const conditions = [
+  {
+    "name": "Farm and large lots",
+    "note": "Big properties often have many large trees and long access routes."
+  },
+  {
+    "name": "Fruit trees",
+    "note": "Mango, avocado and lychee have heavy limbs and need thinning."
+  },
+  {
+    "name": "Hurricane exposure",
+    "note": "South Miami-Dade has a history of severe storms; weak trees fail first."
+  },
+  {
+    "name": "Palms",
+    "note": "Tall palms along driveways and near houses are common requests."
+  }
+];
+
+const notes = "<p>Agricultural and large-lot properties have different needs from suburban ones: larger equipment, more trees at a time and sometimes land clearing. Describe the property and the number of trees when you request an estimate.</p><p>Tree rules for farm and agricultural land can differ from residential rules, and parts of the area fall under the county code. Check with the city or the county tree program before cutting.</p>";
+
+const trees = [
+  {
+    "name": "Mango",
+    "note": "Large fruit tree with heavy limbs that can fail in wind. Often needs thinning and fruit-drop cleanup."
+  },
+  {
+    "name": "Avocado",
+    "note": "Brittle wood that breaks in storms; frequent thinning keeps it safer."
+  },
+  {
+    "name": "Lychee and other fruit trees",
+    "note": "Dense canopies on farm and large lots; storm damage and thinning are common requests."
+  },
+  {
+    "name": "Royal palm",
+    "note": "Tall and straight, often next to pools and houses. Lowering the crown needs care near screens and pavers."
+  },
+  {
+    "name": "Live oak",
+    "note": "Wide, heavy limbs that often grow over roofs and driveways. Removal needs rigging so big pieces are lowered, not dropped."
+  },
+  {
+    "name": "Australian pine",
+    "note": "An invasive species that topples easily in storms and is commonly removed rather than kept."
+  }
+];
+
+const nearby = [
+  {
+    "name": "Cutler Bay",
+    "href": "/areas/cutler-bay-tree-removal/"
+  },
+  {
+    "name": "Miami",
+    "href": "/areas/miami-tree-removal/"
+  },
+  {
+    "name": "Miami-Dade County",
+    "href": "/areas/miami-dade-county-tree-removal/"
+  }
+];
+
+const faqs = [
+  {
+    "q": "How much does tree removal cost in Homestead?",
+    "a": "It depends on the size of the tree, how close it is to the house, pool or power lines, and whether a crane is needed. You will get a free estimate for your specific tree; see our <a href=\"/tree-care-guides/tree-removal-cost-south-florida/\">cost guide</a>."
+  },
+  {
+    "q": "Do I need a permit to remove a tree in Homestead?",
+    "a": "Often, but it depends on the tree, the property and the rules where you live. Use the <a href=\"/permit-checker/\">permit checker</a> for what Homestead and its county say, and confirm with the city."
+  },
+  {
+    "q": "Can I get emergency tree help in Homestead?",
+    "a": "Choose Emergency Tree Removal in the <a href=\"/contact-us/\">form</a>. The request is flagged as urgent for local professionals; we cannot promise an arrival time. If anyone is in danger, call 911."
+  },
+  {
+    "q": "Who does the work?",
+    "a": "An independent tree care professional in Miami-Dade County. SF Tree Removal is an online service; we do not perform the work. Ask for proof of license and insurance first."
+  }
+];
+---
+
+<CityPage
+  city="Homestead"
+  county="Miami-Dade County"
+  title="Tree Removal in Homestead, FL | Free Estimates"
+  description="Free tree removal estimates in Homestead, FL: removal, trimming, stump grinding and storm cleanup from independent local pros."
+  lead="Get a free tree removal estimate from independent local professionals in Homestead and southern Miami-Dade."
+  intro={intro}
+  conditions={conditions}
+  permitId="other-miami-dade"
+  nearby={nearby}
+  faqs={faqs}
+  image="ladder-oak"
+  image2="canopy-climber"
+  image3="uprooted-yard"
+  notes={notes}
+  trees={trees}
+/>

@@ -1,0 +1,40 @@
+---
+import { season } from "../config/season";
+---
+
+{
+  season.alert ? (
+    <div class="bg-red-600 px-4 py-2.5 text-center text-sm font-semibold text-white" role="alert">
+      <span aria-hidden="true">⚠</span> {season.alertText}
+      <a href="/emergency-tree-removal/" class="ml-2 inline-block rounded-full bg-white px-3 py-0.5 text-red-700 underline-offset-2 hover:underline">Send an emergency request →</a>
+    </div>
+  ) : (
+    <div id="season-banner" hidden class="bg-secondary-900 px-4 py-2 text-center text-sm text-white" data-no-reveal>
+      <div class="mx-auto flex max-w-site flex-wrap items-center justify-center gap-x-3 gap-y-1">
+        <span><span aria-hidden="true">🌀</span> <strong class="font-semibold">Hurricane season is on.</strong> Get your trees checked before the next storm.</span>
+        <a href="/hurricane-checklist/" class="font-semibold text-accent underline-offset-2 hover:underline">Free checklist →</a>
+        <button id="season-dismiss" type="button" class="rounded-full px-2 text-white/70 hover:text-white" aria-label="Dismiss this message">✕</button>
+      </div>
+    </div>
+  )
+}
+
+<script define:vars={{ start: season.start, end: season.end }}>
+  (function () {
+    var el = document.getElementById("season-banner");
+    if (!el) return;
+    var now = new Date();
+    var m = now.getMonth() + 1, d = now.getDate();
+    var after = m > start.month || (m === start.month && d >= start.day);
+    var before = m < end.month || (m === end.month && d <= end.day);
+    var key = "sf-season-dismissed-" + now.getFullYear();
+    var dismissed = false;
+    try { dismissed = localStorage.getItem(key) === "1"; } catch (e) {}
+    if (after && before && !dismissed) el.hidden = false;
+    var btn = document.getElementById("season-dismiss");
+    if (btn) btn.addEventListener("click", function () {
+      el.hidden = true;
+      try { localStorage.setItem(key, "1"); } catch (e) {}
+    });
+  })();
+</script>

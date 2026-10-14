@@ -1,0 +1,108 @@
+---
+import CityPage from "../../../components/CityPage.astro";
+
+const intro = [
+  "Cutler Bay sits in south Miami-Dade near Biscayne Bay. The area was hit hard by Hurricane Andrew in 1992, and the trees that grew back are now mature, planted close to houses, pools and canals.",
+  "Send one request and we will try to match you with an independent tree care professional. We are adding professionals in Cutler Bay and cannot promise a response yet, so you can also tell us you want to be notified. SF Tree Removal is an online service; we don't do the work ourselves, so you agree the scope and price directly with the professional you are matched with."
+];
+
+const conditions = [
+  {
+    "name": "Hurricane history",
+    "note": "South Miami-Dade has a long record of storm damage; weak, dead and crowded trees come down first."
+  },
+  {
+    "name": "Mature replanted canopy",
+    "note": "Trees planted after Andrew are now large and close to structures."
+  },
+  {
+    "name": "Canals and bay",
+    "note": "Waterfront lots can limit access for equipment."
+  },
+  {
+    "name": "Palms and mahogany",
+    "note": "Tall palms and large mahogany are the most common subjects."
+  }
+];
+
+const notes = "<p>South Miami-Dade is flat, close to sea level and exposed to storm surge, so drainage and saturated soil matter. Trees in wet ground are shallow-rooted and uproot more easily, so leaning or heaving soil is a warning sign.</p><p>Cutler Bay is a municipality with its own rules, while parts of the surrounding area fall under the county. Check which applies to your address, and ask your HOA if you have one.</p>";
+
+const trees = [
+  {
+    "name": "Mahogany",
+    "note": "Large shade tree with a broad canopy. Branch failure in storms is common, so structure and dead wood matter."
+  },
+  {
+    "name": "Royal palm",
+    "note": "Tall and straight, often next to pools and houses. Lowering the crown needs care near screens and pavers."
+  },
+  {
+    "name": "Black olive",
+    "note": "A common street and yard tree whose roots lift sidewalks and whose fruit stains pavers."
+  },
+  {
+    "name": "Mango",
+    "note": "Large fruit tree with heavy limbs that can fail in wind. Often needs thinning and fruit-drop cleanup."
+  },
+  {
+    "name": "Gumbo limbo",
+    "note": "A strong native shade tree, valued for storm resistance; removal usually only when dead or crowded."
+  },
+  {
+    "name": "Ficus",
+    "note": "Fast-growing with aggressive roots that crowd walls, pipes and pools. A frequent reason for removal requests."
+  }
+];
+
+const nearby = [
+  {
+    "name": "Homestead",
+    "href": "/areas/homestead-tree-removal/"
+  },
+  {
+    "name": "Miami",
+    "href": "/areas/miami-tree-removal/"
+  },
+  {
+    "name": "Miami-Dade County",
+    "href": "/areas/miami-dade-county-tree-removal/"
+  }
+];
+
+const faqs = [
+  {
+    "q": "How much does tree removal cost in Cutler Bay?",
+    "a": "It depends on the size of the tree, how close it is to the house, pool or power lines, and whether a crane is needed. You will get a free estimate for your specific tree; see our <a href=\"/tree-care-guides/tree-removal-cost-south-florida/\">cost guide</a>."
+  },
+  {
+    "q": "Do I need a permit to remove a tree in Cutler Bay?",
+    "a": "Often, but it depends on the tree, the property and the rules where you live. Use the <a href=\"/permit-checker/\">permit checker</a> for what Cutler Bay and its county say, and confirm with the city."
+  },
+  {
+    "q": "Can I get emergency tree help in Cutler Bay?",
+    "a": "Choose Emergency Tree Removal in the <a href=\"/contact-us/\">form</a>. The request is flagged as urgent for local professionals; we cannot promise an arrival time. If anyone is in danger, call 911."
+  },
+  {
+    "q": "Who does the work?",
+    "a": "An independent tree care professional in Miami-Dade County. SF Tree Removal is an online service; we do not perform the work. Ask for proof of license and insurance first."
+  }
+];
+---
+
+<CityPage
+  city="Cutler Bay"
+  county="Miami-Dade County"
+  title="Tree Removal in Cutler Bay, FL | Free Estimates"
+  description="Free tree removal estimates in Cutler Bay, FL: removal, trimming, stump grinding and storm cleanup from independent local pros."
+  lead="Get a free tree removal estimate from independent local professionals in Cutler Bay and south Miami-Dade."
+  intro={intro}
+  conditions={conditions}
+  permitId="other-miami-dade"
+  nearby={nearby}
+  faqs={faqs}
+  image="storm-uproot"
+  image2="trunk-cutting"
+  image3="uprooted-yard"
+  notes={notes}
+  trees={trees}
+/>

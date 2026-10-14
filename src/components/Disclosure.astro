@@ -1,0 +1,35 @@
+---
+import { business } from "../config/business";
+
+// How the service works, in one place. "card" is a highlighted box for page
+// bodies; "short" is a single sentence for the footer; "text" is plain copy.
+interface Props {
+  variant?: "text" | "card" | "short";
+  class?: string;
+}
+const { variant = "text", class: className = "" } = Astro.props;
+---
+
+{
+  variant === "card" ? (
+    <aside class:list={["flex gap-4 rounded-xl border border-primary-200 bg-primary-50 p-5 sm:p-6", className]}>
+      <span class="mt-0.5 grid size-9 shrink-0 place-items-center rounded-lg bg-primary-600 text-white" aria-hidden="true">
+        <svg class="size-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+      </span>
+      <div>
+        <p class="font-heading font-semibold text-secondary-900">How this service works</p>
+        <p class="mt-1 text-sm leading-relaxed text-secondary-600">
+          {business.disclosure} Ask any professional for proof of license and insurance before work starts.
+        </p>
+      </div>
+    </aside>
+  ) : variant === "short" ? (
+    <p class:list={["text-sm leading-relaxed", className]}>
+      An online service connecting South Florida property owners with independent local tree care professionals. We do not perform the work ourselves.
+    </p>
+  ) : (
+    <p class:list={["text-sm leading-relaxed", className]}>
+      {business.disclosure} Ask any professional for proof of license and insurance before work starts.
+    </p>
+  )
+}

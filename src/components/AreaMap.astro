@@ -1,0 +1,143 @@
+---
+import { places, placeHref, countyPages } from "../data/places";
+import { counties, type CountyId } from "../data/permits";
+import { isActivePlace } from "../config/coverage";
+
+// A drawn, approximate map of the service area: the coast, the three counties
+// and a pin for every city with its own page. Positions come from latitude and
+// longitude in src/data/places.ts. It is illustrative, not for navigation.
+const W = 800;
+const H = 1070;
+const LAT_N = 27.0;
+const LAT_S = 25.4;
+const LEFT = 250;
+const x = (lon: number) => LEFT + (lon + 80.55) * 562;
+const y = (lat: number) => 30 + (LAT_N - lat) * 625;
+
+// Approximate coastline, north to south: [lat, lon].
+const coast: [number, number][] = [
+  [27.0, -80.08], [26.93, -80.07], [26.85, -80.06], [26.75, -80.04], [26.7, -80.035], [26.6, -80.035], [26.5, -80.04],
+  [26.4, -80.055], [26.32, -80.07], [26.24, -80.085], [26.15, -80.095], [26.05, -80.105], [25.96, -80.12],
+  [25.88, -80.12], [25.8, -80.13], [25.77, -80.17], [25.7, -80.23], [25.6, -80.28], [25.5, -80.31], [25.4, -80.33],
+];
+const lonAt = (lat: number) => {
+  for (let i = 0; i < coast.length - 1; i++) {
+    const [a, b] = [coast[i], coast[i + 1]];
+    if (lat <= a[0] && lat >= b[0]) return a[1] + ((a[0] - lat) / (a[0] - b[0])) * (b[1] - a[1]);
+  }
+  return coast[coast.length - 1][1];
+};
+const LINES: Record<string, number> = { pb: 26.32, md: 25.957 };
+
+function polygon(latTop: number, latBottom: number) {
+  const pts: string[] = [];
+  pts.push(`${LEFT},${y(latTop)}`);
+  pts.push(`${x(lonAt(latTop))},${y(latTop)}`);
+  for (const [la, lo] of coast) if (la < latTop && la > latBottom) pts.push(`${x(lo)},${y(la)}`);
+  pts.push(`${x(lonAt(latBottom))},${y(latBottom)}`);
+  pts.push(`${LEFT},${y(latBottom)}`);
+  return pts.join(" ");
+}
+const shapes: { id: CountyId; points: string; fill: string; labelY: number }[] = [
+  { id: "palm-beach", points: polygon(LAT_N, LINES.pb), fill: "#e4f7ec", labelY: y(26.78) },
+  { id: "broward", points: polygon(LINES.pb, LINES.md), fill: "#c9eeda", labelY: y(26.19) },
+  { id: "miami-dade", points: polygon(LINES.md, LAT_S), fill: "#a9e3c3", labelY: y(25.66) },
+];
+const coastPath = coast.map(([la, lo], i) => `${i ? "L" : "M"}${x(lo)},${y(la)}`).join(" ");
+
+// Label placement: coastal cities label into the ocean on the right, inland
+// ones on the left; labels are pushed apart so none overlap.
+const GAP = 24;
+const sorted = places.map((p) => ({ ...p, px: x(p.lon), py: y(p.lat), right: p.lon > -80.165 }));
+function spread(items: typeof sorted) {
+  const s = [...items].sort((a, b) => a.py - b.py);
+  const ly = s.map((p) => p.py);
+  for (let i = 1; i < ly.length; i++) ly[i] = Math.max(ly[i], ly[i - 1] + GAP);
+  for (let i = ly.length - 2; i >= 0; i--) if (ly[i + 1] > H - 20) ly[i] = Math.min(ly[i], ly[i + 1] - GAP);
+  return s.map((p, i) => ({ ...p, ly: ly[i] }));
+}
+const pins = [...spread(sorted.filter((p) => p.right)), ...spread(sorted.filter((p) => !p.right))];
+const labelX = (p: (typeof pins)[number]) => (p.right ? 586 : 238);
+---
+
+<div class="mx-auto max-w-5xl" id="area-map" data-no-reveal>
+  <div class="mb-6 flex flex-wrap justify-center gap-2" role="group" aria-label="Show a county">
+    <button type="button" data-filter="all" class="map-filter rounded-full border border-primary-600 bg-primary-600 px-4 py-2 text-sm font-semibold text-white">All counties</button>
+    {(Object.keys(counties) as CountyId[]).map((c) => <button type="button" data-filter={c} class="map-filter rounded-full border border-secondary-300 bg-white px-4 py-2 text-sm font-semibold text-secondary-800">{counties[c]}</button>)}
+  </div>
+
+  <div class="mb-4 flex flex-wrap items-center justify-center gap-x-6 gap-y-2 text-sm text-secondary-700">
+    <span class="flex items-center gap-2"><span class="inline-block size-4 rounded-full bg-primary-700 ring-4 ring-accent/70"></span>Active now</span>
+    <span class="flex items-center gap-2"><span class="inline-block size-4 rounded-full border-[3px] border-primary-700 bg-white"></span>Local guides, professionals being added</span>
+  </div>
+
+  <div class="mx-auto max-w-[680px] overflow-hidden rounded-3xl border border-secondary-200 bg-sky-50 shadow-xl" data-active="all">
+    <svg viewBox={`0 0 ${W} ${H}`} role="group" aria-label="Map of the South Florida service area with a link for each city" class="block h-auto w-full">
+      <defs>
+        <linearGradient id="sea" x1="0" x2="1"><stop offset="0" stop-color="#e0f2fe" /><stop offset="1" stop-color="#bae6fd" /></linearGradient>
+        <linearGradient id="fade" x1="0" x2="1"><stop offset="0" stop-color="#ffffff" stop-opacity="0.9" /><stop offset="1" stop-color="#ffffff" stop-opacity="0" /></linearGradient>
+      </defs>
+      <rect width={W} height={H} fill="url(#sea)" />
+      {shapes.map((s) => <polygon points={s.points} fill={s.fill} stroke="#ffffff" stroke-width="3" class="county" data-county={s.id} />)}
+      <path d={coastPath} fill="none" stroke="#7dd3fc" stroke-width="6" stroke-linejoin="round" opacity="0.7" />
+      <path d={coastPath} fill="none" stroke="#0e7490" stroke-width="1.5" stroke-linejoin="round" opacity="0.5" />
+      <rect x={LEFT} y="0" width="70" height={H} fill="url(#fade)" />
+      <text x={LEFT + 6} y={H - 14} font-size="13" fill="#64748b">Everglades to the west</text>
+
+      {shapes.map((s) => (
+        <a href={countyPages[s.id]} class="county-label" data-county={s.id} aria-label={`${counties[s.id]} tree removal`}>
+          <text x={x(-80.42)} y={s.labelY} font-size="22" font-weight="800" letter-spacing="1.5" fill="#00602d" opacity="0.55" text-anchor="middle" class="font-heading">{counties[s.id].replace(" County", "").toUpperCase()}</text>
+          <text x={x(-80.42)} y={s.labelY + 22} font-size="14" font-weight="700" fill="#00602d" opacity="0.55" text-anchor="middle">COUNTY</text>
+        </a>
+      ))}
+
+      {pins.map((p) => (
+        <a href={placeHref(p)} class="pin" data-county={p.county} data-active={isActivePlace(p.id) ? "yes" : "no"} aria-label={`Tree removal in ${p.name}${isActivePlace(p.id) ? ", active" : ", coming soon"}`}>
+          <title>{p.name}</title>
+          <line x1={p.px} y1={p.py} x2={p.right ? 580 : 244} y2={p.ly} stroke="#007838" stroke-width="1" opacity="0.4" />
+          <circle cx={p.px} cy={p.py} r="13" fill="transparent" />
+          {isActivePlace(p.id) && <circle cx={p.px} cy={p.py} r="15" fill="#e6ee54" opacity="0.75" class="halo" />}
+          <circle cx={p.px} cy={p.py} r={isActivePlace(p.id) ? 7.5 : 6} fill={isActivePlace(p.id) ? "#007838" : "#ffffff"} stroke={isActivePlace(p.id) ? "#ffffff" : "#007838"} stroke-width={isActivePlace(p.id) ? 2.5 : 3} class="dot" />
+          <text x={labelX(p)} y={p.ly + 6} font-size="19" font-weight={isActivePlace(p.id) ? "800" : "600"} fill={isActivePlace(p.id) ? "#00602d" : "#475569"} text-anchor={p.right ? "start" : "end"} class="pin-label">{p.name}</text>
+        </a>
+      ))}
+    </svg>
+  </div>
+  <p class="mt-3 text-center text-xs text-secondary-500">Illustrative map, not to scale. Select a city or a county to open its page.</p>
+</div>
+
+<style>
+  .pin { cursor: pointer; }
+  .pin .dot { transition: r 0.15s ease, fill 0.15s ease; transform-box: fill-box; }
+  .pin:hover .dot, .pin:focus-visible .dot { r: 9.5; fill: #10c860; }
+  .pin:hover .pin-label, .pin:focus-visible .pin-label { fill: #007838; text-decoration: underline; }
+  .pin:focus-visible { outline: none; }
+  .pin, .county, .county-label { transition: opacity 0.25s ease; }
+  [data-active="miami-dade"] .pin:not([data-county="miami-dade"]),
+  [data-active="broward"] .pin:not([data-county="broward"]),
+  [data-active="palm-beach"] .pin:not([data-county="palm-beach"]),
+  [data-active="miami-dade"] .county:not([data-county="miami-dade"]),
+  [data-active="broward"] .county:not([data-county="broward"]),
+  [data-active="palm-beach"] .county:not([data-county="palm-beach"]) { opacity: 0.2; }
+</style>
+
+<script>
+  const root = document.getElementById("area-map");
+  const frame = root?.querySelector<HTMLElement>("[data-active]");
+  const buttons = root?.querySelectorAll<HTMLButtonElement>(".map-filter");
+  buttons?.forEach((b) =>
+    b.addEventListener("click", () => {
+      frame?.setAttribute("data-active", b.dataset.filter ?? "all");
+      buttons.forEach((o) => {
+        const on = o === b;
+        o.classList.toggle("bg-primary-600", on);
+        o.classList.toggle("text-white", on);
+        o.classList.toggle("border-primary-600", on);
+        o.classList.toggle("bg-white", !on);
+        o.classList.toggle("text-secondary-800", !on);
+        o.classList.toggle("border-secondary-300", !on);
+        o.setAttribute("aria-pressed", String(on));
+      });
+    }),
+  );
+</script>

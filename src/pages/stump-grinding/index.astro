@@ -1,0 +1,85 @@
+---
+import ServicePage from "../../components/ServicePage.astro";
+
+const faqs = [
+  {
+    q: "What is the difference between stump grinding and stump removal?",
+    a: `Grinding cuts the stump into chips with a machine, usually to a few inches below ground level, and leaves the roots in the soil to decay. Full removal digs out the stump and major roots, which is more disruptive and more expensive. For most yards, grinding is enough.`,
+  },
+  {
+    q: "How deep is a stump ground?",
+    a: `Typically about 4 to 12 inches below ground, depending on what you plan to put there. Sod or grass needs less; a new tree, a patio or a paver area may need deeper work. Ask for the depth in writing.`,
+  },
+  {
+    q: "Can I plant a new tree where the stump was?",
+    a: `Not always right away. Decaying stump material and old roots can get in the way of a new tree. Either ask for deeper grinding and clean fill, or plant a little distance away.`,
+  },
+  {
+    q: "What happens to the wood chips?",
+    a: `They stay in the hole and around it unless you ask for them to be removed. Chips make good mulch for beds, and many people keep them. Say what you want in your request so it can be included in the estimate.`,
+  },
+  {
+    q: "Who does the grinding?",
+    a: `An independent tree care professional, matched to your request. SF Tree Removal is an online service that passes your request on; we do not perform the work. Ask for proof of license and insurance first.`,
+  },
+];
+const extras = [
+  {
+    "topper": "Choosing a method",
+    "title": "Grinding or Full Stump Removal?",
+    "image": "uprooted-yard",
+    "html": "<p>Most homeowners only need the stump ground below the surface. Choose full removal when you will build, pave or plant a new tree in exactly the same spot.</p><ul><li><strong>Grinding:</strong> faster and cheaper, leaves roots to decay, little damage to the surrounding yard.</li><li><strong>Full removal:</strong> digs out the stump and major roots; messier and more expensive, but leaves clean ground.</li></ul><p>If you are not sure, tell the professional what you plan to do, and ask which they recommend and why.</p>"
+  },
+  {
+    "topper": "After the grinding",
+    "title": "What to Do With the Hole and the Chips",
+    "image": "brick-house-climber",
+    "html": "<p>Grinding leaves a pile of chips mixed with soil. You can leave them, spread them as mulch, or have them hauled away. Fill the hole with clean soil, tamp it down and top it up as the chips settle, then lay sod or plant.</p><p>If you will plant a tree in the same place, ask for deeper grinding and for the old chips to be removed, so the roots have clean soil to grow into.</p>"
+  }
+];
+---
+
+<ServicePage
+  title="Stump Grinding in South Florida | Free Local Estimates"
+  description="Free estimates for stump grinding and stump removal in Miami-Dade, Broward and Palm Beach County: how deep, what it costs and what to ask for."
+  service={{
+    name: "Stump Grinding Estimates",
+    serviceType: "Stump grinding estimate matching",
+    description: "Free estimates for stump grinding and stump removal from independent local tree care professionals in South Florida.",
+  }}
+  badge="STUMP GRINDING"
+  h1="Stump Grinding in South Florida"
+  lead="Get a free estimate for grinding or removing a stump, from an independent local professional."
+  intro={[
+    "A stump left in the yard attracts termites and pests, gets in the way of the mower, and keeps the spot unusable. <strong>Stump grinding</strong> removes it by cutting the stump into wood chips below ground level, so you can lay sod, plant again or build over the spot.",
+    "Send one request and we connect you with an independent tree care professional who gives you a free estimate. We are active in the Fort Lauderdale area and adding professionals elsewhere; see <a href=\"/areas/#coverage\">where we are active</a>. We don't do the work ourselves, so you compare the quote and agree the details directly. If a tree still needs to come down, <a href=\"/tree-removal/\">ask for removal and grinding to be quoted together</a>.",
+  ]}
+  coversTitle="What You Can Ask For"
+  covers={[
+    { name: "Stump grinding after a removal", note: "Quoted together with the tree removal, usually the cheapest and simplest way to do it." },
+    { name: "Old stumps", note: "Stumps from trees removed years ago, by you or by a previous owner, that are still in the lawn or flower bed." },
+    { name: "Large stumps and surface roots", note: "Wide stumps and roots that run above ground can be ground too. Mention them so the estimate is accurate." },
+    { name: "Stumps near pools, pavers and walls", note: "Access and the risk of damage change the price and the method. Mention what is nearby." },
+    { name: "Palm and fast-growing species", note: "Palms have fibrous trunks and ficus has aggressive roots. Say which tree it was." },
+    { name: "Full stump removal", note: "Digging the stump and roots out is an option when you need clean ground for building or planting a tree in the same spot." },
+  ]}
+  detailTitle="Stump Grinding: What to Know Before You Book"
+  detail={`<h3>Grinding versus removal</h3>
+<p>Grinding does not remove the root system. Roots stay in the ground and decay over several years, which can leave the soil settling a little where they ran. If you plan to build, pave or plant a tree in the same place, tell the professional so the work goes deeper, or ask about full removal.</p>
+<h3>What affects the price</h3>
+<ul>
+  <li><strong>Stump diameter and height</strong>, and how many roots show above ground.</li>
+  <li><strong>Depth</strong> you need, which depends on what goes there afterward.</li>
+  <li><strong>Access.</strong> A stump behind a gate or on a narrow side yard needs a smaller machine.</li>
+  <li><strong>Number of stumps.</strong> Several stumps on one visit cost less each.</li>
+  <li><strong>Cleanup.</strong> Whether the chips are left, spread or hauled away.</li>
+</ul>
+<h3>Before work starts</h3>
+<p>Ask the professional to confirm the depth, where the chips go, and how they protect irrigation lines, cables and pipes. Utilities can be marked for free by calling 811 before any digging. Ask for proof of license and insurance, and get the scope in writing.</p>
+<p>Not sure what to do with the tree itself? See <a href="/tree-removal/">tree removal</a> and <a href="/tree-trimming/">tree trimming</a>.</p>`}
+  faqs={faqs}
+  image="chainsaw"
+  introImage="trunk-bucket"
+  introTitle="Stump Grinding Done Right"
+  extras={extras}
+/>

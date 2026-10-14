@@ -1,0 +1,108 @@
+---
+import CityPage from "../../../components/CityPage.astro";
+
+const intro = [
+  "Sunrise is a central Broward city of residential communities, canals and large commercial areas. Many homes sit in associations, with trees planted close to walls, pools and screen enclosures.",
+  "Send one request and an independent tree care professional in the Fort Lauderdale area will contact you with a free estimate. SF Tree Removal is an online service that connects you with them; we don't do the work ourselves, so you agree the scope and price directly."
+];
+
+const conditions = [
+  {
+    "name": "Communities and associations",
+    "note": "Many Sunrise neighborhoods have HOAs that approve tree work."
+  },
+  {
+    "name": "Trees near enclosures",
+    "note": "Limbs reach roofs and screen enclosures, and roots lift pavers."
+  },
+  {
+    "name": "Canals",
+    "note": "Waterfront lots can limit access for equipment."
+  },
+  {
+    "name": "Storm damage",
+    "note": "Strong wind and saturated soil bring down trees and limbs."
+  }
+];
+
+const notes = "<p>Sunrise is mostly planned residential communities, so the first step is often your association: ask what it requires for removing or replacing a tree. The city and Broward County also have rules, and a county license is required for some trees in areas that use the county program.</p><p>Use the permit checker for the Broward baseline, and ask the city what applies to your property.</p>";
+
+const trees = [
+  {
+    "name": "Ficus",
+    "note": "Fast-growing with aggressive roots that crowd walls, pipes and pools. A frequent reason for removal requests."
+  },
+  {
+    "name": "Black olive",
+    "note": "A common street and yard tree whose roots lift sidewalks and whose fruit stains pavers."
+  },
+  {
+    "name": "Royal palm",
+    "note": "Tall and straight, often next to pools and houses. Lowering the crown needs care near screens and pavers."
+  },
+  {
+    "name": "Queen palm",
+    "note": "Fast growing and short lived; prone to disease and to toppling in saturated soil."
+  },
+  {
+    "name": "Live oak",
+    "note": "Wide, heavy limbs that often grow over roofs and driveways. Removal needs rigging so big pieces are lowered, not dropped."
+  },
+  {
+    "name": "Schefflera",
+    "note": "Often grows large with shallow roots and brittle limbs; common near pools and screens."
+  }
+];
+
+const nearby = [
+  {
+    "name": "Plantation",
+    "href": "/areas/plantation-tree-removal/"
+  },
+  {
+    "name": "Coral Springs",
+    "href": "/areas/coral-springs-tree-removal/"
+  },
+  {
+    "name": "Broward County",
+    "href": "/areas/broward-county-tree-removal/"
+  }
+];
+
+const faqs = [
+  {
+    "q": "How much does tree removal cost in Sunrise?",
+    "a": "It depends on the size of the tree, how close it is to the house, pool or power lines, and whether a crane is needed. You will get a free estimate for your specific tree; see our <a href=\"/tree-care-guides/tree-removal-cost-south-florida/\">cost guide</a>."
+  },
+  {
+    "q": "Do I need a permit to remove a tree in Sunrise?",
+    "a": "Often, but it depends on the tree, the property and the rules where you live. Use the <a href=\"/permit-checker/\">permit checker</a> for what Sunrise and its county say, and confirm with the city."
+  },
+  {
+    "q": "Can I get emergency tree help in Sunrise?",
+    "a": "Choose Emergency Tree Removal in the <a href=\"/contact-us/\">form</a>. The request is flagged as urgent for local professionals; we cannot promise an arrival time. If anyone is in danger, call 911."
+  },
+  {
+    "q": "Who does the work?",
+    "a": "An independent tree care professional in Broward County. SF Tree Removal is an online service; we do not perform the work. Ask for proof of license and insurance first."
+  }
+];
+---
+
+<CityPage
+  city="Sunrise"
+  county="Broward County"
+  title="Tree Removal in Sunrise, FL | Free Estimates"
+  description="Free tree removal estimates in Sunrise, FL: removal, trimming, stump grinding and storm cleanup from independent local pros."
+  lead="Get a free tree removal estimate from independent local professionals in Sunrise and central Broward."
+  intro={intro}
+  conditions={conditions}
+  permitId="other-broward"
+  nearby={nearby}
+  faqs={faqs}
+  image="climber-rope"
+  image2="trunk-cutting"
+  image3="tree-on-house"
+  notes={notes}
+  trees={trees}
+/>

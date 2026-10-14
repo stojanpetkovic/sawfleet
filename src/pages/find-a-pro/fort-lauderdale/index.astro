@@ -1,0 +1,89 @@
+---
+import BaseLayout from "../../../layouts/BaseLayout.astro";
+import PageHero from "../../../components/PageHero.astro";
+import SectionHeading from "../../../components/SectionHeading.astro";
+import SplitSection from "../../../components/SplitSection.astro";
+import ProCard from "../../../components/ProCard.astro";
+import Faq from "../../../components/Faq.astro";
+import CtaBand from "../../../components/CtaBand.astro";
+import ProRequestForm from "../../../components/ProRequestForm.astro";
+import { pros, proDisclosure } from "../../../data/pros";
+import { business } from "../../../config/business";
+
+const here = pros.filter((p) => p.featuredIn.includes("fort-lauderdale"));
+
+const faqs = [
+  {
+    q: "Which tree service companies are listed for Fort Lauderdale?",
+    a: `Right now the directory features Tree Jaws, a sponsored listing for Fort Lauderdale and the surrounding area. More companies are added as they join. Listings show what each company says about itself and have not been verified by SF Tree Removal.`,
+  },
+  {
+    q: "Do I need a permit to remove a tree in Fort Lauderdale?",
+    a: `Often. City guidance sets a permit threshold of about 8 inches at trunk height on a developed single-family lot (or a palm with 8 feet of clear trunk), with exemptions for certain species and the state hazard-tree rule. Use the <a href="/permit-checker/?j=fort-lauderdale">permit checker</a> and confirm with the city.`,
+  },
+  {
+    q: "How much does tree removal cost in Fort Lauderdale?",
+    a: `It depends on the size of the tree, how close it is to the house, pool or power lines, access (many lots are on canals) and whether a crane is needed. Read <a href="/tree-care-guides/tree-removal-cost-south-florida/">what drives the price</a> and get a written estimate.`,
+  },
+  {
+    q: "What does “Sponsored” mean?",
+    a: `A sponsored listing has a featured placement. It is advertising, not a recommendation or a review by SF Tree Removal.`,
+  },
+  {
+    q: "Can I get a free estimate without calling around?",
+    a: `Yes. Send one <a href="/contact-us/">request</a> and an independent local professional will contact you with a free estimate, with no obligation.`,
+  },
+];
+
+const schema = {
+  "@context": "https://schema.org",
+  "@type": "ItemList",
+  name: "Tree service companies in Fort Lauderdale",
+  numberOfItems: here.length,
+  itemListElement: here.map((p, i) => ({
+    "@type": "ListItem",
+    position: i + 1,
+    item: { "@type": "Organization", name: p.name, url: `${business.url}/find-a-pro/${p.slug}/`, areaServed: p.area },
+  })),
+};
+---
+
+<BaseLayout
+  title="Tree Service in Fort Lauderdale, FL | Directory"
+  description="Tree service companies in Fort Lauderdale and the surrounding area, with sponsored listings marked. Compare, check permit rules and ask for a free estimate."
+  pageType="CollectionPage"
+>
+  <script type="application/ld+json" set:html={JSON.stringify(schema)} />
+
+  <PageHero
+    badge="FORT LAUDERDALE"
+    title="Tree Service in Fort Lauderdale, FL"
+    lead="Tree care companies serving Fort Lauderdale and the surrounding area. Sponsored listings are marked."
+    actions={false}
+    image="trunk-cutting"
+  />
+
+  <section class="py-section">
+    <div class="mx-auto max-w-4xl px-4 sm:px-6">
+      <SectionHeading topper="Featured" title="Sponsored Listing" description="Featured placement. This is advertising, not a recommendation." />
+      <div class="space-y-6">{here.map((p) => <ProCard pro={p} featured />)}</div>
+      <p class="mt-8 rounded-xl bg-secondary-50 p-5 text-sm leading-relaxed text-secondary-600">{proDisclosure}</p>
+    </div>
+  </section>
+
+  <section class="pb-section">
+    <div class="mx-auto max-w-4xl px-4 sm:px-6">{here[0] && <ProRequestForm pro={here[0]} where="fort-lauderdale directory" />}</div>
+  </section>
+
+  <SplitSection
+    topper="Local knowledge"
+    title="Tree Work in Fort Lauderdale: What to Know"
+    image="beach-palms"
+    tone="tint"
+    html={`<p>Fort Lauderdale is built around waterways, so many lots have limited access, seawalls and docks. Tell the company about access, pools and overhead lines when you ask for an estimate.</p><p>City guidance asks for a permit for a tree of about 8 inches at trunk height on a developed single-family lot, or a palm with 8 feet of clear trunk, with a list of exempt species and the state hazard-tree exemption when an arborist documents the risk. Check the <a href="/permit-checker/?j=fort-lauderdale">permit checker</a>, and read <a href="/areas/fort-lauderdale-tree-removal/">tree removal in Fort Lauderdale</a> for local conditions.</p>`}
+  />
+
+  <Faq faqs={faqs} tone="white" />
+
+  <CtaBand title="Rather Not Call Around?" text="Send one request and an independent local professional will contact you with a free estimate. No obligation." />
+</BaseLayout>

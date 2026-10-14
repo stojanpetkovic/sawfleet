@@ -1,0 +1,180 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import PageHero from "./PageHero.astro";
+import SectionHeading from "./SectionHeading.astro";
+import HowItWorks from "./HowItWorks.astro";
+import Faq from "./Faq.astro";
+import Disclosure from "./Disclosure.astro";
+import CtaBand from "./CtaBand.astro";
+import SplitSection from "./SplitSection.astro";
+import ProSpotlight from "./ProSpotlight.astro";
+import CoverageBanner from "./CoverageBanner.astro";
+import AreaInterest from "./AreaInterest.astro";
+import { places } from "../data/places";
+import { isActivePlace } from "../config/coverage";
+import { jurisdictions, otherCity, stateRule, type CountyId } from "../data/permits";
+import type { PhotoKey } from "../config/photos";
+import type { FaqItem } from "./Faq.astro";
+
+// One template for the city pages: what the service is in that city, the local
+// conditions behind most requests, the permit picture and common questions.
+interface Props {
+  city: string;
+  county: string;
+  title: string;
+  description: string;
+  lead: string;
+  intro: string[];
+  conditions: { name: string; note: string }[];
+  /** id from src/data/permits.ts, or "other-<county id>" when the city has no entry. */
+  permitId: string;
+  nearby: { name: string; href: string }[];
+  faqs: FaqItem[];
+  image: PhotoKey;
+  image2: PhotoKey;
+  image3: PhotoKey;
+  /** Unique local copy (HTML paragraphs) and the trees most often involved. */
+  notes: string;
+  trees: { name: string; note: string }[];
+}
+const { city, county, title, description, lead, intro, conditions, permitId, nearby, faqs, image, image2, image3, notes, trees } = Astro.props;
+
+const here = places.find((p) => Astro.url.pathname === `/areas/${p.slug}/`);
+const active = here ? isActivePlace(here.id) : false;
+
+// Pages for places we do not cover yet say so, in the title, description and text.
+const pageTitle = active ? title : `Tree Removal in ${city}, FL | Permits & Costs`;
+const pageDescription = active
+  ? description
+  : `Tree removal in ${city}, FL: local conditions, permit rules and costs, plus how to get connected with a tree professional.`;
+const pageLead = active
+  ? lead
+  : `Local conditions, permit rules and costs for ${city}. We are adding tree professionals here, so tell us what you need.`;
+const fixFaq = (a: string) =>
+  active
+    ? a
+    : a
+        .replace("The request is flagged as urgent for local professionals; we cannot promise an arrival time.", `We flag the request as urgent, but we are still adding professionals in ${city}, so we cannot promise a response or an arrival time.`)
+        .replace("You will get a free estimate for your specific tree;", "A professional's estimate for your specific tree is free;")
+        .replace(/An independent tree care professional in [A-Za-z -]+County\./, "An independent tree care professional matched to your request, where we have one.");
+const pageFaqs = faqs.map((f) => ({ ...f, a: fixFaq(f.a) }));
+
+const rule = jurisdictions.find((j) => j.id === permitId);
+const countyId = (rule?.county ?? permitId.replace("other-", "")) as CountyId;
+const fallback = otherCity[countyId];
+const permitSummary = rule?.summary ?? fallback.summary;
+const permitSource = rule?.source ?? fallback.source;
+const permitPhone = rule?.phone;
+const checkerHref = `/permit-checker/?j=${rule ? rule.id : `other-${countyId}`}`;
+
+const services = [
+  { name: "Tree Removal", href: "/tree-removal/", text: "Removal of dead, leaning, storm-damaged and unwanted trees, including large trees close to homes." },
+  { name: "Emergency Tree Removal", href: "/emergency-tree-removal/", text: "Urgent requests for trees on a house, car, fence or driveway after a storm." },
+  { name: "Tree Trimming", href: "/tree-trimming/", text: "Trimming, pruning and palm work to keep trees healthy and clear of the house." },
+  { name: "Stump Grinding", href: "/stump-grinding/", text: "Grinding the stump below ground so you can lay sod, plant or build again." },
+  { name: "Arborist Assessments", href: "/certified-arborist/", text: "Tree health and risk reports, including documentation for a permit or the state exemption." },
+];
+---
+
+<BaseLayout title={pageTitle} description={pageDescription} area={active ? { name: city, type: "City", county } : undefined}>
+  <PageHero badge={`${city}, FL`} title={`Tree Removal in ${city}, FL`} lead={pageLead} image={image} />
+
+  <CoverageBanner place={city} state={active ? "active" : "waiting"} city={city} />
+
+  <SplitSection title={`Tree Removal in ${city}`} html={intro.map((p) => `<p>${p}</p>`).join("")} image={image2} />
+
+  <section class="bg-secondary-50 py-section">
+    <div class="mx-auto max-w-site px-4 sm:px-6">
+      <SectionHeading topper="What you can request" title={`Tree Help Available in ${city}`} />
+      <ul class="grid gap-6 sm:grid-cols-2 lg:grid-cols-3" role="list">
+        {
+          services.map((s) => (
+            <li>
+              <a href={s.href} class="card group flex h-full flex-col p-6">
+                <h3 class="font-heading text-h3 font-semibold">{s.name}</h3>
+                <p class="mt-2 flex-1 text-sm leading-relaxed text-text-muted">{s.text}</p>
+                <span class="mt-4 inline-flex items-center gap-1 text-sm font-semibold text-primary group-hover:text-primary-900">
+                  Learn more <span class="transition group-hover:translate-x-0.5" aria-hidden="true">→</span>
+                </span>
+              </a>
+            </li>
+          ))
+        }
+      </ul>
+    </div>
+  </section>
+
+  <section class="py-section">
+    <div class="mx-auto max-w-site px-4 sm:px-6">
+      <SectionHeading topper="Local conditions" title={`Why Trees Become a Problem in ${city}`} />
+      <ul class="grid gap-6 md:grid-cols-2" role="list">
+        {
+          conditions.map((c) => (
+            <li class="rounded-xl border border-secondary-200 bg-secondary-50 p-6">
+              <h3 class="font-heading text-h3 font-semibold">{c.name}</h3>
+              <p class="mt-2 text-sm leading-relaxed text-text-muted">{c.note}</p>
+            </li>
+          ))
+        }
+      </ul>
+    </div>
+  </section>
+
+  <SplitSection topper="Local notes" title={`What to Know About Trees in ${city}`} html={notes} image={image3} reverse tone="tint" />
+
+  <section class="py-section">
+    <div class="mx-auto max-w-site px-4 sm:px-6">
+      <SectionHeading topper="Common trees" title={`Trees Most Often Involved in ${city}`} description="The species that most often come up in removal and trimming requests in this part of South Florida." />
+      <ul class="grid gap-6 md:grid-cols-2 lg:grid-cols-3" role="list">
+        {trees.map((t) => (
+          <li class="card p-6">
+            <h3 class="font-heading text-h3 font-semibold text-secondary-900">{t.name}</h3>
+            <p class="mt-2 leading-relaxed text-secondary-600">{t.note}</p>
+          </li>
+        ))}
+      </ul>
+    </div>
+  </section>
+
+  <HowItWorks title={`Getting an Estimate in ${city}`} />
+
+  <section class="py-section">
+    <div class="mx-auto max-w-4xl px-4 sm:px-6">
+      <h2 class="mb-8 font-heading text-h2 font-bold text-secondary-900">Tree Removal Permits in {city}</h2>
+      <div class="prose-sf max-w-none">
+        {rule && <p><strong>{rule.headline}</strong></p>}
+        <p>{permitSummary}</p>
+        <p>
+          Source: <a href={permitSource.url} target="_blank" rel="noopener noreferrer">{permitSource.label}</a>
+          {permitPhone && <> · Phone to confirm: {permitPhone}</>}
+        </p>
+        <p>{stateRule.text} Always confirm with the city before work starts.</p>
+        <p>
+          <a href={checkerHref} class="btn btn-accent !text-black no-underline">Check my tree in the permit checker</a>
+        </p>
+        <p>
+          Read more in our guide to <a href="/tree-removal-permits/">tree removal permits in South Florida</a>.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  {!active && <AreaInterest place={city} />}
+
+  <Faq faqs={pageFaqs} title={`Tree Removal in ${city}: Common Questions`} />
+
+  <ProSpotlight county={countyId} place={city} />
+
+  <section class="border-t border-border py-12">
+    <div class="mx-auto max-w-4xl px-4 text-center sm:px-6">
+      <h2 class="font-heading text-h3 font-semibold normal-case">Nearby Areas</h2>
+      <ul class="mt-6 flex flex-wrap justify-center gap-3">
+        <li><a href="/areas/" class="block rounded-md border border-border px-5 py-2 text-sm font-semibold text-text hover:border-primary hover:text-primary">All service areas</a></li>
+        {nearby.map((n) => <li><a href={n.href} class="block rounded-md border border-border px-5 py-2 text-sm font-semibold text-text hover:border-primary hover:text-primary">{n.name}</a></li>)}
+      </ul>
+      <div class="mt-8 text-left"><Disclosure variant="card" /></div>
+    </div>
+  </section>
+
+  <CtaBand title={`Need Tree Removal in ${city}?`} text={active ? undefined : `Send a request and we will try to match you with a professional. We are adding professionals in ${city} and cannot promise a response yet.`} />
+</BaseLayout>

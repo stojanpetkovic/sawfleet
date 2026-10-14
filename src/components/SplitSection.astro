@@ -1,0 +1,33 @@
+---
+import Photo from "./Photo.astro";
+import type { PhotoKey } from "../config/photos";
+
+// Text on one side, a photo on the other. `html` is trusted page copy.
+interface Props {
+  topper?: string;
+  title: string;
+  html?: string;
+  image: PhotoKey;
+  alt?: string;
+  reverse?: boolean;
+  tone?: "white" | "tint";
+}
+const { topper, title, html, image, alt, reverse = false, tone = "white" } = Astro.props;
+---
+
+<section class:list={["py-section", tone === "tint" ? "bg-secondary-50" : "bg-white"]}>
+  <div class="mx-auto grid max-w-site items-center gap-10 px-4 sm:px-6 lg:grid-cols-2 lg:gap-16">
+    <div class:list={[reverse && "lg:order-2"]}>
+      {topper && <span class="topper mb-4">{topper}</span>}
+      <h2 class="font-heading text-h2 font-extrabold text-secondary-900">{title}</h2>
+      <div class="prose-sf mt-5 max-w-none text-base sm:text-lg" set:html={html} />
+      <slot />
+    </div>
+    <div class:list={["relative", reverse && "lg:order-1"]} data-reveal={reverse ? "left" : "right"}>
+      <div class:list={["absolute -z-10 size-full rounded-3xl bg-gradient-to-br from-primary-100 to-accent-100", reverse ? "-bottom-4 -left-4" : "-bottom-4 -right-4"]} aria-hidden="true"></div>
+      <div class="overflow-hidden rounded-2xl border-4 border-white shadow-xl ring-1 ring-secondary-200">
+        <Photo name={image} alt={alt} ratio="4/3" class="transition duration-700 hover:scale-105" sizes="(min-width: 1024px) 560px, 100vw" />
+      </div>
+    </div>
+  </div>
+</section>

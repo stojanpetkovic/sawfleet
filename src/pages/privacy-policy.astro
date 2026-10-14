@@ -1,5 +1,6 @@
 ---
 import BaseLayout from "../layouts/BaseLayout.astro";
+import Breadcrumbs from "../components/Breadcrumbs.astro";
 import { business } from "../config/business";
 const updated = "October 3, 2026";
 ---
@@ -8,11 +9,12 @@ const updated = "October 3, 2026";
   title={`Privacy Policy | ${business.name}`}
   description={`How ${business.name} collects, uses and protects the information you share through this website.`}
 >
-  <section class="bg-white py-24">
-    <div class="mx-auto max-w-3xl px-6">
+  <section class="bg-white py-section">
+    <div class="mx-auto max-w-3xl px-4 sm:px-6">
+      <Breadcrumbs tone="light" />
       <div class="prose-sf">
-        <h1 class="text-4xl font-extrabold text-slate-900 md:text-5xl">Privacy Policy</h1>
-        <p class="text-base text-slate-500">Last updated: {updated}</p>
+        <h1 class="text-h1 font-bold text-text ">Privacy Policy</h1>
+        <p class="text-base text-text-muted">Last updated: {updated}</p>
 
         <p>
           This policy explains what information {business.name} ("we", "us") collects through
@@ -22,8 +24,28 @@ const updated = "October 3, 2026";
         <h2>Information you give us</h2>
         <p>
           When you fill in a form on this website, we receive what you enter: usually your name, phone number, email
-          address, city and a description of the job. We also record which page and form you used and which website or ad
-          brought you to us, so we know how people find us.
+          address, city and a description of the job. We also record which page and form you used and which website or ad brought you to us, so we know how people find us.
+        </p>
+
+        <h2>Free downloads and reminders</h2>
+        <p>
+          If you download our hurricane checklist, we receive your email address, and your first name and city if you add
+          them. We use the email to send you the download link. If you tick the box, we also send you a few
+          hurricane-season tree reminders; you can unsubscribe at any time using the link in each email or by writing to us
+          through the <a href="/contact-us/">contact form</a>.
+        </p>
+
+        <h2>Requests to listed companies</h2>
+        <p>
+          If you use a form to request a quote from a company listed in our directory, we receive your name, phone, email
+          (if you give one), location and message, and with your consent we send them to that company so it can contact
+          you. The request is clearly marked as coming from this website.
+        </p>
+
+        <h2>Tree company listings</h2>
+        <p>
+          If you apply to be listed in our directory, we receive the company and contact details you enter. Applications
+          go only to us, are reviewed by hand, and are not shared. Details you choose to have published are public.
         </p>
 
         <h2>Information collected automatically</h2>
@@ -44,17 +66,16 @@ const updated = "October 3, 2026";
 
         <h2>How we use your information</h2>
         <ul>
-          <li>To respond to your request and prepare an estimate.</li>
-          <li>To contact you about the job you asked about.</li>
+          <li>To pass your request to an independent local tree care professional so they can contact you and prepare an estimate.</li>
+          <li>To contact you about the job you asked about, if needed.</li>
           <li>To understand which pages and advertising bring us customers, so we can improve the website.</li>
         </ul>
-        <p>We do not sell your personal information, and we do not use it for unrelated marketing.</p>
+        <p>We share your request details (your name, phone number, email, city and job description) with the professional who responds to it. We do not sell your personal information to anyone else, and we do not use it for unrelated marketing.</p>
 
         <h2>Who processes it for us</h2>
         <p>
           Form submissions and visit statistics are stored in a lead management system run by our web developer, hosted
-          with Supabase, and emailed to us through Resend. Google processes Google Analytics data. These providers handle
-          the data only to provide their services to us.
+          with Supabase, and emailed through Resend. Google processes Google Analytics data. These providers handle the data only to provide their services to us.
         </p>
 
         <h2>How long we keep it</h2>

@@ -5,14 +5,14 @@ const cities = [
   { name: "Fort Lauderdale", href: "/areas/fort-lauderdale-tree-removal/" },
   { name: "Hollywood", href: "/areas/hollywood-tree-service/" },
   { name: "Pembroke Pines", href: "/areas/pembroke-pines-tree-removal/" },
-  { name: "Miramar" },
-  { name: "Davie" },
-  { name: "Plantation" },
-  { name: "Sunrise" },
-  { name: "Weston" },
-  { name: "Coral Springs" },
-  { name: "Pompano Beach" },
-  { name: "Deerfield Beach" },
+  { name: "Miramar", href: "/areas/miramar-tree-removal/" },
+  { name: "Davie", href: "/areas/davie-tree-removal/" },
+  { name: "Plantation", href: "/areas/plantation-tree-removal/" },
+  { name: "Sunrise", href: "/areas/sunrise-tree-removal/" },
+  { name: "Weston", href: "/areas/weston-tree-removal/" },
+  { name: "Coral Springs", href: "/areas/coral-springs-tree-removal/" },
+  { name: "Pompano Beach", href: "/areas/pompano-beach-tree-removal/" },
+  { name: "Deerfield Beach", href: "/areas/deerfield-beach-tree-removal/" },
   { name: "Coconut Creek" },
 ];
 
@@ -28,20 +28,47 @@ const trees = [
 const permits = [
   "In Broward County, tree removal rules depend on where the property is. Most cities, including Fort Lauderdale, Hollywood and Pembroke Pines, have their own tree ordinances and permit process, while properties in unincorporated Broward fall under the county's own tree rules.",
   "Under Florida Statute 163.045, a homeowner may remove a tree on residential property without a local permit when a certified arborist or licensed landscape architect documents that the tree poses an unacceptable risk to people or property. Keep that documentation; the city can ask for it later.",
-  "Rules change and every case is different, so check with your city before work starts. We can tell you what is usually required for your address.",
+  "Rules change and every case is different, so check with your city before work starts. Ask the professional what is usually required for your address.",
+];
+
+const notes = "<p>Broward County is almost entirely urban and suburban, with canals, the Intracoastal Waterway and about 23 miles of Atlantic coastline. Mature oaks, mahogany and ficus line older streets, while newer communities are planted with palms, black olive and queen palms.</p><p>Heavy summer rain and high groundwater loosen roots, and hurricane season tests every tree. Most Broward cities have their own tree ordinance, so permit rules change as you cross a city line. Many neighborhoods are also managed by associations that must approve removals.</p><p>Requests range from trimming palms and removing a dead tree to urgent jobs after a storm. Describe access, pools, enclosures and overhead lines so the first estimate is as close as possible.</p>";
+
+const faqs = [
+  {
+    "q": "How much does tree removal cost in Broward County?",
+    "a": "It depends on the size of the tree, how close it is to the house, pool or power lines, and whether a crane is needed. You will get a free estimate for your specific tree; see our <a href=\"/tree-care-guides/tree-removal-cost-south-florida/\">cost guide</a>."
+  },
+  {
+    "q": "Do I need a permit to remove a tree in Broward County?",
+    "a": "Often yes, depending on the tree, the property and the city or county rules, unless a certified arborist documents that the tree is dangerous. See our <a href=\"/tree-removal-permits/\">permit guide</a> and confirm with your city."
+  },
+  {
+    "q": "Can I get emergency tree help in Broward County?",
+    "a": "Choose Emergency Tree Removal in the <a href=\"/contact-us/\">form</a>. The request is flagged as urgent for local professionals; we cannot promise an arrival time. If anyone is in danger, call 911."
+  },
+  {
+    "q": "Who does the work?",
+    "a": "An independent tree care professional who works in Broward County. SF Tree Removal is an online service; we do not perform the work. Ask for proof of license and insurance first."
+  }
 ];
 ---
 
 <CountyPage
   county="Broward County"
-  title="Tree Removal Broward County FL | Emergency & Residential Tree Service"
-  description="Tree removal, emergency storm response, trimming and arborist services across Broward County, FL: Fort Lauderdale, Hollywood, Pembroke Pines, Davie, Coral Springs and more."
-  lead="Professional tree removal, emergency storm response and tree care for homes and businesses across Broward County."
+  title="Tree Removal in Broward County, FL | SF Tree Removal"
+  description="Free tree removal estimates from independent local pros across Broward County, from Fort Lauderdale to Coral Springs."
+  lead="Get a free tree removal estimate from independent local professionals across Broward County."
   intro={[
     "From waterfront homes in Fort Lauderdale to family neighborhoods in Pembroke Pines and Coral Springs, Broward County has a lot of large trees growing close to houses, pools and power lines. When one of them becomes a risk, it needs to come down safely, without damage to the property around it.",
-    "SF Tree Removal handles complete removals, storm damage, trimming and arborist assessments throughout the county, and leaves the yard clean when the job is done.",
+    "SF Tree Removal is an online service that connects property owners with independent tree care professionals. We are active in the Fort Lauderdale area, in this county, and adding professionals in other parts of it, so elsewhere we try to match requests but cannot promise a response. We do not perform the work ourselves; the professional you choose agrees the scope, price and schedule with you.",
   ]}
   cities={cities}
   trees={trees}
   permits={permits}
+  image="ladder-oak"
+  image2="crane-lift"
+  image3="storm-uproot"
+  notes={notes}
+  faqs={faqs}
+  permitGuide="/tree-care-guides/broward-county-tree-removal-permit/"
 />

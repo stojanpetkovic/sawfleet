@@ -1,0 +1,108 @@
+---
+import CityPage from "../../../components/CityPage.astro";
+
+const intro = [
+  "Doral is a planned, fast-growing city of gated communities and corporate parks. Trees planted when the neighborhoods were built are now mature, with royal palms, oaks and ficus close to houses, walls and community amenities.",
+  "Send one request and we will try to match you with an independent tree care professional. We are adding professionals in Doral and cannot promise a response yet, so you can also tell us you want to be notified. SF Tree Removal is an online service; we don't do the work ourselves, so you agree the scope and price directly with the professional you are matched with."
+];
+
+const conditions = [
+  {
+    "name": "HOA and gated communities",
+    "note": "Most neighborhoods have an association that approves tree work and sets hours."
+  },
+  {
+    "name": "Maturing landscaping",
+    "note": "Trees planted twenty years ago are now large and crowd walls and roofs."
+  },
+  {
+    "name": "Lakes and canals",
+    "note": "Waterfront lots can restrict equipment access."
+  },
+  {
+    "name": "Palms",
+    "note": "Tall palms near pools and entrances are common requests."
+  }
+];
+
+const notes = "<p>Doral runs its own tree permit process through Public Works and publishes a list of exemptions, so check that page before you cut. Communities often add rules about timing, equipment and cleanup, and may need to approve the work first.</p><p>If a tree is at risk, a documented arborist assessment can help with both the city and the association.</p>";
+
+const trees = [
+  {
+    "name": "Royal palm",
+    "note": "Tall and straight, often next to pools and houses. Lowering the crown needs care near screens and pavers."
+  },
+  {
+    "name": "Live oak",
+    "note": "Wide, heavy limbs that often grow over roofs and driveways. Removal needs rigging so big pieces are lowered, not dropped."
+  },
+  {
+    "name": "Ficus",
+    "note": "Fast-growing with aggressive roots that crowd walls, pipes and pools. A frequent reason for removal requests."
+  },
+  {
+    "name": "Mahogany",
+    "note": "Large shade tree with a broad canopy. Branch failure in storms is common, so structure and dead wood matter."
+  },
+  {
+    "name": "Black olive",
+    "note": "A common street and yard tree whose roots lift sidewalks and whose fruit stains pavers."
+  },
+  {
+    "name": "Queen palm",
+    "note": "Fast growing and short lived; prone to disease and to toppling in saturated soil."
+  }
+];
+
+const nearby = [
+  {
+    "name": "Hialeah",
+    "href": "/areas/hialeah-tree-removal/"
+  },
+  {
+    "name": "Miami",
+    "href": "/areas/miami-tree-removal/"
+  },
+  {
+    "name": "Miami-Dade County",
+    "href": "/areas/miami-dade-county-tree-removal/"
+  }
+];
+
+const faqs = [
+  {
+    "q": "How much does tree removal cost in Doral?",
+    "a": "It depends on the size of the tree, how close it is to the house, pool or power lines, and whether a crane is needed. You will get a free estimate for your specific tree; see our <a href=\"/tree-care-guides/tree-removal-cost-south-florida/\">cost guide</a>."
+  },
+  {
+    "q": "Do I need a permit to remove a tree in Doral?",
+    "a": "Often, but it depends on the tree, the property and the rules where you live. Use the <a href=\"/permit-checker/\">permit checker</a> for what Doral and its county say, and confirm with the city."
+  },
+  {
+    "q": "Can I get emergency tree help in Doral?",
+    "a": "Choose Emergency Tree Removal in the <a href=\"/contact-us/\">form</a>. The request is flagged as urgent for local professionals; we cannot promise an arrival time. If anyone is in danger, call 911."
+  },
+  {
+    "q": "Who does the work?",
+    "a": "An independent tree care professional in Miami-Dade County. SF Tree Removal is an online service; we do not perform the work. Ask for proof of license and insurance first."
+  }
+];
+---
+
+<CityPage
+  city="Doral"
+  county="Miami-Dade County"
+  title="Tree Removal in Doral, FL | Free Estimates"
+  description="Free tree removal estimates in Doral, FL: removal, trimming, stump grinding and storm cleanup from independent local pros."
+  lead="Get a free tree removal estimate from independent local professionals in Doral and western Miami-Dade."
+  intro={intro}
+  conditions={conditions}
+  permitId="doral"
+  nearby={nearby}
+  faqs={faqs}
+  image="crane-lift"
+  image2="aerial-lift"
+  image3="storm-uproot"
+  notes={notes}
+  trees={trees}
+/>

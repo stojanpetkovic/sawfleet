@@ -1,31 +1,41 @@
 ---
-// The dark teal page header used across the site: badge, title, lead and,
-// optionally, the estimate button.
+import Breadcrumbs from "./Breadcrumbs.astro";
+import Photo from "./Photo.astro";
+import type { PhotoKey } from "../config/photos";
+
+// The light page header at the top of every inner page: breadcrumb, label,
+// title, lead and, optionally, the estimate button and a photo.
 interface Props {
   badge: string;
   title: string;
   lead: string;
   actions?: boolean;
+  image?: PhotoKey;
 }
-const { badge, title, lead, actions = true } = Astro.props;
+const { badge, title, lead, actions = true, image } = Astro.props;
 ---
 
-<section class="bg-teal-900 py-24 text-white md:py-28">
-  <div class="mx-auto max-w-5xl px-6 text-center">
-    <span class="mb-6 inline-block rounded-full border border-dashed border-white/60 px-4 py-1 text-xs font-bold tracking-widest">
-      {badge}
-    </span>
-    <h1 class="text-4xl font-extrabold leading-tight md:text-5xl xl:text-6xl">{title}</h1>
-    <p class="mx-auto mt-8 max-w-3xl text-lg text-white/90">{lead}</p>
+<section data-hero class="relative overflow-hidden bg-gradient-to-b from-primary-100 to-white py-14 sm:py-16 lg:py-20">
+  <div class="absolute inset-0 opacity-60" aria-hidden="true"><div class="bg-grid-pattern absolute inset-0"></div></div>
+  <div class="pointer-events-none absolute -bottom-16 left-1/2 size-64 -translate-x-1/2 rounded-full bg-accent opacity-20 blur-3xl" aria-hidden="true"></div>
+  <div class:list={["relative mx-auto max-w-site px-4 sm:px-6", image ? "grid items-center gap-10 lg:grid-cols-2 lg:gap-14" : "max-w-4xl text-center"]}>
+    <div>
+      <div class:list={["flex", !image && "justify-center"]}><Breadcrumbs tone="light" /></div>
+      <span class="topper mb-5">{badge}</span>
+      <h1 class="font-heading text-h1 font-bold text-secondary-900">{title}</h1>
+      <p class:list={["mt-5 max-w-2xl text-lead leading-relaxed text-secondary-600", !image && "mx-auto"]}>{lead}</p>
+      {
+        actions && (
+          <div class="mt-8 hidden lg:block">
+            <a href="/contact-us/" class="btn btn-accent">Request a Free Estimate</a>
+          </div>
+        )
+      }
+    </div>
     {
-      actions && (
-        <div class="mt-12 flex flex-wrap justify-center gap-4">
-          <a
-            href="/contact-us/"
-            class="inline-flex items-center gap-3 rounded-full bg-white px-8 py-4 font-extrabold text-teal-900 transition hover:bg-slate-100"
-          >
-            Request a Free Estimate
-          </a>
+      image && (
+        <div class="overflow-hidden rounded-3xl border-4 border-white shadow-2xl ring-1 ring-secondary-200">
+          <Photo name={image} eager ratio="4/3" sizes="(min-width: 1024px) 600px, 100vw" />
         </div>
       )
     }

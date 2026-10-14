@@ -1,652 +1,263 @@
 ---
 import BaseLayout from "../layouts/BaseLayout.astro";
-
-// CORE SECTIONS
 import Hero from "../components/Hero.astro";
-import LocalBusinessSchema from "../components/LocalBusinessSchema.astro";
+import SectionHeading from "../components/SectionHeading.astro";
+import TrustBar from "../components/TrustBar.astro";
+import StatsBand from "../components/StatsBand.astro";
+import HowItWorks from "../components/HowItWorks.astro";
+import Faq from "../components/Faq.astro";
+import Disclosure from "../components/Disclosure.astro";
+import CtaBand from "../components/CtaBand.astro";
+import Photo from "../components/Photo.astro";
+import SplitSection from "../components/SplitSection.astro";
+import { guides } from "../config/guides";
 
-// (uskoro dodajemo)
-// import ServicesPreview from "../components/ServicesPreview.astro";
-// import EmergencyCTA from "../components/EmergencyCTA.astro";
-// import ReviewsSnapshot from "../components/ReviewsSnapshot.astro";
-// import AreasPreview from "../components/AreasPreview.astro";
-// import FooterCTA from "../components/FooterCTA.astro";
+const services = [
+  { name: "Tree Removal", photo: "crane-lift", icon: '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />', href: "/tree-removal/", text: "Large, dead, leaning and storm-damaged trees, including palms and trees close to houses." },
+  { name: "Emergency Tree Removal", photo: "fallen-on-car", icon: '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" />', href: "/emergency-tree-removal/", text: "A tree on a house, car or driveway? Send an urgent request and we flag it first." },
+  { name: "Tree Trimming", photo: "canopy-climber", icon: '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.121 14.121L19 19m-7-7l7-7m-7 7l-2.879 2.879M12 12L9.121 9.121m0 5.758a3 3 0 10-4.243 4.243 3 3 0 004.243-4.243zm0-5.758a3 3 0 10-4.243-4.243 3 3 0 004.243 4.243z" />', href: "/tree-trimming/", text: "Trimming, pruning and palm work to keep trees healthy and safe." },
+  { name: "Stump Grinding", photo: "trunk-cutting", icon: '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.121 14.121L19 19m-7-7l7-7m-7 7l-2.879 2.879M12 12L9.121 9.121m0 5.758a3 3 0 10-4.243 4.243 3 3 0 004.243-4.243zm0-5.758a3 3 0 10-4.243-4.243 3 3 0 004.243 4.243z" />', href: "/stump-grinding/", text: "Grinding the stump below ground so you can plant, lay sod or build." },
+  { name: "Arborist Assessments", photo: "arborist-inspect", icon: '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />', href: "/certified-arborist/", text: "Tree health and risk reports, including documentation for permits and insurance." },
+];
+
+const benefits = [
+  { title: "Free and no obligation", text: "Sending a request costs nothing, and you decide whether to accept the estimate you receive." },
+  { title: "One request, one pro", text: "Skip calling around. In our active area your request goes to an independent professional; elsewhere we are adding professionals." },
+  { title: "You agree the work directly", text: "Scope, price and schedule are settled between you and the professional, so you know what you are paying for." },
+  { title: "Honest guidance first", text: "Our guides explain costs, permits and storm preparation, so you know what to ask for before anyone arrives." },
+];
+
+const problems = [
+  { title: "Storm and hurricane damage", photo: "storm-uproot", text: "Uprooted trees, split trunks and hanging limbs after tropical storms and hurricanes." },
+  { title: "Trees on houses and cars", photo: "tree-on-house", text: "Fallen trees that need urgent, careful removal without more damage to the structure." },
+  { title: "Dead and broken limbs", photo: "broken-tree", text: "Brown canopies, cracked trunks and heavy dead limbs that will fail in the next storm." },
+  { title: "Leaning and uprooting trees", photo: "uprooted-yard", text: "Trees that have started to lean, with lifted soil at the base or roots damaged by digging." },
+];
+
+const calendar = [
+  { when: "Jan to May", title: "Assess and prune", text: "Have trees checked, remove dead wood and do structural pruning before hurricane season starts." },
+  { when: "Jun to Nov", title: "Hurricane season", text: "Keep dead limbs and weak trees under control, and know who to call if a tree comes down." },
+  { when: "After a storm", title: "Check and clean up", text: "Photograph damage, stay away from lines, and get damaged trees assessed before they fail." },
+];
+
+const tools = [
+  { icon: "✅", title: "Permit Checker", text: "Choose your city and tree type and see what that place says about permits, with a link to the official source.", href: "/permit-checker/", cta: "Check the rules" },
+  { icon: "🗺️", title: "Area Map", text: "28 cities across Miami-Dade, Broward and Palm Beach County. Find yours on the map.", href: "/areas/", cta: "Open the map" },
+  { icon: "🌀", title: "Hurricane Checklist", text: "A free two-page PDF: what to check before the season, during a warning and after a storm.", href: "/hurricane-checklist/", cta: "Get the PDF" },
+  { icon: "🔎", title: "Find a Pro", text: "A directory of tree service companies serving South Florida. Sponsored listings are marked.", href: "/find-a-pro/", cta: "Browse the directory" },
+];
+
+const cities = [
+  { name: "Miami", href: "/areas/miami-tree-removal/" },
+  { name: "Fort Lauderdale", href: "/areas/fort-lauderdale-tree-removal/" },
+  { name: "Hollywood", href: "/areas/hollywood-tree-service/" },
+  { name: "Pembroke Pines", href: "/areas/pembroke-pines-tree-removal/" },
+  { name: "Boca Raton", href: "/areas/boca-raton-tree-removal/" },
+  { name: "Pompano Beach", href: "/areas/pompano-beach-tree-removal/" },
+  { name: "West Palm Beach", href: "/areas/west-palm-beach-tree-removal/" },
+  { name: "Boynton Beach", href: "/areas/boynton-beach-tree-removal/" },
+  { name: "Jupiter", href: "/areas/jupiter-tree-removal/" },
+];
+
+const faqs = [
+  {
+    q: "What is SF Tree Removal?",
+    a: `An online service that connects South Florida property owners with independent local tree care professionals. You send one request, and an independent professional contacts you with a free estimate in our active area (Fort Lauderdale and the surrounding area); elsewhere we try to match you but cannot promise a response. We do not perform the work ourselves.`,
+  },
+  {
+    q: "How much does tree removal cost in South Florida?",
+    a: `It depends on the size of the tree, how close it is to the house, power lines or a pool, and how much access there is for equipment. Read our <a href="/tree-care-guides/tree-removal-cost-south-florida/">cost guide</a>; the estimate you receive will be for your specific tree.`,
+  },
+  {
+    q: "Do I need a permit to remove a tree?",
+    a: `Often yes, but it depends on your city, the tree and whether it is dangerous. Florida law exempts dangerous trees on residential property when a certified arborist documents the risk. See our <a href="/tree-removal-permits/">permit guide</a>.`,
+  },
+  {
+    q: "Is there free tree removal?",
+    a: `The estimate is free, the removal usually is not. Read <a href="/free-tree-removal/">what is actually free and how to pay less</a>.`,
+  },
+  {
+    q: "Which areas do you cover?",
+    a: `Miami-Dade, Broward and Palm Beach County. See all <a href="/areas/">service areas</a>.`,
+  },
+];
 ---
 
 <BaseLayout
-  title="SF Tree Removal | Professional Tree Service South Florida"
-  description="Professional tree removal and tree services in South Florida. Emergency tree removal, certified arborists, and safe modern equipment."
-  canonical="https://sftreeremoval.com/"
+  title="Tree Removal South Florida | Free Local Estimates"
+  description="Free tree removal estimates from independent pros in the Fort Lauderdale area, plus permit rules, costs and guides for all of South Florida."
 >
-  <!-- ================= LOCAL BUSINESS SCHEMA ================= -->
-  <LocalBusinessSchema />
-
-  <!-- ================= HERO ================= -->
   <Hero />
+  <TrustBar />
 
-  <section class="bg-[#eef5f4] py-32">
-  <div class="max-w-7xl mx-auto px-6">
-
-    <!-- GRID 3x2 -->
-    <div class="grid grid-cols-1 lg:grid-cols-3 gap-10">
-
-      <!-- TOP LEFT -->
-      <div class="bg-white rounded-3xl p-10 flex flex-col justify-between">
-        <div class="mb-10 flex justify-center text-teal-700 text-7xl leading-none">
-          🏆
-        </div>
-
-        <div>
-          <h3 class="text-2xl font-extrabold text-slate-900 mb-4">
-            Proven Local Expertise
-          </h3>
-          <p class="text-slate-600 leading-relaxed">
-            Licensed and insured tree removal professionals trusted across South
-            Florida for safe, compliant, and efficient service.
-          </p>
-        </div>
-      </div>
-
-      <!-- CENTER CTA -->
-      <div class="flex flex-col items-center justify-center text-center px-6">
-        <span
-          class="inline-block mb-6 px-4 py-1 text-xs font-bold tracking-widest
-                 text-teal-700 border border-dashed border-teal-600 rounded-full"
-        >
-          CHOOSE THE BEST
-        </span>
-
-        <h2 class="text-4xl md:text-5xl font-extrabold text-slate-900 leading-tight mb-10">
-          Tree Services Built for<br />
-          South Florida Properties
-        </h2>
-
-        <a
-          href="/tree-services/"
-          class="inline-flex items-center gap-4 rounded-full
-                 bg-teal-700 px-8 py-4 text-white font-bold
-                 hover:bg-teal-800 transition"
-        >
-          Learn More
-          <span
-            class="flex h-10 w-10 items-center justify-center rounded-full bg-white/15"
-          >
-            ↗
-          </span>
-        </a>
-      </div>
-
-      <!-- TOP RIGHT -->
-      <div class="bg-white rounded-3xl p-10 flex flex-col justify-between">
-        <div class="mb-10 flex justify-center text-teal-700 text-7xl leading-none">
-          👥
-        </div>
-
-        <div>
-          <h3 class="text-2xl font-extrabold text-slate-900 mb-4">
-            Expert Tree Crew
-          </h3>
-          <p class="text-slate-600 leading-relaxed">
-            Experienced arborists and operators handling complex removals,
-            emergency situations, and precision work with confidence.
-          </p>
-        </div>
-      </div>
-
-      <!-- BOTTOM LEFT -->
-      <div class="bg-white rounded-3xl p-10">
-        <div class="mb-10 flex justify-center text-teal-700 text-7xl leading-none">
-          ☎️
-        </div>
-
-        <h3 class="text-2xl font-extrabold text-slate-900 mb-4">
-          24/7 Emergency Support
-        </h3>
-        <p class="text-slate-600 leading-relaxed">
-          Rapid response for fallen trees, storm damage, and hazardous situations
-          threatening homes, vehicles, or power lines.
-        </p>
-      </div>
-
-      <!-- BOTTOM CENTER -->
-      <div class="bg-white rounded-3xl p-10">
-        <div class="mb-10 flex justify-center text-teal-700 text-7xl leading-none">
-          🛠️
-        </div>
-
-        <h3 class="text-2xl font-extrabold text-slate-900 mb-4">
-          Modern Equipment
-        </h3>
-        <p class="text-slate-600 leading-relaxed">
-          Cranes, lifts, and precision tools allow safe, efficient tree removal
-          with minimal impact on your property.
-        </p>
-      </div>
-
-      <!-- BOTTOM RIGHT IMAGE -->
-      <div
-        class="relative rounded-3xl overflow-hidden flex items-end p-10 text-white
-               bg-cover bg-center"
-        style="background-image:url('/images/team-growth.jpg')"
-      >
-        <div class="absolute inset-0 bg-teal-900/60"></div>
-
-        <div class="relative z-10">
-          <span class="block text-sm mb-2 opacity-90">
-            Faster Emergency Response
-          </span>
-          <strong class="text-7xl font-extrabold">
-            8.5×
-          </strong>
-        </div>
-      </div>
-
+  <section class="py-section">
+    <div class="mx-auto max-w-site px-4 sm:px-6">
+      <SectionHeading topper="What you can request" title="Tree Services, Quoted Locally" description="Pick what you need and we connect it with an independent professional in our active area." />
+      <ul class="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-6" role="list">
+        {
+          services.map((s, i) => (
+            <li class:list={[i < 3 ? "lg:col-span-2" : "lg:col-span-3"]}>
+              <a href={s.href} class="card group flex h-full flex-col">
+                <div class="aspect-[16/10] overflow-hidden">
+                  <Photo name={s.photo} class="transition duration-500 group-hover:scale-105" sizes="(min-width: 1024px) 400px, 100vw" />
+                </div>
+                <div class="flex flex-1 flex-col p-6">
+                  <h3 class="font-heading text-h3 font-semibold text-secondary-900">{s.name}</h3>
+                  <p class="mt-2 flex-1 leading-relaxed text-secondary-600">{s.text}</p>
+                  <span class="mt-4 inline-flex items-center gap-1 text-sm font-semibold text-primary-700 group-hover:text-primary-900">
+                    Learn more <span class="transition group-hover:translate-x-0.5" aria-hidden="true">→</span>
+                  </span>
+                </div>
+              </a>
+            </li>
+          ))
+        }
+      </ul>
     </div>
-  </div>
-</section>
+  </section>
 
-  <!-- ================= SERVICES PREVIEW ================= -->
-<section class="bg-white py-32">
-  <div class="max-w-7xl mx-auto px-6 text-center">
+  <HowItWorks />
 
-    <!-- BADGE -->
-    <span
-      class="inline-block mb-8 px-4 py-1 text-xs font-bold tracking-widest
-             text-teal-700 border border-dashed border-teal-600 rounded-full"
-    >
-      OUR SERVICES
-    </span>
+  <StatsBand />
 
-    <!-- TITLE -->
-    <h2 class="text-4xl md:text-5xl font-extrabold text-slate-900 leading-tight">
-      Professional Tree Services
-      <br class="hidden sm:block" />
-      Designed for South Florida
-    </h2>
+  <SplitSection
+    topper="Why it matters"
+    title="Why Tree Removal Is a Job for Professionals"
+    image="aerial-lift"
+    html={`<p>A mature tree can weigh several tons. Cut the wrong way, it lands on a roof, a pool enclosure or a power line. Professionals plan every cut, rope off sections and use lifts or cranes where needed, so the tree comes down where it is supposed to.</p><p>Trees near houses, pools and overhead lines are the riskiest jobs, and also the ones where the cheapest quote can become the most expensive repair. Insurance, equipment and experience are what you are paying for, so ask for proof of license and insurance and a written scope before work starts.</p><p>That is why we send each request to an independent professional, and why our guides explain what to ask for.</p>`}
+  />
 
-    <!-- SUBTEXT -->
-    <p class="mt-8 max-w-3xl mx-auto text-lg text-slate-600">
-      From emergency response to long-term tree care, we deliver safe, efficient
-      and compliant solutions for residential and commercial properties.
-    </p>
-
-    <!-- SERVICES GRID -->
-    <div class="mt-20 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-10 text-left">
-
-      <!-- SERVICE CARD -->
-      <a
-        href="/tree-removal/"
-        class="group bg-[#f4f8f6] rounded-3xl p-10 transition
-               hover:bg-white hover:shadow-lg"
-      >
-        <div class="mb-10 flex justify-center text-teal-700 text-7xl leading-none">
-          🌳
-        </div>
-
-        <h3 class="text-2xl font-extrabold text-slate-900 mb-4 text-center">
-          Tree Removal
-        </h3>
-
-        <p class="text-slate-600 leading-relaxed text-center">
-          Safe and efficient removal of hazardous, damaged, or unwanted trees
-          using modern equipment and certified arborists.
-        </p>
-
-        <div class="mt-8 flex justify-center">
-          <span class="inline-flex items-center gap-2 text-sm font-bold text-teal-700">
-            Learn More
-            <span
-              class="flex h-7 w-7 items-center justify-center rounded-full bg-teal-700 text-white"
-            >
-              ↗
-            </span>
-          </span>
-        </div>
-      </a>
-
-      <!-- SERVICE CARD -->
-      <a
-        href="/emergency-tree-removal/"
-        class="group bg-[#f4f8f6] rounded-3xl p-10 transition
-               hover:bg-white hover:shadow-lg"
-      >
-        <div class="mb-10 flex justify-center text-teal-700 text-7xl leading-none">
-          ⚡
-        </div>
-
-        <h3 class="text-2xl font-extrabold text-slate-900 mb-4 text-center">
-          Emergency Tree Removal
-        </h3>
-
-        <p class="text-slate-600 leading-relaxed text-center">
-          24/7 rapid response for storm damage, fallen trees, and urgent hazards
-          threatening people or property.
-        </p>
-
-        <div class="mt-8 flex justify-center">
-          <span class="inline-flex items-center gap-2 text-sm font-bold text-teal-700">
-            Learn More
-            <span class="flex h-7 w-7 items-center justify-center rounded-full bg-teal-700 text-white">
-              ↗
-            </span>
-          </span>
-        </div>
-      </a>
-
-      <!-- SERVICE CARD -->
-      <a
-        href="/certified-arborist/"
-        class="group bg-[#f4f8f6] rounded-3xl p-10 transition
-               hover:bg-white hover:shadow-lg"
-      >
-        <div class="mb-10 flex justify-center text-teal-700 text-7xl leading-none">
-          🌿
-        </div>
-
-        <h3 class="text-2xl font-extrabold text-slate-900 mb-4 text-center">
-          Certified Arborist Services
-        </h3>
-
-        <p class="text-slate-600 leading-relaxed text-center">
-          Expert tree health assessments, permits, pruning guidance, and long-term
-          care plans tailored to Florida landscapes.
-        </p>
-
-        <div class="mt-8 flex justify-center">
-          <span class="inline-flex items-center gap-2 text-sm font-bold text-teal-700">
-            Learn More
-            <span class="flex h-7 w-7 items-center justify-center rounded-full bg-teal-700 text-white">
-              ↗
-            </span>
-          </span>
-        </div>
-      </a>
-
+  <section class="bg-secondary-50 py-section">
+    <div class="mx-auto max-w-site px-4 sm:px-6">
+      <SectionHeading topper="Common problems" title="Tree Problems People Ask Us About" description="South Florida's weather, soil and fast-growing species mean these are the most common reasons people ask for an estimate." />
+      <ul class="grid gap-6 sm:grid-cols-2 lg:grid-cols-4" role="list">
+        {
+          problems.map((p) => (
+            <li class="card">
+              <div class="aspect-[4/3] overflow-hidden"><Photo name={p.photo} sizes="(min-width: 1024px) 300px, 100vw" /></div>
+              <div class="p-5">
+                <h3 class="font-heading text-lg font-semibold text-secondary-900">{p.title}</h3>
+                <p class="mt-2 text-sm leading-relaxed text-secondary-600">{p.text}</p>
+              </div>
+            </li>
+          ))
+        }
+      </ul>
     </div>
+  </section>
 
-    <!-- BOTTOM CTA -->
-    <div class="mt-20">
-      <a
-        href="/tree-services/"
-        class="inline-flex items-center gap-4 rounded-full
-               bg-teal-700 px-10 py-4 text-white font-bold
-               hover:bg-teal-800 transition"
-      >
-        View All Services
-        <span class="flex h-10 w-10 items-center justify-center rounded-full bg-white/15">
-          ↗
-        </span>
-      </a>
+  <SplitSection
+    topper="Before you hire"
+    title="Questions to Ask Any Tree Company"
+    image="climber-rope"
+    reverse
+    html={`<ul><li><strong>Can I see proof of license and insurance?</strong> Ask for it in writing, and the insurer's name if you want to verify.</li><li><strong>What exactly is included?</strong> Which trees and limbs, stump grinding, cleanup and wood haul-away.</li><li><strong>How will the tree come down?</strong> For big trees near structures, ask about rigging, cranes and protecting the roof, pool and fence.</li><li><strong>Who gets the permit?</strong> If a permit or an arborist report is needed, who handles it and is it in the price?</li><li><strong>When can you start, and how long will it take?</strong></li><li><strong>How do you want to be paid?</strong> Be wary of anyone who asks for full payment before work starts.</li></ul><p>Read more in <a href="/how-it-works/">how SF Tree Removal works</a>.</p>`}
+  />
+
+  <section class="bg-secondary-50 py-section">
+    <div class="mx-auto max-w-site px-4 sm:px-6">
+      <SectionHeading topper="Plan ahead" title="A Tree Care Calendar for South Florida" description="There is no off-season for trees here, but there is a rhythm." />
+      <ol class="grid gap-6 md:grid-cols-3">
+        {
+          calendar.map((c) => (
+            <li class="card p-6">
+              <p class="topper mb-3">{c.when}</p>
+              <h3 class="font-heading text-h3 font-semibold text-secondary-900">{c.title}</h3>
+              <p class="mt-2 leading-relaxed text-secondary-600">{c.text}</p>
+            </li>
+          ))
+        }
+      </ol>
     </div>
+  </section>
 
-  </div>
-</section>
-
-  <!-- ================= EMERGENCY CTA ================= -->
- 
-  <section class="bg-teal-700 py-32">
-  <div class="max-w-7xl mx-auto px-6 text-center text-white">
-
-    <!-- BADGE -->
-    <span
-      class="inline-block mb-8 px-4 py-1 text-xs font-bold tracking-widest
-             border border-dashed border-white/60 rounded-full"
-    >
-      24/7 EMERGENCY SERVICE
-    </span>
-
-    <!-- HEADLINE -->
-    <h2 class="text-4xl md:text-5xl xl:text-6xl font-extrabold leading-tight">
-      Tree Emergency?<br class="hidden sm:block" />
-      We’re Ready to Respond Immediately.
-    </h2>
-
-    <!-- SUBTEXT -->
-    <p class="mt-8 max-w-3xl mx-auto text-lg text-white/90">
-      Fallen trees, storm damage, or hazardous situations threatening your home
-      or business require fast, professional action. Our emergency crew is
-      available 24/7 across South Florida.
-    </p>
-
-    <!-- CTA BUTTONS -->
-    <div class="mt-14 flex flex-wrap justify-center gap-6">
-      <a
-        href="/contact-us/"
-        class="inline-flex items-center gap-4 rounded-full
-               bg-white px-10 py-4 text-teal-900 font-extrabold
-               hover:bg-slate-100 transition"
-      >
-        Request Emergency Service
-      </a>
-
-
-      <!-- LEARN MORE -->
-      <a
-        href="/emergency-tree-removal/"
-        class="inline-flex items-center gap-4 rounded-full
-               border border-white/70 px-10 py-4 text-white font-bold
-               hover:bg-white/10 transition"
-      >
-        Emergency Tree Removal
-        <span
-          class="flex h-10 w-10 items-center justify-center rounded-full
-                 bg-white/15"
-        >
-          ↗
-        </span>
-      </a>
-
+  <section class="py-section">
+    <div class="mx-auto max-w-site px-4 sm:px-6">
+      <SectionHeading topper="Why use this service" title="Why Request Estimates Here" />
+      <ul class="grid gap-6 md:grid-cols-2" role="list">
+        {
+          benefits.map((b) => (
+            <li class="flex gap-4 rounded-xl border border-secondary-200 bg-secondary-50 p-6">
+              <span class="mt-0.5 grid size-8 shrink-0 place-items-center rounded-md bg-accent/15 text-primary-700" aria-hidden="true">✓</span>
+              <div>
+                <h3 class="font-heading text-h3 font-semibold">{b.title}</h3>
+                <p class="mt-1 text-sm leading-relaxed text-text-muted">{b.text}</p>
+              </div>
+            </li>
+          ))
+        }
+      </ul>
     </div>
+  </section>
 
-    <!-- TRUST LINE -->
-    <p class="mt-12 text-sm text-white/80">
-      Serving Miami, Fort Lauderdale, Broward County & surrounding areas.
-    </p>
-
-  </div>
-</section>
-
-  <!-- ================= REVIEWS ================= -->
- <section class="bg-[#f4f8f6] py-32">
-  <div class="max-w-7xl mx-auto px-6 text-center">
-
-    <!-- BADGE -->
-    <span
-      class="inline-block mb-8 px-4 py-1 text-xs font-bold tracking-widest
-             text-teal-700 border border-dashed border-teal-600 rounded-full"
-    >
-      CUSTOMER REVIEWS
-    </span>
-
-    <!-- TITLE -->
-    <h2 class="text-4xl md:text-5xl font-extrabold text-slate-900 leading-tight">
-      Trusted by Homeowners & Businesses
-      <br class="hidden sm:block" />
-      Across South Florida
-    </h2>
-
-    <!-- SUBTEXT -->
-    <p class="mt-8 max-w-3xl mx-auto text-lg text-slate-600">
-      Our clients rely on us for fast response, professional service, and safe
-      results — especially when it matters most.
-    </p>
-
-    <!-- REVIEWS GRID -->
-    <div class="mt-20 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10 text-left">
-
-      <!-- REVIEW CARD -->
-      <div class="bg-white rounded-3xl p-10 shadow-xs">
-        <div class="flex items-center gap-2 mb-6 text-teal-700">
-          ★★★★★
-        </div>
-
-        <p class="text-slate-700 leading-relaxed mb-8">
-          SF Tree Removal responded immediately after a storm knocked a tree onto
-          our driveway. The crew was professional, fast, and extremely careful
-          around our home.
-        </p>
-      </div>
-
-      <!-- REVIEW CARD -->
-      <div class="bg-white rounded-3xl p-10 shadow-xs">
-        <div class="flex items-center gap-2 mb-6 text-teal-700">
-          ★★★★★
-        </div>
-
-        <p class="text-slate-700 leading-relaxed mb-8">
-          We needed an emergency tree removal late at night. They arrived fast,
-          handled everything safely, and explained the process clearly. Highly
-          recommended.
-        </p>
-      </div>
-
-      <!-- REVIEW CARD -->
-      <div class="bg-white rounded-3xl p-10 shadow-xs">
-        <div class="flex items-center gap-2 mb-6 text-teal-700">
-          ★★★★★
-        </div>
-
-        <p class="text-slate-700 leading-relaxed mb-8">
-          Professional crew with excellent equipment. They removed several large
-          trees without any damage to our property. Clean, efficient, and worth
-          every dollar.
-        </p>
-      </div>
-
+  <section class="bg-secondary-50 py-section">
+    <div class="mx-auto max-w-site px-4 text-center sm:px-6">
+      <SectionHeading topper="Service areas" title="Where We Are Active, and Where We Are Heading" description="Active now in the Fort Lauderdale area. Local guides, permit rules and costs for these cities too, with professionals being added." />
+      <ul class="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-5" role="list">
+        {
+          cities.map((c) => (
+            <li>
+              <a href={c.href} class="block rounded-xl border border-border bg-background px-5 py-4 font-heading text-lg font-semibold  text-primary shadow-md transition hover:border-primary hover:shadow-lg">
+                {c.name}
+              </a>
+            </li>
+          ))
+        }
+      </ul>
+      <p class="mt-8 text-sm text-text-muted">
+        Not on the list? <a href="/areas/" class="font-semibold text-primary underline">See all service areas</a> or ask in the form.
+      </p>
     </div>
+  </section>
 
-  </div>
-</section>
-
-  <!-- ================= SERVICE AREAS ================= -->
- 
-  <section class="bg-white py-32">
-  <div class="max-w-7xl mx-auto px-6 text-center">
-
-    <!-- BADGE -->
-    <span
-      class="inline-block mb-8 px-4 py-1 text-xs font-bold tracking-widest
-             text-teal-700 border border-dashed border-teal-600 rounded-full"
-    >
-      SERVICE AREAS
-    </span>
-
-    <!-- TITLE -->
-    <h2 class="text-4xl md:text-5xl font-extrabold text-slate-900 leading-tight">
-      Proudly Serving South Florida
-      <br class="hidden sm:block" />
-      & Surrounding Communities
-    </h2>
-
-    <!-- SUBTEXT -->
-    <p class="mt-8 max-w-3xl mx-auto text-lg text-slate-600">
-      Our licensed and insured tree service teams operate across major cities and
-      counties in South Florida, providing fast response and professional care.
-    </p>
-
-    <!-- AREAS GRID -->
-    <div class="mt-20 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-10 text-left">
-
-      <!-- AREA CARD -->
-      <a
-        href="/areas/miami-tree-removal/"
-        class="group bg-[#f4f8f6] rounded-3xl p-10 transition
-               hover:bg-white hover:shadow-lg"
-      >
-        <h3 class="text-2xl font-extrabold text-slate-900 mb-2">
-          Miami
-        </h3>
-        <p class="text-slate-600 mb-6">
-          Emergency tree removal, storm response, and full-service tree care.
-        </p>
-
-        <span class="inline-flex items-center gap-2 text-sm font-bold text-teal-700">
-          Miami Tree Removal
-          <span class="flex h-7 w-7 items-center justify-center rounded-full bg-teal-700 text-white">
-            ↗
-          </span>
-        </span>
-      </a>
-
-      <!-- AREA CARD -->
-      <a
-        href="/areas/fort-lauderdale-tree-removal/"
-        class="group bg-[#f4f8f6] rounded-3xl p-10 transition
-               hover:bg-white hover:shadow-lg"
-      >
-        <h3 class="text-2xl font-extrabold text-slate-900 mb-2">
-          Fort Lauderdale
-        </h3>
-        <p class="text-slate-600 mb-6">
-          Residential and commercial tree services with permit expertise.
-        </p>
-
-        <span class="inline-flex items-center gap-2 text-sm font-bold text-teal-700">
-          Fort Lauderdale Tree Removal
-          <span class="flex h-7 w-7 items-center justify-center rounded-full bg-teal-700 text-white">
-            ↗
-          </span>
-        </span>
-      </a>
-
-      <!-- AREA CARD -->
-      <a
-        href="/areas/hollywood-tree-service/"
-        class="group bg-[#f4f8f6] rounded-3xl p-10 transition
-               hover:bg-white hover:shadow-lg"
-      >
-        <h3 class="text-2xl font-extrabold text-slate-900 mb-2">
-          Hollywood
-        </h3>
-        <p class="text-slate-600 mb-6">
-          Complete tree service solutions for homes and businesses.
-        </p>
-
-        <span class="inline-flex items-center gap-2 text-sm font-bold text-teal-700">
-          Hollywood Tree Service
-          <span class="flex h-7 w-7 items-center justify-center rounded-full bg-teal-700 text-white">
-            ↗
-          </span>
-        </span>
-      </a>
-
-      <!-- AREA CARD -->
-      <a
-        href="/areas/pembroke-pines-tree-removal/"
-        class="group bg-[#f4f8f6] rounded-3xl p-10 transition
-               hover:bg-white hover:shadow-lg"
-      >
-        <h3 class="text-2xl font-extrabold text-slate-900 mb-2">
-          Pembroke Pines
-        </h3>
-        <p class="text-slate-600 mb-6">
-          Fast emergency response and long-term tree care programs.
-        </p>
-
-        <span class="inline-flex items-center gap-2 text-sm font-bold text-teal-700">
-          Pembroke Pines Tree Removal
-          <span class="flex h-7 w-7 items-center justify-center rounded-full bg-teal-700 text-white">
-            ↗
-          </span>
-        </span>
-      </a>
-
-      <!-- AREA CARD -->
-      <a
-        href="/areas/boca-raton-tree-removal/"
-        class="group bg-[#f4f8f6] rounded-3xl p-10 transition
-               hover:bg-white hover:shadow-lg"
-      >
-        <h3 class="text-2xl font-extrabold text-slate-900 mb-2">
-          Boca Raton
-        </h3>
-        <p class="text-slate-600 mb-6">
-          High-end tree removal and certified arborist services.
-        </p>
-
-        <span class="inline-flex items-center gap-2 text-sm font-bold text-teal-700">
-          Boca Raton Tree Removal
-          <span class="flex h-7 w-7 items-center justify-center rounded-full bg-teal-700 text-white">
-            ↗
-          </span>
-        </span>
-      </a>
-
-      <!-- COUNTY CARD -->
-      <a
-        href="/areas/broward-county-tree-removal/"
-        class="group bg-[#f4f8f6] rounded-3xl p-10 transition
-               hover:bg-white hover:shadow-lg"
-      >
-        <h3 class="text-2xl font-extrabold text-slate-900 mb-2">
-          Broward County
-        </h3>
-        <p class="text-slate-600 mb-6">
-          County-wide coverage for emergency and scheduled tree services.
-        </p>
-
-        <span class="inline-flex items-center gap-2 text-sm font-bold text-teal-700">
-          Broward County Tree Removal
-          <span class="flex h-7 w-7 items-center justify-center rounded-full bg-teal-700 text-white">
-            ↗
-          </span>
-        </span>
-      </a>
-
+  <section class="bg-secondary-50 py-section">
+    <div class="mx-auto max-w-site px-4 sm:px-6">
+      <SectionHeading topper="Free tools" title="Tools for South Florida Tree Owners" description="Check the rules, plan for storm season, find your area and compare local companies." />
+      <ul class="grid gap-6 sm:grid-cols-2 lg:grid-cols-4" role="list">
+        {
+          tools.map((t) => (
+            <li>
+              <a href={t.href} class="card group flex h-full flex-col p-6">
+                <span class="mb-4 grid size-12 place-items-center rounded-xl bg-primary-100 text-2xl" aria-hidden="true">{t.icon}</span>
+                <h3 class="font-heading text-h3 font-semibold text-secondary-900 group-hover:text-primary-700">{t.title}</h3>
+                <p class="mt-2 flex-1 text-sm leading-relaxed text-secondary-600">{t.text}</p>
+                <span class="mt-4 text-sm font-semibold text-primary-700">{t.cta} →</span>
+              </a>
+            </li>
+          ))
+        }
+      </ul>
     </div>
+  </section>
 
-    <!-- BOTTOM CTA -->
-    <div class="mt-20">
-      <a
-        href="/areas/"
-        class="inline-flex items-center gap-4 rounded-full
-               bg-teal-700 px-10 py-4 text-white font-bold
-               hover:bg-teal-800 transition"
-      >
-        View All Service Areas
-        <span class="flex h-10 w-10 items-center justify-center rounded-full bg-white/15">
-          ↗
-        </span>
-      </a>
+  <section class="py-section">
+    <div class="mx-auto max-w-site px-4 sm:px-6">
+      <SectionHeading topper="From the guides" title="Plain-Language Tree Care Advice" description="Costs, permits, storms and warning signs, explained for South Florida homeowners." />
+      <ul class="grid gap-6 md:grid-cols-3" role="list">
+        {
+          guides.slice(0, 3).map((g) => (
+            <li>
+              <a href={`/tree-care-guides/${g.slug}/`} class="card group flex h-full flex-col">
+                <div class="aspect-[16/10] overflow-hidden"><Photo name={g.image} class="transition duration-500 group-hover:scale-105" sizes="(min-width: 768px) 400px, 100vw" /></div>
+                <div class="flex flex-1 flex-col p-6">
+                  <h3 class="font-heading text-h3 font-semibold text-secondary-900 group-hover:text-primary-700">{g.title}</h3>
+                  <p class="mt-2 flex-1 text-sm leading-relaxed text-secondary-600">{g.description}</p>
+                  <span class="mt-4 text-sm font-semibold text-primary-700">Read the guide →</span>
+                </div>
+              </a>
+            </li>
+          ))
+        }
+      </ul>
+      <p class="mt-10 text-center"><a href="/tree-care-guides/" class="btn btn-outline">All Tree Care Guides</a></p>
     </div>
+  </section>
 
-  </div>
-</section>
+  <Faq faqs={faqs} tone="tint" />
 
-  <!-- ================= FINAL CTA ================= -->
-<section class="bg-teal-800 py-32">
-  <div class="max-w-7xl mx-auto px-6 text-center text-white">
+  <section class="py-10">
+    <div class="mx-auto max-w-3xl px-4 sm:px-6"><Disclosure variant="card" /></div>
+  </section>
 
-    <!-- BADGE -->
-    <span
-      class="inline-block mb-8 px-4 py-1 text-xs font-bold tracking-widest
-             border border-dashed border-white/60 rounded-full"
-    >
-      READY TO GET STARTED
-    </span>
-
-    <!-- HEADLINE -->
-    <h2 class="text-4xl md:text-5xl xl:text-6xl font-extrabold leading-tight">
-      Protect Your Property with<br class="hidden sm:block" />
-      Professional Tree Care
-    </h2>
-
-    <!-- SUBTEXT -->
-    <p class="mt-8 max-w-3xl mx-auto text-lg text-white/90">
-      From urgent tree emergencies to planned arborist services, our team is
-      ready to respond quickly, safely, and professionally across South Florida.
-    </p>
-
-    <!-- CTA BUTTONS -->
-    <div class="mt-14 flex flex-wrap justify-center gap-6">
-
-      <!-- PRIMARY -->
-      <a
-        href="/contact-us/"
-        class="inline-flex items-center gap-4 rounded-full
-               bg-white px-10 py-4 text-teal-800 font-extrabold
-               hover:bg-slate-100 transition"
-      >
-        Request a Free Estimate
-        <span
-          class="flex h-10 w-10 items-center justify-center rounded-full
-                 bg-teal-700 text-white"
-        >
-          ↗
-        </span>
-      </a>
-
-      <!-- SECONDARY -->
-
-    </div>
-
-    <!-- TRUST LINE -->
-    <p class="mt-12 text-sm text-white/80">
-      Trusted by homeowners and businesses across Miami, Fort Lauderdale,
-      Broward County & surrounding areas.
-    </p>
-
-  </div>
-</section>
-
+  <CtaBand title="Get Your Free Tree Removal Estimate" />
 </BaseLayout>

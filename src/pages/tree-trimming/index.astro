@@ -1,0 +1,88 @@
+---
+import ServicePage from "../../components/ServicePage.astro";
+
+const faqs = [
+  {
+    q: "How often should trees be trimmed in South Florida?",
+    a: `Fast-growing trees often need attention every year or two, and many homeowners have trees checked before hurricane season. Palms are usually trimmed when fronds die or hang over a roof, pool or walkway. A professional can tell you what your trees need.`,
+  },
+  {
+    q: "Is topping a tree a good idea before a hurricane?",
+    a: `No. University of Florida research shows that topping and heavy thinning make trees weaker, not stronger, and topped trees decay and break more easily. Good pruning removes dead or weak limbs and builds a strong structure, following the ANSI A300 standard.`,
+  },
+  {
+    q: "Do I need a permit to trim a tree?",
+    a: `Usually not for light trimming, but some cities limit how much of a tree can be removed, protect certain trees, or have their own requirements for tree trimmers. See our <a href="/tree-removal-permits/">permit guide</a> and ask your city.`,
+  },
+  {
+    q: "Who trims trees near power lines?",
+    a: `The utility, in most of South Florida FPL, handles trees at the lines. Do not trim near energized lines yourself. For limbs that are not near lines, hire a professional and keep clear of any wire.`,
+  },
+  {
+    q: "Who does the trimming?",
+    a: `An independent tree care professional, matched to your request. SF Tree Removal is an online service that passes your request on; we do not perform the work. Ask for proof of license and insurance first.`,
+  },
+];
+const extras = [
+  {
+    "topper": "Timing",
+    "title": "How Often, and When to Trim",
+    "image": "ladder-oak",
+    "html": "<p>South Florida trees grow nearly all year, so there is no single off-season. A practical calendar:</p><ul><li><strong>Late winter to spring:</strong> assess and prune structure before the growing season and before hurricane season.</li><li><strong>June to November:</strong> hurricane season. Remove dead and hazardous limbs; avoid heavy cutting that stresses trees in the heat.</li><li><strong>After any storm:</strong> remove broken limbs and hangers, and have damaged trees checked.</li><li><strong>All year:</strong> palms, whenever dead fronds hang over a roof, pool or walkway.</li></ul><p>Fast-growing species such as ficus and black olive often need attention every year or two.</p>"
+  },
+  {
+    "topper": "Palms",
+    "title": "Palm Trimming in South Florida",
+    "image": "beach-palms",
+    "html": "<p>Palms are trimmed differently from broadleaf trees. Only dead or hanging fronds, seed pods and fruit should come off. Cutting green fronds, or trimming up to a “pineapple” shape, weakens a palm and leaves it exposed.</p><p>Tall palms near pools, houses and pavers need a professional with the right equipment. Mention the pool, screens and what is below the palm when you request an estimate. Royal, coconut and sabal palms are the most common requests.</p>"
+  },
+  {
+    "topper": "Safety",
+    "title": "Trees Near Power Lines",
+    "image": "bucket-truck",
+    "html": "<p>Trees at or near energized lines are handled by the utility, in most of South Florida FPL. Do not trim near lines yourself, and do not hire a crew that is not qualified for line clearance. Contact the utility to report trees that touch or approach lines.</p><p>For limbs that are not near lines, a professional can trim safely while keeping well clear of any wire. Ask about this when you request an estimate.</p>"
+  }
+];
+---
+
+<ServicePage
+  title="Tree Trimming & Pruning in South Florida | Free Estimates"
+  description="Free estimates for tree trimming, pruning and palm trimming in South Florida from independent local pros, plus what to avoid: topping and over-pruning."
+  service={{
+    name: "Tree Trimming and Pruning Estimates",
+    serviceType: "Tree trimming and pruning estimate matching",
+    description: "Free estimates for tree trimming, pruning and palm trimming from independent local tree care professionals in South Florida.",
+  }}
+  badge="TREE TRIMMING"
+  h1="Tree Trimming & Pruning in South Florida"
+  lead="Keep trees healthy, strong and clear of your home. Get a free estimate from an independent local professional."
+  intro={[
+    "Regular trimming is the cheapest way to avoid an expensive tree problem. In South Florida, fast growth and storm season mean branches reach roofs, wires and pools quickly, and dead limbs become a risk in the next storm.",
+    "Send one request and we connect you with an independent tree care professional who gives you a free estimate. We are active in the Fort Lauderdale area and adding professionals elsewhere; see <a href=\"/areas/#coverage\">where we are active</a>. We don't do the work ourselves, so you compare the quote and agree the scope directly.",
+  ]}
+  coversTitle="What You Can Request"
+  covers={[
+    { name: "Tree trimming", note: "Shaping and thinning to keep branches off the roof, walls, wires and walkways, and to let light through." },
+    { name: "Structural pruning", note: "Removing dead, diseased or weakly attached limbs and building a strong structure, ahead of hurricane season." },
+    { name: "Palm trimming", note: "Removing dead fronds, seed pods and coconuts from royal, coconut and other palms near houses and pools." },
+    { name: "Canopy lifting and clearance", note: "Raising the crown over driveways, roofs and sidewalks, and clearing branches that hang over a neighbor's property." },
+    { name: "Storm cleanup", note: "Removing broken limbs and hangers after a storm. For anything on a structure, use the emergency form." },
+    { name: "Tree assessment", note: "A health and risk check by an arborist when you are unsure whether a tree should be pruned or removed." },
+  ]}
+  detailTitle="What Good Trimming Looks Like"
+  detail={`<p>Trimming done badly can harm or kill a tree. Look for these signs of a professional job:</p>
+<ul>
+  <li><strong>No topping.</strong> Cutting the top off a tree, or cutting limbs back to stubs, weakens it. UF/IFAS research shows topped trees decay and break more easily.</li>
+  <li><strong>No excessive thinning.</strong> Stripping the inside of the crown, sometimes called “hurricane cuts”, does not make a tree safer. A wind-resistant tree is pruned regularly to develop one strong trunk with well-spaced branches.</li>
+  <li><strong>Pruning to a recognized standard</strong>, such as ANSI A300, with clean cuts at the right place on the branch.</li>
+  <li><strong>A clear scope:</strong> which limbs, how much canopy, and whether cleanup and haul-away are included.</li>
+</ul>
+<h3>Before you book</h3>
+<p>Ask for proof of license and insurance, and for the scope in writing. Some cities restrict how much of a tree can be removed, or protect certain trees, so check <a href="/tree-removal-permits/">the permit rules</a> if you are unsure. For limbs near power lines, call the utility instead of trimming yourself.</p>
+<p>Also see <a href="/stump-grinding/">stump grinding</a>, <a href="/tree-removal/">tree removal</a> and our <a href="/tree-care-guides/hurricane-tree-preparation/">hurricane tree checklist</a>.</p>`}
+  faqs={faqs}
+  image="aerial-lift"
+  introImage="canopy-climber"
+  introTitle="Trimming That Keeps Trees Strong"
+  extras={extras}
+/>

@@ -1,22 +1,23 @@
 ---
 import BaseLayout from "../layouts/BaseLayout.astro";
+import Breadcrumbs from "../components/Breadcrumbs.astro";
 import { business } from "../config/business";
 const updated = "October 3, 2026";
 ---
 
 <BaseLayout
   title={`Terms & Conditions | ${business.name}`}
-  description={`The terms that apply when you use the ${business.name} website.`}
+  description={`The terms that apply when you use the ${business.name} website, request an estimate or book tree removal and tree care services in South Florida.`}
 >
-  <section class="bg-white py-24">
-    <div class="mx-auto max-w-3xl px-6">
+  <section class="bg-white py-section">
+    <div class="mx-auto max-w-3xl px-4 sm:px-6">
+      <Breadcrumbs tone="light" />
       <div class="prose-sf">
-        <h1 class="text-4xl font-extrabold text-slate-900 md:text-5xl">Terms &amp; Conditions</h1>
-        <p class="text-base text-slate-500">Last updated: {updated}</p>
+        <h1 class="text-h1 font-bold text-text ">Terms &amp; Conditions</h1>
+        <p class="text-base text-text-muted">Last updated: {updated}</p>
 
         <p>
-          These terms apply to your use of {business.url.replace("https://", "")} (the "website"), operated by
-          {" "}{business.name}. By using the website you agree to them.
+          These terms apply to your use of {business.url.replace("https://", "")} (the "website"), operated by{" "}{business.name}, an online service that connects property owners with independent local tree care professionals. We do not perform tree work ourselves. By using the website you agree to them.
         </p>
 
         <h2>Information on this website</h2>
@@ -28,15 +29,12 @@ const updated = "October 3, 2026";
 
         <h2>Estimates and services</h2>
         <p>
-          Sending a form or calling us does not create a contract. Estimates are based on the information available at the
-          time and become binding only when we agree on the work, price and schedule with you. The actual work is governed
-          by that agreement.
+          Sending a form does not create a contract with {business.name}. Estimates come from the independent professionals who contact you; they are based on the information available at the time and become binding only when you and the professional agree on the work, price and schedule. The work is governed by that agreement between you and the professional, and {business.name} is not a party to it and is not responsible for the work.
         </p>
 
         <h2>Your submissions</h2>
         <p>
-          When you send us a form, you confirm that the information is accurate and that you are allowed to share it. We
-          handle it as described in our <a href="/privacy-policy/">Privacy Policy</a>.
+          When you send us a form, you confirm that the information is accurate and that you are allowed to share it. We pass it to the professional who answers your request and handle it as described in our <a href="/privacy-policy/">Privacy Policy</a>.
         </p>
 
         <h2>Acceptable use</h2>

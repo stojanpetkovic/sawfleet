@@ -1,0 +1,47 @@
+---
+import SectionHeading from "./SectionHeading.astro";
+
+// Visible questions and answers, plus the matching FAQPage structured data so
+// the markup and the schema can never disagree.
+export interface FaqItem {
+  q: string;
+  /** Answer as HTML (links allowed). */
+  a: string;
+}
+interface Props {
+  faqs: FaqItem[];
+  title?: string;
+  /** Section background; the page before it decides which one reads better. */
+  tone?: "white" | "tint";
+}
+const { faqs, title = "Frequently Asked Questions", tone = "tint" } = Astro.props;
+
+const strip = (html: string) => html.replace(/<[^>]+>/g, "");
+const schema = {
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  mainEntity: faqs.map((f) => ({
+    "@type": "Question",
+    name: f.q,
+    acceptedAnswer: { "@type": "Answer", text: strip(f.a) },
+  })),
+};
+---
+
+<section class:list={["py-section", tone === "tint" ? "bg-secondary-50" : "bg-background"]}>
+  <script type="application/ld+json" set:html={JSON.stringify(schema)} />
+  <div class="mx-auto max-w-3xl space-y-3 px-4 sm:px-6">
+    <SectionHeading topper="Answers" title={title} />
+    {
+      faqs.map((f) => (
+        <details class="group card !overflow-visible p-5 open:shadow-lg">
+          <summary class="flex cursor-pointer list-none items-center justify-between gap-6 font-heading text-lg font-semibold text-secondary-900 [&::-webkit-details-marker]:hidden">
+            {f.q}
+            <span class="grid size-8 shrink-0 place-items-center rounded-lg bg-primary-100 text-primary-700 transition group-open:rotate-45" aria-hidden="true">+</span>
+          </summary>
+          <div class="prose-sf mt-4 text-base" set:html={`<p>${f.a}</p>`} />
+        </details>
+      ))
+    }
+  </div>
+</section>

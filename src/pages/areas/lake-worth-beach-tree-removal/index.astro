@@ -1,0 +1,108 @@
+---
+import CityPage from "../../../components/CityPage.astro";
+
+const intro = [
+  "Lake Worth Beach is an older coastal city with historic bungalow neighborhoods and a lot of large, mature trees. Ficus, oaks and palms grow close to small, older houses, and salt air and wind take a toll.",
+  "Send one request and we will try to match you with an independent tree care professional. We are adding professionals in Lake Worth Beach and cannot promise a response yet, so you can also tell us you want to be notified. SF Tree Removal is an online service; we don't do the work ourselves, so you agree the scope and price directly with the professional you are matched with."
+];
+
+const conditions = [
+  {
+    "name": "Historic neighborhoods",
+    "note": "Older homes sit close to very large trees whose limbs reach roofs."
+  },
+  {
+    "name": "Small lots",
+    "note": "Tight spaces and fences make rigging and access harder."
+  },
+  {
+    "name": "Salt and wind",
+    "note": "Coastal exposure weakens branches."
+  },
+  {
+    "name": "Roots and old pipes",
+    "note": "Roots near old pipes, walls and sidewalks are a frequent issue."
+  }
+];
+
+const notes = "<p>Older neighborhoods have the biggest trees, often decades older than the houses around them, and sometimes with hidden decay. An arborist assessment is a good idea before work on a very large tree.</p><p>Historic districts can have extra review for work on trees and landscaping, and the city has its own rules. Ask the city before you cut, and check the county baseline in the permit checker.</p>";
+
+const trees = [
+  {
+    "name": "Ficus",
+    "note": "Fast-growing with aggressive roots that crowd walls, pipes and pools. A frequent reason for removal requests."
+  },
+  {
+    "name": "Live oak",
+    "note": "Wide, heavy limbs that often grow over roofs and driveways. Removal needs rigging so big pieces are lowered, not dropped."
+  },
+  {
+    "name": "Royal palm",
+    "note": "Tall and straight, often next to pools and houses. Lowering the crown needs care near screens and pavers."
+  },
+  {
+    "name": "Sea grape",
+    "note": "Salt-tolerant coastal native, often shaped as hedge or tree. Trimming should not strip the plant."
+  },
+  {
+    "name": "Banyan and strangler fig",
+    "note": "Huge canopies and aerial roots that can lift pavement and walls; removal needs planning and space."
+  },
+  {
+    "name": "Brazilian pepper",
+    "note": "An invasive that spreads aggressively and is commonly removed."
+  }
+];
+
+const nearby = [
+  {
+    "name": "West Palm Beach",
+    "href": "/areas/west-palm-beach-tree-removal/"
+  },
+  {
+    "name": "Boynton Beach",
+    "href": "/areas/boynton-beach-tree-removal/"
+  },
+  {
+    "name": "Palm Beach County",
+    "href": "/areas/palm-beach-county-tree-removal/"
+  }
+];
+
+const faqs = [
+  {
+    "q": "How much does tree removal cost in Lake Worth Beach?",
+    "a": "It depends on the size of the tree, how close it is to the house, pool or power lines, and whether a crane is needed. You will get a free estimate for your specific tree; see our <a href=\"/tree-care-guides/tree-removal-cost-south-florida/\">cost guide</a>."
+  },
+  {
+    "q": "Do I need a permit to remove a tree in Lake Worth Beach?",
+    "a": "Often, but it depends on the tree, the property and the rules where you live. Use the <a href=\"/permit-checker/\">permit checker</a> for what Lake Worth Beach and its county say, and confirm with the city."
+  },
+  {
+    "q": "Can I get emergency tree help in Lake Worth Beach?",
+    "a": "Choose Emergency Tree Removal in the <a href=\"/contact-us/\">form</a>. The request is flagged as urgent for local professionals; we cannot promise an arrival time. If anyone is in danger, call 911."
+  },
+  {
+    "q": "Who does the work?",
+    "a": "An independent tree care professional in Palm Beach County. SF Tree Removal is an online service; we do not perform the work. Ask for proof of license and insurance first."
+  }
+];
+---
+
+<CityPage
+  city="Lake Worth Beach"
+  county="Palm Beach County"
+  title="Tree Removal in Lake Worth Beach, FL | Free Estimates"
+  description="Free tree removal estimates in Lake Worth Beach, FL: removal, trimming, stump grinding and storm cleanup from independent local pros."
+  lead="Get a free tree removal estimate from independent local professionals in Lake Worth Beach and central Palm Beach County."
+  intro={intro}
+  conditions={conditions}
+  permitId="other-palm-beach"
+  nearby={nearby}
+  faqs={faqs}
+  image="chainsaw"
+  image2="beach-palms"
+  image3="broken-tree"
+  notes={notes}
+  trees={trees}
+/>

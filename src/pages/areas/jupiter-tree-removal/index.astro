@@ -1,0 +1,108 @@
+---
+import CityPage from "../../../components/CityPage.astro";
+
+const intro = [
+  "Jupiter has coastal neighborhoods, golf and planned communities, and lots with mature trees and palms close to houses and pools. Wind and salt air from the coast stress trees, and many properties sit inside communities with their own rules.",
+  "Send one request and we will try to match you with an independent tree care professional. We are adding professionals in Jupiter and cannot promise a response yet, so you can also tell us you want to be notified. SF Tree Removal is an online service; we don't do the work ourselves, so you agree the scope and price directly with the professional you are matched with."
+];
+
+const conditions = [
+  {
+    "name": "Planned communities and HOAs",
+    "note": "In many Jupiter neighborhoods the association's approval matters as much as the town's. Check with yours before work starts."
+  },
+  {
+    "name": "Coastal wind and salt",
+    "note": "Exposure to storms and salt air weakens branches and shortens the life of some species."
+  },
+  {
+    "name": "Palms near pools and houses",
+    "note": "Tall palms need careful lowering of the crown next to pools, pavers and roofs."
+  },
+  {
+    "name": "Storm damage",
+    "note": "Strong wind and saturated soil bring down trees and limbs onto roofs, fences and cars."
+  }
+];
+
+const nearby = [
+  {
+    "name": "West Palm Beach",
+    "href": "/areas/west-palm-beach-tree-removal/"
+  },
+  {
+    "name": "Boynton Beach",
+    "href": "/areas/boynton-beach-tree-removal/"
+  },
+  {
+    "name": "Palm Beach County",
+    "href": "/areas/palm-beach-county-tree-removal/"
+  }
+];
+
+const faqs = [
+  {
+    "q": "How much does tree removal cost in Jupiter?",
+    "a": "It depends on the size of the tree, how close it is to the house, pool or power lines, and whether a crane is needed. You will get a free estimate for your specific tree; see our <a href=\"/tree-care-guides/tree-removal-cost-south-florida/\">cost guide</a>."
+  },
+  {
+    "q": "Do I need a permit to remove a tree in Jupiter?",
+    "a": "Often yes, depending on the tree, the property and the city's rules, unless a certified arborist documents that the tree is dangerous. See our <a href=\"/tree-removal-permits/\">permit guide</a> and confirm with the city."
+  },
+  {
+    "q": "Can I get emergency tree help in Jupiter?",
+    "a": "Choose Emergency Tree Removal in the <a href=\"/contact-us/\">form</a>. The request is flagged as urgent for local professionals; we cannot promise an arrival time. If anyone is in danger, call 911."
+  },
+  {
+    "q": "Who does the work?",
+    "a": "An independent tree care professional in Palm Beach County. SF Tree Removal is an online service; we do not perform the work. Ask for proof of license and insurance first."
+  }
+];
+
+const notes = "<p>Jupiter lies on the Jupiter Inlet and the Loxahatchee River, with coastal neighborhoods and many planned communities. Wind and salt from the ocean stress trees, and storms regularly bring down limbs and uproot shallow-rooted trees.</p><p>In planned communities the homeowners' association often has the main say on removal, so check with it before scheduling work. Tall palms near pools and houses are a common request.</p>";
+
+const trees = [
+  {
+    "name": "Sabal palm",
+    "note": "Florida’s state tree and very wind tolerant, but often over-trimmed. Ask for dead fronds only."
+  },
+  {
+    "name": "Coconut palm",
+    "note": "Heavy coconuts and fronds fall on roofs, cars and pool decks, so regular trimming matters."
+  },
+  {
+    "name": "Sea grape",
+    "note": "Salt-tolerant coastal native, often shaped as hedge or tree. Trimming should not strip the plant."
+  },
+  {
+    "name": "Live oak",
+    "note": "Wide, heavy limbs that often grow over roofs and driveways. Removal needs rigging so big pieces are lowered, not dropped."
+  },
+  {
+    "name": "Queen palm",
+    "note": "Fast growing and short lived; prone to disease and to toppling in saturated soil."
+  },
+  {
+    "name": "Australian pine",
+    "note": "An invasive species that topples easily in storms and is commonly removed rather than kept."
+  }
+];
+---
+
+<CityPage
+  city="Jupiter"
+  county="Palm Beach County"
+  title="Tree Removal in Jupiter, FL | Free Local Estimates"
+  description="Free tree removal estimates in Jupiter, FL: removal, trimming, stump grinding and storm cleanup from independent local pros."
+  lead="Get a free tree removal estimate from independent local professionals in Jupiter and northern Palm Beach County."
+  intro={intro}
+  conditions={conditions}
+  permitId="jupiter"
+  nearby={nearby}
+  faqs={faqs}
+  image="arborist-inspect"
+  image2="chainsaw"
+  image3="uprooted-yard"
+  notes={notes}
+  trees={trees}
+/>

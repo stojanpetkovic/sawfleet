@@ -1,0 +1,108 @@
+---
+import CityPage from "../../../components/CityPage.astro";
+
+const intro = [
+  "Palm Beach Gardens is a planned city of golf communities, gated neighborhoods and mature landscaping. Palms, oaks and banyans grow close to homes, pools and golf fairways, and associations manage most of it.",
+  "Send one request and we will try to match you with an independent tree care professional. We are adding professionals in Palm Beach Gardens and cannot promise a response yet, so you can also tell us you want to be notified. SF Tree Removal is an online service; we don't do the work ourselves, so you agree the scope and price directly with the professional you are matched with."
+];
+
+const conditions = [
+  {
+    "name": "Golf and gated communities",
+    "note": "Associations set rules on tree removal, timing and cleanup."
+  },
+  {
+    "name": "Mature landscaping",
+    "note": "Trees planted at build-out are now large and close to structures."
+  },
+  {
+    "name": "Palms near pools",
+    "note": "Tall palms need careful lowering near pools and enclosures."
+  },
+  {
+    "name": "Storm season",
+    "note": "Weak and dead trees come down first in hurricanes."
+  }
+];
+
+const notes = "<p>In planned communities the association usually decides first, and the city or county rules come second. Ask your association what it requires, then check the city's rules and the county baseline in the permit checker.</p><p>Large oaks and banyans are worth an arborist's opinion before removal, since a tree that can be saved with pruning is cheaper to keep.</p>";
+
+const trees = [
+  {
+    "name": "Live oak",
+    "note": "Wide, heavy limbs that often grow over roofs and driveways. Removal needs rigging so big pieces are lowered, not dropped."
+  },
+  {
+    "name": "Banyan and strangler fig",
+    "note": "Huge canopies and aerial roots that can lift pavement and walls; removal needs planning and space."
+  },
+  {
+    "name": "Royal palm",
+    "note": "Tall and straight, often next to pools and houses. Lowering the crown needs care near screens and pavers."
+  },
+  {
+    "name": "Coconut palm",
+    "note": "Heavy coconuts and fronds fall on roofs, cars and pool decks, so regular trimming matters."
+  },
+  {
+    "name": "Mahogany",
+    "note": "Large shade tree with a broad canopy. Branch failure in storms is common, so structure and dead wood matter."
+  },
+  {
+    "name": "Sabal palm",
+    "note": "Florida’s state tree and very wind tolerant, but often over-trimmed. Ask for dead fronds only."
+  }
+];
+
+const nearby = [
+  {
+    "name": "Jupiter",
+    "href": "/areas/jupiter-tree-removal/"
+  },
+  {
+    "name": "West Palm Beach",
+    "href": "/areas/west-palm-beach-tree-removal/"
+  },
+  {
+    "name": "Palm Beach County",
+    "href": "/areas/palm-beach-county-tree-removal/"
+  }
+];
+
+const faqs = [
+  {
+    "q": "How much does tree removal cost in Palm Beach Gardens?",
+    "a": "It depends on the size of the tree, how close it is to the house, pool or power lines, and whether a crane is needed. You will get a free estimate for your specific tree; see our <a href=\"/tree-care-guides/tree-removal-cost-south-florida/\">cost guide</a>."
+  },
+  {
+    "q": "Do I need a permit to remove a tree in Palm Beach Gardens?",
+    "a": "Often, but it depends on the tree, the property and the rules where you live. Use the <a href=\"/permit-checker/\">permit checker</a> for what Palm Beach Gardens and its county say, and confirm with the city."
+  },
+  {
+    "q": "Can I get emergency tree help in Palm Beach Gardens?",
+    "a": "Choose Emergency Tree Removal in the <a href=\"/contact-us/\">form</a>. The request is flagged as urgent for local professionals; we cannot promise an arrival time. If anyone is in danger, call 911."
+  },
+  {
+    "q": "Who does the work?",
+    "a": "An independent tree care professional in Palm Beach County. SF Tree Removal is an online service; we do not perform the work. Ask for proof of license and insurance first."
+  }
+];
+---
+
+<CityPage
+  city="Palm Beach Gardens"
+  county="Palm Beach County"
+  title="Tree Removal in Palm Beach Gardens, FL | Free Estimates"
+  description="Free tree removal estimates in Palm Beach Gardens, FL: removal, trimming, stump grinding and storm cleanup from independent local pros."
+  lead="Get a free tree removal estimate from independent local professionals in Palm Beach Gardens and northern Palm Beach County."
+  intro={intro}
+  conditions={conditions}
+  permitId="other-palm-beach"
+  nearby={nearby}
+  faqs={faqs}
+  image="aerial-lift"
+  image2="climber-rope"
+  image3="ladder-oak"
+  notes={notes}
+  trees={trees}
+/>

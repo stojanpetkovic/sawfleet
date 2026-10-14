@@ -1,0 +1,43 @@
+---
+// For places with no professional yet: collects demand ("tell me when you cover
+// my city") and points tree companies to the listing page. Goes to the lead
+// inbox as its own form, so the admin shows demand per city.
+interface Props {
+  place: string;
+}
+const { place } = Astro.props;
+---
+
+<section id="interest" class="scroll-mt-28 py-section">
+  <div class="mx-auto grid max-w-5xl gap-8 px-4 sm:px-6 lg:grid-cols-[1.2fr_1fr]">
+    <div class="form-card">
+      <h2 class="font-heading text-2xl font-extrabold text-secondary-900">Tell Us You Need Tree Help in {place}</h2>
+      <p class="mt-2 text-secondary-600">We are adding professionals here. Leave your details and we will contact you if we find a match. No promise of timing, no obligation.</p>
+      <form data-lead-form="area-interest" data-lead-ignore class="mt-6 space-y-4" novalidate>
+        <input type="hidden" name="city" value={place} />
+        <input type="hidden" name="coverage_status" value="not-yet-active" />
+        <div class="grid gap-4 sm:grid-cols-2">
+          <label class="block"><span class="field-label">Your name *</span><input name="name" required autocomplete="name" class="field-input" /></label>
+          <label class="block"><span class="field-label">Phone *</span><input name="phone" type="tel" required autocomplete="tel" class="field-input" /></label>
+        </div>
+        <label class="block"><span class="field-label">Email</span><input name="email" type="email" autocomplete="email" class="field-input" /></label>
+        <label class="block"><span class="field-label">What do you need?</span><textarea name="message" rows="3" class="field-input" placeholder="Removal, trimming, stump grinding, emergency…"></textarea></label>
+        <input name="website_hp" tabindex="-1" autocomplete="off" class="hidden" aria-hidden="true" />
+        <p data-lead-error hidden class="rounded-xl bg-red-50 px-4 py-3 text-sm text-red-700" role="alert"></p>
+        <button type="submit" class="btn btn-accent w-full !py-4 sm:w-auto">Notify me when you cover {place}</button>
+        <p class="text-xs text-secondary-500">By sending this form you agree to our <a href="/privacy-policy/" class="underline">Privacy Policy</a>.</p>
+      </form>
+    </div>
+
+    <aside class="flex flex-col justify-center rounded-3xl bg-gradient-to-br from-primary-700 to-secondary-900 p-8 text-white shadow-xl">
+      <h2 class="font-heading text-2xl font-extrabold">Tree Company in {place}?</h2>
+      <p class="mt-3 leading-relaxed text-white/85">Homeowners are looking for tree service here. Get listed in the SF Tree Removal directory and receive requests from this area.</p>
+      <ul class="mt-5 space-y-2 text-sm text-white/90">
+        <li class="flex gap-2"><span class="text-accent" aria-hidden="true">✓</span>Free to apply, reviewed by hand</li>
+        <li class="flex gap-2"><span class="text-accent" aria-hidden="true">✓</span>Your company page and city links</li>
+        <li class="flex gap-2"><span class="text-accent" aria-hidden="true">✓</span>Requests from this site, clearly labeled</li>
+      </ul>
+      <a href={`/for-pros/?city=${encodeURIComponent(place)}`} class="btn btn-accent mt-6 self-start">Get listed in {place}</a>
+    </aside>
+  </div>
+</section>

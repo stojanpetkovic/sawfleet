@@ -1,0 +1,33 @@
+---
+import BaseLayout from "../../../layouts/BaseLayout.astro";
+import SectionHeading from "../../../components/SectionHeading.astro";
+---
+
+<BaseLayout
+  title="Your Hurricane Tree Checklist | SF Tree Removal"
+  description="Download your free hurricane tree checklist for South Florida: before the season, when a storm approaches and after the storm."
+  noindex
+>
+  <section class="py-section">
+    <div class="mx-auto max-w-2xl px-4 text-center sm:px-6">
+      <div class="mx-auto grid size-16 place-items-center rounded-2xl bg-primary-600 text-3xl text-white shadow-lg" aria-hidden="true">✓</div>
+      <h1 class="mt-6 font-heading text-h1 font-extrabold text-secondary-900">Your checklist is ready</h1>
+      <p class="mt-4 text-lg text-secondary-600">Download the two-page PDF and keep it where you can find it. Print it for the fridge or save it on your phone.</p>
+      <p class="mt-8">
+        <a href="/downloads/south-florida-hurricane-tree-checklist.pdf" class="btn btn-accent !px-8 !py-4 !text-lg" download>Download the PDF</a>
+      </p>
+      <div class="mt-12 grid gap-4 text-left sm:grid-cols-2">
+        <a href="/permit-checker/" class="card p-5"><h2 class="font-heading text-lg font-semibold text-secondary-900">Check permit rules</h2><p class="mt-1 text-sm text-secondary-600">See what your city says before cutting a tree.</p></a>
+        <a href="/contact-us/" class="card p-5"><h2 class="font-heading text-lg font-semibold text-secondary-900">Get a free estimate</h2><p class="mt-1 text-sm text-secondary-600">Trimming, removal or an arborist assessment before the season.</p></a>
+      </div>
+    </div>
+  </section>
+
+  <script is:inline>
+    (function () {
+      var form = null;
+      try { form = sessionStorage.getItem('sf_lead_sent'); sessionStorage.removeItem('sf_lead_sent'); } catch (e) {}
+      if (form && typeof window.gtag === 'function') window.gtag('event', 'generate_lead', { form_name: form });
+    })();
+  </script>
+</BaseLayout>

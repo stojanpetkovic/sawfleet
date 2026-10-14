@@ -1,0 +1,108 @@
+---
+import CityPage from "../../../components/CityPage.astro";
+
+const intro = [
+  "Delray Beach has established neighborhoods with mature canopy, coastal streets close to the Atlantic and many palms near houses and pools. Large trees close to structures need planned, careful removal.",
+  "Send one request and we will try to match you with an independent tree care professional. We are adding professionals in Delray Beach and cannot promise a response yet, so you can also tell us you want to be notified. SF Tree Removal is an online service; we don't do the work ourselves, so you agree the scope and price directly with the professional you are matched with."
+];
+
+const conditions = [
+  {
+    "name": "Mature trees in older neighborhoods",
+    "note": "Decades of growth put big canopies and roots close to roofs, walls and pipes."
+  },
+  {
+    "name": "Coastal wind and salt",
+    "note": "Storms and salt air stress trees near the coast, and weakened limbs can fall."
+  },
+  {
+    "name": "Palms near pools and houses",
+    "note": "Tall palms need careful lowering of the crown next to pools, pavers and roofs."
+  },
+  {
+    "name": "Storm season",
+    "note": "Saturated soil and strong wind make leaning and damaged trees urgent."
+  }
+];
+
+const nearby = [
+  {
+    "name": "Boynton Beach",
+    "href": "/areas/boynton-beach-tree-removal/"
+  },
+  {
+    "name": "Boca Raton",
+    "href": "/areas/boca-raton-tree-removal/"
+  },
+  {
+    "name": "Palm Beach County",
+    "href": "/areas/palm-beach-county-tree-removal/"
+  }
+];
+
+const faqs = [
+  {
+    "q": "How much does tree removal cost in Delray Beach?",
+    "a": "It depends on the size of the tree, how close it is to the house, pool or power lines, and whether a crane is needed. You will get a free estimate for your specific tree; see our <a href=\"/tree-care-guides/tree-removal-cost-south-florida/\">cost guide</a>."
+  },
+  {
+    "q": "Do I need a permit to remove a tree in Delray Beach?",
+    "a": "Often yes, depending on the tree, the property and the city's rules, unless a certified arborist documents that the tree is dangerous. See our <a href=\"/tree-removal-permits/\">permit guide</a> and confirm with the city."
+  },
+  {
+    "q": "Can I get emergency tree help in Delray Beach?",
+    "a": "Choose Emergency Tree Removal in the <a href=\"/contact-us/\">form</a>. The request is flagged as urgent for local professionals; we cannot promise an arrival time. If anyone is in danger, call 911."
+  },
+  {
+    "q": "Who does the work?",
+    "a": "An independent tree care professional in Palm Beach County. SF Tree Removal is an online service; we do not perform the work. Ask for proof of license and insurance first."
+  }
+];
+
+const notes = "<p>Delray Beach has established neighborhoods with mature canopy and a lively center along Atlantic Avenue, plus coastal streets exposed to wind and salt air. Large oaks and banyans near houses and many palms near pools drive most requests.</p><p>The city's landscape review team asks for an application before many removals, so check the size threshold and any HOA rules before you schedule work. Trees close to the Atlantic need extra care with salt damage.</p>";
+
+const trees = [
+  {
+    "name": "Live oak",
+    "note": "Wide, heavy limbs that often grow over roofs and driveways. Removal needs rigging so big pieces are lowered, not dropped."
+  },
+  {
+    "name": "Banyan and strangler fig",
+    "note": "Huge canopies and aerial roots that can lift pavement and walls; removal needs planning and space."
+  },
+  {
+    "name": "Royal palm",
+    "note": "Tall and straight, often next to pools and houses. Lowering the crown needs care near screens and pavers."
+  },
+  {
+    "name": "Sabal palm",
+    "note": "Florida’s state tree and very wind tolerant, but often over-trimmed. Ask for dead fronds only."
+  },
+  {
+    "name": "Sea grape",
+    "note": "Salt-tolerant coastal native, often shaped as hedge or tree. Trimming should not strip the plant."
+  },
+  {
+    "name": "Coconut palm",
+    "note": "Heavy coconuts and fronds fall on roofs, cars and pool decks, so regular trimming matters."
+  }
+];
+---
+
+<CityPage
+  city="Delray Beach"
+  county="Palm Beach County"
+  title="Tree Removal in Delray Beach, FL | Free Estimates"
+  description="Free tree removal estimates in Delray Beach, FL: removal, trimming, stump grinding and storm cleanup from independent local pros."
+  lead="Get a free tree removal estimate from independent local professionals in Delray Beach and across Palm Beach County."
+  intro={intro}
+  conditions={conditions}
+  permitId="delray-beach"
+  nearby={nearby}
+  faqs={faqs}
+  image="climber-rope"
+  image2="beach-palms"
+  image3="trunk-cutting"
+  notes={notes}
+  trees={trees}
+/>

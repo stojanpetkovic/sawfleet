@@ -1,92 +1,124 @@
-<section class="relative overflow-hidden rounded-2xl bg-slate-950 text-white">
-  <!-- BACKGROUND GRADIENT -->
-  <div class="absolute inset-0 bg-linear-to-br from-teal-800/40 via-slate-900 to-slate-950"></div>
+---
+import Photo from "./Photo.astro";
+import { business } from "../config/business";
+import { season } from "../config/season";
+import { coverage } from "../config/coverage";
 
-  <!-- DECORATIVE LINES (LEFT) -->
-  <div class="absolute inset-y-0 left-0 w-40 bg-[repeating-linear-gradient(135deg,rgba(255,255,255,0.04)_0,rgba(255,255,255,0.04)_1px,transparent_1px,transparent_8px)]"></div>
+const points = ["Free and no obligation", "Independent tree pros", "Urgent requests flagged first"];
+---
 
-  <!-- CONTENT -->
-  <div class="relative z-10 max-w-7xl mx-auto px-6 pt-28 pb-20">
-    <div class="grid lg:grid-cols-2 gap-20 items-start">
+<section data-hero class="relative overflow-hidden bg-gradient-to-b from-primary-50 via-white to-white pt-12 sm:pt-16 lg:pt-20">
+  <div class="absolute inset-0 opacity-70" aria-hidden="true"><div class="bg-grid-pattern absolute inset-0"></div></div>
+  <div class="pointer-events-none absolute -right-28 -top-10 size-96 animate-blob rounded-full bg-accent opacity-30 blur-3xl" aria-hidden="true"></div>
+  <div class="pointer-events-none absolute -left-32 top-1/2 size-96 animate-blob rounded-full bg-primary-300 opacity-30 blur-3xl [animation-delay:-6s]" aria-hidden="true"></div>
 
-      <!-- LEFT TEXT -->
-      <div>
-        <span
-          class="inline-flex items-center gap-2 rounded-full bg-white/10 px-4 py-1 text-xs font-semibold tracking-wide text-teal-200"
-        >
-          🌿 PROFESSIONAL TREE SERVICES
-        </span>
+  <div class="relative mx-auto grid max-w-site items-center gap-12 px-4 pb-20 sm:px-6 lg:grid-cols-[1.05fr_1fr] lg:gap-14 lg:pb-28">
+    <!-- Copy -->
+    <div>
+      <span class="topper mb-6 animate-slide-up">
+        <span class="mr-2 inline-block size-2 animate-pulse rounded-full bg-primary-500 align-middle" aria-hidden="true"></span>
+        Free tree removal estimates
+      </span>
 
-        <h1 class="mt-6 text-4xl md:text-5xl xl:text-6xl font-extrabold leading-tight">
-          Protecting Your Property <br class="hidden sm:block" />
-          with Smart Tree Solutions.
-        </h1>
+      <h1 class="animate-slide-up font-heading text-display font-extrabold leading-[1.04] text-secondary-900 delay-100">
+        Tree removal in <span class="bg-gradient-to-r from-primary-700 to-primary-400 bg-clip-text text-transparent">South Florida</span>, quoted by local pros.
+      </h1>
 
-        <p class="mt-6 max-w-xl text-slate-300 text-lg">
-          From emergency tree removal to expert arborist care, SF Tree Removal
-          delivers safe, efficient and professional tree services across
-          South Florida.
-        </p>
+      <p class="mt-6 max-w-xl animate-slide-up text-lead leading-relaxed text-secondary-600 delay-200">
+        Tell us about your tree. We connect you with an independent local tree care professional, starting in Fort Lauderdale and the surrounding area, and you get a free estimate with no obligation.
+      </p>
 
-        <!-- CTA -->
-        <div class="mt-10 flex flex-wrap items-center gap-6">
-          <a
-            href="/contact-us/"
-            class="inline-flex items-center gap-3 rounded-full bg-teal-700 px-7 py-4
-                   font-bold text-white hover:bg-teal-800 transition"
-          >
-            Get Started
-            <span class="flex h-7 w-7 items-center justify-center rounded-full bg-white/15">
-              ↗
-            </span>
+      <div class="mt-8 flex animate-slide-up flex-wrap gap-4 delay-300">
+        {season.alert && (
+          <a href="/emergency-tree-removal/" class="btn group w-full !bg-red-600 !px-8 !py-4 !text-lg !text-white hover:!bg-red-700 sm:w-auto">
+            Emergency Tree Request
+            <svg class="size-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M13 10V3L4 14h7v7l9-11h-7z" /></svg>
           </a>
+        )}
+        <a href="/contact-us/" class="btn btn-accent group w-full !px-8 !py-4 !text-lg sm:w-auto">
+          Get a Free Estimate
+          <svg class="size-5 transition group-hover:translate-x-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M13 7l5 5m0 0l-5 5m5-5H6" /></svg>
+        </a>
+        <a href="/how-it-works/" class="btn btn-outline w-full !px-8 !py-4 !text-lg sm:w-auto">How It Works</a>
+      </div>
 
-          <p class="text-sm text-slate-400 max-w-xs">
-            Available 24/7 for emergency tree removal & storm damage response.
-          </p>
+      <ul class="mt-8 flex animate-slide-up flex-wrap gap-x-6 gap-y-3 delay-500" role="list">
+        {
+          points.map((p) => (
+            <li class="flex items-center gap-2 text-sm font-medium text-secondary-700">
+              <span class="grid size-5 place-items-center rounded-full bg-primary-600 text-white" aria-hidden="true">
+                <svg class="size-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3.5" d="M5 13l4 4L19 7" /></svg>
+              </span>
+              {p}
+            </li>
+          ))
+        }
+      </ul>
+
+      <p class="mt-6 flex animate-slide-up items-start gap-2 rounded-xl bg-white/70 p-3 text-sm text-secondary-700 ring-1 ring-secondary-200 delay-500">
+        <span class="mt-0.5 text-primary-600" aria-hidden="true">📍</span>
+        <span><strong class="font-semibold text-secondary-900">Active now: {coverage.activeLabel}.</strong> Elsewhere in South Florida we are adding professionals; <a href="/areas/#coverage" class="font-semibold text-primary-700 underline underline-offset-2">see coverage</a>.</span>
+      </p>
+
+      <p class="mt-4 animate-slide-up text-sm text-secondary-500 delay-500">
+        Tree on a house or car?
+        <a href="/emergency-tree-removal/" class="font-semibold text-primary-700 underline underline-offset-2 hover:text-primary-900">Send an emergency request</a>
+        and we flag it as urgent.
+      </p>
+    </div>
+
+    <!-- Collage -->
+    <div class="relative animate-fade-in pb-10 pl-0 sm:pl-8 lg:pb-0">
+      <div class="absolute -inset-4 -z-10 rounded-[2.5rem] bg-gradient-to-br from-primary-200 to-accent-100 opacity-70 blur-2xl" aria-hidden="true"></div>
+
+      <div class="relative aspect-[4/5] overflow-hidden rounded-[2rem] border-4 border-white shadow-2xl ring-1 ring-secondary-200 sm:aspect-[4/4.2]">
+        <picture>
+          <source
+            type="image/webp"
+            srcset="/images/hero/hero-main-640.webp 640w, /images/hero/hero-main-960.webp 960w, /images/hero/hero-main-1280.webp 1280w"
+            sizes="(min-width: 1024px) 560px, 100vw"
+          />
+          <img
+            src="/images/hero/hero-main-960.jpg"
+            srcset="/images/hero/hero-main-640.jpg 640w, /images/hero/hero-main-960.jpg 960w, /images/hero/hero-main-1280.jpg 1280w"
+            sizes="(min-width: 1024px) 560px, 100vw"
+            alt="Crane lowering a large tree next to a building during a tree removal"
+            width="1280"
+            height="960"
+            class="size-full object-cover"
+            loading="eager"
+            fetchpriority="high"
+            decoding="async"
+          />
+        </picture>
+        <div class="absolute inset-0 bg-gradient-to-t from-secondary-950/30 via-transparent to-transparent" aria-hidden="true"></div>
+      </div>
+
+      <!-- Second photo -->
+      <div class="absolute -bottom-2 left-0 hidden w-44 animate-float-slow overflow-hidden rounded-2xl border-4 border-white shadow-xl sm:block lg:w-52">
+        <Photo name="canopy-climber" ratio="4/3" sizes="208px" />
+      </div>
+
+      <!-- Floating cards -->
+      <div class="absolute right-2 top-6 flex animate-float items-center gap-3 rounded-2xl bg-white px-4 py-3 shadow-xl ring-1 ring-secondary-100 sm:-right-4">
+        <span class="grid size-11 place-items-center rounded-xl bg-accent text-black" aria-hidden="true">
+          <svg class="size-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a2 2 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" /><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" /></svg>
+        </span>
+        <div>
+          <p class="font-heading text-sm font-semibold text-secondary-900">Active now: Fort Lauderdale</p>
+          <p class="text-xs text-secondary-500">More areas coming</p>
         </div>
       </div>
 
-<!-- RIGHT IMAGE -->
-<div class="relative">
-  <div
-    class="relative h-[440px] md:h-[480px] xl:h-[520px]
-           overflow-hidden rounded-2xl border border-white/10
-           shadow-2xl"
-  >
-    <!-- IMAGE -->
-    <picture>
-      <source srcset="/images/hero/hero-main-1280.webp" type="image/webp" />
-      <img
-        src="/images/hero/hero-main-1280.jpg"
-        alt="Professional tree removal service in South Florida"
-        width="1280"
-        height="960"
-        class="h-full w-full object-cover"
-        loading="eager"
-        fetchpriority="high"
-        decoding="async"
-      />
-    </picture>
-
-    <!-- SUBTLE OVERLAY -->
-    <div class="absolute inset-0 bg-linear-to-t from-black/25 via-transparent to-transparent"></div>
-  </div>
-
-  <!-- RATING BADGE -->
-  <div
-    class="absolute top-6 left-6 rounded-xl bg-white/95 px-6 py-4
-           text-slate-900 shadow-lg backdrop-blur-sm"
-  >
-    <div class="flex items-center gap-2 text-3xl font-extrabold leading-none">
-      4.8 <span class="text-teal-700">★</span>
-    </div>
-    <p class="mt-1 text-xs font-semibold">
-      Rated by 500+ local customers
-    </p>
-  </div>
-</div>
-
+      <div class="absolute -bottom-4 right-2 flex animate-float-slow items-center gap-3 rounded-2xl bg-white px-4 py-3 shadow-xl ring-1 ring-secondary-100 [animation-delay:-3s] sm:-right-2">
+        <span class="grid size-11 place-items-center rounded-xl bg-primary-600 text-white" aria-hidden="true">
+          <svg class="size-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+        </span>
+        <div>
+          <p class="font-heading text-sm font-semibold text-secondary-900">Free estimates</p>
+          <p class="text-xs text-secondary-500">No obligation</p>
+        </div>
+      </div>
     </div>
   </div>
 </section>

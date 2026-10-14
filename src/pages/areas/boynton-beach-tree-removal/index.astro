@@ -1,0 +1,108 @@
+---
+import CityPage from "../../../components/CityPage.astro";
+
+const intro = [
+  "Boynton Beach has many HOA-managed communities, older streets with mature trees and properties along the Intracoastal Waterway. Removing or trimming a tree often has to protect pools, pavers, screen enclosures and neighbors' fences.",
+  "Send one request and we will try to match you with an independent tree care professional. We are adding professionals in Boynton Beach and cannot promise a response yet, so you can also tell us you want to be notified. SF Tree Removal is an online service; we don't do the work ourselves, so you agree the scope and price directly with the professional you are matched with."
+];
+
+const conditions = [
+  {
+    "name": "HOA communities",
+    "note": "Many neighborhoods require association approval for removing or replacing trees. Check with your association before work starts."
+  },
+  {
+    "name": "Trees close to houses and enclosures",
+    "note": "Limbs reach roofs and screen enclosures, and roots lift pavers and pool decks."
+  },
+  {
+    "name": "Mangroves along the waterway",
+    "note": "Mangroves are protected under Florida law and need special handling, so do not trim them without checking the rules."
+  },
+  {
+    "name": "Storm damage",
+    "note": "Strong wind and saturated soil bring down trees and limbs onto fences, cars and roofs."
+  }
+];
+
+const nearby = [
+  {
+    "name": "West Palm Beach",
+    "href": "/areas/west-palm-beach-tree-removal/"
+  },
+  {
+    "name": "Boca Raton",
+    "href": "/areas/boca-raton-tree-removal/"
+  },
+  {
+    "name": "Palm Beach County",
+    "href": "/areas/palm-beach-county-tree-removal/"
+  }
+];
+
+const faqs = [
+  {
+    "q": "How much does tree removal cost in Boynton Beach?",
+    "a": "It depends on the size of the tree, how close it is to the house, pool or power lines, and whether a crane is needed. You will get a free estimate for your specific tree; see our <a href=\"/tree-care-guides/tree-removal-cost-south-florida/\">cost guide</a>."
+  },
+  {
+    "q": "Do I need a permit to remove a tree in Boynton Beach?",
+    "a": "Often yes, depending on the tree, the property and the city's rules, unless a certified arborist documents that the tree is dangerous. See our <a href=\"/tree-removal-permits/\">permit guide</a> and confirm with the city."
+  },
+  {
+    "q": "Can I get emergency tree help in Boynton Beach?",
+    "a": "Choose Emergency Tree Removal in the <a href=\"/contact-us/\">form</a>. The request is flagged as urgent for local professionals; we cannot promise an arrival time. If anyone is in danger, call 911."
+  },
+  {
+    "q": "Who does the work?",
+    "a": "An independent tree care professional in Palm Beach County. SF Tree Removal is an online service; we do not perform the work. Ask for proof of license and insurance first."
+  }
+];
+
+const notes = "<p>Boynton Beach has many HOA-managed and age-restricted communities, canals and a stretch of coast along the Intracoastal. In these communities an association usually has to approve a removal, and may set rules about timing and cleanup.</p><p>Mangroves along the waterway are protected under Florida law and need special handling. Typical requests are for dead or leaning trees, palms near pools and limbs touching roofs or screen enclosures.</p>";
+
+const trees = [
+  {
+    "name": "Royal palm",
+    "note": "Tall and straight, often next to pools and houses. Lowering the crown needs care near screens and pavers."
+  },
+  {
+    "name": "Queen palm",
+    "note": "Fast growing and short lived; prone to disease and to toppling in saturated soil."
+  },
+  {
+    "name": "Ficus",
+    "note": "Fast-growing with aggressive roots that crowd walls, pipes and pools. A frequent reason for removal requests."
+  },
+  {
+    "name": "Live oak",
+    "note": "Wide, heavy limbs that often grow over roofs and driveways. Removal needs rigging so big pieces are lowered, not dropped."
+  },
+  {
+    "name": "Sabal palm",
+    "note": "Florida’s state tree and very wind tolerant, but often over-trimmed. Ask for dead fronds only."
+  },
+  {
+    "name": "Brazilian pepper",
+    "note": "An invasive that spreads aggressively and is commonly removed."
+  }
+];
+---
+
+<CityPage
+  city="Boynton Beach"
+  county="Palm Beach County"
+  title="Tree Removal in Boynton Beach, FL | Free Estimates"
+  description="Free tree removal estimates in Boynton Beach, FL: removal, trimming, stump grinding and storm cleanup from independent local pros."
+  lead="Get a free tree removal estimate from independent local professionals in Boynton Beach and across Palm Beach County."
+  intro={intro}
+  conditions={conditions}
+  permitId="boynton-beach"
+  nearby={nearby}
+  faqs={faqs}
+  image="canopy-climber"
+  image2="bucket-truck"
+  image3="broken-tree"
+  notes={notes}
+  trees={trees}
+/>

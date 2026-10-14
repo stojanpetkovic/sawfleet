@@ -1,0 +1,108 @@
+---
+import CityPage from "../../../components/CityPage.astro";
+
+const intro = [
+  "North Miami Beach has older residential neighborhoods with mature shade trees, palms and ficus that have outgrown their space, along with canals and busy corridors where trees stand close to wires and sidewalks.",
+  "Send one request and we will try to match you with an independent tree care professional. We are adding professionals in North Miami Beach and cannot promise a response yet, so you can also tell us you want to be notified. SF Tree Removal is an online service; we don't do the work ourselves, so you agree the scope and price directly with the professional you are matched with."
+];
+
+const conditions = [
+  {
+    "name": "Older neighborhoods",
+    "note": "Mid-century homes often have large, mature trees close to the house."
+  },
+  {
+    "name": "Ficus roots",
+    "note": "Ficus roots crack walls and lift pavers, a common reason for removal."
+  },
+  {
+    "name": "Palms near pools",
+    "note": "Royal and coconut palms need careful lowering near pools and screens."
+  },
+  {
+    "name": "Storm season",
+    "note": "Dead limbs and leaning trees are the first to fail in a hurricane."
+  }
+];
+
+const notes = "<p>Many properties here were built decades ago, and the trees are old enough to have significant dead wood and structural problems. A health check is often worth it before a storm season, especially for large trees over the house.</p><p>Tree rules are set by the city and by Miami-Dade County, and an HOA or condominium association may have its own. Use the permit checker to see what the county baseline says and then ask the city.</p>";
+
+const trees = [
+  {
+    "name": "Ficus",
+    "note": "Fast-growing with aggressive roots that crowd walls, pipes and pools. A frequent reason for removal requests."
+  },
+  {
+    "name": "Royal palm",
+    "note": "Tall and straight, often next to pools and houses. Lowering the crown needs care near screens and pavers."
+  },
+  {
+    "name": "Black olive",
+    "note": "A common street and yard tree whose roots lift sidewalks and whose fruit stains pavers."
+  },
+  {
+    "name": "Live oak",
+    "note": "Wide, heavy limbs that often grow over roofs and driveways. Removal needs rigging so big pieces are lowered, not dropped."
+  },
+  {
+    "name": "Queen palm",
+    "note": "Fast growing and short lived; prone to disease and to toppling in saturated soil."
+  },
+  {
+    "name": "Schefflera",
+    "note": "Often grows large with shallow roots and brittle limbs; common near pools and screens."
+  }
+];
+
+const nearby = [
+  {
+    "name": "Miami Gardens",
+    "href": "/areas/miami-gardens-tree-removal/"
+  },
+  {
+    "name": "Miami",
+    "href": "/areas/miami-tree-removal/"
+  },
+  {
+    "name": "Miami Beach",
+    "href": "/areas/miami-beach-tree-removal/"
+  }
+];
+
+const faqs = [
+  {
+    "q": "How much does tree removal cost in North Miami Beach?",
+    "a": "It depends on the size of the tree, how close it is to the house, pool or power lines, and whether a crane is needed. You will get a free estimate for your specific tree; see our <a href=\"/tree-care-guides/tree-removal-cost-south-florida/\">cost guide</a>."
+  },
+  {
+    "q": "Do I need a permit to remove a tree in North Miami Beach?",
+    "a": "Often, but it depends on the tree, the property and the rules where you live. Use the <a href=\"/permit-checker/\">permit checker</a> for what North Miami Beach and its county say, and confirm with the city."
+  },
+  {
+    "q": "Can I get emergency tree help in North Miami Beach?",
+    "a": "Choose Emergency Tree Removal in the <a href=\"/contact-us/\">form</a>. The request is flagged as urgent for local professionals; we cannot promise an arrival time. If anyone is in danger, call 911."
+  },
+  {
+    "q": "Who does the work?",
+    "a": "An independent tree care professional in Miami-Dade County. SF Tree Removal is an online service; we do not perform the work. Ask for proof of license and insurance first."
+  }
+];
+---
+
+<CityPage
+  city="North Miami Beach"
+  county="Miami-Dade County"
+  title="Tree Removal in North Miami Beach, FL | Free Estimates"
+  description="Free tree removal estimates in North Miami Beach, FL: removal, trimming, stump grinding and storm cleanup from independent local pros."
+  lead="Get a free tree removal estimate from independent local professionals in North Miami Beach and northeast Miami-Dade."
+  intro={intro}
+  conditions={conditions}
+  permitId="other-miami-dade"
+  nearby={nearby}
+  faqs={faqs}
+  image="ladder-oak"
+  image2="brick-house-climber"
+  image3="tree-on-house"
+  notes={notes}
+  trees={trees}
+/>

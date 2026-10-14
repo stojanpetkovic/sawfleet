@@ -1,0 +1,86 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import PageHero from "./PageHero.astro";
+import SectionHeading from "./SectionHeading.astro";
+import HowItWorks from "./HowItWorks.astro";
+import Faq from "./Faq.astro";
+import Disclosure from "./Disclosure.astro";
+import CtaBand from "./CtaBand.astro";
+import SplitSection from "./SplitSection.astro";
+import type { PhotoKey } from "../config/photos";
+import type { FaqItem } from "./Faq.astro";
+
+// One template for the four service pages, so each reads the same way: what
+// the service is, what it covers, what drives the price, and common questions.
+interface Props {
+  title: string;
+  description: string;
+  service: { name: string; serviceType: string; description: string };
+  badge: string;
+  h1: string;
+  lead: string;
+  intro: string[];
+  coversTitle: string;
+  covers: { name: string; note: string }[];
+  /** A prose section (HTML paragraphs and lists) after the cards. */
+  detailTitle: string;
+  detail: string;
+  faqs: FaqItem[];
+  ctaTitle?: string;
+  ctaText?: string;
+  /** Photo in the page header. */
+  image: PhotoKey;
+  /** Photo beside the opening text, and a title for that section. */
+  introImage: PhotoKey;
+  introTitle: string;
+  /** Extra sections with a photo beside them; they alternate sides. */
+  extras?: { topper?: string; title: string; html: string; image: PhotoKey }[];
+}
+const { title, description, service, badge, h1, lead, intro, coversTitle, covers, detailTitle, detail, faqs, ctaTitle, ctaText, image, introImage, introTitle, extras = [] } = Astro.props;
+---
+
+<BaseLayout title={title} description={description} service={service}>
+  <PageHero badge={badge} title={h1} lead={lead} image={image} />
+
+  <SplitSection title={introTitle} html={intro.map((p) => `<p>${p}</p>`).join("")} image={introImage} />
+
+  <section class="bg-secondary-50 py-section">
+    <div class="mx-auto max-w-site px-4 sm:px-6">
+      <SectionHeading topper="What it covers" title={coversTitle} />
+      <ul class="grid gap-6 sm:grid-cols-2 lg:grid-cols-3" role="list">
+        {
+          covers.map((c) => (
+            <li class="card flex gap-4 p-5 sm:block sm:p-6">
+              <div class="flex size-10 shrink-0 items-center justify-center rounded-xl bg-primary-100 text-primary-700 sm:mb-4 sm:size-11">
+                <svg class="size-5 sm:size-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7" /></svg>
+              </div>
+              <div>
+                <h3 class="font-heading text-lg font-semibold text-secondary-900 sm:text-h3">{c.name}</h3>
+                <p class="mt-1.5 text-sm leading-relaxed text-secondary-600 sm:mt-2">{c.note}</p>
+              </div>
+            </li>
+          ))
+        }
+      </ul>
+    </div>
+  </section>
+
+  <section class="py-section">
+    <div class="mx-auto max-w-4xl px-4 sm:px-6">
+      <h2 class="mb-8 font-heading text-h2 font-bold text-secondary-900">{detailTitle}</h2>
+      <div class="prose-sf max-w-none" set:html={detail} />
+    </div>
+  </section>
+
+  {extras.map((e, i) => <SplitSection topper={e.topper} title={e.title} html={e.html} image={e.image} reverse={i % 2 === 0} tone={i % 2 === 0 ? "tint" : "white"} />)}
+
+  <HowItWorks />
+
+  <Faq faqs={faqs} tone="white" />
+
+  <section class="py-10">
+    <div class="mx-auto max-w-3xl px-4 sm:px-6"><Disclosure variant="card" /></div>
+  </section>
+
+  <CtaBand title={ctaTitle} text={ctaText} />
+</BaseLayout>

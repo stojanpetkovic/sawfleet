@@ -1,27 +1,29 @@
 ---
-// Closing call to action, matching the end of the service and area pages.
+// Closing call to action at the end of the inner pages.
 interface Props {
   title?: string;
   text?: string;
 }
 const {
   title = "Need a Tree Removed or Checked?",
-  text = "Tell us about the job and get a free estimate. For fallen or dangerous trees, mark it as an emergency and we'll respond first.",
+  text = "Tell us about the job and we connect you with an independent tree care professional for a free estimate. For fallen or dangerous trees, mark it as an emergency and we flag it as urgent.",
 } = Astro.props;
 ---
 
-<section class="bg-teal-800 py-28 text-white">
-  <div class="mx-auto max-w-5xl px-6 text-center">
-    <h2 class="text-4xl font-extrabold leading-tight md:text-5xl">{title}</h2>
-    <p class="mx-auto mt-8 max-w-3xl text-lg text-white/90">{text}</p>
-    <div class="mt-12">
-      <a
-        href="/contact-us/"
-        class="inline-flex items-center gap-4 rounded-full bg-white px-12 py-5 font-extrabold text-teal-800 transition hover:bg-slate-100"
-      >
+<section class="px-4 py-16 sm:px-6 lg:py-24">
+  <div class="relative mx-auto max-w-5xl overflow-hidden rounded-3xl bg-gradient-to-br from-primary-700 via-primary-800 to-secondary-900 px-6 py-14 text-center shadow-2xl sm:px-12 lg:py-20" data-reveal="zoom">
+    <div class="absolute inset-0 opacity-30" aria-hidden="true"><div class="bg-grid-pattern absolute inset-0 [mask-image:radial-gradient(ellipse_at_center,black,transparent_75%)]" style="filter:invert(1) brightness(2)"></div></div>
+    <div class="pointer-events-none absolute -right-12 -top-12 size-64 animate-blob rounded-full bg-accent opacity-25 blur-3xl" aria-hidden="true"></div>
+    <div class="pointer-events-none absolute -bottom-16 -left-10 size-64 animate-blob rounded-full bg-primary-400 opacity-25 blur-3xl [animation-delay:-5s]" aria-hidden="true"></div>
+    <h2 class="relative font-heading text-h2 font-extrabold text-white">{title}</h2>
+    <p class="relative mx-auto mt-5 max-w-xl text-lg leading-relaxed text-white/85">{text}</p>
+    <div class="relative mt-9 flex flex-col items-center gap-4 sm:flex-row sm:justify-center">
+      <a href="/contact-us/" class="btn btn-accent group px-8 !py-4 !text-lg">
         Request a Free Estimate
-        <span class="flex h-10 w-10 items-center justify-center rounded-full bg-teal-700 text-white">↗</span>
+        <svg class="size-5 transition group-hover:translate-x-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M13 7l5 5m0 0l-5 5m5-5H6" /></svg>
       </a>
+      <a href="/tree-care-guides/" class="btn btn-outline-light px-8 !py-4 !text-lg">Read Our Blog</a>
     </div>
+    <p class="relative mt-6 text-sm text-white/60">Free, no obligation. Active in the Fort Lauderdale area, adding more areas.</p>
   </div>
 </section>

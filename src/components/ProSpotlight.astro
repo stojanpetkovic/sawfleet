@@ -1,0 +1,57 @@
+---
+import { pros } from "../data/pros";
+import { places, countyPages } from "../data/places";
+import type { CountyId } from "../data/permits";
+
+// A card at the end of city and county pages. If a listed pro covers the page's
+// area it shows that pro, always labeled as sponsored; otherwise it invites
+// local tree companies to get listed.
+interface Props {
+  county: CountyId;
+  place: string;
+}
+const { county, place } = Astro.props;
+const path = Astro.url.pathname;
+const here = places.find((p) => path === `/areas/${p.slug}/`);
+const isCountyPage = countyPages[county] === path;
+const pro = pros.find((p) => p.sponsored && ((here && p.featuredIn.includes(here.id)) || (isCountyPage && p.featuredInCounty?.includes(county))));
+const exact = pro && here && here.id === "fort-lauderdale";
+---
+
+{
+  pro ? (
+    <section class="py-10">
+      <div class="mx-auto max-w-4xl px-4 sm:px-6">
+        <div class="relative overflow-hidden rounded-2xl border border-accent-500 bg-white shadow-lg ring-2 ring-accent/50">
+          <div class="bg-accent px-5 py-1.5 text-xs font-bold uppercase tracking-wide text-black">Sponsored · Featured pro in the Fort Lauderdale area</div>
+          <div class="flex flex-col gap-5 p-6 sm:flex-row sm:items-center sm:justify-between">
+            <div>
+              <h2 class="font-heading text-xl font-extrabold text-secondary-900">{pro.name}</h2>
+              <p class="mt-1 text-secondary-600">
+                {pro.tagline}. Lists tree removal, emergency response, trimming, stump grinding and arborist services in {pro.area.toLowerCase()}.
+                {!exact && <> Ask whether they cover {place}.</>}
+              </p>
+              <p class="mt-2 text-xs text-secondary-500">Sponsored listing. Details supplied by the company and not verified by SF Tree Removal. Ask for proof of license and insurance.</p>
+            </div>
+            <div class="flex shrink-0 flex-wrap gap-3">
+              <a href={`/find-a-pro/${pro.slug}/#request`} class="btn btn-accent" data-track={`${pro.slug}_request_click`}>Request a quote</a>
+              {pro.phone && pro.phoneHref && <a href={pro.phoneHref} class="btn btn-outline" data-track={`${pro.slug}_call_click`}>Call</a>}
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  ) : (
+    <section class="py-10">
+      <div class="mx-auto max-w-4xl px-4 sm:px-6">
+        <div class="flex flex-col items-center justify-between gap-4 rounded-2xl border border-dashed border-secondary-300 bg-secondary-50 p-6 text-center sm:flex-row sm:text-left">
+          <div>
+            <h2 class="font-heading text-lg font-bold text-secondary-900">Tree company in {place}?</h2>
+            <p class="mt-1 text-sm text-secondary-600">Get listed in the SF Tree Removal directory and show up on this page for homeowners searching in your area.</p>
+          </div>
+          <a href="/for-pros/" class="btn btn-outline shrink-0">Get listed</a>
+        </div>
+      </div>
+    </section>
+  )
+}

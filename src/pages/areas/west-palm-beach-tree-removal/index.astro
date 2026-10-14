@@ -1,0 +1,108 @@
+---
+import CityPage from "../../../components/CityPage.astro";
+
+const intro = [
+  "West Palm Beach has older neighborhoods with mature canopy trees, waterfront properties and a lot of palms. Large oaks, banyans and mahogany near houses and power lines need planned, careful removal.",
+  "Send one request and we will try to match you with an independent tree care professional. We are adding professionals in West Palm Beach and cannot promise a response yet, so you can also tell us you want to be notified. SF Tree Removal is an online service; we don't do the work ourselves, so you agree the scope and price directly with the professional you are matched with."
+];
+
+const conditions = [
+  {
+    "name": "Mature canopy near houses",
+    "note": "Large trees in established neighborhoods put limbs and roots close to roofs, walls and pipes."
+  },
+  {
+    "name": "Coastal and Intracoastal exposure",
+    "note": "Wind, salt and storms weaken trees near the water."
+  },
+  {
+    "name": "Palms and ficus",
+    "note": "Palms drop fronds and coconuts, and ficus roots lift pavers and crack walls."
+  },
+  {
+    "name": "Storm season",
+    "note": "Saturated soil and strong wind make leaning and damaged trees urgent."
+  }
+];
+
+const nearby = [
+  {
+    "name": "Boynton Beach",
+    "href": "/areas/boynton-beach-tree-removal/"
+  },
+  {
+    "name": "Jupiter",
+    "href": "/areas/jupiter-tree-removal/"
+  },
+  {
+    "name": "Palm Beach County",
+    "href": "/areas/palm-beach-county-tree-removal/"
+  }
+];
+
+const faqs = [
+  {
+    "q": "How much does tree removal cost in West Palm Beach?",
+    "a": "It depends on the size of the tree, how close it is to the house, pool or power lines, and whether a crane is needed. You will get a free estimate for your specific tree; see our <a href=\"/tree-care-guides/tree-removal-cost-south-florida/\">cost guide</a>."
+  },
+  {
+    "q": "Do I need a permit to remove a tree in West Palm Beach?",
+    "a": "Often yes, depending on the tree, the property and the city's rules, unless a certified arborist documents that the tree is dangerous. See our <a href=\"/tree-removal-permits/\">permit guide</a> and confirm with the city."
+  },
+  {
+    "q": "Can I get emergency tree help in West Palm Beach?",
+    "a": "Choose Emergency Tree Removal in the <a href=\"/contact-us/\">form</a>. The request is flagged as urgent for local professionals; we cannot promise an arrival time. If anyone is in danger, call 911."
+  },
+  {
+    "q": "Who does the work?",
+    "a": "An independent tree care professional in Palm Beach County. SF Tree Removal is an online service; we do not perform the work. Ask for proof of license and insurance first."
+  }
+];
+
+const notes = "<p>West Palm Beach sits between the Intracoastal Waterway and Lake Worth Lagoon on one side and the inland neighborhoods on the other, with many older streets shaded by mature trees. Large canopy trees close to houses and power lines are a common reason for requests.</p><p>Wind-damaged limbs, dead palms and trees weakened by roots under pavement are typical jobs. Properties in unincorporated Palm Beach County follow county rules instead of the city's, so check which applies to your address.</p>";
+
+const trees = [
+  {
+    "name": "Live oak",
+    "note": "Wide, heavy limbs that often grow over roofs and driveways. Removal needs rigging so big pieces are lowered, not dropped."
+  },
+  {
+    "name": "Banyan and strangler fig",
+    "note": "Huge canopies and aerial roots that can lift pavement and walls; removal needs planning and space."
+  },
+  {
+    "name": "Royal palm",
+    "note": "Tall and straight, often next to pools and houses. Lowering the crown needs care near screens and pavers."
+  },
+  {
+    "name": "Mahogany",
+    "note": "Large shade tree with a broad canopy. Branch failure in storms is common, so structure and dead wood matter."
+  },
+  {
+    "name": "Black olive",
+    "note": "A common street and yard tree whose roots lift sidewalks and whose fruit stains pavers."
+  },
+  {
+    "name": "Australian pine",
+    "note": "An invasive species that topples easily in storms and is commonly removed rather than kept."
+  }
+];
+---
+
+<CityPage
+  city="West Palm Beach"
+  county="Palm Beach County"
+  title="Tree Removal in West Palm Beach, FL | Free Estimates"
+  description="Free tree removal estimates in West Palm Beach, FL: removal, trimming, stump grinding and storm cleanup from independent local pros."
+  lead="Get a free tree removal estimate from independent local professionals in West Palm Beach and across Palm Beach County."
+  intro={intro}
+  conditions={conditions}
+  permitId="west-palm-beach"
+  nearby={nearby}
+  faqs={faqs}
+  image="arborist-inspect"
+  image2="aerial-lift"
+  image3="tree-on-house"
+  notes={notes}
+  trees={trees}
+/>

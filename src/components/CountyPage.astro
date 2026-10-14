@@ -1,11 +1,21 @@
 ---
 import BaseLayout from "../layouts/BaseLayout.astro";
-import LocalBusinessSchema from "./LocalBusinessSchema.astro";
 import PageHero from "./PageHero.astro";
+import SectionHeading from "./SectionHeading.astro";
+import SplitSection from "./SplitSection.astro";
+import HowItWorks from "./HowItWorks.astro";
+import Faq from "./Faq.astro";
+import Disclosure from "./Disclosure.astro";
+import ProSpotlight from "./ProSpotlight.astro";
+import CoverageBanner from "./CoverageBanner.astro";
+import AreaInterest from "./AreaInterest.astro";
+import { coverage } from "../config/coverage";
 import CtaBand from "./CtaBand.astro";
+import type { FaqItem } from "./Faq.astro";
+import type { PhotoKey } from "../config/photos";
 
 // One template for the county pages, so every county reads the same way:
-// what we do there, the cities we cover, the trees and the rules locally.
+// what the service is there, the cities covered, the trees and the rules.
 interface City {
   name: string;
   href?: string;
@@ -19,69 +29,70 @@ interface Props {
   cities: City[];
   trees: { name: string; note: string }[];
   permits: string[];
+  image: PhotoKey;
+  image2: PhotoKey;
+  image3: PhotoKey;
+  notes: string;
+  faqs: FaqItem[];
+  permitGuide: string;
 }
 
-const { county, title, description, lead, intro, cities, trees, permits } = Astro.props;
+const { county, title, description, lead, intro, cities, trees, permits, image, image2, image3, notes, faqs, permitGuide } = Astro.props;
+
+const partial = (coverage.partialCounties as readonly string[]).includes(({ "Miami-Dade County": "miami-dade", "Broward County": "broward", "Palm Beach County": "palm-beach" } as Record<string, string>)[county]);
+const pageTitle = partial ? title : `Tree Removal in ${county} | Permits & Costs`;
+const pageDescription = partial ? description : `Tree removal in ${county}: local conditions, permit rules and costs, plus how to get connected with a tree professional.`;
+const pageLead = partial ? lead : `Local conditions, permit rules and costs across ${county}. We are adding tree professionals here, so tell us what you need.`;
+const countyIdFor = ({ "Miami-Dade County": "miami-dade", "Broward County": "broward", "Palm Beach County": "palm-beach" } as const)[county as "Miami-Dade County"];
 
 const services = [
   { name: "Tree Removal", href: "/tree-removal/", text: "Safe removal of dead, dying, leaning and unwanted trees, including large trees close to homes." },
-  { name: "Emergency Tree Removal", href: "/emergency-tree-removal/", text: "Fast response when a storm brings a tree down on a roof, car, fence or driveway." },
-  { name: "Tree Services", href: "/tree-services/", text: "Trimming, pruning, palm work and stump grinding to keep trees healthy and clear of the house." },
-  { name: "Certified Arborist", href: "/certified-arborist/", text: "Tree health and risk assessments, and documentation when a permit or exemption needs it." },
+  { name: "Emergency Tree Removal", href: "/emergency-tree-removal/", text: "Urgent requests when a storm brings a tree down on a roof, car, fence or driveway." },
+  { name: "Tree Trimming", href: "/tree-trimming/", text: "Trimming, pruning and palm work to keep trees healthy and clear of the house." },
+  { name: "Stump Grinding", href: "/stump-grinding/", text: "Grinding the stump below ground so you can lay sod, plant or build again." },
+  { name: "Arborist Assessments", href: "/certified-arborist/", text: "Tree health and risk assessments, and documentation when a permit or exemption needs it." },
 ];
 ---
 
-<BaseLayout title={title} description={description}>
-  <LocalBusinessSchema />
+<BaseLayout title={pageTitle} description={pageDescription} area={partial ? { name: county, type: "AdministrativeArea" } : undefined}>
+  <PageHero badge={`${county.toUpperCase()}, FL`} title={`Tree Removal in ${county}`} lead={pageLead} image={image} />
 
-  <PageHero badge={`${county.toUpperCase()}, FL`} title={`Tree Removal in ${county}`} lead={lead} />
+  <CoverageBanner place={county} state={partial ? "partial" : "waiting"} city={partial ? undefined : county} />
 
-  <!-- INTRO -->
-  <section class="bg-white py-24">
-    <div class="mx-auto max-w-4xl px-6 text-center">
-      <h2 class="mb-8 text-3xl font-extrabold text-slate-900 md:text-4xl">Local Tree Service Across {county}</h2>
-      {intro.map((p) => <p class="mt-5 text-lg leading-relaxed text-slate-600">{p}</p>)}
-    </div>
-  </section>
+  <SplitSection title={`Local Tree Service Across ${county}`} html={intro.map((p) => `<p>${p}</p>`).join("")} image={image2} />
 
-  <!-- SERVICES -->
-  <section class="bg-[#f4f8f6] py-24">
-    <div class="mx-auto max-w-7xl px-6">
-      <h2 class="mb-14 text-center text-3xl font-extrabold text-slate-900 md:text-4xl">Our Services in {county}</h2>
-      <div class="grid gap-8 sm:grid-cols-2 lg:grid-cols-4">
+  <section class="bg-secondary-50 py-section">
+    <div class="mx-auto max-w-site px-4 sm:px-6">
+      <SectionHeading topper="What you can request" title={`Tree Help Available in ${county}`} />
+      <ul class="grid gap-6 sm:grid-cols-2 lg:grid-cols-3" role="list">
         {
           services.map((s) => (
-            <a href={s.href} class="group rounded-3xl bg-white p-8 transition hover:shadow-lg">
-              <h3 class="mb-3 text-xl font-extrabold text-slate-900">{s.name}</h3>
-              <p class="text-slate-600">{s.text}</p>
-              <span class="mt-5 inline-flex items-center gap-2 font-semibold text-teal-700">
-                Learn more <span class="transition group-hover:translate-x-1">↗</span>
-              </span>
-            </a>
+            <li>
+              <a href={s.href} class="card group flex h-full flex-col p-6">
+                <h3 class="font-heading text-h3 font-semibold text-secondary-900">{s.name}</h3>
+                <p class="mt-2 flex-1 leading-relaxed text-secondary-600">{s.text}</p>
+                <span class="mt-4 inline-flex items-center gap-1 text-sm font-semibold text-primary-700 group-hover:text-primary-900">
+                  Learn more <span aria-hidden="true">→</span>
+                </span>
+              </a>
+            </li>
           ))
         }
-      </div>
+      </ul>
     </div>
   </section>
 
-  <!-- CITIES -->
-  <section class="bg-white py-24">
-    <div class="mx-auto max-w-5xl px-6">
-      <h2 class="mb-6 text-center text-3xl font-extrabold text-slate-900 md:text-4xl">Cities We Serve in {county}</h2>
-      <p class="mx-auto mb-12 max-w-3xl text-center text-lg text-slate-600">
-        Not sure if we cover your street? <a href="/contact-us/" class="font-semibold text-teal-700 underline">Ask us</a>,
-        we work across the whole county.
-      </p>
-      <ul class="grid grid-cols-2 gap-4 sm:grid-cols-3">
+  <section class="py-section">
+    <div class="mx-auto max-w-5xl px-4 sm:px-6">
+      <SectionHeading topper="Where it works" title={`Cities We Connect You in ${county}`} description="Cities with their own page are linked. Not on the list? Ask: the professionals we connect you with work across the whole county." />
+      <ul class="grid grid-cols-2 gap-4 sm:grid-cols-3" role="list">
         {
           cities.map((c) => (
             <li>
               {c.href ? (
-                <a href={c.href} class="block rounded-2xl border border-teal-700 bg-teal-700 px-5 py-4 font-bold text-white transition hover:bg-teal-800">
-                  {c.name} ↗
-                </a>
+                <a href={c.href} class="block rounded-lg bg-primary-600 px-5 py-4 font-medium text-white shadow-md transition hover:bg-primary-700">{c.name} →</a>
               ) : (
-                <span class="block rounded-2xl border border-slate-200 px-5 py-4 font-semibold text-slate-800">{c.name}</span>
+                <span class="block rounded-lg border border-secondary-200 px-5 py-4 font-medium text-secondary-800">{c.name}</span>
               )}
             </li>
           ))
@@ -90,35 +101,48 @@ const services = [
     </div>
   </section>
 
-  <!-- TREES -->
-  <section class="bg-[#f4f8f6] py-24">
-    <div class="mx-auto max-w-6xl px-6">
-      <h2 class="mb-14 text-center text-3xl font-extrabold text-slate-900 md:text-4xl">Trees We Work With in {county}</h2>
-      <div class="grid gap-6 md:grid-cols-2">
+  <SplitSection topper="Local notes" title={`What to Know About Trees in ${county}`} html={notes} image={image3} reverse tone="tint" />
+
+  <section class="py-section">
+    <div class="mx-auto max-w-site px-4 sm:px-6">
+      <SectionHeading topper="Common trees" title={`Trees People Ask About in ${county}`} />
+      <ul class="grid gap-6 md:grid-cols-2 lg:grid-cols-3" role="list">
         {
           trees.map((t) => (
-            <div class="rounded-3xl bg-white p-8">
-              <h3 class="mb-2 text-lg font-extrabold text-slate-900">{t.name}</h3>
-              <p class="text-slate-600">{t.note}</p>
-            </div>
+            <li class="card p-6">
+              <h3 class="font-heading text-h3 font-semibold text-secondary-900">{t.name}</h3>
+              <p class="mt-2 leading-relaxed text-secondary-600">{t.note}</p>
+            </li>
           ))
         }
-      </div>
+      </ul>
     </div>
   </section>
 
-  <!-- PERMITS -->
-  <section class="bg-white py-24">
-    <div class="mx-auto max-w-4xl px-6">
-      <h2 class="mb-8 text-3xl font-extrabold text-slate-900 md:text-4xl">Tree Removal Permits in {county}</h2>
+  <HowItWorks title={`Getting an Estimate in ${county}`} />
+
+  <section class="py-section">
+    <div class="mx-auto max-w-4xl px-4 sm:px-6">
+      <h2 class="mb-8 font-heading text-h2 font-bold text-secondary-900">Tree Removal Permits in {county}</h2>
       <div class="prose-sf max-w-none">
         {permits.map((p) => <p set:html={p} />)}
         <p>
-          Read more in our guide to <a href="/tree-removal-permits/">tree removal permits in South Florida</a>.
+          Read the full <a href={permitGuide}>county permit guide</a> and our guide to
+          <a href="/tree-removal-permits/">tree removal permits in South Florida</a>.
         </p>
       </div>
     </div>
   </section>
 
-  <CtaBand title={`Need Tree Removal in ${county}?`} />
+  {!partial && <AreaInterest place={county} />}
+
+  <Faq faqs={faqs} title={`Tree Removal in ${county}: Common Questions`} />
+
+  <ProSpotlight county={countyIdFor} place={county} />
+
+  <section class="py-10">
+    <div class="mx-auto max-w-3xl px-4 sm:px-6"><Disclosure variant="card" /></div>
+  </section>
+
+  <CtaBand title={`Need Tree Removal in ${county}?`} text={partial ? undefined : `Send a request and we will try to match you with a professional. We are adding professionals in ${county} and cannot promise a response yet.`} />
 </BaseLayout>

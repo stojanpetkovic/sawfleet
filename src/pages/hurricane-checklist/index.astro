@@ -1,0 +1,99 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import PageHero from "../../components/PageHero.astro";
+import SectionHeading from "../../components/SectionHeading.astro";
+import SplitSection from "../../components/SplitSection.astro";
+import Faq from "../../components/Faq.astro";
+import CtaBand from "../../components/CtaBand.astro";
+import { places } from "../../data/places";
+
+const inputClass =
+  "w-full rounded-lg border border-secondary-300 bg-white px-4 py-3 text-secondary-900 outline-hidden transition focus:border-primary-600 focus:ring-2 focus:ring-primary-600/20";
+
+const inside = [
+  { t: "Before the season", d: "Walk the property, spot warning signs, get doubtful trees assessed and prune the right way." },
+  { t: "When a storm approaches", d: "What to do, and not do, in the last 72 hours so you do not create more risk." },
+  { t: "After the storm", d: "Safety first, documenting for insurance, avoiding storm chasers, and debris rules." },
+  { t: "Questions to ask a tree company", d: "Six questions that show who is worth hiring, plus useful numbers." },
+];
+
+const faqs = [
+  {
+    q: "Is the checklist really free?",
+    a: `Yes. Enter your email and you can download it right away. There is no obligation to request an estimate.`,
+  },
+  {
+    q: "What emails will I get?",
+    a: `The download link, and, only if you tick the box, a few reminders at the start of hurricane season and before major storms. You can unsubscribe at any time. See the <a href="/privacy-policy/">Privacy Policy</a>.`,
+  },
+  {
+    q: "Who writes the checklist?",
+    a: `SF Tree Removal, an online service that connects South Florida property owners with independent local tree care professionals. It is based on University of Florida IFAS guidance and Florida law, and it is general information, not professional or legal advice.`,
+  },
+  {
+    q: "When is hurricane season?",
+    a: `The Atlantic hurricane season runs from June 1 to November 30. Late winter and spring are the best time to assess and prune trees.`,
+  },
+];
+---
+
+<BaseLayout
+  title="Free Hurricane Tree Checklist for South Florida (PDF)"
+  description="Free printable hurricane tree checklist for South Florida homeowners: what to do before the season, when a storm approaches and after the storm."
+>
+  <PageHero
+    badge="FREE DOWNLOAD"
+    title="Hurricane Tree Checklist for South Florida"
+    lead="A two-page printable checklist: what to check before the season, during a storm warning and after the storm."
+    actions={false}
+    image="storm-uproot"
+  />
+
+  <section class="py-section">
+    <div class="mx-auto grid max-w-site gap-10 px-4 sm:px-6 lg:grid-cols-[1.1fr_1fr]">
+      <div>
+        <SectionHeading align="left" topper="What is inside" title="Four Sections, Two Pages" />
+        <ul class="grid gap-4 sm:grid-cols-2" role="list">
+          {inside.map((i) => <li class="card p-5"><h3 class="font-heading text-lg font-semibold text-secondary-900">{i.t}</h3><p class="mt-1 text-sm text-secondary-600">{i.d}</p></li>)}
+        </ul>
+        <p class="mt-6 text-sm text-secondary-500">Based on University of Florida IFAS guidance and Florida law. General information, not professional or legal advice.</p>
+      </div>
+
+      <div class="form-card border-primary-200" data-no-reveal>
+        <h2 class="font-heading text-2xl font-extrabold text-secondary-900">Get the Free PDF</h2>
+        <p class="mt-2 text-secondary-600">Enter your email and download it straight away.</p>
+        <form data-lead-form="hurricane-checklist" data-lead-ignore data-redirect="/hurricane-checklist/thanks/" class="mt-6 space-y-4">
+          <label class="block"><span class="field-label">Email *</span><input name="email" type="email" required autocomplete="email" class="field-input" /></label>
+          <label class="block"><span class="field-label">First name</span><input name="name" autocomplete="given-name" class="field-input" /></label>
+          <label class="block">
+            <span class="field-label">Your city</span>
+            <select name="city" class="field-input">
+              <option value="">Choose…</option>
+              {places.map((p) => <option value={p.name}>{p.name}</option>)}
+              <option value="Other">Other</option>
+            </select>
+          </label>
+          <label class="flex items-start gap-3 text-sm text-secondary-700">
+            <input type="checkbox" name="reminders" value="yes" class="mt-1 size-4 accent-[#0a9a47]" />
+            <span>Also send me a few hurricane-season tree reminders. I can unsubscribe at any time.</span>
+          </label>
+          <input name="website_hp" tabindex="-1" autocomplete="off" class="hidden" aria-hidden="true" />
+          <p data-lead-error hidden class="rounded-xl bg-red-50 px-4 py-3 text-sm text-red-700" role="alert"></p>
+          <button type="submit" class="btn btn-accent w-full !py-4 !text-base">Download the Checklist</button>
+          <p class="text-xs text-secondary-500">By submitting you agree to our <a href="/privacy-policy/" class="underline">Privacy Policy</a>. We never sell your email.</p>
+        </form>
+      </div>
+    </div>
+  </section>
+
+  <SplitSection
+    topper="Why it matters"
+    title="Most Storm Damage Starts Before the Storm"
+    image="broken-tree"
+    tone="tint"
+    html={`<p>Trees that come down in a hurricane are usually the ones that were already weak: dead limbs, split trunks, decay and lifted roots. A health check and the right pruning before the season on June 1 cost far less than an emergency in August.</p><p>University of Florida research shows that topping and heavy thinning make trees weaker, not stronger. Read our guides on <a href="/tree-care-guides/hurricane-tree-preparation/">preparing trees for hurricane season</a> and <a href="/tree-care-guides/tree-removal-after-hurricane/">what to do after a hurricane</a>.</p>`}
+  />
+
+  <Faq faqs={faqs} tone="white" />
+  <CtaBand title="Need a Tree Checked Before the Season?" text="Request a free estimate for trimming, removal or an arborist assessment. We connect you with an independent professional for a free estimate." />
+</BaseLayout>
