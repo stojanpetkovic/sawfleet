@@ -49,15 +49,15 @@ const cols = [
 ---
 
 <footer class="bg-dark text-surface/80">
-  <div class="mx-auto max-w-site px-4 py-12 sm:px-6 lg:py-16">
+  <div class="mx-auto max-w-site px-4 py-9 sm:px-6 sm:py-12 lg:py-16">
 
-    <div class="grid grid-cols-1 gap-10 sm:grid-cols-2 lg:grid-cols-4">
+    <div class="grid grid-cols-2 gap-x-6 gap-y-6 sm:gap-10 lg:grid-cols-4">
       <!-- Brand -->
-      <div class="sm:col-span-2 lg:col-span-1">
-        <a href="/" class="inline-block rounded-2xl bg-white p-4 shadow-lg transition hover:scale-[1.02]" aria-label="SF Tree Removal, home">
-          <img src="/images/logo-full-360.png" srcset="/images/logo-full-360.png 1x, /images/logo-full-720.png 2x" alt="SF Tree Removal: fast, safe, professional" width="260" height="95" class="h-[76px] w-auto" loading="lazy" />
+      <div class="col-span-2 lg:col-span-1">
+        <a href="/" class="inline-block rounded-2xl bg-white p-3 sm:p-4 shadow-lg transition hover:scale-[1.02]" aria-label="SF Tree Removal, home">
+          <img src="/images/logo-full-360.png" srcset="/images/logo-full-360.png 1x, /images/logo-full-720.png 2x" alt="SF Tree Removal: fast, safe, professional" width="260" height="95" class="h-[56px] w-auto sm:h-[76px]" loading="lazy" />
         </a>
-        <Disclosure variant="short" class="mt-5 max-w-xs text-surface/70" />
+        <Disclosure variant="short" class="mt-4 max-w-xs text-surface/70 sm:mt-5" />
         <div class="mt-5 flex items-center gap-4">
           <a href={business.profiles.instagram} target="_blank" rel="noopener noreferrer" aria-label="Instagram" class="text-surface/60 transition-colors hover:text-white">
             <svg class="size-5" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.052.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98C8.333 23.986 8.741 24 12 24c3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 100 12.324 6.162 6.162 0 000-12.324zM12 16a4 4 0 110-8 4 4 0 010 8zm6.406-11.845a1.44 1.44 0 100 2.881 1.44 1.44 0 000-2.881z" /></svg>
@@ -70,17 +70,20 @@ const cols = [
 
       {
         cols.map((c) => (
-          <div>
-            <h3 class="font-heading text-sm font-semibold uppercase r text-white">{c.title}</h3>
-            <ul class="mt-3 space-y-2">
+          <details class="footer-col col-span-2 border-t border-surface/10 py-1 sm:col-span-1 sm:border-0 sm:py-0" data-footer-col>
+            <summary class="flex cursor-pointer list-none items-center justify-between py-3 font-heading text-sm font-semibold uppercase tracking-wide text-white sm:cursor-default sm:pointer-events-none sm:py-0">
+              {c.title}
+              <svg class="footer-chevron size-4 transition-transform sm:hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M19 9l-7 7-7-7" /></svg>
+            </summary>
+            <ul class="grid grid-cols-2 gap-x-6 gap-y-2 pb-3 sm:mt-3 sm:block sm:space-y-2 sm:pb-0">
               {c.links.map((l) => <li><a href={l.href} class="text-sm transition-colors hover:text-white">{l.label}</a></li>)}
             </ul>
-          </div>
+          </details>
         ))
       }
     </div>
 
-    <div class="mt-10 flex flex-col items-center justify-between gap-4 border-t border-surface/10 pt-6 text-sm sm:flex-row">
+    <div class="mt-8 flex flex-col items-center justify-between gap-3 border-t border-surface/10 pt-6 text-sm sm:flex-row">
       <div class="text-center sm:text-left">
         <p>&copy; {year} {business.name}. All rights reserved.</p>
         <p class="mt-1 text-xs text-surface/60">
@@ -94,3 +97,19 @@ const cols = [
     </div>
   </div>
 </footer>
+
+<style>
+  .footer-col[open] .footer-chevron { transform: rotate(180deg); }
+  .footer-col > summary::-webkit-details-marker { display: none; }
+  @media (min-width: 640px) {
+    .footer-col::details-content { content-visibility: visible; display: block; }
+  }
+</style>
+
+<script>
+  // Columns are accordions on phones and always open from the sm breakpoint up.
+  const mq = window.matchMedia("(min-width: 640px)");
+  const sync = () => document.querySelectorAll<HTMLDetailsElement>("[data-footer-col]").forEach((d) => { if (mq.matches) d.open = true; });
+  sync();
+  mq.addEventListener("change", sync);
+</script>
