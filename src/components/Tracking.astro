@@ -1,7 +1,7 @@
 ---
 import { business } from '../config/business';
 
-// GA4 for the site owner, plus the lead collector from stojanpetkovic.com,
+// GA4 for the site owner, plus the lead collector from webtano.com,
 // which counts visits, form inquiries and calls for the client report.
 const gaId = business.gaId;
 const leadsKey = business.leadsSiteKey;
@@ -24,4 +24,4 @@ const leadsKey = business.leadsSiteKey;
   )
 }
 
-{leadsKey && <script is:inline src="https://stojanpetkovic.com/leads.js" data-site-key={leadsKey} defer />}
+{leadsKey && <script is:inline src="https://webtano.com/leads.js" data-site-key={leadsKey} defer />}

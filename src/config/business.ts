@@ -18,7 +18,7 @@ export const business = {
     google: 'https://share.google/AP4fOCKjUZnJH6j20',
     instagram: 'https://www.instagram.com/sftreeremoval',
   },
-  /** Lead admin key (stojanpetkovic.com/admin → Sites). */
+  /** Lead admin key (webtano.com/admin → Sites). */
   leadsSiteKey: 'c430880ad59dc1084bd3d17066defb05',
   /** GA4 measurement ID, carried over from the previous site on this domain. */
   gaId: 'G-LG6F8P23QM',
